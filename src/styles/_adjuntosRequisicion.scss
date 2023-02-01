@@ -8,6 +8,10 @@
     max-width: 500px;
 }
 
+.file{
+    margin-right: 15rem;
+}
+
 .file input {
     display: none;
 }
@@ -43,4 +47,12 @@
     border-radius: 10px;
     padding: 1rem;
     margin-top: 1rem;
+}
+
+.adjuntos_container{
+}
+
+.upload_buttons{
+    display: flex;
+    justify-content: space-between;
 }

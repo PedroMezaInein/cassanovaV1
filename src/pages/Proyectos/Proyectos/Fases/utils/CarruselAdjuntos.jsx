@@ -9,16 +9,18 @@ import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 import Swal from 'sweetalert2'
 
+import { apiDelete } from '../../../../../functions/api'
+
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: 550,
+        maxWidth: 480,
         flexGrow: 1,
         height: 350,
     },
     adjuntos: {
-        width: 550,
+        width: 450,
         height: 250,
         display: 'flex',
         justifyContent: 'center',
@@ -29,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 export default function CarruselAdjuntos(props) { 
     const { data, id, getAdjuntos } = props;
     let adjuntos = data
+    console.log(data)
     const classes = useStyles();
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
@@ -47,8 +50,6 @@ export default function CarruselAdjuntos(props) {
         setActiveStep(step);
     };
     const handleDelete = (index) => {
-        console.log('idadjunto', index)
-        console.log('idRequisicion', id)
         Swal.fire({
             title: '¿Estas seguro de eliminar este adjunto?',
             text: "No podras revertir esta accion!",
@@ -67,7 +68,7 @@ export default function CarruselAdjuntos(props) {
                         Swal.showLoading();
                     }
                 })
-                /* apiDelete(`requisicion/${id}/adjuntos/${index}`, auth)
+                apiDelete(`proyectos/${id}/adjunto/${index}`, auth)
                     .then(res => {
                         getAdjuntos()
                         Swal.close()
@@ -90,7 +91,7 @@ export default function CarruselAdjuntos(props) {
                             timerProgressBar: true,
                             showConfirmButton: false
                         })
-                    }) */
+                    })
             }
         })
     }

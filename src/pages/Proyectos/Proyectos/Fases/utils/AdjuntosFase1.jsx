@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import Swal from 'sweetalert2'
+import S3 from 'react-aws-s3';
+import axios from 'axios'
 
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,7 +12,9 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { apiGet, apiPostForm } from './../../../../../functions/api'
+import { apiGet, apiPostForm } from '../../../../../functions/api'
+import { URL_DEV } from '../../../../../constants'
+import { setSingleHeader } from '../../../../../functions/routers'
 
 import CarruselAdjuntos from './CarruselAdjuntos'
 
@@ -59,9 +63,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Adjuntos(props) { 
+export default function Adjuntos(props) {
 
-    const { proyecto} = props
+    const { proyecto } = props
+    console.log(proyecto)
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
     const [value, setValue] = useState(0);
@@ -76,8 +81,9 @@ export default function Adjuntos(props) {
         sketch_up: '',
         presupuestos_preliminares: '',
         recibos_pago: '',
+        file: [],
     })
-    const [activeTab, setActiveTab] = useState('Ficha_tecnica')
+    const [activeTab, setActiveTab] = useState('fotografias_levantamiento')
     const [adjuntos, setAdjuntos] = useState(false)
     useEffect(() => {
         Swal.fire({
@@ -91,49 +97,70 @@ export default function Adjuntos(props) {
     }, [])
 
     const handleChange = (event, newValue) => {
-        console.log('newvalue', event)
         setValue(newValue);
+        setForm({
+            ...form,
+            file: []
+        })
     };
 
     const getAdjuntos = () => {
         try {
             apiGet(`v2/proyectos/proyectos/proyecto/${proyecto.id}/adjuntos`, authUser)
                 .then(res => {
-                    console.log('adjuntos', res)
+                    let adjunAux = res.data.proyecto
                     Swal.close()
-                   /*  let aux = {
-                        Ficha_tecnica: [],
-                        Solicitud: [],
-                        Cotizaciones: [],
-                        Orden_compra: [],
-                        Comprobante_pago: [],
-                        Factura: [],
+                    let aux = {
+                        fotografias_levantamiento: [],
+                        manuales_de_adaptacion: [],
+                        minutas: [],
+                        planos_entregados_por_cliente: [],
+                        propuestas_arquitectonicas_preliminares: [],
+                        referencias_del_diseño_del_proyecto: [],
+                        renders: [],
+                        sketch_up: [],
+                        presupuestos_preliminares: [],
+                        recibos_pago: [],
                     }
-                    adjunAux.forEach((element) => {
-                        switch (element.pivot.nombre) {
-                            case 'Ficha_tecnica':
-                                aux.Ficha_tecnica.push(element)
+                    //obtener la key del objeto y recorrelo
+                    Object.keys(adjunAux).forEach((element) => {
+                        switch (element) {
+                            case 'fotografias_levantamiento':
+                                aux.fotografias_levantamiento.push(...adjunAux[element])
                                 break;
-                            case 'Solicitud':
-                                aux.Solicitud.push(element)
+                            case 'manuales_de_adaptacion':
+                                aux.manuales_de_adaptacion.push(...adjunAux[element])
                                 break;
-                            case 'Cotizaciones':
-                                aux.Cotizaciones.push(element)
+                            case 'minutas':
+                                aux.minutas.push(...adjunAux[element])
                                 break;
-                            case 'Orden_compra':
-                                aux.Orden_compra.push(element)
+                            case 'planos_entregados_por_cliente':
+                                aux.planos_entregados_por_cliente.push(...adjunAux[element])
                                 break;
-                            case 'Comprobante_pago':
-                                aux.Comprobante_pago.push(element)
+                            case 'propuestas_arquitectonicas_preliminares':
+                                aux.propuestas_arquitectonicas_preliminares.push(...adjunAux[element])
                                 break;
-                            case 'Factura':
-                                aux.Factura.push(element)
+                            case 'referencias_del_diseño_del_proyecto':
+                                aux.referencias_del_diseño_del_proyecto.push(...adjunAux[element])
+                                break;
+                            case 'renders':
+                                aux.renders.push(...adjunAux[element])
+                                break;
+                            case 'sketch_up':
+                                aux.sketch_up.push(...adjunAux[element])
+                                break;
+                            case 'presupuestos_preliminares':
+                                aux.presupuestos_preliminares.push(...adjunAux[element])
+                                break;
+                            case 'recibos_pago':
+                                aux.recibos_pago.push(...adjunAux[element])
                                 break;
                             default:
                                 break;
                         }
                     });
-                    setAdjuntos(aux) */
+                    console.log('aux', aux)
+                    setAdjuntos(aux)
                 })
 
         } catch (error) {
@@ -149,19 +176,18 @@ export default function Adjuntos(props) {
     }
 
     const handleTab = (e) => {
-        console.log('tab', e)
         setActiveTab(e)
     }
 
     const handleFile = (e) => {
         setForm({
             ...form,
-            [activeTab]: [e.target.files[0]]
+            file: [...e.target.files]
         })
     }
 
     const validate = () => {
-        if (activeTab && form[activeTab] !== '') {
+        if (activeTab && form.file.length > 0) {
             return true
         } else {
             return false
@@ -172,8 +198,6 @@ export default function Adjuntos(props) {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-
-
         if (validate()) {
             Swal.fire({
                 title: 'Subiendo archivo...',
@@ -182,46 +206,30 @@ export default function Adjuntos(props) {
                     Swal.showLoading()
                 }
             })
-            /* let data = new FormData();
-            let aux = Object.keys(form) */
-
-            /* aux.forEach((element) => {
-                switch (element) {
-                    case 'adjuntos':
-                        break;
-                    default:
-                        data.append(element, form[element])
-                        break
-                }
-            }) */
-
-            /* data.append(`files_name_requisicion[]`, form[activeTab][0].name)
-            data.append(`files_requisicion[]`, form[activeTab][0])
-            data.append('adjuntos[]', "requisicion")
-            data.append('tipo', activeTab) */
-
+            let filePath = `proyecto/${proyecto.id}/${activeTab}/${Math.floor(Date.now() / 1000)}-`
+            console.log('filePath', filePath)
+            let aux = []
+            form.file.forEach((file) => {
+                console.log(file)
+                aux.push(file)
+            })
 
             try {
-                /* apiPostForm(`requisicion/${props.data.id}/archivos/s3`, data, authUser)
+                apiGet('v1/constant/admin-proyectos', authUser)
                     .then(res => {
-                        Swal.close()
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Adjunto guardado',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        getAdjuntos()
-
-                        console.log('res', res)
-                        if (res.status === 200) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Adjunto guardado',
-                                showConfirmButton: false,
-                                timer: 1500
+                        let auxPromises = aux.map((file) => {
+                            return new Promise((resolve, reject) => {
+                                new S3(res.data.alma).uploadFile(file, `${filePath}${file.name}`)
+                                    .then((data) => {
+                                        const { location, status } = data
+                                        if (status === 204)
+                                            resolve({ name: file.name, url: location })
+                                        else
+                                            reject(data)
+                                    }).catch(err => reject(err))
                             })
-                        }
+                        })
+                        Promise.all(auxPromises).then(values => { addS3FilesAxios(values) }).catch(err => console.error(err))
                     })
                     .catch(err => {
                         Swal.close()
@@ -230,8 +238,8 @@ export default function Adjuntos(props) {
                             title: 'Oops...',
                             text: 'Algo salio mal!',
                         })
-                        console.log('err', err)
-                    }) */
+                        console.log('error', err)
+                    })
             } catch (error) {
                 Swal.close()
                 Swal.fire({
@@ -248,6 +256,45 @@ export default function Adjuntos(props) {
                 showConfirmButton: false,
                 timer: 1500
             })
+        }
+    }
+
+    const addS3FilesAxios = (files) => {
+        try {
+            axios.post(`${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/s3`, { archivos: files }, {
+                params: { tipo: activeTab },
+                headers: setSingleHeader(authUser)
+            })
+                .then(res => {
+                    Swal.close()
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Archivo subido correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    getAdjuntos()
+                    setForm({
+                        file: []
+                    })
+                })
+                .catch(err => {
+                    Swal.close()
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Algo salio mal!',
+                    })
+                    console.log('error', err)
+                })
+        } catch (error) {
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Algo salio mal!',
+            })
+            console.log('error', error)
         }
     }
 
@@ -281,9 +328,17 @@ export default function Adjuntos(props) {
                             <div className="file">
 
                                 <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
                                 <div>
-                                    {form.fotografias_levantamiento && form.fotografias_levantamiento.length > 0 ? <p>{form.fotografias_levantamiento[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                    {form.file.length > 0 ?
+                                        <>
+                                            {
+                                                form.file.map((file, index) => {
+                                                    return <p key={index}>{file.name}</p>
+                                                })
+                                            }
+                                        </>
+                                        : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -293,7 +348,7 @@ export default function Adjuntos(props) {
                         </div>
                         {
                             adjuntos && adjuntos.fotografias_levantamiento && adjuntos.fotografias_levantamiento.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.fotografias_levantamiento} id={data.id} getAdjuntos={getAdjuntos} />
+                                <CarruselAdjuntos data={adjuntos.fotografias_levantamiento} id={proyecto.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="">
                                     <p>No hay archivos adjuntos</p>
@@ -307,9 +362,17 @@ export default function Adjuntos(props) {
                             <div className="file">
 
                                 <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
                                 <div>
-                                    {form.manuales_de_adaptacion && form.manuales_de_adaptacion.length > 0 ? <p>{form.manuales_de_adaptacion[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                    {form.file.length > 0 ?
+                                        <>
+                                            {
+                                                form.file.map((file, index) => {
+                                                    return <p key={index}>{file.name}</p>
+                                                })
+                                            }
+                                        </>
+                                        : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -319,7 +382,7 @@ export default function Adjuntos(props) {
                         </div>
                         {
                             adjuntos && adjuntos.manuales_de_adaptacion && adjuntos.manuales_de_adaptacion.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.manuales_de_adaptacion} id={data.id} getAdjuntos={getAdjuntos} />
+                                <CarruselAdjuntos data={adjuntos.manuales_de_adaptacion} id={proyecto.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="">
                                     <p>No hay archivos adjuntos</p>
@@ -333,9 +396,17 @@ export default function Adjuntos(props) {
                             <div className="file">
 
                                 <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
                                 <div>
-                                    {form.minutas && form.minutas.length > 0 ? <p>{form.minutas[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                    {form.file.length > 0 ?
+                                        <>
+                                            {
+                                                form.file.map((file, index) => {
+                                                    return <p key={index}>{file.name}</p>
+                                                })
+                                            }
+                                        </>
+                                        : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -345,7 +416,7 @@ export default function Adjuntos(props) {
                         </div>
                         {
                             adjuntos && adjuntos.minutas && adjuntos.minutas.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.minutas} id={data.id} getAdjuntos={getAdjuntos} />
+                                <CarruselAdjuntos data={adjuntos.minutas} id={proyecto.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="">
                                     <p>No hay archivos adjuntos</p>
@@ -359,9 +430,17 @@ export default function Adjuntos(props) {
                             <div className="file">
 
                                 <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
                                 <div>
-                                    {form.planos_entregados_por_cliente && form.planos_entregados_por_cliente.length > 0 ? <p>{form.planos_entregados_por_cliente[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                    {form.file.length > 0 ?
+                                        <>
+                                            {
+                                                form.file.map((file, index) => {
+                                                    return <p key={index}>{file.name}</p>
+                                                })
+                                            }
+                                        </>
+                                        : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -371,7 +450,7 @@ export default function Adjuntos(props) {
                         </div>
                         {
                             adjuntos && adjuntos.planos_entregados_por_cliente && adjuntos.planos_entregados_por_cliente.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.planos_entregados_por_cliente} id={data.id} getAdjuntos={getAdjuntos} />
+                                <CarruselAdjuntos data={adjuntos.planos_entregados_por_cliente} id={proyecto.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="">
                                     <p>No hay archivos adjuntos</p>
@@ -385,9 +464,17 @@ export default function Adjuntos(props) {
                             <div className="file">
 
                                 <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
                                 <div>
-                                    {form.propuestas_arquitectonicas_preliminares && form.propuestas_arquitectonicas_preliminares.length > 0 ? <p>{form.propuestas_arquitectonicas_preliminares[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                    {form.file.length > 0 ?
+                                        <>
+                                            {
+                                                form.file.map((file, index) => {
+                                                    return <p key={index}>{file.name}</p>
+                                                })
+                                            }
+                                        </>
+                                        : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -397,7 +484,7 @@ export default function Adjuntos(props) {
                         </div>
                         {
                             adjuntos && adjuntos.propuestas_arquitectonicas_preliminares && adjuntos.propuestas_arquitectonicas_preliminares.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.propuestas_arquitectonicas_preliminares} id={data.id} getAdjuntos={getAdjuntos} />
+                                <CarruselAdjuntos data={adjuntos.propuestas_arquitectonicas_preliminares} id={proyecto.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="">
                                     <p>No hay archivos adjuntos</p>
@@ -411,9 +498,17 @@ export default function Adjuntos(props) {
                             <div className="file">
 
                                 <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
                                 <div>
-                                    {form.referencias_del_diseño_del_proyecto && form.referencias_del_diseño_del_proyecto.length > 0 ? <p>{form.referencias_del_diseño_del_proyecto[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                    {form.file.length > 0 ?
+                                        <>
+                                            {
+                                                form.file.map((file, index) => {
+                                                    return <p key={index}>{file.name}</p>
+                                                })
+                                            }
+                                        </>
+                                        : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -423,7 +518,7 @@ export default function Adjuntos(props) {
                         </div>
                         {
                             adjuntos && adjuntos.referencias_del_diseño_del_proyecto && adjuntos.referencias_del_diseño_del_proyecto.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.referencias_del_diseño_del_proyecto} id={data.id} getAdjuntos={getAdjuntos} />
+                                <CarruselAdjuntos data={adjuntos.referencias_del_diseño_del_proyecto} id={proyecto.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="">
                                     <p>No hay archivos adjuntos</p>
@@ -437,9 +532,17 @@ export default function Adjuntos(props) {
                             <div className="file">
 
                                 <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
                                 <div>
-                                    {form.renders && form.renders.length > 0 ? <p>{form.renders[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                    {form.file.length > 0 ?
+                                        <>
+                                            {
+                                                form.file.map((file, index) => {
+                                                    return <p key={index}>{file.name}</p>
+                                                })
+                                            }
+                                        </>
+                                        : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -449,7 +552,7 @@ export default function Adjuntos(props) {
                         </div>
                         {
                             adjuntos && adjuntos.renders && adjuntos.renders.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.renders} id={data.id} getAdjuntos={getAdjuntos} />
+                                <CarruselAdjuntos data={adjuntos.renders} id={proyecto.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="">
                                     <p>No hay archivos adjuntos</p>
@@ -463,9 +566,17 @@ export default function Adjuntos(props) {
                             <div className="file">
 
                                 <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
                                 <div>
-                                    {form.sketch_up && form.sketch_up.length > 0 ? <p>{form.sketch_up[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                    {form.file.length > 0 ?
+                                        <>
+                                            {
+                                                form.file.map((file, index) => {
+                                                    return <p key={index}>{file.name}</p>
+                                                })
+                                            }
+                                        </>
+                                        : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -475,7 +586,7 @@ export default function Adjuntos(props) {
                         </div>
                         {
                             adjuntos && adjuntos.sketch_up && adjuntos.sketch_up.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.sketch_up} id={data.id} getAdjuntos={getAdjuntos} />
+                                <CarruselAdjuntos data={adjuntos.sketch_up} id={proyecto.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="">
                                     <p>No hay archivos adjuntos</p>
@@ -489,9 +600,17 @@ export default function Adjuntos(props) {
                             <div className="file">
 
                                 <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
                                 <div>
-                                    {form.presupuestos_preliminares && form.presupuestos_preliminares.length > 0 ? <p>{form.presupuestos_preliminares[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                    {form.file.length > 0 ?
+                                        <>
+                                            {
+                                                form.file.map((file, index) => {
+                                                    return <p key={index}>{file.name}</p>
+                                                })
+                                            }
+                                        </>
+                                        : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -501,7 +620,7 @@ export default function Adjuntos(props) {
                         </div>
                         {
                             adjuntos && adjuntos.presupuestos_preliminares && adjuntos.presupuestos_preliminares.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.presupuestos_preliminares} id={data.id} getAdjuntos={getAdjuntos} />
+                                <CarruselAdjuntos data={adjuntos.presupuestos_preliminares} id={proyecto.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="">
                                     <p>No hay archivos adjuntos</p>
@@ -515,9 +634,17 @@ export default function Adjuntos(props) {
                             <div className="file">
 
                                 <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
                                 <div>
-                                    {form.recibos_pago && form.recibos_pago.length > 0 ? <p>{form.recibos_pago[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                                    {form.file.length > 0 ?
+                                        <>
+                                            {
+                                                form.file.map((file, index) => {
+                                                    return <p key={index}>{file.name}</p>
+                                                })
+                                            }
+                                        </>
+                                        : <p>No hay archivo seleccionado</p>}
                                 </div>
 
                             </div>
@@ -527,7 +654,7 @@ export default function Adjuntos(props) {
                         </div>
                         {
                             adjuntos && adjuntos.recibos_pago && adjuntos.recibos_pago.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.recibos_pago} id={data.id} getAdjuntos={getAdjuntos} />
+                                <CarruselAdjuntos data={adjuntos.recibos_pago} id={proyecto.id} getAdjuntos={getAdjuntos} />
                                 :
                                 <div className="">
                                     <p>No hay archivos adjuntos</p>

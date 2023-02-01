@@ -48,6 +48,10 @@ export default function BotonAcciones({ modal, setModal }) {
                             {setNaviIcon('las la-handshake icon-xl', 'NOTAS DE OBRA')}
                         </Dropdown.Item>
 
+                        <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, attachments: true, })}>
+                            {setNaviIcon('las la-handshake icon-xl', 'ADJUNTOS')}
+                        </Dropdown.Item>
+
                         <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => setModal({ ...modal, end_proyect: true })}>
                             {setNaviIcon('las la-handshake icon-xl', 'FIN DE PROYECTO')}
                         </Dropdown.Item>

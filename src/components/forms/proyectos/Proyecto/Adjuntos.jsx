@@ -407,7 +407,6 @@ class Adjuntos extends Component {
         const { proyecto } = this.props
         this.getAdjuntos(proyecto)
     }
-    
     getAdjuntos = async (proyecto) => {
         const { at } = this.props
         waitAlert()
@@ -473,16 +472,15 @@ class Adjuntos extends Component {
     /* -------------------------------------------------------------------------- */
 
     handleChange = async (files, item) => {
+        console.log(files)
         waitAlert()
-        console.log(item)
         const { proyecto } = this.state
         let filePath = `proyecto/${proyecto.id}/${item}/${Math.floor(Date.now() / 1000)}-`
+        console.log(filePath)
         let aux = []
         files.forEach((file) => {
             aux.push(file)
         })
-        console.log(files)
-        console.log(aux)
         if (aux.length) {
             const { at } = this.props
             await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(at) }).then(
@@ -500,12 +498,10 @@ class Adjuntos extends Component {
                                 }).catch(err => reject(err))
                         })
                     })
-                    console.log(auxPromises)
                     Promise.all(auxPromises).then(values => { this.addS3FilesAxios(values, item, proyecto) }).catch(err => console.error(err))
                 }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.error(error, 'error')
             })
         }
     }
@@ -514,7 +510,7 @@ class Adjuntos extends Component {
         let parametros = { tipo: tipo }
         waitAlert()
         try {
-            await axios.post(`${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/s3`, { archivos: arreglo.archivos },
+            await axios.post(`${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/s3`, { archivos: arreglo },
                 {
                     params: parametros,
                     headers: setSingleHeader(at)
@@ -613,7 +609,7 @@ class Adjuntos extends Component {
                     <Tab.Container activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey} onSelect={(select) => { this.updateActiveTabContainer(select) }}>
                         <Row className="mx-0 mt-10">
                             <Col md={4} className="navi navi-primary2 navi-accent nav-bold d-flex align-items-center">
-                                <Nav variant="pills" className="flex-column navi navi-accent nav-bolder width-inherit rounded" style={{backgroundColor:'#f5f8fa'}}>
+                                <Nav variant="pills" className="flex-column navi navi-accent nav-bolder width-inherit rounded" style={{ backgroundColor: '#f5f8fa' }}>
                                     {
                                         showadjuntos.map((adjunto, key) => {
                                             return (
@@ -637,7 +633,7 @@ class Adjuntos extends Component {
                                                         proyecto ?
                                                             proyecto[adjunto.id] ?
                                                                 <div className="">
-                                                                    <div className={`d-flex justify-content-${proyecto[adjunto.id].length ?'between':'center'} mb-5`}>
+                                                                    <div className={`d-flex justify-content-${proyecto[adjunto.id].length ? 'between' : 'center'} mb-5`}>
                                                                         {
                                                                             proyecto[adjunto.id].length ?
                                                                                 <div className="d-flex align-items-center bg-light-info rounded px-3 py-2 cursor-pointer" onClick={(e) => { e.preventDefault(); this.getProyectoAdjuntosZip([adjunto.id]) }}>
@@ -650,7 +646,7 @@ class Adjuntos extends Component {
                                                                                         Descargar ZIP
                                                                                     </div>
                                                                                 </div>
-                                                                            : ''
+                                                                                : ''
                                                                         }
                                                                         <div className="d-flex align-items-center bg-light-success rounded px-3 py-2 cursor-pointer">
                                                                             <label htmlFor="file-upload" className="d-flex mb-0 align-items-center">
@@ -663,7 +659,7 @@ class Adjuntos extends Component {
                                                                                     Adjuntar archivo
                                                                                 </div>
                                                                             </label>
-                                                                            
+
                                                                             <input id="file-upload" type="file" placeholder={form.adjuntos.adjunto_comentario.placeholder}
                                                                                 onChange={(e) => { e.preventDefault(); this.handleChange(e.target.files, subActiveKey) }} multiple
                                                                                 value={form.adjuntos.adjunto_comentario.value} name='adjunto_comentario' accept="image/*, application/pdf" />

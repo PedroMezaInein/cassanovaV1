@@ -9,9 +9,11 @@ import Venta from './Venta'
 import Presupuesto from './Presupuesto'
 import Avances from './Avances'
 import NotasObra from './NotasObra'
-import Adjuntos from './Adjuntos'
+import AdjuntosFase1 from './AdjuntosFase1'
+import AdjuntosFase2 from './AdjuntosFase2'
+import AdjuntosFase3 from './AdjuntosFase3'
 
-export default function Modales({ modal, setModal, proyecto, reload, opciones }) {
+export default function Modales({ modal, setModal, proyecto, reload, opciones, fase }) {
     return (
         <>
             <Modal size="lg" show={modal.edit_phase} title='Editar Fase' handleClose={() => setModal({ ...modal, edit_phase: false })}>
@@ -51,14 +53,23 @@ export default function Modales({ modal, setModal, proyecto, reload, opciones })
                 <Avances proyecto={proyecto} activo={modal.advance} reload={reload} />
             </Modal>
 
-            
+
 
             <Modal size="lg" show={modal.needs_program} title='Programa de Necesidades' handleClose={() => setModal({ ...modal, needs_program: false })}>
                 <ProgramaNecesidades />
             </Modal>
 
-            <Modal size="lg" show={modal.uprising_photographs} title='Fotografías de Levantamiento' handleClose={() => setModal({ ...modal, uprising_photographs: false })}>
-                <Adjuntos proyecto={proyecto} />
+            <Modal size="lg" show={modal.attachments} title={`Adjuntos de la fase ${fase}`} handleClose={() => setModal({ ...modal, attachments: false })} style={{ width: '50vh' }}>
+                {
+                    fase === 1 ?
+                        <AdjuntosFase1 proyecto={proyecto} /> 
+                    : fase === 2 ?
+                        <AdjuntosFase2 proyecto={proyecto} />
+                    : fase === 3 ?
+                        <AdjuntosFase3 proyecto={proyecto} />
+                    : null
+                }
+                
             </Modal>
 
             <Modal size="lg" show={modal.plan_measurements} title='Planos de Medidas' handleClose={() => setModal({ ...modal, plan_measurements: false })}>

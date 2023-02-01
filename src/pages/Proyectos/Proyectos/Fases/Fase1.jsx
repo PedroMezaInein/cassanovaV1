@@ -29,6 +29,7 @@ export default function Fase1(props) {
         budget: false,
         advance: false,
         construction_notes: false,
+        attachments: false,
     });
 
     const columnas = [
@@ -133,7 +134,7 @@ export default function Fase1(props) {
         <>
             <div className='container-fase'>
                 <div>
-                    <BotonAdjuntos modal={modal} setModal={setModal} />
+                    {/* <BotonAdjuntos modal={modal} setModal={setModal} /> */}
                     <BotonAcciones modal={modal} setModal={setModal} />
                     <div>
                         <span>Avance de la fase {fase.simpleName}</span>
@@ -168,7 +169,7 @@ export default function Fase1(props) {
                 </div>
             </div>
 
-            <Modales modal={modal} setModal={setModal} proyecto={fase} reload={reload} opciones={opciones} />
+            <Modales modal={modal} setModal={setModal} proyecto={fase} reload={reload} opciones={opciones} fase={1} />
 
         </>
         

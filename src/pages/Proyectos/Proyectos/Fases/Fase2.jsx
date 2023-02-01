@@ -133,7 +133,7 @@ export default function Fase2(props) {
         <>
             <div className='container-fase'>
                 <div>
-                    <BotonAdjuntos modal={modal} setModal={setModal} />
+                    {/* <BotonAdjuntos modal={modal} setModal={setModal} /> */}
                     <BotonAcciones modal={modal} setModal={setModal} />
                     <div>
                         <span>Avance de la fase {fase.simpleName}</span>
@@ -168,7 +168,7 @@ export default function Fase2(props) {
                 </div>
             </div>
 
-            <Modales modal={modal} setModal={setModal} proyecto={fase} reload={reload} opciones={opciones} />
+            <Modales modal={modal} setModal={setModal} proyecto={fase} reload={reload} opciones={opciones} fase={2} />
 
         </>
 
