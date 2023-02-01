@@ -356,7 +356,7 @@ export default function Adjuntos(props) {
                     <div className="file">
 
                         <label htmlFor="file">Seleccionar archivo(s)</label>
-                        <input type="file" id="file" name="file" onChange={handleFile} multiple />
+                        <input type="file" id="file" name="file" onChange={handleFile} multiple/>
                         <div>
                             {form.file.length > 0 ?
                                 form.file.length < 3 ?
@@ -375,8 +375,8 @@ export default function Adjuntos(props) {
                         </div>
 
                     </div>
-                    <div className="btn-subir">
-                        <button onClick={handleSubmit}>Subir</button>
+                    <div >
+                        <button className="btn-subir" onClick={handleSubmit}>Subir</button>
                     </div>
                 </div>
             </>
