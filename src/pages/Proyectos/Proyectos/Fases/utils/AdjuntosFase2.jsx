@@ -447,121 +447,121 @@ export default function Adjuntos(props) {
                 </Tabs>
 
                 <TabPanel value={value} index={0}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('datos_de_cliente')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('contrato_cliente')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('permisos_de_obra_ante_dependencias')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={3}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('catalogo_inicial_obra')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={4}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('programa_de_obra')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={5}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('contrato_proveedores_y_contratistas')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={6}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('firmas_de_aprobacion')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={7}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('reporte_fotografico_de_avance_de_obra')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={8}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('renders_aprobados')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={9}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('fianzas_y_seguros')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={10}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('catalogo_de_conceptos_asbuilt')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={11}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('consignas_de_matenimiento')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={12}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('garantia_de_los_equipos')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={13}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('garantia_de_vicios_ocultos')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={14}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('memorias_de_calculo')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={15}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('memorias_descriptivas')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={16}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('fichas_tecnicas')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={17}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('pruebas_de_instalaciones')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={18}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('fotografias_fin_de_obra')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={19}>
-                    <div className='adjuntos_container'>
+                    <div>
                         {uploadButtons()}
                         {viewAdjuntos('acta_de_entrega')}
                     </div>

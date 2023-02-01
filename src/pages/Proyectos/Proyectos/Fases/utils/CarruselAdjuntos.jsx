@@ -10,6 +10,7 @@ import { autoPlay } from 'react-swipeable-views-utils';
 import Swal from 'sweetalert2'
 
 import { apiDelete } from '../../../../../functions/api'
+import './../../../../../styles/_adjuntosRequisicion.scss'
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
