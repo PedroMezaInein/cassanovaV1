@@ -84,8 +84,7 @@ export default function RequisicionCompras() {
 
     //funcion para dar formato a los numeros con comas y dos decimales sin redondear
     const formatNumber = (num) => {
-        console.log(`$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g)}`)
-        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g)}`
+        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
     }
 
     let ProccessData = (data) => {

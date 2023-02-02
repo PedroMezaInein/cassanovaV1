@@ -66,79 +66,169 @@ export default function Editar(props) {
     }
 
     const handleSave = () => {
-        Swal.fire({
-            title: 'Guardando...',
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            }
-        })
-        if (validateForm()) {
-            try {
-                Swal.fire({
-                    title: 'Guardando...',
-                    allowOutsideClick: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    }
-                })
-                let newForm = {
-                    id_departamento: form.departamento,
-                    id_gasto: form.tipoGasto,
-                    descripcion: form.descripcion,
-                    id_subarea: form.tipoSubgasto,
-                    id_pago: form.tipoPago,
-                    id_solicitante: data.solicitante_id,
-                    monto_pagado: form.monto_pagado,
-                    cantidad: form.monto,
-                    autorizacion_1: form.auto1 ? auth.user.id : null,
-                    autorizacion_2: form.auto2 ? form.auto2.id : null,
-                    orden_compra: data.orden_compra,
-                    fecha_pago: data.fecha_pago,
-                    id_cuenta: form.id_cuenta,
-                    id_estatus: form.id_estatus,
-                    id_proveedor: form.proveedor,
-                    fecha_entrega: form.fecha_entrega,
-                }
-
-                apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
-                    (response) => {
-                        handleClose('editar')
-                        if (reload) {
-                            reload.reload()
+        if (form.monto !== data.monto_solicitado && form.auto1) { 
+            Swal.fire({
+                title: 'Estàs editando el monto de la solicitud',
+                text: " Esto eliminara la aprobación de la requisición y deberá ser aprobada nuevamente",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, editar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Guardando...',
+                        allowOutsideClick: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
                         }
+                    })
+                    if (validateForm()) {
+                        try {
+                            Swal.fire({
+                                title: 'Guardando...',
+                                allowOutsideClick: false,
+                                onBeforeOpen: () => {
+                                    Swal.showLoading()
+                                }
+                            })
+                            let newForm = {
+                                id_departamento: form.departamento,
+                                id_gasto: form.tipoGasto,
+                                descripcion: form.descripcion,
+                                id_subarea: form.tipoSubgasto,
+                                id_pago: form.tipoPago,
+                                id_solicitante: data.solicitante_id,
+                                monto_pagado: form.monto_pagado,
+                                cantidad: form.monto,
+                                autorizacion_1: form.auto1 && form.monto === data.monto_solicitado ? auth.user.id : null,
+                                autorizacion_2: form.auto2 && form.monto === data.monto_solicitado ? form.auto2.id : null,
+                                orden_compra: data.orden_compra,
+                                fecha_pago: data.fecha_pago,
+                                id_cuenta: form.id_cuenta,
+                                id_estatus: form.id_estatus,
+                                id_proveedor: form.proveedor,
+                                fecha_entrega: form.fecha_entrega,
+                            }
+
+                            apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
+                                (response) => {
+                                    handleClose('editar')
+                                    if (reload) {
+                                        reload.reload()
+                                    }
+                                    Swal.close()
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Guardado',
+                                        text: 'Se ha guardado correctamente',
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                    })
+                                }, (error) => { }
+                            ).catch((error) => {
+                                Swal.close()
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Ha ocurrido un error',
+                                })
+                            })
+                        } catch (error) {
+                            Swal.close()
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Ha ocurrido un error',
+                            })
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Todos los campos son obligatorios',
+                        })
+                    }
+                }
+            })
+        } else {
+            Swal.fire({
+                title: 'Guardando...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            if (validateForm()) {
+                try {
+                    Swal.fire({
+                        title: 'Guardando...',
+                        allowOutsideClick: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+                    let newForm = {
+                        id_departamento: form.departamento,
+                        id_gasto: form.tipoGasto,
+                        descripcion: form.descripcion,
+                        id_subarea: form.tipoSubgasto,
+                        id_pago: form.tipoPago,
+                        id_solicitante: data.solicitante_id,
+                        monto_pagado: form.monto_pagado,
+                        cantidad: form.monto,
+                        autorizacion_1: form.auto1 && form.monto === data.monto_solicitado ? auth.user.id : null,
+                        autorizacion_2: form.auto2 && form.monto === data.monto_solicitado ? form.auto2.id : null,
+                        orden_compra: data.orden_compra,
+                        fecha_pago: data.fecha_pago,
+                        id_cuenta: form.id_cuenta,
+                        id_estatus: form.id_estatus,
+                        id_proveedor: form.proveedor,
+                        fecha_entrega: form.fecha_entrega,
+                    }
+
+                    apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
+                        (response) => {
+                            handleClose('editar')
+                            if (reload) {
+                                reload.reload()
+                            }
+                            Swal.close()
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Guardado',
+                                text: 'Se ha guardado correctamente',
+                                timer: 2000,
+                                timerProgressBar: true,
+                            })
+                        }, (error) => { }
+                    ).catch((error) => {
                         Swal.close()
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Guardado',
-                            text: 'Se ha guardado correctamente',
-                            timer: 2000,
-                            timerProgressBar: true,
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error',
                         })
-                    }, (error) => { }
-                ).catch((error) => {
+                    })
+                } catch (error) {
                     Swal.close()
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
                         text: 'Ha ocurrido un error',
                     })
-                })
-            } catch (error) {
-                Swal.close()
+                }
+            } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Ha ocurrido un error',
+                    text: 'Todos los campos son obligatorios',
                 })
             }
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Todos los campos son obligatorios',
-            })
         }
+       
     }
 
     const validateForm = () => {

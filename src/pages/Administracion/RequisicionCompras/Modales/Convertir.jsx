@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiOptions, apiPutForm, apiPostForm } from '../../../../functions/api'
-
-import { setOptions } from '../../../../functions/setters'
+import { apiPutForm } from '../../../../functions/api'
 
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -104,21 +102,21 @@ export default function Convertir(props) {
     }
 
     const aprobar = () => {
-        if (form.auto1) {
+        if (form.monto !== data.monto_solicitado && form.auto1) {
             Swal.fire({
-                title: '¿Estas seguro de aprobar esta solicitud?',
-                text: "Confirma los datos antes de continuar",
+                title: 'Estàs editando el monto de la solicitud',
+                text: " Esto eliminara la aprobación de la requisición y deberá ser aprobada nuevamente",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Si, aprobar!',
+                confirmButtonText: 'Si, editar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
                     if (validateForm()) {
                         Swal.fire({
-                            title: 'Aprobando...',
+                            title: 'Editando ...',
                             allowOutsideClick: false,
                             onBeforeOpen: () => {
                                 Swal.showLoading()
@@ -134,7 +132,7 @@ export default function Convertir(props) {
                             id_solicitante: data.solicitante_id,
                             monto_pagado: form.monto_pagado,
                             cantidad: form.monto,
-                            autorizacion_1: form.auto1 && form.auto1.id ? form.auto1.id : form.auto1,
+                            autorizacion_1: form.monto === data.monto_solicitado ? form.auto1 && form.auto1.id ? form.auto1.id : form.auto1 : null,
                             autorizacion_2: form.auto2 ? form.auto2.id : null,
                             orden_compra: data.orden_compra,
                             fecha_pago: data.fecha_pago,
@@ -176,17 +174,89 @@ export default function Convertir(props) {
                 }
             })
         } else {
-            Swal.fire({
-                title: 'Requisición no autorizada!',
-                text: 'Debes aprobar la requisición para poder convertirla',
-                icon: 'error',
-                showCancelButton: false,
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Ok',
-            })
+            if (form.auto1) {
+
+                Swal.fire({
+                    title: '¿Estas seguro de aprobar esta solicitud?',
+                    text: "Confirma los datos antes de continuar",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, aprobar!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (validateForm()) {
+                            Swal.fire({
+                                title: 'Aprobando...',
+                                allowOutsideClick: false,
+                                onBeforeOpen: () => {
+                                    Swal.showLoading()
+                                }
+                            })
+
+                            let newForm = {
+                                id_departamento: form.departamento,
+                                id_gasto: form.tipoGasto,
+                                descripcion: form.descripcion,
+                                id_subarea: form.tipoSubgasto,
+                                id_pago: form.tipoPago,
+                                id_solicitante: data.solicitante_id,
+                                monto_pagado: form.monto_pagado,
+                                cantidad: form.monto,
+                                autorizacion_1: form.monto === data.monto_solicitado ? form.auto1 && form.auto1.id ? form.auto1.id : form.auto1 : null,
+                                autorizacion_2: form.monto === data.monto_solicitado ? form.auto2 ? form.auto2.id : null: null,
+                                orden_compra: data.orden_compra,
+                                fecha_pago: data.fecha_pago,
+                                id_cuenta: form.id_cuenta,
+                                id_estatus: form.id_estatus,
+                                id_proveedor: form.proveedor,
+                                fecha_entrega: form.fecha_entrega,
+                            }
+                            apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
+                                (response) => {
+                                    handleClose('convertir')
+                                    if (reload) {
+                                        reload.reload()
+                                    }
+                                    Swal.close()
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Guardado',
+                                        text: 'Se ha guardado correctamente',
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                    })
+                                }, (error) => { }
+                            ).catch((error) => {
+                                Swal.close()
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Ha ocurrido un error',
+                                })
+                            })
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Faltan datos por llenar',
+                                'error'
+                            )
+                        }
+                    }
+                })
+            } else {
+                Swal.fire({
+                    title: 'Requisición no autorizada!',
+                    text: 'Debes aprobar la requisición para poder convertirla',
+                    icon: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok',
+                })
+            }
         }
-        
-                
     }
 
     const handleAprueba = (e) => {
