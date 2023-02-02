@@ -23,6 +23,7 @@ import { Button } from '../../components/form-components'
 import CreateSalaJuntas from './../RecursosHumanos/Reuniones/SalaJuntas/CreateSalaJuntas'
 import EnrollUser from './../RecursosHumanos/Reuniones/Cursos/EnrollUser'
 import Aplicantes from './../RecursosHumanos/Reuniones/Cursos/AplicantesCurso'
+import SolicitarVehiculo from './../RecursosHumanos/Vehiculos/SolicitarVehiculo'
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
@@ -47,6 +48,7 @@ class Calendario extends Component {
             modal_solicitar_sala: false,
             modal_inscripcion_curso: false,
             modal_aplicantes: false,
+            modal_solicitar_vehiculo: false,
         },
         permisosM:[],
         incapacidadesM:[],
@@ -227,6 +229,15 @@ class Calendario extends Component {
     }
 
     openModalAplicantes = () => {
+        const { modal } = this.state
+        modal.modal_aplicantes = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    openModalVehiculo = () => {
         const { modal } = this.state
         modal.modal_aplicantes = true
         this.setState({
@@ -1478,6 +1489,24 @@ class Calendario extends Component {
                                 </Nav> */}
                         </div>
                         <div className="d-flex">
+
+                            {/* VEHÍCULOS */}
+
+                            <div className="card-toolbar" id="dropdown-calendario">
+                                {
+                                    <DropdownButton 
+                                        title={
+                                        <i className="flaticon-truck"></i>
+                                        }
+                                        id={`dropdown-button-drop-left`}
+                                        drop={'left'}
+                                    >
+                                        <Dropdown.Item onClick={this.openModalSalaJuntas}>Reservar Sala de Juntas</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalEnrollUser}>Solicitar Curso</Dropdown.Item>
+                                    </DropdownButton>
+                                }
+                            </div>
+
                             <div className="card-toolbar" id="dropdown-calendario">
                                 {
                                     <DropdownButton 
@@ -1489,12 +1518,13 @@ class Calendario extends Component {
                                         drop={'left'}
                                     >
                                         {enrollUser.aprovacion && enrollUser.aprovacion[0] !== null && enrollUser.aprovacion[0].length !== 0 ?
-                                        <Dropdown.Item onClick={this.openModalAplicantes}>Aprovar cursos</Dropdown.Item> : null}
+                                        <Dropdown.Item onClick={this.openModalAplicantes}>Aprobar cursos</Dropdown.Item> : null}
                                         <Dropdown.Item onClick={this.openModalSalaJuntas}>Reservar Sala de Juntas</Dropdown.Item>
                                         <Dropdown.Item onClick={this.openModalEnrollUser}>Solicitar Curso</Dropdown.Item>
                                     </DropdownButton>
                                 }
                             </div>
+
                             <div className="card-toolbar" id="dropdown-calendario">
                                 {
                                     disponibles > 0 ?
