@@ -11,7 +11,6 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 
 import { apiPostForm } from '../../../functions/api'
-import { URL_DEV } from '../../../constants'
 
 import '../../../styles/_agregarGasto.scss'
 
@@ -200,7 +199,7 @@ export default function ModalAgregar (props) {
                 tipo: 'egresos'
             }
  
-            axios.post(URL_DEV + 'areas', newForm, { headers: { Authorization: `Bearer ${user.access_token}` } })
+            apiPostForm('areas', newForm, user.access_token)
             .then((data)=>{
                 Swal.close()
                 Swal.fire({
