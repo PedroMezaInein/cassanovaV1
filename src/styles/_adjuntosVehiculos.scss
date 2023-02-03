@@ -1,0 +1,83 @@
+.container-adjuntos {
+    max-height: 600px;
+    max-width: 600px;
+}
+
+.body-adjuntos {
+    max-height: 500px;
+    max-width: 500px;
+}
+
+.file {
+    margin-right: 15rem;
+
+}
+
+.file input {
+    display: none;
+}
+
+.file label {
+    border: none;
+    background-color: #315694;
+    color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.file label:hover {
+    background-color: #E5E5E5;
+}
+
+.file-name {
+    color: #2171c1;
+    font-weight: bold;
+    background-color: #e1f0ff;
+    width: 150px;
+    padding: 0.3rem;
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.btn-subir {
+    margin-top: 1rem;
+    width: 7rem;
+    height: 2.5rem;
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.btn-subir:hover {
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+
+}
+
+.btn-subir:active {
+    background: #FFD549;
+    color: white;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    transform: translateY(4px);
+}
+
+.btn-selectFile {
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.upload_buttons {
+    display: flex;
+    justify-content: space-between;
+}

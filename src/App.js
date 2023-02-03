@@ -15,6 +15,8 @@ import NominaPrestaciones from './pages/RecursosHumanos/NominaPrestaciones/Nomin
 import { Requisiciones } from './pages/Administracion/Requisiciones/Requisiciones'
 import RequisicionCompras from './pages/Administracion/RequisicionCompras/RequisicionCompras'
 import RequisicionContabilidad from './pages/Administracion/RequisicionContabilidad/RequisicionContabilidad'
+import TablaVehiculos from './pages/RecursosHumanos/Vehiculos/TablaVehiculos';
+import TablaOperadores from './pages/RecursosHumanos/Vehiculos/TablaOperadores';
 
 const Login = React.lazy(() => import('./pages/Login') )
 const Home = React.lazy(() => import('./pages/Home') )
@@ -528,6 +530,8 @@ class App extends Component{
                     {/* <Route path="/rh/sala-juntas" exact component={SalaJuntas} />
                     <Route path="/rh/cursos" exact component={Cursos} /> */}
                     <Route path="/rh/reuniones" exact component={Reuniones} />
+                    <Route path="/rh/vehiculos" exact component={TablaVehiculos} />
+                    <Route path="/rh/operadores" exact component={TablaOperadores} />
 
                     {/* ANCHOR Routes for calidad */}
 
