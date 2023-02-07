@@ -118,6 +118,26 @@ class Proyectos extends Component {
         return aux
     }
 
+    verificationAdmin = (e, element) => { 
+        e.preventDefault()
+        const { authUser } = this.props
+        if (authUser.user.tipo.id === 1) {
+            deleteAlert(
+                `Eliminarás el proyecto ${element.nombre}`,
+                `¿DESEAS CONTINUAR?`,
+                () => { this.deleteProyectoAxios(element.id) }
+            )
+        } else {
+            Swal.fire({
+                title: 'No autorizado',
+                text: 'No tienes permisos para eliminar proyectos',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
+
+        }
+    }
+
     setActions = (element) => {
         return(
             
@@ -128,14 +148,7 @@ class Proyectos extends Component {
                         {setNaviIcon('far fa-eye', 'Ver proyecto')}
                     </Dropdown.Item>
                     <Dropdown.Item className="text-hover-danger dropdown-danger" 
-                        onClick = { (e) => {
-                            e.preventDefault(); 
-                            deleteAlert(
-                                `Eliminarás el proyecto ${element.nombre}`,
-                                `¿DESEAS CONTINUAR?`,
-                                () => { this.deleteProyectoAxios(element.id) }
-                            )
-                        } }>
+                        onClick = { (e) => {this.verificationAdmin(e, element)} }>
                         {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
                     </Dropdown.Item>
                 </DropdownButton>
