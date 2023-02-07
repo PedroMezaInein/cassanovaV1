@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { setMoneyText, setFase } from '../../../../functions/setters'
 import { printDates, printDireccion } from '../../../../functions/printers';
 class InfoProyecto extends Component {
@@ -51,28 +52,34 @@ class InfoProyecto extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="card text-center border-0">
-                                        <div className="oval">
-                                            <img className="card-img-top" src="/images/svg/Proyecto-costo.svg" alt="" />
-                                        </div>
-                                        <div className="pt-8 px-0">
-                                            <h3 className="card-title">Costos</h3>
-                                            <div className="card-text text-justify table-responsive">
-                                                <table className='table table-vertical-center table-borderless mb-0 tb-contacto w-max-content mx-auto'>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td className="font-weight-bolder">Costo (IVA)</td>
-                                                            <td className="font-weight-light">{setMoneyText(proyecto.costo)}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td className="font-weight-bolder">Total pagado</td>
-                                                            <td className="font-weight-light"><span className={`font-weight-bold text-${proyecto.costo - proyecto.totalVentas > 0 ? 'red' : 'green'}`}>{setMoneyText(proyecto.totalVentas)}</span></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                    { 
+                                        this.props.authUser.user.tipo.id === 1?
+                                        <>
+                                            <div className="card text-center border-0">
+                                                <div className="oval">
+                                                    <img className="card-img-top" src="/images/svg/Proyecto-costo.svg" alt="" />
+                                                </div>
+                                                <div className="pt-8 px-0">
+                                                    <h3 className="card-title">Costos</h3>
+                                                    <div className="card-text text-justify table-responsive">
+                                                        <table className='table table-vertical-center table-borderless mb-0 tb-contacto w-max-content mx-auto'>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td className="font-weight-bolder">Costo (IVA)</td>
+                                                                    <td className="font-weight-light">{setMoneyText(proyecto.costo)}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td className="font-weight-bolder">Total pagado</td>
+                                                                    <td className="font-weight-light"><span className={`font-weight-bold text-${proyecto.costo - proyecto.totalVentas > 0 ? 'red' : 'green'}`}>{setMoneyText(proyecto.totalVentas)}</span></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </>
+                                        :null
+                                    }
                                 </div>
                                 <div className="col-md-6">
                                     <div className="card text-center border-0">
@@ -166,4 +173,6 @@ class InfoProyecto extends Component {
     }
 }
 
-export default InfoProyecto
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({})
+export default connect(mapStateToProps, mapDispatchToProps)(InfoProyecto);
