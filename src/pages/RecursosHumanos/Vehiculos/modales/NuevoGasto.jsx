@@ -28,7 +28,7 @@ export default function NuevoGasto(props) {
     const authUser = useSelector(state => state.authUser)
     const opcionesAreas = useSelector(state => state.opciones.areas)
     const [form, setForm] = useState({
-        /* id_vehiculo: '', */
+        id_vehiculo: vehiculo.id,
         fecha: new Date(),
         kilometros: '',
         fecha_servicio: '',
@@ -70,10 +70,10 @@ export default function NuevoGasto(props) {
             valid = false
             errores.kilometros = 'Este campo es requerido'
         }
-        /* if (form.fecha_servicio === '') {
+        if (form.fecha_servicio === '') {
             valid = false
             errores.fecha_servicio = 'Este campo es requerido'
-        } */
+        }
         if (form.trabajo_realizado === '') {
             valid = false
             errores.trabajo_realizado = 'Este campo es requerido'

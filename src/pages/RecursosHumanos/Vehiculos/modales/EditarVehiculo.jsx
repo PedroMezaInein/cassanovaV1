@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import Style from './NuevoVehiculo.module.css'
@@ -6,6 +6,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
 
 import Swal from 'sweetalert2'
+import { apiGet, apiPutForm } from '../../../../functions/api'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
@@ -27,20 +28,57 @@ export default function EditarVehiculo(props) {
     const authUser = useSelector(state => state.authUser)
     const opcionesAreas = useSelector(state => state.opciones.areas)
     const [form, setForm] = useState({
-        marca: '',
-        modelo: '',
-        placas: '',
-        poliza: '',
-        ciudad: '',
-        fecha_poliza: '',
-        fecha_verificacion1: '',
-        fecha_verificacion2: '',
-        fecha_tenencia: '',
-        estatus: 0,
-        id_departamento: '',
-        responsable: '',
+        marca: vehiculo.marca,
+        modelo: vehiculo.modelo,
+        placas: vehiculo.placas,
+        poliza: vehiculo.poliza,
+        ciudad: vehiculo.ciudad,
+        fecha_poliza: new Date(vehiculo.fecha_poliza),
+        fecha_verificacion1: new Date(vehiculo.fecha_verificacion1),
+        fecha_verificacion2: new Date(vehiculo.fecha_verificacion2),
+        fecha_tenencia: new Date(vehiculo.fecha_tenencia),
+        estatus: vehiculo.estatus,
+        id_departamento: vehiculo.id_departamento,
+        responsable: vehiculo.user ? vehiculo.user.empleado_id : '',
     })
     const [errores, setErrores] = useState({})
+    const [opcionesVehiculos, setOpcionesVehiculos] = useState(false)
+
+    useEffect(() => {
+        getOptions()
+    }, [])
+
+    const getOptions = () => {
+        Swal.fire({
+            title: 'Cargando',
+            text: 'Espere un momento',
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            }
+        })
+        try {
+            apiGet('vehiculos/options', authUser.access_token)
+                .then(res => {
+                    let colaboradores = res.data.colaboradores.map(colaborador => {
+                        return colaborador
+                    })
+                    colaboradores.sort((a, b) => {
+                        if (a.nombre < b.nombre) { return -1 }
+                        if (a.nombre > b.nombre) { return 1 }
+                        return 0
+                    })
+                    setOpcionesVehiculos(colaboradores)
+                    Swal.close()
+                })
+                .catch(err => {
+                    Swal.close()
+                })
+
+        } catch (error) {
+
+        }
+    }
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value })
@@ -117,16 +155,50 @@ export default function EditarVehiculo(props) {
                 confirmButtonText: 'Si, editar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Vehiculo editado',
-                        text: "El vehiculo se edito correctamente",
-                        icon: 'success',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Ok'
-                    })
-                    handleClose()
-                    if (reload) {
-                        reload.reload()
+                    try {
+                        Swal.fire({
+                            title: 'Cargando',
+                            text: 'Espere un momento',
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                Swal.showLoading()
+                            }
+                        })
+                        apiPutForm(`vehiculos/edit/${vehiculo.id}`, form, authUser.access_token)
+                            .then(res => {
+                                Swal.close()
+                                Swal.fire({
+                                    title: 'Exito',
+                                    text: "Vehiculo creado correctamente",
+                                    icon: 'success',
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Ok'
+                                })
+                                handleClose()
+                                if (reload) {
+                                    reload.reload()
+                                }
+                            })
+                            .catch(err => {
+                                Swal.close()
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: "Hubo un error al crear el vehiculo",
+                                    icon: 'error',
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Ok'
+                                })
+                            })
+
+                    } catch (error) {
+                        Swal.close()
+                        Swal.fire({
+                            title: 'Error',
+                            text: "Hubo un error al crear el vehiculo",
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Ok'
+                        })
                     }
                 }
             })
@@ -220,8 +292,32 @@ export default function EditarVehiculo(props) {
                                 </Select>
                             </div>
                         </div>
+                        <div>
+                            <div>
+                                <InputLabel id="responsable">Responsable</InputLabel>
+                                <Select
+                                    labelId="responsable"
+                                    name="responsable"
+                                    value={form.responsable}
+                                    onChange={handleChange}
+                                    error={errores.responsable ? true : false}
+                                >
+                                    {
+                                        opcionesVehiculos ? opcionesVehiculos.map((usuario, index) => {
+                                            if (usuario.estatus_empleado === 'Activo') {
 
+                                                if (usuario.apellido_paterno && usuario.apellido_materno) {
+                                                    return <MenuItem key={index} value={usuario.id}>{`${usuario.nombre} ${usuario.apellido_paterno} ${usuario.apellido_materno}`}</MenuItem>
+                                                } else {
+                                                    return <MenuItem key={index} value={usuario.id}>{usuario.nombre}</MenuItem>
+                                                }
+                                            }
 
+                                        }) : null
+                                    }
+                                </Select>
+                            </div>
+                        </div> 
                     </div>
                 </AccordionDetails>
             </Accordion>

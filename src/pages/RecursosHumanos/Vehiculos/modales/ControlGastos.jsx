@@ -166,9 +166,11 @@ export default function ControlGastos(props) {
         })
     }
 
+    console.log(vehiculo)
+
     return (
         <>
-            <TablaGeneral titulo='Control de Gastos' subtitulo='Vehículos' columnas={columnas} url='requisicion' ProccessData={ProccessData} numItemsPagina={8} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
+            <TablaGeneral titulo='Control de Gastos' subtitulo='Vehículos' columnas={columnas} url='servicios' ProccessData={ProccessData} numItemsPagina={8} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
 
             <Modal show={modal.editar.show} setShow={setModal} title='Editar Gasto' size='lg' handleClose={handleClose('editar')}>
                 <EditarGasto reload={reloadTable} handleClose={handleClose('editar')} vehiculo={vehiculo} />

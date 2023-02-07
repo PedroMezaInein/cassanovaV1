@@ -211,11 +211,7 @@ export default function NuevoVehiculo(props) {
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Ok'
             })
-        }
-
-        
-
-        
+        }  
     }
     
     return (

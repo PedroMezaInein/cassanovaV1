@@ -4,7 +4,7 @@ import Swal from 'sweetalert2'
 
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
-import { apiOptions } from '../../../functions/api'
+import { apiDelete } from '../../../functions/api'
 import { setOptions } from '../../../functions/setters'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
@@ -49,13 +49,11 @@ export default function TablaVehiculos() {
         },
     })
         
-
     useOptionsArea() 
 
     let prop = {
         pathname: '/rh/vehiculos',
     }
-
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
@@ -64,17 +62,20 @@ export default function TablaVehiculos() {
         { nombre: 'Placas', identificador: 'placas', sort: false, stringSearch: false },
         { nombre: 'Poliza', identificador: 'poliza', sort: false, stringSearch: false },
         { nombre: 'Ciudad', identificador: 'ciudad', sort: false, stringSearch: false },
-        { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
+        { nombre: 'Estatus', identificador: 'estatus_show', sort: false, stringSearch: false },
     ];
 
     const ProccessData = (data) => { 
-        return [
-            { marca: 'ford', modelo: 'Fiesta', placas: '1234', poliza: '1234', ciudad: 'CDMX', estatus: 'Activo' },
-            { marca: 'Ford', modelo: 'Fiesta', placas: '1234', poliza: '1234', ciudad: 'CDMX', estatus: 'Activo' },
-            { marca: 'Ford', modelo: 'Fiesta', placas: '1234', poliza: '1234', ciudad: 'CDMX', estatus: 'Activo' },
-            { marca: 'Ford', modelo: 'Fiesta', placas: '1234', poliza: '1234', ciudad: 'CDMX', estatus: 'Activo' },
-            { marca: 'Ford', modelo: 'Fiesta', placas: '1234', poliza: '1234', ciudad: 'CDMX', estatus: 'Activo' },
-        ]
+        let aux = []
+        data.vehiculos.map((item) => {
+            aux.push({
+                ...item,
+                estatus_show: item.estatus === '1' ? 'Activo' : 'Inactivo',
+            })
+        }
+        )
+        aux = aux.reverse()
+        return aux
         
     }
 
@@ -166,11 +167,46 @@ export default function TablaVehiculos() {
                             confirmButtonText: '¡Sí, bórralo!'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                Swal.fire(
-                                    '¡Eliminado!',
-                                    'El registro ha sido eliminado.',
-                                    'success'
-                                )
+                                try {
+                                    Swal.fire({
+                                        title: 'Eliminando',
+                                        text: 'Espere un momento',
+                                        allowOutsideClick: false,
+                                        onBeforeOpen: () => {
+                                            Swal.showLoading()
+                                        }
+                                    })
+                                    apiDelete(`vehiculos/${item.id}`, userAuth.access_token)
+                                        .then((res) => {
+                                            if (res.status === 200) {
+                                                Swal.close()
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: 'Eliminado',
+                                                    text: 'El registro ha sido eliminado',
+                                                })
+                                                if (reloadTable) {
+                                                    reloadTable.reload()
+                                                }
+                                            }
+                                        })
+                                        .catch((err) => {
+                                            Swal.close()
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: 'Ha ocurrido un error',
+                                            })
+                                        })
+                                } catch (error) { 
+                                    Swal.close()
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: 'Ha ocurrido un error',
+                                    })
+
+                                }
                             }
                         })
                     } else {
@@ -211,7 +247,6 @@ export default function TablaVehiculos() {
         })
     }
 
-
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
@@ -221,7 +256,7 @@ export default function TablaVehiculos() {
             </Layout>
 
             <Modal show={modal.editar.show} setShow={setModal} title='Editar Vehículo' size='lg' handleClose={handleClose('editar')}>
-                <EditarVehiculo reload={reloadTable}  handleClose={handleClose('editar')} />
+                <EditarVehiculo reload={reloadTable} handleClose={handleClose('editar')} vehiculo={ modal.editar.data} />
             </Modal>
             <Modal show={modal.eliminar.show} setShow={setModal} title='Eliminar Vehículo' size='lg' handleClose={handleClose('eliminar')}>
                 <h1>Eliminar</h1>
@@ -236,7 +271,7 @@ export default function TablaVehiculos() {
                 <NuevoVehiculo reload={reloadTable} handleClose={handleClose('crear')} />
             </Modal>
             <Modal show={modal.control_gastos.show} setShow={setModal} title='Control de gastos' size='xl' handleClose={handleClose('control_gastos')}>
-                <ControlGastos vehiculo={'Vehiculo proximamente' }/>
+                <ControlGastos vehiculo={modal.control_gastos.data }/>
             </Modal>
             <Modal show={modal.usuarios_autorizados.show} setShow={setModal} title='Usuarios autorizados' size='lg' handleClose={handleClose('usuarios_autorizados')}>
                 <Operador reload={reloadTable} handleClose={handleClose('editar')} />
