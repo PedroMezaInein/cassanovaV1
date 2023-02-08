@@ -22,10 +22,10 @@ export default function SeguimientoViajes({ closeModal, rh, }) {
         return (
             <>
                 <div>
-                    <button onClick={startAlert}>Iniciar viaje</button>
+                    <button className="btn btn-light-success btn-sm font-weight-bold"  onClick={startAlert}>Iniciar viaje</button>
                 </div>
                 <div>
-                    <button onClick={endAlert}>Finalizar viaje</button>
+                    <button className="btn btn-light-danger btn-sm font-weight-bold"  onClick={endAlert}>Finalizar viaje</button>
                 </div>
             </>
         )

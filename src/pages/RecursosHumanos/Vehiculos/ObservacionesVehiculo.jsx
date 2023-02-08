@@ -65,21 +65,21 @@ export default function SeguimientoViajes({ closeModal, rh, }) {
                     })
                 }
             }, 
-            {
-                nombre: 'comentario',
-                icono: 'fas fa-edit',
-                color: 'blueButton',
-                funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        comentario: {
-                            show: true,
-                            data: item.data
-                        }
-                    })
+            // {
+            //     nombre: 'comentario',
+            //     icono: 'fas fa-edit',
+            //     color: 'blueButton',
+            //     funcion: (item) => {
+            //         setModal({
+            //             ...modal,
+            //             comentario: {
+            //                 show: true,
+            //                 data: item.data
+            //             }
+            //         })
                 
-                }
-            },  
+            //     }
+            // },  
         ]
         return aux
     }

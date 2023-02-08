@@ -72,25 +72,25 @@ export default function Adjuntos(props) {
     const classes = useStyles();
     const [value, setValue] = useState(0);
     const [form, setForm] = useState({
-        datos_de_cliente: [], //antes documentacion_cliente
-        contrato_cliente: [],
-        permisos_de_obra_ante_dependencias: [],
-        catalogo_inicial_obra: [],
-        programa_de_obra: [],
-        contrato_proveedores_y_contratistas: [],
-        firmas_de_aprobacion: [], //antes firma_de_acabados
-        reporte_fotografico_de_avance_de_obra: [], //antes planos_iniciales_de_obra
-        renders_aprobados: [],
-        fianzas_y_seguros: [],
-        catalogo_de_conceptos_asbuilt: [], //antes planos_asbuilt
-        consignas_de_matenimiento: [],
-        garantia_de_los_equipos: [],
-        garantia_de_vicios_ocultos: [],
-        memorias_de_calculo: [],
-        memorias_descriptivas: [],
-        fichas_tecnicas: [],
-        pruebas_de_instalaciones: [],
-        fotografias_fin_de_obra: [],
+        // datos_de_cliente: [], //antes documentacion_cliente
+        // contrato_cliente: [],
+        // permisos_de_obra_ante_dependencias: [],
+        // catalogo_inicial_obra: [],
+        // programa_de_obra: [],
+        // contrato_proveedores_y_contratistas: [],
+        // firmas_de_aprobacion: [], //antes firma_de_acabados
+        // reporte_fotografico_de_avance_de_obra: [], //antes planos_iniciales_de_obra
+        // renders_aprobados: [],
+        // fianzas_y_seguros: [],
+        // catalogo_de_conceptos_asbuilt: [], //antes planos_asbuilt
+        // consignas_de_matenimiento: [],
+        // garantia_de_los_equipos: [],
+        // garantia_de_vicios_ocultos: [],
+        // memorias_de_calculo: [],
+        // memorias_descriptivas: [],
+        // fichas_tecnicas: [],
+        // pruebas_de_instalaciones: [],
+        // fotografias_fin_de_obra: [],
         acta_de_entrega: [],
         file: [],
     })
@@ -122,87 +122,87 @@ export default function Adjuntos(props) {
                     let adjunAux = res.data.proyecto
                     Swal.close()
                     let aux = {
-                        datos_de_cliente: [],
-                        contrato_cliente: [],
-                        permisos_de_obra_ante_dependencias: [],
-                        catalogo_inicial_obra: [],
-                        programa_de_obra: [],
-                        contrato_proveedores_y_contratistas: [],
-                        firmas_de_aprobacion: [],
-                        reporte_fotografico_de_avance_de_obra: [],
-                        renders_aprobados: [],
-                        fianzas_y_seguros: [],
-                        catalogo_de_conceptos_asbuilt: [],
-                        consignas_de_matenimiento: [],
-                        garantia_de_los_equipos: [],
-                        garantia_de_vicios_ocultos: [],
-                        memorias_de_calculo: [],
-                        memorias_descriptivas: [],
-                        fichas_tecnicas: [],
-                        pruebas_de_instalaciones: [],
-                        fotografias_fin_de_obra: [],
+                        // datos_de_cliente: [],
+                        // contrato_cliente: [],
+                        // permisos_de_obra_ante_dependencias: [],
+                        // catalogo_inicial_obra: [],
+                        // programa_de_obra: [],
+                        // contrato_proveedores_y_contratistas: [],
+                        // firmas_de_aprobacion: [],
+                        // reporte_fotografico_de_avance_de_obra: [],
+                        // renders_aprobados: [],
+                        // fianzas_y_seguros: [],
+                        // catalogo_de_conceptos_asbuilt: [],
+                        // consignas_de_matenimiento: [],
+                        // garantia_de_los_equipos: [],
+                        // garantia_de_vicios_ocultos: [],
+                        // memorias_de_calculo: [],
+                        // memorias_descriptivas: [],
+                        // fichas_tecnicas: [],
+                        // pruebas_de_instalaciones: [],
+                        // fotografias_fin_de_obra: [],
                         acta_de_entrega: [],
                     }
                     //obtener la key del objeto y recorrelo
                     Object.keys(adjunAux).forEach((element) => {
                         switch (element) {
-                            case 'datos_de_cliente':
-                                aux.datos_de_cliente = adjunAux[element]
-                                break;
-                            case 'contrato_cliente':
-                                aux.contrato_cliente = adjunAux[element]
-                                break;
-                            case 'permisos_de_obra_ante_dependencias':
-                                aux.permisos_de_obra_ante_dependencias = adjunAux[element]
-                                break;
-                            case 'catalogo_inicial_obra':
-                                aux.catalogo_inicial_obra = adjunAux[element]
-                                break;
-                            case 'programa_de_obra':
-                                aux.programa_de_obra = adjunAux[element]
-                                break;
-                            case 'contrato_proveedores_y_contratistas':
-                                aux.contrato_proveedores_y_contratistas = adjunAux[element]
-                                break;
-                            case 'firmas_de_aprobacion':
-                                aux.firmas_de_aprobacion = adjunAux[element]
-                                break;
-                            case 'reporte_fotografico_de_avance_de_obra':
-                                aux.reporte_fotografico_de_avance_de_obra = adjunAux[element]
-                                break;
-                            case 'renders_aprobados':
-                                aux.renders_aprobados = adjunAux[element]
-                                break;
-                            case 'fianzas_y_seguros':
-                                aux.fianzas_y_seguros = adjunAux[element]
-                                break;
-                            case 'catalogo_de_conceptos_asbuilt':
-                                aux.catalogo_de_conceptos_asbuilt = adjunAux[element]
-                                break;
-                            case 'consignas_de_matenimiento':
-                                aux.consignas_de_matenimiento = adjunAux[element]
-                                break;
-                            case 'garantia_de_los_equipos':
-                                aux.garantia_de_los_equipos = adjunAux[element]
-                                break;
-                            case 'garantia_de_vicios_ocultos':
-                                aux.garantia_de_vicios_ocultos = adjunAux[element]
-                                break;
-                            case 'memorias_de_calculo':
-                                aux.memorias_de_calculo = adjunAux[element]
-                                break;
-                            case 'memorias_descriptivas':
-                                aux.memorias_descriptivas = adjunAux[element]
-                                break;
-                            case 'fichas_tecnicas':
-                                aux.fichas_tecnicas = adjunAux[element]
-                                break;
-                            case 'pruebas_de_instalaciones':
-                                aux.pruebas_de_instalaciones = adjunAux[element]
-                                break;
-                            case 'fotografias_fin_de_obra':
-                                aux.fotografias_fin_de_obra = adjunAux[element]
-                                break;
+                            // case 'datos_de_cliente':
+                            //     aux.datos_de_cliente = adjunAux[element]
+                            //     break;
+                            // case 'contrato_cliente':
+                            //     aux.contrato_cliente = adjunAux[element]
+                            //     break;
+                            // case 'permisos_de_obra_ante_dependencias':
+                            //     aux.permisos_de_obra_ante_dependencias = adjunAux[element]
+                            //     break;
+                            // case 'catalogo_inicial_obra':
+                            //     aux.catalogo_inicial_obra = adjunAux[element]
+                            //     break;
+                            // case 'programa_de_obra':
+                            //     aux.programa_de_obra = adjunAux[element]
+                            //     break;
+                            // case 'contrato_proveedores_y_contratistas':
+                            //     aux.contrato_proveedores_y_contratistas = adjunAux[element]
+                            //     break;
+                            // case 'firmas_de_aprobacion':
+                            //     aux.firmas_de_aprobacion = adjunAux[element]
+                            //     break;
+                            // case 'reporte_fotografico_de_avance_de_obra':
+                            //     aux.reporte_fotografico_de_avance_de_obra = adjunAux[element]
+                            //     break;
+                            // case 'renders_aprobados':
+                            //     aux.renders_aprobados = adjunAux[element]
+                            //     break;
+                            // case 'fianzas_y_seguros':
+                            //     aux.fianzas_y_seguros = adjunAux[element]
+                            //     break;
+                            // case 'catalogo_de_conceptos_asbuilt':
+                            //     aux.catalogo_de_conceptos_asbuilt = adjunAux[element]
+                            //     break;
+                            // case 'consignas_de_matenimiento':
+                            //     aux.consignas_de_matenimiento = adjunAux[element]
+                            //     break;
+                            // case 'garantia_de_los_equipos':
+                            //     aux.garantia_de_los_equipos = adjunAux[element]
+                            //     break;
+                            // case 'garantia_de_vicios_ocultos':
+                            //     aux.garantia_de_vicios_ocultos = adjunAux[element]
+                            //     break;
+                            // case 'memorias_de_calculo':
+                            //     aux.memorias_de_calculo = adjunAux[element]
+                            //     break;
+                            // case 'memorias_descriptivas':
+                            //     aux.memorias_descriptivas = adjunAux[element]
+                            //     break;
+                            // case 'fichas_tecnicas':
+                            //     aux.fichas_tecnicas = adjunAux[element]
+                            //     break;
+                            // case 'pruebas_de_instalaciones':
+                            //     aux.pruebas_de_instalaciones = adjunAux[element]
+                            //     break;
+                            // case 'fotografias_fin_de_obra':
+                            //     aux.fotografias_fin_de_obra = adjunAux[element]
+                            //     break;
                             case 'acta_de_entrega':
                                 aux.acta_de_entrega = adjunAux[element]
                                 break;
@@ -244,7 +244,6 @@ export default function Adjuntos(props) {
             return false
         }
     }
-
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -408,7 +407,7 @@ export default function Adjuntos(props) {
                     onChange={handleChange}
                     className={classes.tabs}
                 >
-                    <Tab label="DOCUMENTOS CLIENTES " {...a11yProps(0)} name="datos_de_cliente" onClick={() => handleTab('datos_de_cliente')} />
+                    {/* <Tab label="DOCUMENTOS CLIENTES " {...a11yProps(0)} name="datos_de_cliente" onClick={() => handleTab('datos_de_cliente')} />
                     <Tab label="CONTRATO CLIENTE" {...a11yProps(1)} name="contrato_cliente" onClick={() => handleTab('contrato_cliente')} />
                     <Tab label="PERMISOS DE OBRA" {...a11yProps(2)} name="permisos_de_obra_ante_dependencias" onClick={() => handleTab('permisos_de_obra_ante_dependencias')} />
                     <Tab label="CATALOGO INICIAL OBRA" {...a11yProps(3)} name="catalogo_inicial_obra" onClick={() => handleTab('catalogo_inicial_obra')} />
@@ -440,9 +439,9 @@ export default function Adjuntos(props) {
 
                     <Tab label="PRUEBAS DE INSTALACIONES " {...a11yProps(17)} name="pruebas_de_instalaciones" onClick={() => handleTab('pruebas_de_instalaciones')} />
 
-                    <Tab label="FOTOGRAFÍAS FIN DE OBRA" {...a11yProps(18)} name="fotografias_fin_de_obra" onClick={() => handleTab('fotografias_fin_de_obra')} />
+                    <Tab label="FOTOGRAFÍAS FIN DE OBRA" {...a11yProps(18)} name="fotografias_fin_de_obra" onClick={() => handleTab('fotografias_fin_de_obra')} /> */}
 
-                    <Tab label="ACTA DE ENTREGA" {...a11yProps(19)} name="acta_de_entrega" onClick={() => handleTab('acta_de_entrega')} />
+                    <Tab label="Reportes" {...a11yProps(19)} name="acta_de_entrega" onClick={() => handleTab('acta_de_entrega')} />
 
                 </Tabs>
 

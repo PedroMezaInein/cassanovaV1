@@ -61,7 +61,7 @@ export default function TablaVehiculos() {
         { nombre: 'Modelo', identificador: 'modelo', sort: false, stringSearch: false },
         { nombre: 'Placas', identificador: 'placas', sort: false, stringSearch: false },
         { nombre: 'Poliza', identificador: 'poliza', sort: false, stringSearch: false },
-        { nombre: 'Ciudad', identificador: 'ciudad', sort: false, stringSearch: false },
+        { nombre: 'Ciudad', identificador: 'Ciudad', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus_show', sort: false, stringSearch: false },
     ];
 

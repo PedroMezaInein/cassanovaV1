@@ -17,6 +17,7 @@ import RequisicionCompras from './pages/Administracion/RequisicionCompras/Requis
 import RequisicionContabilidad from './pages/Administracion/RequisicionContabilidad/RequisicionContabilidad'
 import TablaVehiculos from './pages/RecursosHumanos/Vehiculos/TablaVehiculos';
 import TablaOperadores from './pages/RecursosHumanos/Vehiculos/TablaOperadores';
+import TablaSolicitudes from './pages/RecursosHumanos/Vehiculos/TablaSolicitudes';
 
 const Login = React.lazy(() => import('./pages/Login') )
 const Home = React.lazy(() => import('./pages/Home') )
@@ -422,9 +423,9 @@ class App extends Component{
                     <Route path = "/administracion/licencias-equipos" exact component ={ Licencias } />
 
                     <Route path = "/administracion/calendario-pagos" exact component = { CalendarioPagos } />
-                    <Route path="/administracion/requisicion" exact component={Requisiciones} />
-                    <Route path="/administracion/requisicion-compras" exact component={RequisicionCompras} />
-                    <Route path="/administracion/requisicion-contabilidad" exact component={RequisicionContabilidad} />
+                    <Route path="/administracion/gasto" exact component={Requisiciones} />
+                    <Route path="/administracion/gasto-compras" exact component={RequisicionCompras} />
+                    <Route path="/administracion/gastos" exact component={RequisicionContabilidad} />
 
                     {/*  ANCHOR Routes for bancos */}
 
@@ -532,6 +533,7 @@ class App extends Component{
                     <Route path="/rh/reuniones" exact component={Reuniones} />
                     <Route path="/rh/vehiculos" exact component={TablaVehiculos} />
                     <Route path="/rh/operadores" exact component={TablaOperadores} />
+                    <Route path="/rh/solicitudes-vehiculo" exact component={TablaSolicitudes} />
 
                     {/* ANCHOR Routes for calidad */}
 

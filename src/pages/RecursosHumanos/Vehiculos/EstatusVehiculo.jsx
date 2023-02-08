@@ -25,12 +25,7 @@ export default function EstatusVehiculos({ closeModal, rh, }) {
           estatus: 'Aprobada',
           comentarios: 'La camioneta se encuentra en buenas condiciones y limpia, favor de revisar e informar cualquier anomalia'
         },
-        {
-          solicitante: 'Pedro Meza',
-          descripcion: 'Solicito camioneta para ir a cotorrear',
-          estatus: 'Rechazada',
-          comentarios: 'No, ponte a trabajar'
-        }
+       
       )
       aux=aux.reverse()
       return aux

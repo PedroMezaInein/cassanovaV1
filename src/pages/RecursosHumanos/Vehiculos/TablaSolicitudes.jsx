@@ -9,7 +9,7 @@ import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
 import NuevoOperador from './modales/NuevoOperador'
 
-export default function TablaOperadores() {
+export default function TablaSolicitudes() {
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState(false)
     const [modal, setModal] = useState({
@@ -76,26 +76,34 @@ export default function TablaOperadores() {
     useOptionsArea()
 
     let prop = {
-        pathname: '/rh/operadores',
+        pathname: '/rh/solicitudes',
     }
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
-        { nombre: 'Operador', identificador: 'operador', sort: false, stringSearch: false },
+        { nombre: 'Usuario', identificador: 'usuario', sort: false, stringSearch: false },
         { nombre: 'Vehículo', identificador: 'vehiculo', sort: false, stringSearch: false },
-        { nombre: 'Licencia', identificador: 'licencia', sort: false, stringSearch: false },
+        { nombre: 'Fecha Inicio', identificador: 'fecha_ini', sort: false, stringSearch: false },
+        { nombre: 'Fecha Fin', identificador: 'fecha_fin', sort: false, stringSearch: false },
+        { nombre: 'Hora Inicio', identificador: 'hora_ini', sort: false, stringSearch: false },
+        { nombre: 'Hora Fin', identificador: 'hora_fin', sort: false, stringSearch: false },
+        { nombre: 'Destino', identificador: 'destino', sort: false, stringSearch: false },
+
     ];
 
     const ProccessData = (data) => {
-        // console.log(data)
         let aux = []
-        data.asigando.map((result) => {
+        data.solicitud.map((result) => {
             aux.push(
                 {
                     // acciones: acciones(),
-                    operador: result.user.name,
-                    vehiculo: result.vehiculos ? result.vehiculos.marca : '',
-                    licencia: result.licencia ?  result.licencia : '',
+                    usuario: result.user.name,
+                    vehiculo: result.vehiculo ? result.vehiculo.marca : '',
+                    fecha_ini: result.fecha_inicio ?  result.fecha_inicio : '',
+                    fecha_fin: result.fecha_fin ? result.fecha_fin : '',
+                    hora_ini: result.hora_inicio ? result.hora_inicio : '',
+                    hora_fin: result.hora_fin ? result.hora_fin : '' ,
+                    destino: result.destino ? result.destino : 'no especificado',
                     id:result.id,
                     data:result
                 }
@@ -109,12 +117,6 @@ export default function TablaOperadores() {
         //     { operador: 'Karla Perez', vehiculo: 'VW Jetta', estatus: 'Inactivo' },
         // ]
     }
-    //     return [
-    //         { operador: 'Juan Perez', vehiculo: 'VW Jetta', estatus: 'Activo' },
-    //         { operador: 'Fernanda Lopez', vehiculo: 'zuzuki', estatus: 'Activo' },
-    //         { operador: 'Karla Perez', vehiculo: 'VW Jetta', estatus: 'Inactivo' },
-    //     ]
-    // }
 
     const createAcciones = () => {
         let aux = [
@@ -161,17 +163,67 @@ export default function TablaOperadores() {
                 }
             },
             {
-                nombre: 'Operador',
+                nombre: 'Aprobar',
                 icono: 'fas fa-users',
-                color: 'blueButton',
+                color: 'greenButton',
                 funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        usuarios_autorizados: {
-                            show: true,
-                            data: item
+                    // setModal({
+                    //     ...modal,
+                    //     usuarios_autorizados: {
+                    //         show: true,
+                    //         data: item
+                    //     }
+                    // })
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "¡No podrás revertir esto!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '¡Sí, Aprovarlo!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire(
+                                '¡Aprovado!',
+                                'El registro ha sido aprovado.',
+                                'success'
+                            )
                         }
                     })
+
+                }
+            },
+            {
+                nombre: 'Rechazar',
+                icono: 'fas fa-users',
+                color: 'redButton',
+                funcion: (item) => {
+                    // setModal({
+                    //     ...modal,
+                    //     usuarios_autorizados: {
+                    //         show: true,
+                    //         data: item
+                    //     }
+                    // })
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "¡No podrás revertir esto!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '¡Si, Rechazar!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire(
+                                '¡Rechazado!',
+                                'El registro ha sido rechazado.',
+                                'success'
+                            )
+                        }
+                    })
+
                 }
             },
             {
@@ -253,7 +305,7 @@ export default function TablaOperadores() {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
                 <>
-                    <TablaGeneral titulo='Operadores' columnas={columnas} url='vehiculos/asignacion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
+                    <TablaGeneral titulo='Solicitudes' columnas={columnas} url='vehiculos/solicitudes' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()}  reload={setReloadTable} />
                 </>
             </Layout>
 
