@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { apiGet, apiPostForm } from '../../../../functions/api'
+
 import Style from './NuevoVehiculo.module.css'
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
@@ -36,7 +38,7 @@ export default function NuevoGasto(props) {
         costo: '',
         no_factura: '',
         observaciones: '',
-        autorizacion_1: '',
+        autorizacion_1: authUser.user.id,
         estatus: 0,
     })
     const [errores, setErrores] = useState({})
@@ -108,16 +110,51 @@ export default function NuevoGasto(props) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     Swal.fire({
-                        title: 'Nuevo gasto creado',
-                        text: "El gasto se ha creado correctamente",
-                        icon: 'success',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Ok'
+                        title: 'Creando gasto',
+                        text: "Por favor, espera un momento",
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        showConfirmButton: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
+                        }
                     })
-                    handleClose()
-                    if (reload) {
-                        reload.reload()
+
+                    try {
+                        apiPostForm('servicios', form, authUser.access_token)
+                            .then(res => {
+                                Swal.close()
+                                console.log(res)
+                                Swal.fire({
+                                    title: 'Nuevo gasto creado',
+                                    text: "El gasto se ha creado correctamente",
+                                    icon: 'success',
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Ok'
+                                })
+                                handleClose()
+                                if (reload) {
+                                    reload.reload()
+                                }
+                            })
+                            .catch(err => {
+                                Swal.close()
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: "Ha ocurrido un error al crear el gasto",
+                                    icon: 'error',
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'Ok'
+                                })
+
+                                console.log(err)
+                            })
+                    } catch (error) { 
+
                     }
+                    
                 }
             })
         } else {
@@ -130,6 +167,7 @@ export default function NuevoGasto(props) {
             })
         }
     }
+    console.log(errores)
 
     return (
         <>
@@ -154,6 +192,24 @@ export default function NuevoGasto(props) {
                         </MuiPickersUtilsProvider>
                     </div>
                     <div>
+                        <InputLabel id="fecha_poliza">Fecha de servicio</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid container >
+                                <KeyboardDatePicker
+                                    format="dd/MM/yyyy"
+                                    name="fecha_servicio"
+                                    value={form.fecha_servicio !== '' ? form.fecha_servicio : null}
+                                    placeholder="dd/mm/yyyy"
+                                    onChange={e => handleChangeFecha(e, 'fecha_servicio')}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                    error={errores.fecha_servicio ? true : false}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
+                    </div>
+                    <div>
                         <InputLabel id="kilometros">Kilometros</InputLabel>
                         <TextField
                             id="kilometros"
@@ -165,7 +221,7 @@ export default function NuevoGasto(props) {
                         />
                     </div>
                     <div>
-                        <InputLabel id="fecha_servicio">Trabajo realizado</InputLabel>
+                        <InputLabel>Trabajo realizado</InputLabel>
                         <TextField
                             name="trabajo_realizado"
                             value={form.trabajo_realizado}
@@ -176,7 +232,7 @@ export default function NuevoGasto(props) {
                 </div>
                 <div>
                     <div>
-                        <InputLabel id="fecha_servicio">Costo</InputLabel>
+                        <InputLabel>Costo</InputLabel>
                         <CurrencyTextField
                             variant="standard"
                             value={form.costo}
@@ -187,7 +243,7 @@ export default function NuevoGasto(props) {
                         />
                     </div>
                     <div>
-                        <InputLabel id="fecha_servicio">No. de factura</InputLabel>
+                        <InputLabel>No. de factura</InputLabel>
                         <TextField
                             name="no_factura"
                             value={form.no_factura}
@@ -196,7 +252,7 @@ export default function NuevoGasto(props) {
                         />
                     </div>
                     <div>
-                        <InputLabel id="fecha_servicio">Autorización</InputLabel>
+                        <InputLabel >Autorización</InputLabel>
                         <TextField
                             name="autorizacion_1"
                             value={authUser.user.name}
@@ -207,7 +263,7 @@ export default function NuevoGasto(props) {
                 </div>
                 <div>
                     <div>
-                        <InputLabel id="fecha_servicio">Estatus</InputLabel>
+                        <InputLabel >Estatus</InputLabel>
                         <Select
                             name="estatus"
                             value={form.estatus}
@@ -219,7 +275,7 @@ export default function NuevoGasto(props) {
                         </Select>
                     </div>
                     <div>
-                        <InputLabel id="fecha_servicio">Observaciones</InputLabel>
+                        <InputLabel >Observaciones</InputLabel>
                         <TextField
                             name="observaciones"
                             value={form.observaciones}

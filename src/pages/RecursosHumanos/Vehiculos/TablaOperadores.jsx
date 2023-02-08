@@ -4,10 +4,10 @@ import Swal from 'sweetalert2'
 
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
-import { apiOptions } from '../../../functions/api'
-import { setOptions } from '../../../functions/setters'
+import { apiGet } from '../../../functions/api'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
+import NuevoOperador from './modales/NuevoOperador'
 
 export default function TablaOperadores() {
     const userAuth = useSelector((state) => state.authUser);
@@ -42,6 +42,36 @@ export default function TablaOperadores() {
             data: false
         },
     })
+    const [vehicles, setVehicles] = useState(false)
+
+    useEffect(() => {
+        getVehicles()
+    }, [])
+
+    const getVehicles = () => {
+        Swal.fire({
+            title: 'Cargando',
+            text: 'Espere un momento...',
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            }
+        })
+        try {
+            apiGet('vehiculos', userAuth.access_token)
+                .then(res => {
+                    setVehicles(res.data.vehiculos)
+                    Swal.close()
+                })
+                .catch(err => {
+                    Swal.close()
+                console.log(err)
+                })
+        } catch (error) {
+
+        }
+        
+    }
 
     useOptionsArea()
 
@@ -49,13 +79,11 @@ export default function TablaOperadores() {
         pathname: '/rh/operadores',
     }
 
-
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Operador', identificador: 'operador', sort: false, stringSearch: false },
         { nombre: 'Vehículo', identificador: 'vehiculo', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
-
     ];
 
     const ProccessData = (data) => {
@@ -64,7 +92,6 @@ export default function TablaOperadores() {
             { operador: 'Fernanda Lopez', vehiculo: 'zuzuki', estatus: 'Activo' },
             { operador: 'Karla Perez', vehiculo: 'VW Jetta', estatus: 'Inactivo' },
         ]
-
     }
 
     const createAcciones = () => {
@@ -200,7 +227,6 @@ export default function TablaOperadores() {
         })
     }
 
-
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
@@ -221,12 +247,13 @@ export default function TablaOperadores() {
             <Modal show={modal.ver.show} setShow={setModal} title='Ver operador' size='lg' handleClose={handleClose('ver')}>
                 <h1>Ver</h1>
             </Modal>
-            <Modal show={modal.crear.show} setShow={setModal} title='Crear operador' size='lg' handleClose={handleClose('crear')}>
-                
-            </Modal>
-            <Modal show={modal.crear.show} setShow={setModal} title='Asignar Vehiculo' size='lg' handleClose={handleClose('crear')}>
-                
-            </Modal>
+            {
+                vehicles ?
+                <Modal show={modal.crear.show} setShow={setModal} title='Crear operador' size='lg' handleClose={handleClose('crear')}>
+                        <NuevoOperador handleClose={handleClose('crear')} reload={reloadTable} vehiculos={vehicles} />
+                </Modal> : null  
+            }
+            
         </>
     );
 }

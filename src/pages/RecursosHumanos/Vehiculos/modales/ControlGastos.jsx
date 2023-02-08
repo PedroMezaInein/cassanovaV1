@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2'
 
+import { apiDelete } from '../../../../functions/api'
+
 import { Modal } from '../../../../components/singles'
 import TablaGeneral from '../../../../components/NewTables/TablaGeneral/TablaGeneral'
 import EditarGasto from './EditarGasto'
@@ -41,23 +43,19 @@ export default function ControlGastos(props) {
         { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
         { nombre: 'Kilometros', identificador: 'kilometros', sort: false, stringSearch: false },
         { nombre: 'Costo', identificador: 'costo', sort: false, stringSearch: false },
+        { nombre: 'Trabajo realizado', identificador: 'trabajo_realizado', sort: false, stringSearch: false },
         { nombre: 'Observaciones', identificador: 'observaciones', sort: false, stringSearch: false },
-        { nombre: 'Autorizado por', identificador: 'autorizacion_1', sort: false, stringSearch: false },
-
     ];
 
     const ProccessData = (data) => {
-        return [
-            { fecha: '2021-01-01', kilometros: '1500', costo: '1000', observaciones: 'Carburante', autorizacion_1: 'Juan Perez' },
-            { fecha: '2021-01-25', kilometros: '2000', costo: '2000', observaciones: 'Cambios de aceite', autorizacion_1: 'Sandra Lopez' },
-            { fecha: '2021-02-07', kilometros: '2500', costo: '3000', observaciones: 'Reparacion de llantas', autorizacion_1: 'Esteban Rodriguez' },
-            { fecha: '2021-02-15', kilometros: '3000', costo: '4000', observaciones: 'Reparacion de motor', autorizacion_1: 'Maria Gonzalez' },
-            { fecha: '2021-03-01', kilometros: '3500', costo: '5000', observaciones: 'Reparacion de motor', autorizacion_1: 'Maria Gonzalez' },
-            { fecha: '2021-03-15', kilometros: '4000', costo: '6000', observaciones: 'Reparacion de motor', autorizacion_1: 'Maria Gonzalez' },
-            { fecha: '2021-04-01', kilometros: '4500', costo: '7000', observaciones: 'Reparacion de motor', autorizacion_1: 'Maria Gonzalez' },
-            { fecha: '2021-04-15', kilometros: '5000', costo: '8000', observaciones: 'Reparacion de motor', autorizacion_1: 'Maria Gonzalez' },
-        ]
-
+        let aux = []
+        data.servicio.forEach((item) => {
+            aux.push({
+                ...item,
+                acciones: createAcciones()
+            })
+        })
+        return aux
     }
 
     const createAcciones = () => {
@@ -120,11 +118,41 @@ export default function ControlGastos(props) {
                             confirmButtonText: '¡Sí, bórralo!'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                Swal.fire(
-                                    '¡Eliminado!',
-                                    'El registro ha sido eliminado.',
-                                    'success'
-                                )
+                                Swal.fire({
+                                    title: 'Eliminando...',
+                                    allowOutsideClick: false,
+                                    onBeforeOpen: () => {
+                                        Swal.showLoading()
+                                    }
+                                })
+                                
+                                try {   
+                                    apiDelete(`servicios/${item.id}`, userAuth.access_token)
+                                        .then((res) => {
+                                            Swal.close()
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'Eliminado',
+                                                text: 'El registro ha sido eliminado',
+                                                timer: 1500,
+                                            })
+                                            if (reloadTable) {
+                                                reloadTable.reload()
+                                            }
+
+                                        })
+                                        .catch((err) => { 
+                                            Swal.close()
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: 'Ha ocurrido un error al eliminar el registro',
+                                            })
+                                        })
+                                    
+                                } catch (error) {
+
+                                }
                             }
                         })
                     } else {
@@ -173,7 +201,7 @@ export default function ControlGastos(props) {
             <TablaGeneral titulo='Control de Gastos' subtitulo='Vehículos' columnas={columnas} url='servicios' ProccessData={ProccessData} numItemsPagina={8} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
 
             <Modal show={modal.editar.show} setShow={setModal} title='Editar Gasto' size='lg' handleClose={handleClose('editar')}>
-                <EditarGasto reload={reloadTable} handleClose={handleClose('editar')} vehiculo={vehiculo} />
+                <EditarGasto reload={reloadTable} handleClose={handleClose('editar')} vehiculo={vehiculo} gasto={modal.editar.data} />
             </Modal>
             <Modal show={modal.eliminar.show} setShow={setModal} title='Eliminar Gasto' size='lg' handleClose={handleClose('eliminar')}>
                 <h1>Eliminar</h1>
