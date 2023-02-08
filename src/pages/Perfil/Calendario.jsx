@@ -24,6 +24,9 @@ import CreateSalaJuntas from './../RecursosHumanos/Reuniones/SalaJuntas/CreateSa
 import EnrollUser from './../RecursosHumanos/Reuniones/Cursos/EnrollUser'
 import Aplicantes from './../RecursosHumanos/Reuniones/Cursos/AplicantesCurso'
 import SolicitarVehiculo from './../RecursosHumanos/Vehiculos/SolicitarVehiculo'
+import EstatusVehiculo from './../RecursosHumanos/Vehiculos/EstatusVehiculo'
+import SeguimientoViajes from './../RecursosHumanos/Vehiculos/SeguimientoViajes'
+import ObservacionesVehiculo from './../RecursosHumanos/Vehiculos/ObservacionesVehiculo'
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
@@ -49,6 +52,9 @@ class Calendario extends Component {
             modal_inscripcion_curso: false,
             modal_aplicantes: false,
             modal_solicitar_vehiculo: false,
+            modal_estatus_vehiculo: false,
+            modal_seguimiento_viajes: false,
+            modal_observaciones_vehiculo: false,
         },
         permisosM:[],
         incapacidadesM:[],
@@ -239,7 +245,34 @@ class Calendario extends Component {
 
     openModalVehiculo = () => {
         const { modal } = this.state
-        modal.modal_aplicantes = true
+        modal.modal_solicitar_vehiculo = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    openModalEstatusVehiculo = () => {
+        const { modal } = this.state
+        modal.modal_estatus_vehiculo = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    openModalSeguimientoViajes = () => {
+        const { modal } = this.state
+        modal.modal_seguimiento_viajes = true
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    openModalObservacionesVehiculo = () => {
+        const { modal } = this.state
+        modal.modal_observaciones_vehiculo = true
         this.setState({
             ...this.state,
             modal,
@@ -267,6 +300,42 @@ class Calendario extends Component {
     closeModalAplicantes = () => {
         const { modal } = this.state
         modal.modal_aplicantes = false
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    closeModalVehiculo = () => {
+        const { modal } = this.state
+        modal.modal_solicitar_vehiculo = false
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    closeModalEstatusVehiculo = () => {
+        const { modal } = this.state
+        modal.modal_estatus_vehiculo = false
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    closeModalSeguimientoViajes = () => {
+        const { modal } = this.state
+        modal.modal_seguimiento_viajes = false
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
+    closeModalObservacionesVehiculo = () => {
+        const { modal } = this.state
+        modal.modal_observaciones_vehiculo = false
         this.setState({
             ...this.state,
             modal,
@@ -1501,8 +1570,10 @@ class Calendario extends Component {
                                         id={`dropdown-button-drop-left`}
                                         drop={'left'}
                                     >
-                                        <Dropdown.Item onClick={this.openModalSalaJuntas}>Reservar Sala de Juntas</Dropdown.Item>
-                                        <Dropdown.Item onClick={this.openModalEnrollUser}>Solicitar Curso</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalVehiculo}>Solicitar Vehículo</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalEstatusVehiculo}>Estatus de solicitud</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalSeguimientoViajes}>Seguimiento de viajes</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalObservacionesVehiculo}>Observaciones</Dropdown.Item>
                                     </DropdownButton>
                                 }
                             </div>
@@ -1825,9 +1896,25 @@ class Calendario extends Component {
                     <EnrollUser close={this.closeModalEnrollUser} />
                 </Modal>
 
-                <Modal size="xl" title="AprovaciÓn de cursos" show={modal.modal_aplicantes} handleClose={this.closeModalAplicantes}>
+                <Modal size="xl" title="AprobaciÓn de cursos" show={modal.modal_aplicantes} handleClose={this.closeModalAplicantes}>
                     <Aplicantes data={enrollUser} getEnrollUsers={this.getEnrollUser} />
                 </Modal>
+
+                <Modal size="lg" title="Solicitar Vehículo" show={modal.modal_solicitar_vehiculo} handleClose={this.closeModalVehiculo}>
+                    <SolicitarVehiculo closeModal={this.closeModalVehiculo} rh={false} />
+                </Modal> 
+
+                <Modal size="lg" title="Estatus de solicitud del Vehículo" show={modal.modal_estatus_vehiculo} handleClose={this.closeModalEstatusVehiculo}>
+                    <EstatusVehiculo closeModal={this.closeModalEstatusVehiculo} rh={false} />
+                </Modal> 
+
+                <Modal size="xl" title="Seguimiento de viajes" show={modal.modal_seguimiento_viajes} handleClose={this.closeModalSeguimientoViajes}>
+                    <SeguimientoViajes closeModal={this.closeModalSeguimientoViajes} rh={false} />
+                </Modal> 
+
+                <Modal size="lg" title="Observaciones sobre el vehículo" show={modal.modal_observaciones_vehiculo} handleClose={this.closeModalObservacionesVehiculo}>
+                    <ObservacionesVehiculo closeModal={this.closeModalObservacionesVehiculo} rh={false} />
+                </Modal> 
 
             </Layout>
 
