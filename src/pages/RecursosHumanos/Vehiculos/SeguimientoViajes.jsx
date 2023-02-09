@@ -67,7 +67,8 @@ export default function SeguimientoViajes({ closeModal, rh, }) {
         })
     }
 
-    const proccessData = () => {
+    const proccessData = (data) => {
+      console.log(data)
       let aux = []
       aux.push(
         {

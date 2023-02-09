@@ -1563,18 +1563,18 @@ class Calendario extends Component {
 
                             <div className="card-toolbar" id="dropdown-calendario">
                                 {
-                                    // <DropdownButton 
-                                    //     title={
-                                    //     <i className="flaticon-truck"></i>
-                                    //     }
-                                    //     id={`dropdown-button-drop-left`}
-                                    //     drop={'left'}
-                                    // >
-                                    //     <Dropdown.Item onClick={this.openModalVehiculo}>Solicitar Vehículo</Dropdown.Item>
-                                    //     <Dropdown.Item onClick={this.openModalEstatusVehiculo}>Estatus de solicitud</Dropdown.Item>
-                                    //     <Dropdown.Item onClick={this.openModalSeguimientoViajes}>Seguimiento de viajes</Dropdown.Item>
-                                    //     <Dropdown.Item onClick={this.openModalObservacionesVehiculo}>Observaciones</Dropdown.Item>
-                                    // </DropdownButton>
+                                    <DropdownButton 
+                                        title={
+                                        <i className="flaticon-truck"></i>
+                                        }
+                                        id={`dropdown-button-drop-left`}
+                                        drop={'left'}
+                                    >
+                                        <Dropdown.Item onClick={this.openModalVehiculo}>Solicitar Vehículo</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalEstatusVehiculo}>Estatus de solicitud</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalSeguimientoViajes}>Seguimiento de viajes</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalObservacionesVehiculo}>Observaciones</Dropdown.Item>
+                                    </DropdownButton>
                                 }
                             </div>
 

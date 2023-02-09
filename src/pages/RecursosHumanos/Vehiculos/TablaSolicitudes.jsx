@@ -110,7 +110,6 @@ export default function TablaSolicitudes() {
             )
         })
         return aux
-
         // return [
         //     { operador: 'Juan Perez', vehiculo: 'VW Jetta', estatus: 'Activo' },
         //     { operador: 'Fernanda Lopez', vehiculo: 'zuzuki', estatus: 'Activo' },
