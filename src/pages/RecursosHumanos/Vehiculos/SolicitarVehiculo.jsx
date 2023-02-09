@@ -5,10 +5,14 @@ import Swal from 'sweetalert2'
 import '../../../styles/_salaJuntas.scss'
 
 import { makeStyles } from '@material-ui/core/styles';
+import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale'
+import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+
+import Style from './modales/NuevoVehiculo.module.css'
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -22,149 +26,258 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-//   const useStyles = makeStyles((theme) => ({
-//     root: {
-//       '& .MuiTextField-root': {
-//         margin: theme.spacing(1),
-//         width: '25ch',
-//       },
-//     },
-//   }));
+export default function SolicitarVehiculo(props) {
 
-export default function SolicitarVehiculo({ closeModal, rh, }) {
+    const {closeModal} = props
+
     const userAuth = useSelector((state) => state.authUser);
 
-    const [form, setForm] = useState({   
-        fecha_inicio:new Date().toISOString().split('T')[0],
-        fecha_final:new Date().toISOString().split('T')[0],
+    const [form, setForm] = useState({ 
+        id_usuario: userAuth.user.id,
+        id_vehiculo: 1,
+        fecha_inicio:'',
+        fecha_fin:'',
+        hora_inicio:'',
+        hora_fin:'',
+        destino:'',
+        descripcion: ''
     });
+
+    const [errores, setErrores] = useState({})
 
     // MATERIAL UI
     const classes = useStyles();
-    const [value, setValue] = React.useState('Controlled');
-    const handleChange = (event) => {
-        setValue(event.target.value);
+
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
     };
 
-    const [currency, setCurrency] = useState('camioneta 2');
+    const handleChangeFecha = (date, tipo) => {
+        setForm({
+            ...form,
+            [tipo]: new Date(date)
+        })
+    };
 
-    const opciones = [
-        {
-            value: 'camioneta 1',
-            label: 'camioneta 1',
-        },
-        {
-            value: 'camioneta 2',
-            label: 'camioneta 2',
+    const validateForm = () => {
+        let validar = true
+        let error = {}
+        if(form.fecha_inicio === ''){
+            error.fecha_inicio = "Seleccione una fecha de inicio"
+            validar = false
         }
-    ]
+        if(form.fecha_fin === ''){
+            error.fecha_fin = "Seleccione una fecha de termino"
+            validar = false
+        }
+        if(form.hora_inicio === ''){
+            error.hora_inicio = "Seleccione una hora de inicio"
+            validar = false
+        }
+        if(form.hora_fin === ''){
+            error.hora_fin = "Seleccione una hora de termino"
+            validar = false
+        }
+        if(form.destino === ''){
+            error.destino = "Escriba un destino"
+            validar = false
+        }
+        if(form.descripcion === ''){
+            error.descripcion = "Escriba una descripcion"
+            validar = false
+        }
+        
+        setErrores(error)
+        return validar
+    }
 
-    const horas = [
-        { id: 1, hora: '09:00', disabled: false },
-            { id: 2, hora: '09:30', disabled: false },
-            { id: 3, hora: '10:00', disabled: false },
-            { id: 4, hora: '10:30', disabled: false },
-            { id: 5, hora: '11:00', disabled: false },
-            { id: 6, hora: '11:30', disabled: false },
-            { id: 7, hora: '12:00', disabled: false },
-            { id: 8, hora: '12:30', disabled: false },
-            { id: 9, hora: '13:00', disabled: false },
-            { id: 10, hora: '13:30', disabled: false },
-            { id: 11, hora: '14:00', disabled: false },
-            { id: 12, hora: '14:30', disabled: false },
-            { id: 13, hora: '15:00', disabled: false },
-            { id: 14, hora: '15:30', disabled: false },
-            { id: 15, hora: '16:00', disabled: false },
-            { id: 16, hora: '16:30', disabled: false },
-            { id: 17, hora: '17:00', disabled: false },
-        { id: 18, hora: '17:30', disabled: false },
-    ]
+    const handleSend = (e) => {
+        e.preventDefault() //Evita que se recargue por ejecutar lo que tiene por defecto
+        if(validateForm()){
 
-    const handleChangeVehiculo = (event) => {
-        setCurrency(event.target.value);
-      };
+            Swal.fire({
+                title: 'Cargando...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            }) 
+            try {
+
+                let newForm = {
+                    id_usuario: form.id_usuario,
+                    id_vehiculo: 1,
+                    fecha_inicio:form.fecha_inicio,
+                    fecha_fin:form.fecha_fin,
+                    hora_inicio:form.hora_inicio,
+                    hora_fin:form.hora_fin,
+                    destino:form.destino,
+                    descripcion: form.descripcion
+                }
+
+                apiPostForm('vehiculos/solicitud', newForm, userAuth.access_token)
+                    .then((data) => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Nueva Requisicion',
+                            text: 'Se ha creado correctamente',
+                            timer: 5000,
+                            timerProgressBar: true,
+                        })
+                        closeModal()
+                    })
+                    .catch((error) => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error',
+                        })
+                        console.log(error)
+                    })
+            } catch (error) { 
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error',
+                })
+                console.log(error)
+            }
+        } else{
+            Swal.fire({
+                title: 'Faltan campos',
+                text: 'Favor de llenar todos los campos',
+                icon: 'info',
+                showConfirmButton: false,
+                timer: 2000,
+            })
+        }
+    }
 
     return (
         <>
-            <div className='vehiculo_reserva'>
-                <div>Selecciona la fecha y hora del uso del vehículo</div>
-                <form className={classes.container} noValidate>
-                    <TextField
-                        id="datetime-local"
-                        label="Fecha y hora solicitada"
-                        type="datetime-local"
-                        name='fecha_inicio'
-                        // defaultValue="2017-05-24T10:30"
-                        defaultValue={form.fecha_inicio}
-                        className={classes.textField}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                    />
-                </form> 
+            <div className={Style.container}>
 
-                <form className={classes.container} noValidate>
-                    <TextField
-                        id="datetime-local"
-                        label="Fecha y hora estimada de termino"
-                        type="datetime-local"
-                        name='fecha_final'
-                        defaultValue={form.fecha_final}
-                        className={classes.textField}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                    />
-                </form> 
+                <div>
+                    <div>
+                        <InputLabel>Fecha inicio</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid container >
+                                <KeyboardDatePicker
+                                    format="dd/MM/yyyy"
+                                    name="fecha_inicio"
+                                    value={form.fecha_inicio !=='' ? form.fecha_inicio : null}
+                                    placeholder="dd/mm/yyyy"
+                                    onChange={e=>handleChangeFecha(e, 'fecha_inicio')}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                    error={errores.fecha_inicio ? true : false}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
+                    </div>   
+                    
+                    <div>
+                        <InputLabel>Hora inicio</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid container >
+                                <KeyboardTimePicker
+                                    value={form.hora_inicio !=='' ? form.hora_inicio : null}
+                                    onChange={e=>handleChangeFecha(e, 'hora_inicio')}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change time',
+                                    }}
+                                    error={errores.hora_inicio ? true : false}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
+                    </div>   
+
+                </div>
+
+                <div>
+                    <div>
+                        <InputLabel>Fecha fin</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid container >
+                                <KeyboardDatePicker
+                                    // variant="inline"
+                                    format="dd/MM/yyyy"
+                                    name="fecha_fin"
+                                    value={form.fecha_fin !=='' ? form.fecha_fin : null}
+                                    placeholder="dd/mm/yyyy"
+                                    onChange={e=>handleChangeFecha(e, 'fecha_fin')}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                    error={errores.fecha_fin ? true : false}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
+                    </div>  
+
+                    <div>
+                        <InputLabel>Hora fin</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid container >
+                                <KeyboardTimePicker
+                                    // margin="normal"
+                                    value={form.hora_fin !=='' ? form.hora_fin : null}
+                                    onChange={e=>handleChangeFecha(e, 'hora_fin')}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change time',
+                                    }}
+                                    error={errores.hora_fin ? true : false}
+                                />  
+                            </Grid>
+                        </MuiPickersUtilsProvider>
+                    </div>   
+                </div>
+
+                <div>
+                    <div>
+                        <TextField
+                            className={classes.textField}
+                            id="standard-multiline-static"
+                            label="Descripción"
+                            value={form.descripcion}
+                            name='descripcion'
+                            onChange={handleChange}
+                            multiline
+                            fullWidth
+                            rows={4}
+                            error={errores.descripcion ? true : false}
+                            // defaultValue="Default Value"
+                        />
+                    </div>
+
+                    <div>
+                        <TextField
+                            className={classes.textField}
+                            id="standard-multiline-static"
+                            label="Destino"
+                            value={form.destino}
+                            name='destino'
+                            onChange={handleChange}
+                            multiline
+                            rows={4}
+                            error={errores.destino ? true : false}
+                            // defaultValue="Default Value"
+                        />
+                    </div>
+                </div>
             </div>
 
-            <div className='vehiculo_general'>
-                <div>
-                    <TextField className='nuevaRequisicion_solicitante'
-                        label="Solicitante"
-                        type="text"
-                        defaultValue={"Sulem Pastrana"}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                        disabled
-                    />
-                </div>
-
-                <div>
-                    <TextField
-                        id="standard-multiline-static"
-                        label="Descripción"
-                        multiline
-                        rows={4}
-                        // defaultValue="Default Value"
-                    />
-                </div>
-
-                <div>
-                    <InputLabel id="demo-simple-select-label">Camioneta</InputLabel>
-                        <Select
-                            value={currency}
-                            name="tipo_gasto"
-                            onChange={handleChangeVehiculo}
-                        >
-                            {opciones.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                </div>
-
-                <div>
-                    <TextField
-                        id="standard-multiline-static"
-                        label="Destino"
-                        multiline
-                        rows={4}
-                        // defaultValue="Default Value"
-                    />
-                </div>
+            <div className="row justify-content-end">
+                <div className="col-md-4">
+                    <button className={Style.sendButton} type="submit" onClick={handleSend}>Crear</button>
+                </div>    
             </div>
         </>
     )     

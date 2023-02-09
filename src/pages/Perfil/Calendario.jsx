@@ -1900,7 +1900,7 @@ class Calendario extends Component {
                     <Aplicantes data={enrollUser} getEnrollUsers={this.getEnrollUser} />
                 </Modal>
 
-                <Modal size="lg" title="Solicitar Vehículo" show={modal.modal_solicitar_vehiculo} handleClose={this.closeModalVehiculo}>
+                <Modal size="md" title="Solicitar Vehículo" show={modal.modal_solicitar_vehiculo} handleClose={this.closeModalVehiculo}>
                     <SolicitarVehiculo closeModal={this.closeModalVehiculo} rh={false} />
                 </Modal> 
 
