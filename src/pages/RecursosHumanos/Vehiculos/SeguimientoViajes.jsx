@@ -6,13 +6,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import Layout from '../../../components/layout/layout'
 
-export default function SeguimientoViajes({ closeModal, rh, }) {
+export default function SeguimientoViajes({ closeModal }) {
     const userAuth = useSelector((state) => state.authUser);
 
     const columnas = [
       { nombre: 'control de viaje', identificador: 'control_de_viaje', sort: false, stringSearch: false},
       { nombre: 'Solicitante', identificador: 'solicitante', sort: true, stringSearch: false},
-      { nombre: 'Descripcion', identificador: 'descripcion', sort: true, stringSearch: false},
+      { nombre: 'Descripcion', identificador: 'comentarios', sort: true, stringSearch: false},
       { nombre: 'Fecha_inicio', identificador: 'fecha_inicio', sort: true, stringSearch: false},
       { nombre: 'Fecha_fin', identificador: 'fecha_fin', sort: true, stringSearch: false},
       { nombre: 'destino', identificador: 'destino', sort: true, stringSearch: false},
@@ -70,16 +70,27 @@ export default function SeguimientoViajes({ closeModal, rh, }) {
     const proccessData = (data) => {
       console.log(data)
       let aux = []
-      aux.push(
-        {
-          solicitante: 'Sulem Pastrana',
-          descripcion: 'Solicito camioneta para revisión de obra en Puebla',
-          fecha_inicio: '10-03-2023 10:00 a.m',
-          fecha_fin: '11-03-2023 03:30 p.m',
-          control_de_viaje: travelButton(),
-          destino: 'Blvrd Nte 2210, Las Hadas Mundial 86, 72070 Puebla, Pue.'
-        }
-      )
+      // aux.push(
+      //   {
+      //     solicitante: 'Sulem Pastrana',
+      //     descripcion: 'Solicito camioneta para revisión de obra en Puebla',
+      //     fecha_inicio: '10-03-2023 10:00 a.m',
+      //     fecha_fin: '11-03-2023 03:30 p.m',
+      //     control_de_viaje: travelButton(),
+      //     destino: 'Blvrd Nte 2210, Las Hadas Mundial 86, 72070 Puebla, Pue.'
+      //   }
+      // )
+      data.solicitudes.map((item)=>{ //item es cada iteracion que hay en este caso, cada solicitud creada
+        aux.push({
+          solicitante: item.user.name,
+          destino: item.destino,
+          comentarios:item.comentarios,
+          hora_inicio: item.hora_inicio,
+          hora_fin: item.hora_fin,
+          fecha_inicio:item.fecha_inicio
+        })
+      })
+      
       aux=aux.reverse()
       return aux
     }
@@ -89,7 +100,7 @@ export default function SeguimientoViajes({ closeModal, rh, }) {
           <Tabla
             titulo="Viajes" 
             columnas={columnas}
-            url={'requisicion'} 
+            url={'vehiculos/usuario'} 
             numItemsPagina={10}
             ProccessData={proccessData}
             // reload={setReloadTable}

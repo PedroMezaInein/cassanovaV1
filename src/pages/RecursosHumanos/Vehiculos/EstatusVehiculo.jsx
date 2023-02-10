@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react"
 import { useSelector } from "react-redux";
-import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
+import { apiPostForm, apiGet } from '../../../functions/api';
 import Swal from 'sweetalert2'
 import { makeStyles } from '@material-ui/core/styles';
 import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
@@ -36,7 +36,7 @@ export default function EstatusVehiculos({ closeModal, rh, }) {
           <Tabla
             titulo="Estatus" 
             columnas={columnas}
-            url={'requisicion'}  
+            url={'vehiculos/usuario'}  
             numItemsPagina={10}
             ProccessData={proccessData}
             // reload={setReloadTable}
