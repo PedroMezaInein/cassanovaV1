@@ -5,9 +5,9 @@ import Swal from 'sweetalert2'
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { apiGet } from '../../../functions/api'
-import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
-import NuevoOperador from './modales/NuevoOperador'
+import Crear from './SolicitarVehiculo'
+import ReasignarOperador from './modales/ReasignarOperador'
 
 export default function TablaSolicitudes() {
     const userAuth = useSelector((state) => state.authUser);
@@ -17,15 +17,7 @@ export default function TablaSolicitudes() {
             show: false,
             data: false
         },
-        eliminar: {
-            show: false,
-            data: false
-        },
         adjuntos: {
-            show: false,
-            data: false
-        },
-        ver: {
             show: false,
             data: false
         },
@@ -33,11 +25,7 @@ export default function TablaSolicitudes() {
             show: false,
             data: false
         },
-        control_gastos: {
-            show: false,
-            data: false
-        },
-        usuarios_autorizados: {
+        operador: {
             show: false,
             data: false
         },
@@ -65,15 +53,12 @@ export default function TablaSolicitudes() {
                 })
                 .catch(err => {
                     Swal.close()
-                console.log(err)
                 })
         } catch (error) {
 
         }
         
     }
-
-    useOptionsArea()
 
     let prop = {
         pathname: '/rh/solicitudes',
@@ -88,7 +73,6 @@ export default function TablaSolicitudes() {
         { nombre: 'Hora Inicio', identificador: 'hora_ini', sort: false, stringSearch: false },
         { nombre: 'Hora Fin', identificador: 'hora_fin', sort: false, stringSearch: false },
         { nombre: 'Destino', identificador: 'destino', sort: false, stringSearch: false },
-
     ];
 
     const ProccessData = (data) => {
@@ -96,7 +80,6 @@ export default function TablaSolicitudes() {
         data.solicitud.map((result) => {
             aux.push(
                 {
-                    // acciones: acciones(),
                     usuario: result.user.name,
                     vehiculo: result.vehiculo ? result.vehiculo.marca : '',
                     fecha_ini: result.fecha_inicio ?  result.fecha_inicio : '',
@@ -110,11 +93,6 @@ export default function TablaSolicitudes() {
             )
         })
         return aux
-        // return [
-        //     { operador: 'Juan Perez', vehiculo: 'VW Jetta', estatus: 'Activo' },
-        //     { operador: 'Fernanda Lopez', vehiculo: 'zuzuki', estatus: 'Activo' },
-        //     { operador: 'Karla Perez', vehiculo: 'VW Jetta', estatus: 'Inactivo' },
-        // ]
     }
 
     const createAcciones = () => {
@@ -154,7 +132,7 @@ export default function TablaSolicitudes() {
                 funcion: (item) => {
                     setModal({
                         ...modal,
-                        asignar_vehiculo: {
+                        operador: {
                             show: true,
                             data: item
                         }
@@ -166,13 +144,6 @@ export default function TablaSolicitudes() {
                 icono: 'fas fa-users',
                 color: 'greenButton',
                 funcion: (item) => {
-                    // setModal({
-                    //     ...modal,
-                    //     usuarios_autorizados: {
-                    //         show: true,
-                    //         data: item
-                    //     }
-                    // })
                     Swal.fire({
                         title: '¿Estás seguro?',
                         text: "¡No podrás revertir esto!",
@@ -198,13 +169,6 @@ export default function TablaSolicitudes() {
                 icono: 'fas fa-users',
                 color: 'redButton',
                 funcion: (item) => {
-                    // setModal({
-                    //     ...modal,
-                    //     usuarios_autorizados: {
-                    //         show: true,
-                    //         data: item
-                    //     }
-                    // })
                     Swal.fire({
                         title: '¿Estás seguro?',
                         text: "¡No podrás revertir esto!",
@@ -223,20 +187,6 @@ export default function TablaSolicitudes() {
                         }
                     })
 
-                }
-            },
-            {
-                nombre: 'Ver',
-                icono: 'fas fa-eye',
-                color: 'blueButton',
-                funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        ver: {
-                            show: true,
-                            data: item
-                        }
-                    })
                 }
             },
             {
@@ -277,7 +227,7 @@ export default function TablaSolicitudes() {
 
     const opciones = [
         {
-            nombre: 'Agregar operador',
+            nombre: 'Nueva solicitud',
             funcion: (item) => {
                 setModal({
                     ...modal,
@@ -304,28 +254,25 @@ export default function TablaSolicitudes() {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
                 <>
-                    <TablaGeneral titulo='Solicitudes' columnas={columnas} url='vehiculos/solicitudes' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()}  reload={setReloadTable} />
+                    <TablaGeneral titulo='Solicitudes' columnas={columnas} url='vehiculos/solicitudes' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} reload={setReloadTable} opciones={opciones} />
                 </>
             </Layout>
 
             <Modal show={modal.editar.show} setShow={setModal} title='Editar operador' size='lg' handleClose={handleClose('editar')}>
                 
             </Modal>
-            <Modal show={modal.eliminar.show} setShow={setModal} title='Eliminar operador' size='lg' handleClose={handleClose('eliminar')}>
-                <h1>Eliminar</h1>
-            </Modal>
+
             <Modal show={modal.adjuntos.show} setShow={setModal} title='Adjuntos operador' size='lg' handleClose={handleClose('adjuntos')}>
                 
             </Modal>
-            <Modal show={modal.ver.show} setShow={setModal} title='Ver operador' size='lg' handleClose={handleClose('ver')}>
-                <h1>Ver</h1>
+
+            <Modal show={modal.operador.show} setShow={setModal} title='Reasignar Vehiculo' size='sm' handleClose={handleClose('operador')}>
+                <ReasignarOperador vehiculos={vehicles} data={modal.operador.data} reload={reloadTable} handleClose={handleClose('operador')} />
             </Modal>
-            {
-                vehicles ?
-                <Modal show={modal.crear.show} setShow={setModal} title='Crear operador' size='lg' handleClose={handleClose('crear')}>
-                        <NuevoOperador handleClose={handleClose('crear')} reload={reloadTable} vehiculos={vehicles} />
-                </Modal> : null  
-            }
+
+            <Modal show={modal.crear.show} setShow={setModal} title='Crear operador' size='lg' handleClose={handleClose('crear')}>
+                <Crear closeModal={handleClose('crear')} />
+            </Modal> 
             
         </>
     );

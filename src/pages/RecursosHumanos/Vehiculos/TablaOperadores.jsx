@@ -9,7 +9,8 @@ import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
 import NuevoOperador from './modales/NuevoOperador'
 
-export default function TablaOperadores() {
+export default function TablaOperadores(props) {
+    const {id} = props
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState(false)
     const [modal, setModal] = useState({
@@ -87,34 +88,24 @@ export default function TablaOperadores() {
     ];
 
     const ProccessData = (data) => {
-        // console.log(data)
         let aux = []
         data.asigando.map((result) => {
-            aux.push(
+            if (id === result.id_vehiculo) {
+                aux.push(
                 {
-                    // acciones: acciones(),
                     operador: result.user.name,
                     vehiculo: result.vehiculos ? result.vehiculos.marca : '',
                     licencia: result.licencia ?  result.licencia : '',
                     id:result.id,
                     data:result
                 }
-            )
+            )   
+            }
+            
         })
         return aux
-
-        // return [
-        //     { operador: 'Juan Perez', vehiculo: 'VW Jetta', estatus: 'Activo' },
-        //     { operador: 'Fernanda Lopez', vehiculo: 'zuzuki', estatus: 'Activo' },
-        //     { operador: 'Karla Perez', vehiculo: 'VW Jetta', estatus: 'Inactivo' },
-        // ]
     }
-    //     return [
-    //         { operador: 'Juan Perez', vehiculo: 'VW Jetta', estatus: 'Activo' },
-    //         { operador: 'Fernanda Lopez', vehiculo: 'zuzuki', estatus: 'Activo' },
-    //         { operador: 'Karla Perez', vehiculo: 'VW Jetta', estatus: 'Inactivo' },
-    //     ]
-    // }
+   
 
     const createAcciones = () => {
         let aux = [
@@ -251,11 +242,7 @@ export default function TablaOperadores() {
 
     return (
         <>
-            <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
-                <>
-                    <TablaGeneral titulo='Operadores' columnas={columnas} url='vehiculos/asignacion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
-                </>
-            </Layout>
+            <TablaGeneral titulo='Operadores' columnas={columnas} url='vehiculos/asignacion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
 
             <Modal show={modal.editar.show} setShow={setModal} title='Editar operador' size='lg' handleClose={handleClose('editar')}>
                 

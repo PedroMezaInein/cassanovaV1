@@ -68,10 +68,6 @@ export default function NuevoGasto(props) {
             valid = false
             errores.fecha = 'Este campo es requerido'
         }
-        if (form.kilometros === '') {
-            valid = false
-            errores.kilometros = 'Este campo es requerido'
-        }
         if (form.fecha_servicio === '') {
             valid = false
             errores.fecha_servicio = 'Este campo es requerido'
@@ -83,10 +79,6 @@ export default function NuevoGasto(props) {
         if (form.costo === '') {
             valid = false
             errores.costo = 'Este campo es requerido'
-        }
-        if (form.no_factura === '') {
-            valid = false
-            errores.no_factura = 'Este campo es requerido'
         }
         if (form.observaciones === '') {
             valid = false
@@ -221,7 +213,7 @@ export default function NuevoGasto(props) {
                         />
                     </div>
                     <div>
-                        <InputLabel>Trabajo realizado</InputLabel>
+                        <InputLabel>Concepto</InputLabel>
                         <TextField
                             name="trabajo_realizado"
                             value={form.trabajo_realizado}

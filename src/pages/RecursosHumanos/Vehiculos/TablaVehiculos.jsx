@@ -61,7 +61,7 @@ export default function TablaVehiculos() {
         { nombre: 'Modelo', identificador: 'modelo', sort: false, stringSearch: false },
         { nombre: 'Placas', identificador: 'placas', sort: false, stringSearch: false },
         { nombre: 'Poliza', identificador: 'poliza', sort: false, stringSearch: false },
-        { nombre: 'Ciudad', identificador: 'Ciudad', sort: false, stringSearch: false },
+        { nombre: 'Ciudad', identificador: 'ciudad', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus_show', sort: false, stringSearch: false },
     ];
 
@@ -274,7 +274,7 @@ export default function TablaVehiculos() {
                 <ControlGastos vehiculo={modal.control_gastos.data }/>
             </Modal>
             <Modal show={modal.usuarios_autorizados.show} setShow={setModal} title='Usuarios autorizados' size='lg' handleClose={handleClose('usuarios_autorizados')}>
-                <Operador reload={reloadTable} handleClose={handleClose('editar')} />
+                <Operador reload={reloadTable} vehiculo={modal.usuarios_autorizados.data} />
             </Modal>
         </>
     );
