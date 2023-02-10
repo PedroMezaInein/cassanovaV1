@@ -12,19 +12,20 @@ export default function ReasignarOperador(props) {
     const { vehiculos, data, reload, handleClose } = props
     console.log(data)
     const authUser = useSelector(state => state.authUser)
+    const usuarios = useSelector(state => state.opciones.vehiculos.asignacion)
     const [form, setForm] = useState({
         ...data.data,
-        conductor: data.data.conductorid_conductor,
     })
 
     const handleChange = (e) => {
+        console.log(e.target.value)
         setForm({
             ...form,
-            id_vehiculo: e.target.value
+            id_vehiculo: e.target.value.id_vehiculo,
+            conductor: e.target.value.usuario
         })
     }
     
-
     const handleSubmit = (e) => { 
         Swal.fire({
             title: '¿Re-asignar vehiculo?',
@@ -66,7 +67,8 @@ export default function ReasignarOperador(props) {
         })
         
     }
-    console.log(form.id_vehiculo)
+
+    console.log(form)
 
     return (
         <>
@@ -78,8 +80,8 @@ export default function ReasignarOperador(props) {
                         name="id_vehiculo"
                         onChange={handleChange}
                     >
-                        {vehiculos.map((item) => (
-                            <MenuItem key={item.id} value={item.id}>{item.marca} {item.modelo} - {item.placas}</MenuItem>
+                        {usuarios.map((item) => (
+                            <MenuItem key={item.id} value={item}>{item.vehiculos.marca} {item.vehiculos.modelo} - {item.user.name} </MenuItem>
                         ))}
                     </Select>
                 </div>

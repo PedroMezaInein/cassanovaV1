@@ -7,7 +7,9 @@ import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGenera
 import { apiGet } from '../../../functions/api'
 import Layout from '../../../components/layout/layout'
 import Crear from './SolicitarVehiculo'
+import Editar from './modales/EdirtarSolicitud'
 import ReasignarOperador from './modales/ReasignarOperador'
+import useOptionsVehiculos from '../../../hooks/useOptionsVehiculos'
 
 export default function TablaSolicitudes() {
     const userAuth = useSelector((state) => state.authUser);
@@ -34,8 +36,9 @@ export default function TablaSolicitudes() {
 
     useEffect(() => {
         getVehicles()
+        
     }, [])
-
+    useOptionsVehiculos()
     const getVehicles = () => {
         Swal.fire({
             title: 'Cargando',
@@ -82,8 +85,8 @@ export default function TablaSolicitudes() {
                 {
                     usuario: result.user.name,
                     vehiculo: result.vehiculo ? result.vehiculo.marca : '',
-                    fecha_ini: result.fecha_inicio ?  result.fecha_inicio : '',
-                    fecha_fin: result.fecha_fin ? result.fecha_fin : '',
+                    fecha_ini: result.fecha_inicio ?  result.fecha_inicio.slice(0,10) : '',
+                    fecha_fin: result.fecha_fin ? result.fecha_fin.slice(0,10) : '',
                     hora_ini: result.hora_inicio ? result.hora_inicio : '',
                     hora_fin: result.hora_fin ? result.hora_fin : '' ,
                     destino: result.destino ? result.destino : 'no especificado',
@@ -258,8 +261,8 @@ export default function TablaSolicitudes() {
                 </>
             </Layout>
 
-            <Modal show={modal.editar.show} setShow={setModal} title='Editar operador' size='lg' handleClose={handleClose('editar')}>
-                
+            <Modal show={modal.editar.show} setShow={setModal} title='Editar solicitud' size='lg' handleClose={handleClose('editar')}>
+                <Editar closeModal={handleClose('editar')} reload={reloadTable} solicitud={ modal.editar.data} />
             </Modal>
 
             <Modal show={modal.adjuntos.show} setShow={setModal} title='Adjuntos operador' size='lg' handleClose={handleClose('adjuntos')}>
@@ -271,7 +274,7 @@ export default function TablaSolicitudes() {
             </Modal>
 
             <Modal show={modal.crear.show} setShow={setModal} title='Crear operador' size='lg' handleClose={handleClose('crear')}>
-                <Crear closeModal={handleClose('crear')} />
+                <Crear closeModal={handleClose('crear')} reload={reloadTable}/>
             </Modal> 
             
         </>

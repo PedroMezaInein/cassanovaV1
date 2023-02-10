@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react"
+import React, { useState, useEffect } from "react"
 import { useSelector } from "react-redux";
-import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
+import { apiPostForm, apiGet, apiPutForm } from '../../../../functions/api';
 import Swal from 'sweetalert2'
-import '../../../styles/_salaJuntas.scss'
+import '../../../../styles/_salaJuntas.scss'
 
 import { makeStyles } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
@@ -12,35 +12,36 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import Style from './modales/NuevoVehiculo.module.css'
+import Style from './NuevoVehiculo.module.css'
 
 const useStyles = makeStyles((theme) => ({
     container: {
-      display: 'flex',
-      flexWrap: 'wrap',
+        display: 'flex',
+        flexWrap: 'wrap',
     },
     textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: 200,
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
+        width: 200,
     },
-  }));
+}));
 
-export default function SolicitarVehiculo(props) {
+export default function EditarSolicitud(props) {
 
-    const { closeModal, reload } = props
+    const { closeModal, reload, solicitud } = props
+    console.log(solicitud)
 
     const userAuth = useSelector((state) => state.authUser);
 
-    const [form, setForm] = useState({ 
-        id_usuario: userAuth.user.id,
-        id_vehiculo: 7,
-        fecha_inicio:'',
-        fecha_fin:'',
-        hora_inicio:'',
-        hora_fin:'',
-        destino:'',
-        descripcion: ''
+    const [form, setForm] = useState({
+        id_usuario: solicitud.data.id_usuario,
+        id_vehiculo: solicitud.data.id_vehiculo,
+        fecha_inicio: solicitud.fecha_ini,
+        fecha_fin: solicitud.fecha_fin,
+        hora_inicio: solicitud.hora_ini ? new Date(solicitud.hora_ini) : '',
+        hora_fin: solicitud.hora_fin ? solicitud.hora_fin : '',
+        destino: solicitud.destino ? solicitud.destino : '',
+        descripcion: solicitud.descripcion ? solicitud.descripcion : '',
     });
 
     const [errores, setErrores] = useState({})
@@ -61,63 +62,53 @@ export default function SolicitarVehiculo(props) {
             [tipo]: new Date(date)
         })
     };
+    console.log(form)
 
     const validateForm = () => {
         let validar = true
         let error = {}
-        if(form.fecha_inicio === ''){
+        if (form.fecha_inicio === '') {
             error.fecha_inicio = "Seleccione una fecha de inicio"
             validar = false
         }
-        if(form.fecha_fin === ''){
+        if (form.fecha_fin === '') {
             error.fecha_fin = "Seleccione una fecha de termino"
             validar = false
         }
-        if(form.hora_inicio === ''){
+        if (form.hora_inicio === '') {
             error.hora_inicio = "Seleccione una hora de inicio"
             validar = false
         }
-        if(form.hora_fin === ''){
+        if (form.hora_fin === '') {
             error.hora_fin = "Seleccione una hora de termino"
             validar = false
         }
-        if(form.destino === ''){
+        if (form.destino === '') {
             error.destino = "Escriba un destino"
             validar = false
         }
-        if(form.descripcion === ''){
+        if (form.descripcion === '') {
             error.descripcion = "Escriba una descripcion"
             validar = false
         }
-        
+
         setErrores(error)
         return validar
     }
 
     const handleSend = (e) => {
-        e.preventDefault() //Evita que se recargue por ejecutar lo que tiene por defecto
-        if(validateForm()){
 
+        if (validateForm()) {
             Swal.fire({
                 title: 'Cargando...',
                 allowOutsideClick: false,
                 onBeforeOpen: () => {
                     Swal.showLoading()
                 }
-            }) 
+            })
             try {
 
-                let newForm = {
-                    id_usuario: form.id_usuario,
-                    fecha_inicio:form.fecha_inicio,
-                    fecha_fin:form.fecha_fin,
-                    hora_inicio:new Date(form.hora_inicio).toLocaleTimeString(),
-                    hora_fin:new Date(form.hora_fin).toLocaleTimeString(),
-                    destino:form.destino,
-                    descripcion: form.descripcion
-                }
-
-                apiPostForm('vehiculos/solicitud', newForm, userAuth.access_token)
+                apiPutForm(`vehiculos/solicitud/edit${solicitud.id}`, form, userAuth.access_token)
                     .then((data) => {
                         Swal.close()
                         Swal.fire({
@@ -128,7 +119,7 @@ export default function SolicitarVehiculo(props) {
                             timerProgressBar: true,
                         })
                         closeModal()
-                        if(reload){
+                        if (reload) {
                             reload.reload()
                         }
                     })
@@ -141,7 +132,7 @@ export default function SolicitarVehiculo(props) {
                         })
                         console.log(error)
                     })
-            } catch (error) { 
+            } catch (error) {
                 Swal.close()
                 Swal.fire({
                     icon: 'error',
@@ -150,7 +141,7 @@ export default function SolicitarVehiculo(props) {
                 })
                 console.log(error)
             }
-        } else{
+        } else {
             Swal.fire({
                 title: 'Faltan campos',
                 text: 'Favor de llenar todos los campos',
@@ -173,9 +164,9 @@ export default function SolicitarVehiculo(props) {
                                 <KeyboardDatePicker
                                     format="dd/MM/yyyy"
                                     name="fecha_inicio"
-                                    value={form.fecha_inicio !=='' ? form.fecha_inicio : null}
+                                    value={form.fecha_inicio !== '' ? form.fecha_inicio : null}
                                     placeholder="dd/mm/yyyy"
-                                    onChange={e=>handleChangeFecha(e, 'fecha_inicio')}
+                                    onChange={e => handleChangeFecha(e, 'fecha_inicio')}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
@@ -183,15 +174,16 @@ export default function SolicitarVehiculo(props) {
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    </div>   
-                    
+                    </div>
+
                     <div>
                         <InputLabel>Hora inicio</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardTimePicker
-                                    value={form.hora_inicio !=='' ? form.hora_inicio : null}
-                                    onChange={e=>handleChangeFecha(e, 'hora_inicio')}
+                                    value={form.hora_inicio !== '' ? form.hora_inicio : null}
+                                    onChange={e => handleChangeFecha(e, 'hora_inicio')}
+                                    format=""
                                     KeyboardButtonProps={{
                                         'aria-label': 'change time',
                                     }}
@@ -199,7 +191,7 @@ export default function SolicitarVehiculo(props) {
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    </div>   
+                    </div>
 
                 </div>
 
@@ -212,9 +204,9 @@ export default function SolicitarVehiculo(props) {
                                     // variant="inline"
                                     format="dd/MM/yyyy"
                                     name="fecha_fin"
-                                    value={form.fecha_fin !=='' ? form.fecha_fin : null}
+                                    value={form.fecha_fin !== '' ? form.fecha_fin : null}
                                     placeholder="dd/mm/yyyy"
-                                    onChange={e=>handleChangeFecha(e, 'fecha_fin')}
+                                    onChange={e => handleChangeFecha(e, 'fecha_fin')}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
@@ -222,7 +214,7 @@ export default function SolicitarVehiculo(props) {
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    </div>  
+                    </div>
 
                     <div>
                         <InputLabel>Hora fin</InputLabel>
@@ -230,16 +222,16 @@ export default function SolicitarVehiculo(props) {
                             <Grid container >
                                 <KeyboardTimePicker
                                     // margin="normal"
-                                    value={form.hora_fin !=='' ? form.hora_fin : null}
-                                    onChange={e=>handleChangeFecha(e, 'hora_fin')}
+                                    value={form.hora_fin !== '' ? form.hora_fin : null}
+                                    onChange={e => handleChangeFecha(e, 'hora_fin')}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change time',
                                     }}
                                     error={errores.hora_fin ? true : false}
-                                />  
+                                />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    </div>   
+                    </div>
                 </div>
 
                 <div>
@@ -255,7 +247,7 @@ export default function SolicitarVehiculo(props) {
                             fullWidth
                             rows={4}
                             error={errores.descripcion ? true : false}
-                            // defaultValue="Default Value"
+                        // defaultValue="Default Value"
                         />
                     </div>
 
@@ -270,7 +262,7 @@ export default function SolicitarVehiculo(props) {
                             multiline
                             rows={4}
                             error={errores.destino ? true : false}
-                            // defaultValue="Default Value"
+                        // defaultValue="Default Value"
                         />
                     </div>
                 </div>
@@ -278,9 +270,9 @@ export default function SolicitarVehiculo(props) {
 
             <div className="row justify-content-end">
                 <div className="col-md-4">
-                    <button className={Style.sendButton} type="submit" onClick={handleSend}>Crear</button>
-                </div>    
+                    <button className={Style.sendButton} type="submit" onClick={handleSend}>Editar</button>
+                </div>
             </div>
         </>
-    )     
+    )
 }

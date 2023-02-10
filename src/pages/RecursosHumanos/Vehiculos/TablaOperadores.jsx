@@ -106,7 +106,6 @@ export default function TablaOperadores(props) {
         return aux
     }
    
-
     const createAcciones = () => {
         let aux = [
             {

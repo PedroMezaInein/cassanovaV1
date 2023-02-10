@@ -3,6 +3,7 @@ import axios from 'axios';
 export const GET_USER = 'GET_USER';
 export const GET_OPTIONS = 'GET_OPTIONS';
 export const SAVE_OPTIONS = 'SAVE_OPTIONS';
+export const GET_VEHICULOS = 'GET_VEHICULOS';
 
 
 export function getUser(id) {
@@ -24,6 +25,15 @@ export function SaveOptionsAreas(areas) {
         return dispatch({
             type: SAVE_OPTIONS,
             payload: areas
+        })
+    }
+}
+
+export function saveOptionsVehiculos(vehiculos) {
+    return async function (dispatch) {
+        return dispatch({
+            type: GET_VEHICULOS,
+            payload: vehiculos
         })
     }
 }

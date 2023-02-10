@@ -215,7 +215,7 @@ export default function EditarVehiculo(props) {
 
     return (
         <>
-            <Accordion>
+            <Accordion expanded>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                 >
@@ -344,7 +344,7 @@ export default function EditarVehiculo(props) {
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <Grid container >
                                         <KeyboardDatePicker
-                                            variant="inline"
+                                            
                                             format="dd/MM/yyyy"
                                             name="fecha_poliza"
                                             value={form.fecha_poliza !== '' ? form.fecha_poliza : null}
@@ -377,7 +377,7 @@ export default function EditarVehiculo(props) {
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <Grid container >
                                         <KeyboardDatePicker
-                                            variant="inline"
+                                            
                                             format="dd/MM/yyyy"
                                             name="fecha_verificacion1"
                                             value={form.fecha_verificacion1 !== '' ? form.fecha_verificacion1 : null}
@@ -396,7 +396,7 @@ export default function EditarVehiculo(props) {
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <Grid container >
                                         <KeyboardDatePicker
-                                            variant="inline"
+                                            
                                             format="dd/MM/yyyy"
                                             name="fecha_verificacion2"
                                             value={form.fecha_verificacion2 !== '' ? form.fecha_verificacion2 : null}
@@ -415,7 +415,7 @@ export default function EditarVehiculo(props) {
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <Grid container >
                                         <KeyboardDatePicker
-                                            variant="inline"
+                                            
                                             format="dd/MM/yyyy"
                                             name="fecha_tenencia"
                                             value={form.fecha_tenencia !== '' ? form.fecha_tenencia : null}
