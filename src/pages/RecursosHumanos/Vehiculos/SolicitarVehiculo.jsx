@@ -40,7 +40,7 @@ export default function SolicitarVehiculo(props) {
         hora_inicio:'',
         hora_fin:'',
         destino:'',
-        descripcion: ''
+        comentarios: ''
     });
 
     const [errores, setErrores] = useState({})
@@ -85,8 +85,8 @@ export default function SolicitarVehiculo(props) {
             error.destino = "Escriba un destino"
             validar = false
         }
-        if(form.descripcion === ''){
-            error.descripcion = "Escriba una descripcion"
+        if(form.comentarios === ''){
+            error.comentarios = "Escriba una comentarios"
             validar = false
         }
         
@@ -115,7 +115,7 @@ export default function SolicitarVehiculo(props) {
                     hora_inicio:form.hora_inicio,
                     hora_fin:form.hora_fin,
                     destino:form.destino,
-                    descripcion: form.descripcion
+                    comentarios: form.comentarios
                 }
 
                 apiPostForm('vehiculos/solicitud', newForm, userAuth.access_token)
@@ -123,9 +123,9 @@ export default function SolicitarVehiculo(props) {
                         Swal.close()
                         Swal.fire({
                             icon: 'success',
-                            title: 'Nueva Requisicion',
+                            title: 'Nueva solicitud',
                             text: 'Se ha creado correctamente',
-                            timer: 5000,
+                            timer: 3000,
                             timerProgressBar: true,
                         })
                         closeModal()
@@ -246,13 +246,13 @@ export default function SolicitarVehiculo(props) {
                             className={classes.textField}
                             id="standard-multiline-static"
                             label="Descripción"
-                            value={form.descripcion}
-                            name='descripcion'
+                            value={form.comentarios}
+                            name='comentarios'
                             onChange={handleChange}
                             multiline
                             fullWidth
                             rows={4}
-                            error={errores.descripcion ? true : false}
+                            error={errores.comentarios ? true : false}
                             // defaultValue="Default Value"
                         />
                     </div>
