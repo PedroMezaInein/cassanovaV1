@@ -68,8 +68,6 @@ export default function ReasignarOperador(props) {
         
     }
 
-    console.log(form)
-
     return (
         <>
             <div>

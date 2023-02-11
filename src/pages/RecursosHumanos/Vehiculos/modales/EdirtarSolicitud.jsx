@@ -34,20 +34,29 @@ export default function EditarSolicitud(props) {
     const userAuth = useSelector((state) => state.authUser);
 
     const [form, setForm] = useState({
+        ...solicitud.data,
         id_usuario: solicitud.data.id_usuario,
         id_vehiculo: solicitud.data.id_vehiculo,
-        fecha_inicio: solicitud.fecha_ini,
-        fecha_fin: solicitud.fecha_fin,
-        hora_inicio: solicitud.hora_ini ? new Date(solicitud.hora_ini) : '',
-        hora_fin: solicitud.hora_fin ? solicitud.hora_fin : '',
-        destino: solicitud.destino ? solicitud.destino : '',
-        descripcion: solicitud.descripcion ? solicitud.descripcion : '',
+        fecha_inicio: formatDate(solicitud.fecha_ini),
+        fecha_fin: formatDate(solicitud.fecha_fin),
+        hora_inicio: solicitud.hora_ini ? new Date(null, null, null, solicitud.hora_ini.split(':')[0], solicitud.hora_ini.split(':')[1]) : '',
+        hora_fin: solicitud.hora_fin ? new Date(null, null, null, solicitud.hora_fin.split(':')[0], solicitud.hora_fin.split(':')[1]) : '',
+        destino: solicitud.destino,
+        comentarios: solicitud.comentarios ? solicitud.comentarios : 'Sin comentarios',
     });
 
     const [errores, setErrores] = useState({})
 
     // MATERIAL UI
     const classes = useStyles();
+
+    function formatDate(input) {
+        var datePart = input.match(/\d+/g),
+            year = datePart[0].substring(2), // get only two digits
+            month = datePart[1], day = datePart[2];
+
+        return month + '/' + day + '/' + year;
+    }
 
     const handleChange = (e) => {
         setForm({
@@ -87,8 +96,8 @@ export default function EditarSolicitud(props) {
             error.destino = "Escriba un destino"
             validar = false
         }
-        if (form.descripcion === '') {
-            error.descripcion = "Escriba una descripcion"
+        if (form.comentarios === '') {
+            error.comentarios = "Escriba una comentarios"
             validar = false
         }
 
@@ -106,9 +115,15 @@ export default function EditarSolicitud(props) {
                     Swal.showLoading()
                 }
             })
+            let newForm = {
+                ...form,
+                hora_inicio: form.hora_inicio.getHours() + ':' + form.hora_inicio.getMinutes(),
+                hora_fin: form.hora_fin.getHours() + ':' + form.hora_fin.getMinutes(),
+                /* autorizacion: 52,
+                estatus: 1, */
+            }
             try {
-
-                apiPutForm(`vehiculos/solicitud/edit${solicitud.id}`, form, userAuth.access_token)
+                apiPutForm(`vehiculos/solicitud/edit/${solicitud.id}`, newForm, userAuth.access_token)
                     .then((data) => {
                         Swal.close()
                         Swal.fire({
@@ -164,7 +179,7 @@ export default function EditarSolicitud(props) {
                                 <KeyboardDatePicker
                                     format="dd/MM/yyyy"
                                     name="fecha_inicio"
-                                    value={form.fecha_inicio !== '' ? form.fecha_inicio : null}
+                                    value={form.fecha_inicio}
                                     placeholder="dd/mm/yyyy"
                                     onChange={e => handleChangeFecha(e, 'fecha_inicio')}
                                     KeyboardButtonProps={{
@@ -183,7 +198,7 @@ export default function EditarSolicitud(props) {
                                 <KeyboardTimePicker
                                     value={form.hora_inicio !== '' ? form.hora_inicio : null}
                                     onChange={e => handleChangeFecha(e, 'hora_inicio')}
-                                    format=""
+                                    format="HH:mm:ss"
                                     KeyboardButtonProps={{
                                         'aria-label': 'change time',
                                     }}
@@ -240,13 +255,13 @@ export default function EditarSolicitud(props) {
                             className={classes.textField}
                             id="standard-multiline-static"
                             label="Descripción"
-                            value={form.descripcion}
-                            name='descripcion'
+                            value={form.comentarios}
+                            name='comentarios'
                             onChange={handleChange}
                             multiline
                             fullWidth
                             rows={4}
-                            error={errores.descripcion ? true : false}
+                            error={errores.comentarios ? true : false}
                         // defaultValue="Default Value"
                         />
                     </div>

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2'
+import { apiPutForm } from '../../../functions/api';
+
+import Style from './TablaSolicitudes.module.css'
 
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
@@ -69,6 +72,7 @@ export default function TablaSolicitudes() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
+        { nombre: 'Aprobación', identificador: 'aprobacion' },
         { nombre: 'Usuario', identificador: 'usuario', sort: false, stringSearch: false },
         { nombre: 'Vehículo', identificador: 'vehiculo', sort: false, stringSearch: false },
         { nombre: 'Fecha Inicio', identificador: 'fecha_ini', sort: false, stringSearch: false },
@@ -91,11 +95,122 @@ export default function TablaSolicitudes() {
                     hora_fin: result.hora_fin ? result.hora_fin : '' ,
                     destino: result.destino ? result.destino : 'no especificado',
                     id:result.id,
-                    data:result
+                    data: result,
+                    aprobacion: createOpciones(result)
                 }
             )
         })
+        aux = aux.reverse()
         return aux
+    }
+
+    const autorizar = ( data) => { 
+        
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Sí, Aprovarlo!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let form = {
+                    autorizacion: userAuth.user.id,
+                    estatus:1,
+                }
+                Swal.fire({
+                    title: 'Cargando',
+                    text: 'Espere un momento...',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
+                })
+                apiPutForm(`vehiculos/autorizaSolicitud/${data.id}`, form, userAuth.access_token)
+                    .then(res => { 
+                        Swal.close()
+                        Swal.fire({
+                            title: '¡Aprobado!',
+                            text: 'El registro ha sido aprobado.',
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar',
+                            allowOutsideClick: false,
+
+                        })
+                        if (reloadTable) {
+                            reloadTable.reload()
+                        }
+                    })
+                    .catch(err => {
+                        Swal.close()
+                        Swal.fire({
+                            title: '¡Error!',
+                            text: 'Ha ocurrido un error al aprobar el registro.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar',
+                            allowOutsideClick: false,
+
+                        })
+                        console.log(err)
+                    })
+                
+            }
+        })    
+        
+        
+    }
+
+    const rechazar = ( data) => { 
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Sí, Rechazarlo!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let form = {
+                    autorizacion: userAuth.user.id,
+                    estatus: 0,
+                }
+                Swal.fire({
+                    title: 'Cargando',
+                    text: 'Espere un momento...',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
+                })
+                apiPutForm(`vehiculos/autorizaSolicitud/${data.id}`, form, userAuth.access_token)
+                    .then(res => {
+                        Swal.close()
+                        Swal.fire({
+                            title: '¡Rechazado!',
+                            text: 'El registro ha sido rechazado.',
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar',
+                        })
+                        if (reloadTable) {
+                            reloadTable.reload()
+                        }
+                    })
+                    .catch(err => {
+                        Swal.close()
+                        Swal.fire({
+                            title: '¡Error!',
+                            text: 'Ha ocurrido un error al aprobar el registro.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar',
+                            allowOutsideClick: false,
+
+                        })
+                    })
+            }
+        })
     }
 
     const createAcciones = () => {
@@ -147,24 +262,18 @@ export default function TablaSolicitudes() {
                 icono: 'fas fa-users',
                 color: 'greenButton',
                 funcion: (item) => {
-                    Swal.fire({
-                        title: '¿Estás seguro?',
-                        text: "¡No podrás revertir esto!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: '¡Sí, Aprovarlo!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire(
-                                '¡Aprovado!',
-                                'El registro ha sido aprovado.',
-                                'success'
-                            )
-                        }
-                    })
-
+                    console.log(item)
+                    if (!item.data.autorizacion && (item.data.estatus === "0" || item.data.estatus === "")) {
+                        autorizar(item.data)
+                    } else {
+                        Swal.fire({
+                            title: '¡Error!',
+                            text: 'El registro ya ha sido Rechazado o Aprobado.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar',
+                            allowOutsideClick: false,
+                        })
+                    }
                 }
             },
             {
@@ -172,60 +281,51 @@ export default function TablaSolicitudes() {
                 icono: 'fas fa-users',
                 color: 'redButton',
                 funcion: (item) => {
-                    Swal.fire({
-                        title: '¿Estás seguro?',
-                        text: "¡No podrás revertir esto!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: '¡Si, Rechazar!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire(
-                                '¡Rechazado!',
-                                'El registro ha sido rechazado.',
-                                'success'
-                            )
-                        }
-                    })
-
-                }
-            },
-            {
-                nombre: 'Eliminar',
-                icono: 'fas fa-trash',
-                color: 'redButton',
-                funcion: (item) => {
-                    if (userAuth.user.tipo.id === 1) {
-                        Swal.fire({
-                            title: '¿Estás seguro?',
-                            text: "¡No podrás revertir esto!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: '¡Sí, bórralo!'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                Swal.fire(
-                                    '¡Eliminado!',
-                                    'El registro ha sido eliminado.',
-                                    'success'
-                                )
-                            }
-                        })
+                    console.log(item)
+                    if (!item.data.autorizacion && (item.data.estatus === "0" || item.data.estatus === "")) {
+                        rechazar(item.data)
                     } else {
                         Swal.fire({
+                            title: '¡Error!',
+                            text: 'El registro ya ha sido Rechazado o Aprobado.',
                             icon: 'error',
-                            title: 'Acción no permitida',
-                            text: 'No tienes permisos para eliminar este registro',
+                            confirmButtonText: 'Aceptar',
+                            allowOutsideClick: false,
                         })
                     }
+
                 }
             },
         ]
         return aux
+    }
+
+    const createOpciones = (data) => {
+        return (
+            <>
+                {
+                    (data.estatus === "0" || data.estatus === "") && !data.autorizacion ?
+                        <>
+                            <div className={Style.container}>
+                                <span className={Style.pendiente}>Pendiente</span>
+                            </div>
+                        </>
+                        : data.estatus === "1" && data.autorizacion ?
+                            <>
+                                <div>
+                                    <span className={Style.autorizado}>Autorizado</span>
+                                </div>
+                            </>
+                            : data.estatus === "0" && data.autorizacion ?
+                                <>
+                                    <div>
+                                        <span className={Style.rechazado}>Rechazado</span>
+                                    </div>
+                                </>
+                                : null
+                }
+            </>
+        )
     }
 
     const opciones = [
@@ -261,9 +361,12 @@ export default function TablaSolicitudes() {
                 </>
             </Layout>
 
-            <Modal show={modal.editar.show} setShow={setModal} title='Editar solicitud' size='lg' handleClose={handleClose('editar')}>
-                <Editar closeModal={handleClose('editar')} reload={reloadTable} solicitud={ modal.editar.data} />
-            </Modal>
+            {
+                modal.editar.data &&
+                <Modal show={modal.editar.show} setShow={setModal} title='Editar solicitud' size='lg' handleClose={handleClose('editar')}>
+                    <Editar closeModal={handleClose('editar')} reload={reloadTable} solicitud={modal.editar.data} />
+                </Modal>
+            }
 
             <Modal show={modal.adjuntos.show} setShow={setModal} title='Adjuntos operador' size='lg' handleClose={handleClose('adjuntos')}>
                 
