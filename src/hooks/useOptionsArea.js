@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiGet } from '../functions/api'
-import { SaveOptionsAreas } from '../redux/actions/actions'
+import { SaveOptionsAreas, SaveOptionsPresupuestos } from '../redux/actions/actions'
 
 const useOptionsArea = () => {
     const [opciones, setOpciones] = useState(false)
@@ -12,6 +12,7 @@ const useOptionsArea = () => {
         apiGet('areas', user.access_token)
             .then((response) => {
                 setOpciones(response.data)
+                console.log(response.data)
             })
             .catch((error) => {
                 console.log(error)
@@ -56,6 +57,7 @@ const useOptionsArea = () => {
             }
         }
         dispatch(SaveOptionsAreas(aux))
+        dispatch(SaveOptionsPresupuestos(e.presupuesto))
     }
     
 }

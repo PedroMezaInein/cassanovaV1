@@ -1,12 +1,14 @@
 const initialState = {
     areas: [],
     vehiculos: [],
+    presupuestos: []
 }
 
 //Actions Type
 const SaveOptions = 'SAVE_OPTIONS'
 const GetOptions = 'GET_OPTIONS'
 const GetVehiculos = 'GET_VEHICULOS';
+const SAVE_OPTIONS_PRESUPUESTOS = 'SAVE_OPTIONS_PRESUPUESTOS'
 
 export default function (state = initialState, action) {
     switch (action.type) {
@@ -14,6 +16,11 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 areas: action.payload
+            }
+        case SAVE_OPTIONS_PRESUPUESTOS:
+            return {
+                ...state,
+                presupuestos: action.payload
             }
         case GetOptions:
             return initialState
