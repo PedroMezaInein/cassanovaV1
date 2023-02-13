@@ -371,10 +371,15 @@ export default function TablaSolicitudes() {
             <Modal show={modal.adjuntos.show} setShow={setModal} title='Adjuntos operador' size='lg' handleClose={handleClose('adjuntos')}>
                 
             </Modal>
+            
+            {
+                modal.operador.data &&
+                <Modal show={modal.operador.show} setShow={setModal} title='Asignar Vehiculo' size='sm' handleClose={handleClose('operador')}>
+                    <ReasignarOperador vehiculos={vehicles} data={modal.operador.data} reload={reloadTable} handleClose={handleClose('operador')} />
+                </Modal>
+            }
 
-            <Modal show={modal.operador.show} setShow={setModal} title='Reasignar Vehiculo' size='sm' handleClose={handleClose('operador')}>
-                <ReasignarOperador vehiculos={vehicles} data={modal.operador.data} reload={reloadTable} handleClose={handleClose('operador')} />
-            </Modal>
+            
 
             <Modal show={modal.crear.show} setShow={setModal} title='Crear operador' size='lg' handleClose={handleClose('crear')}>
                 <Crear closeModal={handleClose('crear')} reload={reloadTable}/>

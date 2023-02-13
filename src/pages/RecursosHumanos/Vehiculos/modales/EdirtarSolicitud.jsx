@@ -121,6 +121,7 @@ export default function EditarSolicitud(props) {
                 hora_fin: form.hora_fin.getHours() + ':' + form.hora_fin.getMinutes(),
                 /* autorizacion: 52,
                 estatus: 1, */
+                conductor: form.conductor ? form.conductor.id : null,
             }
             try {
                 apiPutForm(`vehiculos/solicitud/edit/${solicitud.id}`, newForm, userAuth.access_token)

@@ -8,6 +8,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import Style from './NuevoVehiculo.module.css'
+
 export default function ReasignarOperador(props) {
     const { vehiculos, data, reload, handleClose } = props
     console.log(data)
@@ -16,13 +18,20 @@ export default function ReasignarOperador(props) {
     const [form, setForm] = useState({
         ...data.data,
     })
+    const [vehiculo, setVehiculo] = useState({
+        id_vehiculo: data.data.vehiculo ? data.data.vehiculo.id : '',
+    })
+    console.log(usuarios)
 
     const handleChange = (e) => {
-        console.log(e.target.value)
+        let aux = usuarios.find(item => item.id_vehiculo === e.target.value)
         setForm({
             ...form,
-            id_vehiculo: e.target.value.id_vehiculo,
-            conductor: e.target.value.usuario
+            id_vehiculo: aux.id_vehiculo,
+            conductor: aux.usuario
+        })
+        setVehiculo({
+            id_vehiculo: aux.id_vehiculo,
         })
     }
     
@@ -74,19 +83,19 @@ export default function ReasignarOperador(props) {
                 <div>
                     <InputLabel id="demo-simple-select-label">Camioneta</InputLabel>
                     <Select
-                        value={form.id_vehiculo}
+                        value={vehiculo.id_vehiculo}
                         name="id_vehiculo"
                         onChange={handleChange}
                     >
                         {usuarios.map((item) => (
-                            <MenuItem key={item.id} value={item}>{item.vehiculos.marca} {item.vehiculos.modelo} - {item.user.name} </MenuItem>
+                            <MenuItem key={item.id} value={item.id_vehiculo}>{item.vehiculos.marca} {item.vehiculos.modelo} - {item.user.name} </MenuItem>
                         ))}
                     </Select>
                 </div>
             </div>
-            <div>
-                <div>
-                    <button onClick={handleSubmit}>Re-asignar</button>
+            <div className="row justify-content-end">
+                <div className="col-md-4">
+                    <button className={Style.sendButton} onClick={handleSubmit}>Re-asignar</button>
                 </div>
             </div>
 
