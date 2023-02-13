@@ -2,7 +2,6 @@ import React, {useState, useEffect} from "react"
 import { useSelector } from "react-redux";
 import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
 import Swal from 'sweetalert2'
-import '../../../styles/_salaJuntas.scss'
 
 import { makeStyles } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
@@ -13,6 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import Style from './modales/NuevoVehiculo.module.css'
+import './../../../styles/_solicitarVehiculo.scss'
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -171,6 +171,7 @@ export default function SolicitarVehiculo(props) {
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardDatePicker
+                                    className="fecha"
                                     format="dd/MM/yyyy"
                                     name="fecha_inicio"
                                     value={form.fecha_inicio !=='' ? form.fecha_inicio : null}
@@ -190,6 +191,7 @@ export default function SolicitarVehiculo(props) {
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardTimePicker
+                                    className="fecha"
                                     value={form.hora_inicio !=='' ? form.hora_inicio : null}
                                     onChange={e=>handleChangeFecha(e, 'hora_inicio')}
                                     KeyboardButtonProps={{
@@ -209,6 +211,7 @@ export default function SolicitarVehiculo(props) {
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardDatePicker
+                                    className="fecha"
                                     // variant="inline"
                                     format="dd/MM/yyyy"
                                     name="fecha_fin"
@@ -229,6 +232,7 @@ export default function SolicitarVehiculo(props) {
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardTimePicker
+                                    className="fecha"
                                     // margin="normal"
                                     value={form.hora_fin !=='' ? form.hora_fin : null}
                                     onChange={e=>handleChangeFecha(e, 'hora_fin')}
@@ -245,7 +249,8 @@ export default function SolicitarVehiculo(props) {
                 <div>
                     <div>
                         <TextField
-                            className={classes.textField}
+                            // className={classes.textField}
+                            className="text"
                             id="standard-multiline-static"
                             label="Descripción"
                             value={form.comentarios}
@@ -261,7 +266,8 @@ export default function SolicitarVehiculo(props) {
 
                     <div>
                         <TextField
-                            className={classes.textField}
+                            // className={classes.textField}
+                            className="text"
                             id="standard-multiline-static"
                             label="Destino"
                             value={form.destino}

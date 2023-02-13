@@ -11,22 +11,21 @@ export default function EstatusVehiculos({ closeModal, rh, }) {
 
     const columnas = [
       { nombre: 'Solicitante', identificador: 'solicitante', sort: true, stringSearch: false},
-      { nombre: 'Descripcion', identificador: 'descripcion', sort: true, stringSearch: false},
+      { nombre: 'destino', identificador: 'destino', sort: true, stringSearch: false},
       { nombre: 'Estatus', identificador: 'estatus', sort: true, stringSearch: false},
       { nombre: 'Comentarios', identificador: 'comentarios', sort: true, stringSearch: false},
     ]
 
-    const proccessData = () => {
+    const proccessData = (data) => {
       let aux = []
-      aux.push(
-        {
-          solicitante: 'Sulem Pastrana',
-          descripcion: 'Solicito camioneta para revisión de obra en Puebla',
-          estatus: 'Aprobada',
-          comentarios: 'La camioneta se encuentra en buenas condiciones y limpia, favor de revisar e informar cualquier anomalia'
-        },
-       
-      )
+      data.solicitudes.map((item)=>{
+        aux.push({
+          solicitante: item.user.name,
+          destino: item.destino,
+          estatus: item.estatus === '1' ? 'aceptado' : 'rechazado',
+          comentarios: item.comentarios ? item.comentarios : 'sin asignar'
+        })
+      })
       aux=aux.reverse()
       return aux
     }
@@ -36,7 +35,7 @@ export default function EstatusVehiculos({ closeModal, rh, }) {
           <Tabla
             titulo="Estatus" 
             columnas={columnas}
-            url={'vehiculos/usuario'}  
+            url={'vehiculos/solicitudes/user'}  
             numItemsPagina={10}
             ProccessData={proccessData}
             // reload={setReloadTable}

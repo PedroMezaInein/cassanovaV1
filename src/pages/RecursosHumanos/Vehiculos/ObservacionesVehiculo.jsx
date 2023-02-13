@@ -6,7 +6,7 @@ import Modal from '../../../components/singles/Modal'
 import Adjuntos from './Adjuntos'
 import AgregarComentario from './AgregarComentario'
 
-export default function SeguimientoViajes({ closeModal, rh, }) {
+export default function ObservacionesVehiculo({ closeModal, rh, }) {
     const userAuth = useSelector((state) => state.authUser);
 
     const [modal, setModal] = useState({
@@ -30,9 +30,8 @@ export default function SeguimientoViajes({ closeModal, rh, }) {
       { nombre: 'acciones', identificador: 'acciones', sort: false, stringSearch: false},
       { nombre: 'marca', identificador: 'marca', sort: false, stringSearch: false},
       { nombre: 'modelo', identificador: 'modelo', sort: false, stringSearch: false},
-      { nombre: 'placa', identificador: 'placa', sort: false, stringSearch: false},
-      { nombre: 'vehículo asignado', identificador: 'vehiculo_asignado', sort: false, stringSearch: false},
-      { nombre: 'comentario', identificador: 'comentario', sort: false, stringSearch: false},
+      { nombre: 'placa', identificador: 'placas', sort: false, stringSearch: false},
+      { nombre: 'observaciones', identificador: 'observaciones', sort: false, stringSearch: false},
     ]
 
     let acciones = () => {
@@ -65,21 +64,6 @@ export default function SeguimientoViajes({ closeModal, rh, }) {
                     })
                 }
             }, 
-            // {
-            //     nombre: 'comentario',
-            //     icono: 'fas fa-edit',
-            //     color: 'blueButton',
-            //     funcion: (item) => {
-            //         setModal({
-            //             ...modal,
-            //             comentario: {
-            //                 show: true,
-            //                 data: item.data
-            //             }
-            //         })
-                
-            //     }
-            // },  
         ]
         return aux
     }
@@ -131,19 +115,20 @@ export default function SeguimientoViajes({ closeModal, rh, }) {
     //     })
     // }
 
-    const proccessData = () => {
-      let aux = []
-      aux.push(
-        {
-            vehiculo_asignado: 'camioneta 1',
-            marca: 'camioneta 1',
-            modelo: '2022',
-            placa: 'mxp-018',
-            comentario: 'vnb uireshg7584h gdjfnxv',
-        }
-      )
-      aux=aux.reverse()
-      return aux
+    const proccessData = (data) => {
+        let aux = []
+
+        data.asigando.map((item) => {
+            aux.push({
+                marca: item.vehiculos.marca,
+                modelo: item.vehiculos.modelo,
+                placas: item.vehiculos.placas,
+                observaciones: item.observaciones ? item.observaciones : 'sin asignar',
+            })
+        })
+
+        aux=aux.reverse()
+        return aux
     }
 
     return (
@@ -151,7 +136,7 @@ export default function SeguimientoViajes({ closeModal, rh, }) {
           <Tabla
             titulo="Viajes" 
             columnas={columnas}
-            url={'requisicion'} 
+            url={'vehiculos/usuario'} 
             acciones={acciones()}
             numItemsPagina={10}
             ProccessData={proccessData}
