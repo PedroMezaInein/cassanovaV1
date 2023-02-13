@@ -5,6 +5,7 @@ import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { apiPutForm } from './../../../functions/api'
 
 export default function SeguimientoViajes(props) {
+  const { reload } = props
   const userAuth = useSelector((state) => state.authUser);
   const [reloadTable, setReloadTable] = useState()
 
@@ -16,13 +17,6 @@ export default function SeguimientoViajes(props) {
     { nombre: 'Fecha_fin', identificador: 'fecha_fin', sort: true, stringSearch: false},
     { nombre: 'destino', identificador: 'destino', sort: true, stringSearch: false},
   ]
-
-  // function formatDate(input) {
-  //   var datePart = input.match(/\d+/g),
-  //       year = datePart[0].substring(2), 
-  //       month = datePart[1], day = datePart[2];
-  //   return month + '/' + day + '/' + year;
-  // }
 
   const travel = (viaje) => {
     return (
@@ -47,15 +41,23 @@ export default function SeguimientoViajes(props) {
   }
 
   const startTravel = (e,viaje) => {
-    if(true){
-
-      Swal.fire({
+    Swal.fire({
+      title: '¿Quieres confirmar el inicio de tu viaje?',
+      icon: 'question',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      // denyButtonText: `Don't save`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        Swal.fire({
           title: 'Cargando...',
           allowOutsideClick: false,
           onBeforeOpen: () => {
               Swal.showLoading()
           }
-      }) 
+       }) 
       
       let now = new Date()
 
@@ -67,87 +69,11 @@ export default function SeguimientoViajes(props) {
       // apiPutForm(`vehiculos/solicitud/edit/${viaje.id}`, newForm, userAuth.access_token)
       .then((response)=>{
           Swal.close()
-          Swal.fire({
-            title: '¿Quieres confirmar el inicio de tu viaje?',
-            icon: 'question',
-            showDenyButton: false,
-            showCancelButton: true,
-            confirmButtonText: 'Sí',
-            // denyButtonText: `Don't save`,
-          }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-              Swal.fire('iniciado, ¡Buen viaje!', '', 'success')
-            } else if (result.isDenied) {
-              Swal.fire('Changes are not saved', '', 'info')
-            }
-        })
-          // handleClose()
-          // if(reload){
-          //     reload.reload()
-          // }
-      }) 
-
-      .catch((error)=>{  
-          Swal.close()
-          Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Ha ocurrido un error',
-          })
-      })
-    //   } else {
-    //     Swal.fire({
-    //       icon: 'error',
-    //       title: 'Oops...',
-   //         text: 'No se pudo completar la accion',
-          //       
-    //   })
-    }
-  }
-
-  const endTravel = (viaje) => {
-    if(true){
-
-      Swal.fire({
-          title: 'Cargando...',
-          allowOutsideClick: false,
-          onBeforeOpen: () => {
-              Swal.showLoading()
+          Swal.fire('iniciado, ¡Buen viaje!', '', 'success')
+          if(reloadTable){
+              reloadTable.reload()
           }
       }) 
-      
-      let now = new Date()
-
-      let newForm = {
-        fin_viaje: now.getHours() + ':' + now.getMinutes()
-      }
-
-      apiPutForm(`vehiculos/viaje/${viaje.id}`, newForm, userAuth.access_token)
-      // apiPutForm(`vehiculos/solicitud/edit/${viaje.id}`, newForm, userAuth.access_token)
-      .then((response)=>{
-          Swal.close()
-          Swal.fire({
-            title: '¿Estás seguro de concluir el viaje?',
-            icon: 'question',
-            showDenyButton: false,
-            showCancelButton: true,
-            confirmButtonText: 'Sí',
-            // denyButtonText: `Don't save`,
-          }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-              Swal.fire('¡listo! has concluido con el viaje, ', '', 'success')
-            } else if (result.isDenied) {
-              Swal.fire('Changes are not saved', '', 'info')
-            }
-        })
-          // handleClose()
-          // if(reload){
-          //     reload.reload()
-          // }
-      }) 
-
       .catch((error)=>{  
           Swal.close()
           Swal.fire({
@@ -155,14 +81,54 @@ export default function SeguimientoViajes(props) {
               title: 'Oops...',
               text: 'Ha ocurrido un error',
           })
-      })
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'No se pudo completar la accion',
-      })
-    }
+      }) 
+    } 
+  })
+  }
+
+  const endTravel = (e, viaje) => {
+	Swal.fire({
+		title: '¿Estás seguro de concluir el viaje?',
+		icon: 'question',
+		showDenyButton: false,
+		showCancelButton: true,
+		confirmButtonText: 'Sí',
+	  }).then((result) => {
+		if (result.isConfirmed) {
+			Swal.fire({
+				title: 'Finalizando viaje...',
+				allowOutsideClick: false,
+				onBeforeOpen: () => {
+					Swal.showLoading()
+				}
+			}) 
+			
+			let now = new Date()
+	  
+			let newForm = {
+			  fin_viaje: now.getHours() + ':' + now.getMinutes()
+			}
+	  
+			apiPutForm(`vehiculos/viaje/${viaje.id}`, newForm, userAuth.access_token)
+			// apiPutForm(`vehiculos/solicitud/edit/${viaje.id}`, newForm, userAuth.access_token)
+			.then((response)=>{
+				Swal.close()
+			   	Swal.fire('¡listo! has concluido con el viaje ', '', 'success')
+				if(reloadTable){
+					reloadTable.reload()
+				}
+			}) 
+			.catch((error)=>{  
+				Swal.close()
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Ha ocurrido un error',
+				})
+			})
+		  
+		} 
+	})
   }
 
   const proccessData = (data) => {
