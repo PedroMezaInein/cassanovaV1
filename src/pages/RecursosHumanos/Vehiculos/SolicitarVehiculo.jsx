@@ -34,7 +34,6 @@ export default function SolicitarVehiculo(props) {
 
     const [form, setForm] = useState({ 
         id_usuario: userAuth.user.id,
-        id_vehiculo: 7,
         fecha_inicio:'',
         fecha_fin:'',
         hora_inicio:'',
