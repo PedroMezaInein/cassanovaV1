@@ -9,8 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import { apiPostForm } from '../../../functions/api'
 
-import '../../../styles/_nuevaRequisicion.scss'
-import '../../../styles/_editarRequisicion.scss'
+import Style from './NuevaRequisicion.module.css'
 
 
 
@@ -189,11 +188,11 @@ export default function NativeSelects(props) {
     
     return (
         <>
-            <div className="container">
+            <div className={Style.container}>
                 <div >
 
                     <div>
-                        <TextField className='nuevaRequisicion_solicitante'
+                        <TextField 
                             label="Solicitante"
                             type="text"
                             defaultValue={user.user.name}
@@ -204,7 +203,7 @@ export default function NativeSelects(props) {
                         />
                     </div>
                     
-                    <div className="nuevaRequisicion_departamento">
+                    <div >
                         {departamentos.length > 0 ?
                             <>
                                 <InputLabel>Departamento</InputLabel>
@@ -224,7 +223,7 @@ export default function NativeSelects(props) {
                         }
                     </div>
 
-                    <div className="nuevaRequisicion_gasto">  
+                    <div>  
                         {departamentos.length > 0 && state.departamento !== ''?
                             <>
                                 <InputLabel>Tipo de Gasto</InputLabel>
@@ -303,12 +302,12 @@ export default function NativeSelects(props) {
             </div>
 
             <div>
-                <div className='file'>
+                <div className={Style.file}>
                     {/* <p id='adjuntos'>Agregar archivos
                         <input className='nuevaRequisicion_adjunto_input' type='file' onChange={handleFile}></input>
                     </p> */}
                     <label htmlFor="file">Seleccionar archivo(s)</label>
-                    <input type="file" id="file" name="file" onChange={handleFile} />
+                    <input type="file" id='file' name="file" onChange={handleFile} />
                     <div>
                         {state.solicitud.name ? <div className='file-name'>{state.solicitud.name}</div> : null}
                     </div>
@@ -317,7 +316,7 @@ export default function NativeSelects(props) {
 
                 <div className="row justify-content-end mt-n18">
                     <div className="col-md-4">
-                        <button className='sendButton' onClick={enviar}>Agregar</button>
+                        <button className={Style.sendButton} onClick={enviar}>Agregar</button>
                     </div>
                 </div>
 
