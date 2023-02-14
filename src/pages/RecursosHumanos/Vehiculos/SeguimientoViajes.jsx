@@ -143,7 +143,6 @@ export default function SeguimientoViajes(props) {
         comentarios:item.comentarios ? item.comentarios : 'sin asignar',
         fecha_inicio:item.fecha_inicio ? item.fecha_inicio.slice(0,10) : 'asignar',
         fecha_fin:item.fecha_fin ? item.fecha_fin.slice(0,10) : 'asignar',
-
       })
     })
     

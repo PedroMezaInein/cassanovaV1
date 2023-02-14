@@ -263,7 +263,7 @@ export default function TablaSolicitudes() {
                 color: 'greenButton',
                 funcion: (item) => {
                     console.log(item)
-                    if (!item.data.autorizacion && (item.data.estatus === "0" || item.data.estatus === "")) {
+                    if (!item.data.autorizacion) {
                         autorizar(item.data)
                     } else {
                         Swal.fire({
@@ -282,7 +282,7 @@ export default function TablaSolicitudes() {
                 color: 'redButton',
                 funcion: (item) => {
                     console.log(item)
-                    if (!item.data.autorizacion && (item.data.estatus === "0" || item.data.estatus === "")) {
+                    if (!item.data.autorizacion) {
                         rechazar(item.data)
                     } else {
                         Swal.fire({
@@ -304,7 +304,7 @@ export default function TablaSolicitudes() {
         return (
             <>
                 {
-                    (data.estatus === "0" || data.estatus === "") && !data.autorizacion ?
+                    data.estatus === "1"  && !data.autorizacion ?
                         <>
                             <div className={Style.container}>
                                 <span className={Style.pendiente}>Pendiente</span>
@@ -313,7 +313,7 @@ export default function TablaSolicitudes() {
                         : data.estatus === "1" && data.autorizacion ?
                             <>
                                 <div>
-                                    <span className={Style.autorizado}>Autorizado</span>
+                                    <span className={Style.autorizado}>Aprobado</span>
                                 </div>
                             </>
                             : data.estatus === "0" && data.autorizacion ?
@@ -381,7 +381,7 @@ export default function TablaSolicitudes() {
 
             
 
-            <Modal show={modal.crear.show} setShow={setModal} title='Crear operador' size='lg' handleClose={handleClose('crear')}>
+            <Modal show={modal.crear.show} setShow={setModal} title='Nueva solicitud' size='lg' handleClose={handleClose('crear')}>
                 <Crear closeModal={handleClose('crear')} reload={reloadTable}/>
             </Modal> 
             

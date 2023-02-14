@@ -25,13 +25,14 @@ export default function ReasignarOperador(props) {
 
     const handleChange = (e) => {
         let aux = usuarios.find(item => item.id_vehiculo === e.target.value)
+        console.log(aux)
         setForm({
             ...form,
-            id_vehiculo: aux.id_vehiculo,
+            id_vehiculo: aux.id,
             conductor: aux.usuario
         })
         setVehiculo({
-            id_vehiculo: aux.id_vehiculo,
+            id_vehiculo: aux.id,
         })
     }
     
@@ -88,7 +89,7 @@ export default function ReasignarOperador(props) {
                         onChange={handleChange}
                     >
                         {usuarios.map((item) => (
-                            <MenuItem key={item.id} value={item.id_vehiculo}>{item.vehiculos.marca} {item.vehiculos.modelo} - {item.user.name} </MenuItem>
+                            <MenuItem key={item.id} value={item.id}>{item.vehiculos.marca} {item.vehiculos.modelo} - {item.user.name} </MenuItem>
                         ))}
                     </Select>
                 </div>
