@@ -19,17 +19,18 @@ export default function ReasignarOperador(props) {
         ...data.data,
     })
     const [vehiculo, setVehiculo] = useState({
-        id_vehiculo: data.data.vehiculo ? data.data.vehiculo.id : '',
+        /* id_vehiculo: data.data.vehiculo ? usuarios.find(item => item.id_vehiculo === data.data.vehiculo.id).id : null, */
+        id_vehiculo: null,
     })
     console.log(usuarios)
 
     const handleChange = (e) => {
-        let aux = usuarios.find(item => item.id_vehiculo === e.target.value)
+        let aux = usuarios.find(item => item.id === e.target.value)
         console.log(aux)
         setForm({
             ...form,
-            id_vehiculo: aux.id,
-            conductor: aux.usuario
+            id_vehiculo: aux.id_vehiculo,
+            conductor: aux.user.id
         })
         setVehiculo({
             id_vehiculo: aux.id,
@@ -54,7 +55,6 @@ export default function ReasignarOperador(props) {
                     onBeforeOpen: () => {
                         Swal.showLoading()
                     }
-
                 })
                 try {
                     apiPutForm(`vehiculos/solicitud/edit/${data.data.id}`, form, authUser.access_token)
@@ -68,7 +68,6 @@ export default function ReasignarOperador(props) {
                                 timer: 1500
                             })
                             handleClose()
-
                         })
                         .catch((err) => {
                             console.log(err)
