@@ -48,6 +48,7 @@ function Requisiciones () {
             aux.push(
                 {
                     acciones: acciones(),
+                    orden_compra: result.orden_compra,
                     solicitante: result.solicitante.name,
                     fecha: result.fecha,
                     departamento: result.departamento ?  result.departamento.nombre : '',
@@ -60,6 +61,7 @@ function Requisiciones () {
                 }
             )
         })
+        aux=aux.reverse()
         return aux
     }
     
@@ -106,11 +108,11 @@ function Requisiciones () {
                 
                 }
             },  
-
+           
             {
                 nombre: 'Adjuntos',
                 icono: 'fas fa-paperclip',
-                color: 'blueButton',
+                color: 'reyButton',
                 funcion: (item) => {
                     setModal({
                         ...modal,

@@ -273,7 +273,7 @@ export default function Adjuntos(props) {
 
                 <TabPanel value={value} index={0}>
                     <div>
-                        <div>
+                        <div className='adjuntos_send'>
                             <div className="file">
 
                                 <label htmlFor="file">Selecciona el Comunicado</label>
@@ -283,15 +283,15 @@ export default function Adjuntos(props) {
                                 </div>
 
                             </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
+                            <div>
+                                <button className='sendButton' onClick={handleSubmit}>Subir</button>
                             </div>
                         </div>
                         {
                             adjuntos  && adjuntos.Ficha_tecnica && adjuntos.Ficha_tecnica.length > 0 ?
                                 <CarruselAdjuntos data={adjuntos.Ficha_tecnica} id={data.id} getAdjuntos={getAdjuntos} />
                                 :
-                                <div className="">
+                                <div className="adjuntos_aviso">
                                     <p>No hay archivos adjuntos</p>
                                 </div>
                         }
@@ -394,7 +394,7 @@ export default function Adjuntos(props) {
 
                             </div>
                             <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
+                                <butto onClick={handleSubmit}>Subir</butto>
                             </div>
                         </div>
                         {

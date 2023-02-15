@@ -101,3 +101,15 @@
     justify-content: center;
     border-radius: 5px;
 }
+
+.nuevaRequisicion_segundoBloque{
+    margin-left: 2.5rem;
+}
+
+.nuevaRequisicion{
+    margin-top: 1rem;
+}
+
+.nuevaRequisicion_fecha{
+    width: 130px;
+}
