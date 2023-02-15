@@ -1,18 +1,20 @@
 import React, {useState, useEffect} from "react"
 import { useSelector } from "react-redux";
 import Swal from 'sweetalert2'
-import { makeStyles } from '@material-ui/core/styles';
+
+import { apiPostForm } from '../../../functions/api'
+
+import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale'
+import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import { apiPostForm } from '../../../functions/api'
 
-import '../../../styles/_nuevaRequisicion.scss'
-import '../../../styles/_editarRequisicion.scss'
-
-
+import Style from './NuevaRequisicion.module.css'
+import './../../../styles/_nuevaRequisicion.scss'
 
 export default function NativeSelects(props) {
     const {handleClose, reload} = props
@@ -22,7 +24,7 @@ export default function NativeSelects(props) {
     const presupuestos = useSelector(state => state.opciones.presupuestos)
     const [state, setState] = useState({
         solicitante: user.user.id,
-        fecha:new Date().toISOString().split('T')[0],
+        fecha:'',
         departamento: departamento.departamentos[0].id,
         tipo_gasto: '', //partida
         descripcion: '',
@@ -46,6 +48,13 @@ export default function NativeSelects(props) {
             ...state,
             [name]: event.target.value,
         });
+    };
+
+    const handleChangeFecha = (date, tipo) => {
+        setState({
+            ...state,
+            [tipo]: new Date(date)
+        })
     };
 
 
@@ -75,6 +84,18 @@ export default function NativeSelects(props) {
 
     console.log(state)
 
+    function formatDate(date) {
+        var year = date.getFullYear();
+      
+        var month = (1 + date.getMonth()).toString();
+        month = month.length > 1 ? month : '0' + month;
+      
+        var day = date.getDate().toString();
+        day = day.length > 1 ? day : '0' + day;
+        
+        return year + '/' + month + '/' + day;
+      }
+
     const enviar = () =>{
         if(validateForm()){
 
@@ -93,7 +114,7 @@ export default function NativeSelects(props) {
                     id_departamento: state.departamento,
                     id_gasto: state.tipo_gasto,
                     descripcion: state.descripcion,
-                    fecha: state.fecha,
+                    fecha: formatDate(state.fecha),
                     solicitud: state.solicitud,
                     presupuesto: state.presupuesto
                 }
@@ -155,7 +176,7 @@ export default function NativeSelects(props) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Ha ocurrido un error',
+                            text: 'Ha ocurrido un error 1',
                         })
                         console.log(error)
                     })
@@ -164,7 +185,7 @@ export default function NativeSelects(props) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Ha ocurrido un error',
+                    text: 'Ha ocurrido un error 2',
                 })
                 console.log(error)
             }
@@ -189,11 +210,11 @@ export default function NativeSelects(props) {
     
     return (
         <>
-            <div className="container">
+            <div className={Style.container}>
                 <div >
 
                     <div>
-                        <TextField className='nuevaRequisicion_solicitante'
+                        <TextField 
                             label="Solicitante"
                             type="text"
                             defaultValue={user.user.name}
@@ -204,7 +225,7 @@ export default function NativeSelects(props) {
                         />
                     </div>
                     
-                    <div className="nuevaRequisicion_departamento">
+                    <div >
                         {departamentos.length > 0 ?
                             <>
                                 <InputLabel>Departamento</InputLabel>
@@ -224,7 +245,7 @@ export default function NativeSelects(props) {
                         }
                     </div>
 
-                    <div className="nuevaRequisicion_gasto">  
+                    <div>  
                         {departamentos.length > 0 && state.departamento !== ''?
                             <>
                                 <InputLabel>Tipo de Gasto</InputLabel>
@@ -245,8 +266,8 @@ export default function NativeSelects(props) {
 
                 </div>
 
-                <div>
-                    <div>
+                <div className={Style.nuevaRequisicion_segundoBloque}>
+                    <div className={Style.nuevaRequisicion}>
                         {presupuestos.length > 0 && state.departamento !== '' ?
                             <>
                                 <InputLabel>Presupuesto</InputLabel>
@@ -269,19 +290,25 @@ export default function NativeSelects(props) {
                             : null
                         }
                     </div>
-
-                    <div>
-                        <TextField
-                            id="fecha"
-                            label="Fecha"
-                            type="date"
-                            name='fecha'
-                            onChange={handleChange}
-                            defaultValue={state.fecha}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
+                    
+                    <div className={Style.nuevaRequisicion}>
+                        <InputLabel>Fecha</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid>
+                                <KeyboardDatePicker
+                                    className={Style.nuevaRequisicion_fecha}
+                                    format="dd/MM/yyyy"
+                                    name='fecha'
+                                    value={state.fecha !=='' ? state.fecha : null}
+                                    onChange={e=>handleChangeFecha(e,'fecha')}
+                                    // defaultValue={state.fecha}
+                                    placeholder="dd/mm/yyyy"
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
                     </div>
 
                     <div>
@@ -303,12 +330,12 @@ export default function NativeSelects(props) {
             </div>
 
             <div>
-                <div className='file'>
+                <div className={Style.file}>
                     {/* <p id='adjuntos'>Agregar archivos
                         <input className='nuevaRequisicion_adjunto_input' type='file' onChange={handleFile}></input>
                     </p> */}
                     <label htmlFor="file">Seleccionar archivo(s)</label>
-                    <input type="file" id="file" name="file" onChange={handleFile} />
+                    <input type="file" id='file' name="file" onChange={handleFile} />
                     <div>
                         {state.solicitud.name ? <div className='file-name'>{state.solicitud.name}</div> : null}
                     </div>
@@ -317,7 +344,7 @@ export default function NativeSelects(props) {
 
                 <div className="row justify-content-end mt-n18">
                     <div className="col-md-4">
-                        <button className='sendButton' onClick={enviar}>Agregar</button>
+                        <button className={Style.sendButton} onClick={enviar}>Agregar</button>
                     </div>
                 </div>
 

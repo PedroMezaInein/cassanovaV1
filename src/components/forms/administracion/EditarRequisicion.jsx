@@ -10,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 // import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 
+import Style from './NuevaRequisicion.module.css'
 
 import Swal from 'sweetalert2'
 
@@ -123,108 +124,115 @@ function EditarRequisicion (props) {
     }
 
     return (
-        <div className='editarRequisicion'>
-            <div className='editar_primerBloque'>
+        <>
+            <div className={Style.container}>
                 <div>
-                    {departamentos.length > 0 ?
-                        <>
-                            <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
-                            <Select
-                                value={form.departamento}
-                                name="departamento"
-                                onChange={handleChangeDepartamento}
-                                disabled
-                            >
-                                {departamentos.map((item, index) => (
-                                    <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
-                                ))}
+                    <div>
+                        {departamentos.length > 0 ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
+                                <Select
+                                    value={form.departamento}
+                                    name="departamento"
+                                    onChange={handleChangeDepartamento}
+                                    disabled
+                                >
+                                    {departamentos.map((item, index) => (
+                                        <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+                                    ))}
 
-                            </Select>
-                        </>
-                        : null
-                    }
+                                </Select>
+                            </>
+                            : null
+                        }
+                    </div>
+                    {/* {errores && errores.departamento && <span className='error_departamento'>{errores.departamento}</span>} */}
+
+                    <div>
+                        {/* {departamentos.length > 0 ?  */}
+                        {departamentos.length > 0 && form.departamento !== ''?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
+                                <Select
+                                    value={form.tipo_gasto}
+                                    name="tipo_gasto"
+                                    onChange={handleChange}
+                                    disabled
+                                >
+                                    {departamentos.find(item => item.id_area == form.departamento).partidas.map((item, index) => (
+                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                    ))}
+                                </Select>
+                            </>
+                            : null
+                        }
+                    </div>
+                    {/* {errores && errores.tipo_gasto && <span className='error_gasto'>{errores.tipo_gasto}</span>} */}
+
+                    <div>
+                        <FormControl>
+                            <form noValidate>
+                                <TextField
+                                    id="fecha"
+                                    label="Fecha"
+                                    type="date"
+                                    name='fecha'
+                                    onChange={handleChange}
+                                    defaultValue={form.fecha}
+                                    InputLabelProps={{
+                                    shrink: true,
+                                    }}
+                                    disabled
+                                />
+                            </form>
+                        </FormControl>
+                    </div>
                 </div>
-                {/* {errores && errores.departamento && <span className='error_departamento'>{errores.departamento}</span>} */}
 
                 <div>
-                    {/* {departamentos.length > 0 ?  */}
-                    {departamentos.length > 0 && form.departamento !== ''?
-                        <>
-                            <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
-                            <Select
-                                value={form.tipo_gasto}
-                                name="tipo_gasto"
-                                onChange={handleChange}
-                                disabled
-                            >
-                                {departamentos.find(item => item.id_area == form.departamento).partidas.map((item, index) => (
-                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                ))}
-                            </Select>
-                        </>
-                        : null
-                    }
-                </div>
-                {/* {errores && errores.tipo_gasto && <span className='error_gasto'>{errores.tipo_gasto}</span>} */}
 
-                <div>
-                    <FormControl>
-                        <form noValidate>
-                            <TextField
-                                id="fecha"
-                                label="Fecha"
-                                type="date"
-                                name='fecha'
-                                onChange={handleChange}
-                                defaultValue={form.fecha}
-                                InputLabelProps={{
+                    <div >
+                        <TextField
+                            // id="standard-full-width"
+                            label="Descripcion"
+                            style={{ margin: 8 }}
+                            placeholder="Deja un comentario"
+                            // helperText="Full width!"
+                            // fullWidth
+                            onChange={handleChange}
+                            margin="normal"
+                            name='descripcion'
+                            defaultValue={form.descripcion}
+                            InputLabelProps={{
                                 shrink: true,
-                                }}
-                                disabled
-                            />
-                        </form>
-                    </FormControl>
+                            }}
+                        />
+                    </div>
+                    {errores && errores.descripcion && <span className='error_descripcion'>{errores.descripcion}</span>}
+
+                    <div>
+                        <TextField
+                            label="Solicitante"
+                            type="text"
+                            defaultValue={user.user.name}
+                            InputLabelProps={{
+                            shrink: true,
+                            }}
+                            disabled
+                        />
+                    </div>
                 </div>
-            </div>
-            
+                
 
-            <div className='editarRequisicion_comentario'>
-                <FormControl className='editar_comentario'>
-                    <TextField 
-                        // id="standard-full-width"
-                        label="Descripcion"
-                        style={{ margin: 8 }}
-                        placeholder="Deja un comentario"
-                        // helperText="Full width!"
-                        // fullWidth
-                        onChange={handleChange}
-                        margin="normal"
-                        name='descripcion'
-                        defaultValue={form.descripcion}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                    />
-                </FormControl> 
-            </div>
-            {errores && errores.descripcion && <span className='error_descripcion'>{errores.descripcion}</span>}
-
-            <div className='editar_solicitante'>
-                <TextField
-                    label="Solicitante"
-                    type="text"
-                    defaultValue={user.user.name}
-                    InputLabelProps={{
-                    shrink: true,
-                    }}
-                    disabled
-                />
+                
             </div>
 
-            <div className='nuevaRequisicion_enviar'>
-                <button className='nuevaRequisicion_boton' onClick={handleSave}>Guardar</button>
+            <div className="row justify-content-end">
+                <div className="col-md-4">
+                    <button className={Style.sendButton} onClick={handleSave}>Guardar</button>
+                </div>   
             </div>
-        </div>
+        </>
     )
 }
 

@@ -40,6 +40,7 @@ export default function SeguimientoViajes(props) {
     )
   }
 
+  
   const startTravel = (e,viaje) => {
     Swal.fire({
       title: '¿Quieres confirmar el inicio de tu viaje?',
@@ -71,7 +72,7 @@ export default function SeguimientoViajes(props) {
           Swal.close()
           Swal.fire('iniciado, ¡Buen viaje!', '', 'success')
           if(reloadTable){
-              reloadTable.reload()
+            reloadTable.reload()
           }
       }) 
       .catch((error)=>{  
@@ -87,6 +88,7 @@ export default function SeguimientoViajes(props) {
   }
 
   const endTravel = (e, viaje) => {
+
 	Swal.fire({
 		title: '¿Estás seguro de concluir el viaje?',
 		icon: 'question',
