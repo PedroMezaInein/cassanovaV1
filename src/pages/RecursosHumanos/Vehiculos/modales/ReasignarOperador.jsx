@@ -69,9 +69,27 @@ export default function ReasignarOperador(props) {
                             })
                             handleClose()
 
-                    })
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Swal.fire({
+                                title: 'Error',
+                                text: err,
+                                icon: 'error',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        })
                 } catch (error) {
-                    console.log(error)
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Error al re-asignar vehiculo',
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    
                 }
             }
         })
