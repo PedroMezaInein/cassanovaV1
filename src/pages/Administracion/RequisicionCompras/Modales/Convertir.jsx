@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Convertir(props) { 
     const { data, handleClose, reload, opciones, estatusCompras } = props
-    console.log(props)
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
@@ -113,8 +112,6 @@ export default function Convertir(props) {
         return valid
     }
 
-    console.log(form)
-
     const aprobar = () => {
         if (form.monto !== data.monto_solicitado && form.auto1) {
             Swal.fire({
@@ -157,11 +154,11 @@ export default function Convertir(props) {
                         }
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                             (response) => {
+                                Swal.close()
                                 handleClose('convertir')
                                 if (reload) {
                                     reload.reload()
                                 }
-                                Swal.close()
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Guardado',
@@ -179,6 +176,7 @@ export default function Convertir(props) {
                             })
                         })
                     } else {
+                        Swal.close()
                         Swal.fire(
                             'Error!',
                             'Faltan datos por llenar',
@@ -230,11 +228,11 @@ export default function Convertir(props) {
                             }
                             apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                                 (response) => {
+                                    Swal.close()
                                     handleClose('convertir')
                                     if (reload) {
                                         reload.reload()
                                     }
-                                    Swal.close()
                                     Swal.fire({
                                         icon: 'success',
                                         title: 'Guardado',
@@ -252,6 +250,7 @@ export default function Convertir(props) {
                                 })
                             })
                         } else {
+                            Swal.close()
                             Swal.fire(
                                 'Error!',
                                 'Faltan datos por llenar',
@@ -274,7 +273,6 @@ export default function Convertir(props) {
     }
 
     const handleAprueba = (e) => {
-        console.log(e.target.name)
         if (e.target.name === 'auto1') {
             setForm({
                 ...form,

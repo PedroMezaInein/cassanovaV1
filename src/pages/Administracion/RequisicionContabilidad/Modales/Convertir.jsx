@@ -61,10 +61,12 @@ export default function Convertir(props) {
         empresa: "",
         factura: false,
     })
+
     const [file, setFile] = useState({
         factura: '',
         xml: ''
     })
+
     const classes = useStyles();
 
     const handleChange = (e) => {
@@ -79,7 +81,7 @@ export default function Convertir(props) {
             ...form,
             [tipo]: new Date(date)
         })
-    };
+    }
 
     const handleChangeDepartamento = (e) => {
         setForm({
@@ -92,125 +94,125 @@ export default function Convertir(props) {
 
     const aprobar = () => {
         if (validateForm()) {
-    if (form.auto2) {
-                Swal.fire({
-                    title: '¿Estas seguro de aprobar esta solicitud?',
-                    text: "Confirma los datos antes de continuar",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Si, aprobar!',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        if (validateForm()) {
-                            Swal.fire({
-                                title: 'Aprobando...',
-                                allowOutsideClick: false,
-                                onBeforeOpen: () => {
-                                    Swal.showLoading()
-                                }
-                            })
-                            let newForm = {
-                                id_departamento: form.departamento,
-                                id_gasto: form.tipoGasto,
-                                descripcion: form.descripcion,
-                                id_subarea: form.tipoSubgasto,
-                                id_pago: form.tipoPago,
-                                id_solicitante: data.solicitante_id,
-                                monto_pagado: form.monto,
-                                cantidad: form.monto_solicitado,
-                                autorizacion_1: form.auto1 ? form.auto1.id: null,
-                                autorizacion_2: form.auto2 ? auth.user.id : null,
-                                orden_compra: form.orden_compra,
-                                fecha_pago: form.fecha_pago,
-                                id_cuenta: form.id_cuenta,
-                                id_estatus: form.id_estatus,
-                                id_proveedor: form.proveedor,
-                                id_estatus_compra: form.compra,
-                                id_estatus_conta: form.conta,
-                                afectar_cuentas: form.afectarCuentas,
-                                empresa: form.empresa,
-                            }
-                            apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
-                                (response) => {
-                                    handleClose('convertir')
-                                    if (reload) {
-                                        reload.reload()
+            if (form.auto2) {
+                    Swal.fire({
+                        title: '¿Estas seguro de aprobar esta solicitud?',
+                        text: "Confirma los datos antes de continuar",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, aprobar!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (validateForm()) {
+                                Swal.fire({
+                                    title: 'Aprobando...',
+                                    allowOutsideClick: false,
+                                    onBeforeOpen: () => {
+                                        Swal.showLoading()
                                     }
+                                })
+                                let newForm = {
+                                    id_departamento: form.departamento,
+                                    id_gasto: form.tipoGasto,
+                                    descripcion: form.descripcion,
+                                    id_subarea: form.tipoSubgasto,
+                                    id_pago: form.tipoPago,
+                                    id_solicitante: data.solicitante_id,
+                                    monto_pagado: form.monto,
+                                    cantidad: form.monto_solicitado,
+                                    autorizacion_1: form.auto1 ? form.auto1.id: null,
+                                    autorizacion_2: form.auto2 ? auth.user.id : null,
+                                    orden_compra: form.orden_compra,
+                                    fecha_pago: form.fecha_pago,
+                                    id_cuenta: form.id_cuenta,
+                                    id_estatus: form.id_estatus,
+                                    id_proveedor: form.proveedor,
+                                    id_estatus_compra: form.compra,
+                                    id_estatus_conta: form.conta,
+                                    afectar_cuentas: form.afectarCuentas,
+                                    empresa: form.empresa,
+                                }
+                                apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
+                                    (response) => {
+                                        Swal.close()
+                                        handleClose('convertir')
+                                        if (reload) {
+                                            reload.reload()
+                                        }
+                                        Swal.fire({
+                                            title: 'Subiendo factura..',
+                                            allowOutsideClick: false,
+                                            didOpen: () => {
+                                                Swal.showLoading()
+                                            }
+                                        })
+                                        if (form.factura && file.factura && file.factura !== '' && file.xml && file.xml !== '') {
+                                            let archivo = new FormData();
+                                            let aux = [...file.xml, ...file.factura]
+                                            archivo.append(`files_name_requisicion[]`, file.factura.name)
+                                            archivo.append(`files_requisicion[]`, aux)
+                                            archivo.append('adjuntos[]', "requisicion")
+                                            archivo.append('tipo', 'Factura')
+                                            try {
+                                                apiPostForm(`requisicion/${props.data.id}/archivos/s3`, archivo, auth.access_token)
+                                                    .then(res => {
+                                                        Swal.close()
+                                                        Swal.fire({
+                                                            icon: 'success',
+                                                            title: 'Guardado',
+                                                            text: 'Se ha guardado correctamente',
+                                                            timer: 2000,
+                                                            timerProgressBar: true,
+                                                        })
+                                                    })
+                                                    .catch(err => {
+                                                        Swal.close()
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: 'El registro fue actualizado pero no fue posible subir la factura',
+                                                            text: 'Algo salio mal!',
+                                                        })
+                                                    })
+                                            } catch (error) {
+                                                Swal.close()
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Oops...',
+                                                    text: 'Algo salio mal!',
+                                                })
+                                            }
+                                        }
+                                    }, (error) => { }
+                                ).catch((error) => {
                                     Swal.close()
                                     Swal.fire({
-                                        title: 'Subiendo factura..',
-                                        allowOutsideClick: false,
-                                        didOpen: () => {
-                                            Swal.showLoading()
-                                        }
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: 'Ha ocurrido un error',
                                     })
-                                    if (form.factura && file.factura && file.factura !== '' && file.xml && file.xml !== '') {
-                                        let archivo = new FormData();
-                                        let aux = [...file.xml, ...file.factura]
-                                        archivo.append(`files_name_requisicion[]`, file.factura.name)
-                                        archivo.append(`files_requisicion[]`, aux)
-                                        archivo.append('adjuntos[]', "requisicion")
-                                        archivo.append('tipo', 'Factura')
-                                        try {
-                                            apiPostForm(`requisicion/${props.data.id}/archivos/s3`, archivo, auth.access_token)
-                                                .then(res => {
-                                                    Swal.close()
-                                                    Swal.fire({
-                                                        icon: 'success',
-                                                        title: 'Guardado',
-                                                        text: 'Se ha guardado correctamente',
-                                                        timer: 2000,
-                                                        timerProgressBar: true,
-                                                    })
-                                                })
-                                                .catch(err => {
-                                                    Swal.close()
-                                                    Swal.fire({
-                                                        icon: 'error',
-                                                        title: 'El registro fue actualizado pero no fue posible subir la factura',
-                                                        text: 'Algo salio mal!',
-                                                    })
-                                                })
-                                        } catch (error) {
-                                            Swal.close()
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Oops...',
-                                                text: 'Algo salio mal!',
-                                            })
-                                        }
-                                    }
-                                }, (error) => { }
-                            ).catch((error) => {
-                                Swal.close()
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Oops...',
-                                    text: 'Ha ocurrido un error',
                                 })
-                            })
-                        } else {
-                            Swal.fire(
-                                'Error!',
-                                'Faltan datos por llenar',
-                                'error'
-                            )
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    'Faltan datos por llenar',
+                                    'error'
+                                )
+                            }
                         }
-                    }
-                })
-            } else {
-                Swal.fire({
-                    title: 'Requisición no autorizada!',
-                    text: 'Debes aprobar la requisición para poder convertirla',
-                    icon: 'error',
-                    showCancelButton: false,
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Ok',
-                })
-            }
+                    })
+                } else {
+                    Swal.fire({
+                        title: 'Requisición no autorizada!',
+                        text: 'Debes aprobar la requisición para poder convertirla',
+                        icon: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Ok',
+                    })
+                }
         } else {
             Swal.fire({
                 title: 'Faltan datos por llenar!',
@@ -221,9 +223,6 @@ export default function Convertir(props) {
                 confirmButtonText: 'Ok',
             })
         }
-        
-
-
     }
 
     const validateForm = () => {
@@ -261,7 +260,6 @@ export default function Convertir(props) {
     }
 
     const handleAprueba = (e) => {
-        console.log(e.target.name)
         if (e.target.name === 'auto2') {
             setForm({
                 ...form,
@@ -299,7 +297,6 @@ export default function Convertir(props) {
     }
 
     const handleFile = (e, tipo) => {
-        console.log(e.target.files)
         setFile({
             ...file,
             [tipo]: e.target.files[0]
@@ -314,7 +311,6 @@ export default function Convertir(props) {
     }
 
     const onChangeFactura = (e) => {
-        console.log(e.target.files)
         const { files } = e.target
         const reader = new FileReader()
         if (files[0].type === 'text/xml') { 
@@ -329,7 +325,6 @@ export default function Convertir(props) {
                     const keys = Object.keys(jsonObj)
                     let obj = {}
                     let errores = []
-                    console.log(obj)
                     if (keys.includes('cfdi:Receptor')) {
                         obj.rfc_receptor = jsonObj['cfdi:Receptor']['Rfc']
                         obj.nombre_receptor = jsonObj['cfdi:Receptor']['Nombre']
@@ -392,7 +387,6 @@ export default function Convertir(props) {
                             obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']
                         }
                     }
-                    console.log(obj)
                     setForm({
                         ...form,
                         monto: obj.total ? obj.total : form.monto,

@@ -80,7 +80,7 @@ export default function Editar(props) {
     const handleSave = () => {
         if (form.monto !== data.monto_solicitado && form.auto1) { 
             Swal.fire({
-                title: 'Estàs editando el monto de la solicitud',
+                title: 'Estás editando el monto de la solicitud',
                 text: " Esto eliminara la aprobación de la requisición y deberá ser aprobada nuevamente",
                 icon: 'warning',
                 showCancelButton: true,
@@ -90,13 +90,6 @@ export default function Editar(props) {
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Guardando...',
-                        allowOutsideClick: false,
-                        onBeforeOpen: () => {
-                            Swal.showLoading()
-                        }
-                    })
                     if (validateForm()) {
                         try {
                             Swal.fire({
@@ -127,11 +120,12 @@ export default function Editar(props) {
 
                             apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                                 (response) => {
+                                    Swal.close()
                                     handleClose('editar')
                                     if (reload) {
                                         reload.reload()
                                     }
-                                    Swal.close()
+                                    
                                     Swal.fire({
                                         icon: 'success',
                                         title: 'Guardado',
@@ -157,6 +151,7 @@ export default function Editar(props) {
                             })
                         }
                     } else {
+                        Swal.close()
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
@@ -166,6 +161,7 @@ export default function Editar(props) {
                 }
             })
         } else {
+            Swal.close()
             Swal.fire({
                 title: 'Guardando...',
                 allowOutsideClick: false,
@@ -203,11 +199,11 @@ export default function Editar(props) {
 
                     apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                         (response) => {
+                            Swal.close()
                             handleClose('editar')
                             if (reload) {
                                 reload.reload()
                             }
-                            Swal.close()
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Guardado',
@@ -233,6 +229,7 @@ export default function Editar(props) {
                     })
                 }
             } else {
+                Swal.close()
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',

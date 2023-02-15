@@ -83,13 +83,6 @@ export default function Editar(props) {
     };
 
     const handleSave = () => {
-        Swal.fire({
-            title: 'Guardando...',
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            }
-        })
         if (validateForm()) {
             try {
                 Swal.fire({
@@ -120,11 +113,11 @@ export default function Editar(props) {
                 }
 
                 apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
+                    Swal.close()
                     handleClose('editar')
                     if (reload) {
                         reload.reload()
                     }
-                    Swal.close()
                     Swal.fire({
                         icon: 'success',
                         title: 'Guardado',
