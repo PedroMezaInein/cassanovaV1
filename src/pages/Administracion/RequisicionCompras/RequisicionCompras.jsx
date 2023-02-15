@@ -55,6 +55,7 @@ export default function RequisicionCompras() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
+        { nombre: 'Orden no.', identificador: 'orden_compra' },
         { nombre: 'Solicitante', identificador: 'solicitante', sort: false, stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
         { nombre: 'Departamento', identificador: 'departamento', sort: false, stringSearch: false },
@@ -257,15 +258,15 @@ export default function RequisicionCompras() {
             {
                 estatusCompras && opcionesApi ?
                     <>
-                        <Modal size="xl" title={"Aprobar Requisicion de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
+                        <Modal size="xl" title={"Aprobar Requisición de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
                             <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
                         </Modal>
 
-                        <Modal size="xl" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
+                        <Modal size="xl" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
                             <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
                         </Modal>
 
-                        <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>
+                        <Modal size="lg" title={"Nueva requisición"} show={modal.crear.show} handleClose={handleClose('crear')}>
                             <Crear handleClose={handleClose('crear')} reload={reloadTable} />
                         </Modal>
 

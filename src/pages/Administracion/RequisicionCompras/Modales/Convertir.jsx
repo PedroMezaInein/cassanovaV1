@@ -3,6 +3,11 @@ import { useSelector } from 'react-redux'
 
 import { apiPutForm } from '../../../../functions/api'
 
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale'
+import Grid from '@material-ui/core/Grid';
+
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
@@ -27,7 +32,7 @@ export default function Convertir(props) {
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
-        fecha: data.fecha,
+        fecha: new Date(data.fecha),
         departamento: data.departamento_id,
         tipoGasto: data.tipoEgreso_id,
         tipoSubgasto: data.tipoSubEgreso_id,
@@ -43,7 +48,7 @@ export default function Convertir(props) {
         id_estatus: data.id_estatus,
         checked: data.auto1 ? true : false,
         proveedor: data.proveedor,
-        fecha_entrega: data.fecha_entrega,
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
         empresa: "",
     })
     const [errores, setErrores] = useState({})
@@ -56,6 +61,13 @@ export default function Convertir(props) {
             [e.target.name]: e.target.value
         })
     }
+
+    const handleChangeFecha = (date, tipo) => {
+        setForm({
+            ...form,
+            [tipo]: new Date(date)
+        })
+    };
 
     const handleChangeDepartamento = (e) => {
         setForm({
@@ -101,6 +113,8 @@ export default function Convertir(props) {
         return valid
     }
 
+    console.log(form)
+
     const aprobar = () => {
         if (form.monto !== data.monto_solicitado && form.auto1) {
             Swal.fire({
@@ -132,7 +146,7 @@ export default function Convertir(props) {
                             id_solicitante: data.solicitante_id,
                             monto_pagado: form.monto_pagado,
                             cantidad: form.monto,
-                            autorizacion_1: form.monto === data.monto_solicitado ? form.auto1 && form.auto1.id ? form.auto1.id : form.auto1 : null,
+                            autorizacion_1: form.auto1 ? auth.user.id : null,
                             autorizacion_2: form.auto2 ? form.auto2.id : null,
                             orden_compra: data.orden_compra,
                             fecha_pago: data.fecha_pago,
@@ -205,7 +219,7 @@ export default function Convertir(props) {
                                 id_solicitante: data.solicitante_id,
                                 monto_pagado: form.monto_pagado,
                                 cantidad: form.monto,
-                                autorizacion_1: form.monto === data.monto_solicitado ? form.auto1 && form.auto1.id ? form.auto1.id : form.auto1 : null,
+                                autorizacion_1: form.auto1 && form.auto1.id ? form.auto1.id : form.auto1,
                                 autorizacion_2: form.monto === data.monto_solicitado ? form.auto2 ? form.auto2.id : null: null,
                                 orden_compra: data.orden_compra,
                                 fecha_pago: data.fecha_pago,
@@ -282,28 +296,43 @@ export default function Convertir(props) {
             <div className={Style.container}>
 
                 <div>
-                    <TextField
-                        label="Fecha de solicitud"
-                        type="date"
-                        name='fecha'
-                        defaultValue={form.fecha}
-                        className={classes.textField}
-                        
-                    />
+                    <InputLabel >Fecha de solicitud</InputLabel>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <Grid container >
+                            <KeyboardDatePicker
+
+                                format="dd/MM/yyyy"
+                                name="fecha"
+                                value={form.fecha !== '' ? form.fecha : null}
+                                placeholder="dd/mm/yyyy"
+                                onChange={e => handleChangeFecha(e, 'fecha')}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            /* error={errores.fecha ? true : false} */
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
                 </div>
 
                 <div>
-                    <TextField
-                        name='fecha_entrega'
-                        label="Fecha de entrega"
-                        type="date"
-                        defaultValue={form.fecha_entrega}
-                        onChange={handleChange}
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
+                    <InputLabel >Fecha de entrega</InputLabel>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <Grid container >
+                            <KeyboardDatePicker
+
+                                format="dd/MM/yyyy"
+                                name="fecha_entrega"
+                                value={form.fecha_entrega !== '' ? form.fecha_entrega : null}
+                                placeholder="dd/mm/yyyy"
+                                onChange={e => handleChangeFecha(e, 'fecha_entrega')}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            /* error={errores.fecha_entrega ? true : false} */
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
                 </div>
 
                 <div>
@@ -532,10 +561,16 @@ export default function Convertir(props) {
                     />
                 </div>
 
-                <div className={Style.btnAprobar}>
+                {/* <div className={Style.btnAprobar}>
                     <button onClick={aprobar}>Convertir</button>
-                </div>
+                </div> */}
 
+            </div>
+
+            <div className="row justify-content-end">
+                <div className="col-md-4">
+                    <button className={Style.sendButton} onClick={aprobar}>Convertir</button>
+                </div>
             </div>
         </>
     )
