@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
     textField: {
         width: '75%',
     },
+    error: {
+        color: 'red',
+    }
 }));
 
 export default function Convertir(props) {
@@ -51,7 +54,7 @@ export default function Convertir(props) {
         auto1: data.auto1 ? data.auto1 : false,
         auto2: data.auto2 ? data.auto2 : false,
         auto3: data.auto3 ? data.auto3 : false,
-        id_estatus: data.id_estatus,
+        id_estatus: data.id_estatus_compra,
         proveedor: data.proveedor,
         estatus_compra: data.estatus_compra,
         estatus_conta: data.estatus_conta,
@@ -67,6 +70,9 @@ export default function Convertir(props) {
         xml: ''
     })
 
+    const [errores, setErrores] = useState({})
+    console.log(errores)
+    console.log(form)
     const classes = useStyles();
 
     const handleChange = (e) => {
@@ -128,12 +134,13 @@ export default function Convertir(props) {
                                     orden_compra: form.orden_compra,
                                     fecha_pago: form.fecha_pago,
                                     id_cuenta: form.id_cuenta,
-                                    id_estatus: form.id_estatus,
+                                    /* id_estatus: form.id_estatus, */
                                     id_proveedor: form.proveedor,
                                     id_estatus_compra: form.compra,
                                     id_estatus_conta: form.conta,
                                     afectar_cuentas: form.afectarCuentas,
                                     empresa: form.empresa,
+                                    autorizacion_conta: true,
                                 }
                                 apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                                     (response) => {
@@ -227,35 +234,88 @@ export default function Convertir(props) {
 
     const validateForm = () => {
         let valid = true
+        let aux = {}
         if (form.fecha === '' || form.fecha === null) {
             valid = false
+            aux.fecha = true
+        }
+        if (form.fecha_pago === '' || form.fecha_pago === null){
+            valid = false
+            aux.fecha_pago = true
         }
         if (form.departamento === '' || form.departamento === null) {
             valid = false
+            aux.departamento = true
         }
         if (form.tipoGasto === '' || form.tipoGasto === null) {
             valid = false
+            aux.tipoGasto = true
         }
         if (form.tipoSubgasto === '' || form.tipoSubgasto === null) {
             valid = false
+            aux.tipoSubgasto = true
         }
         if (form.tipoPago === '' || form.tipoPago === null) {
             valid = false
+            aux.tipoPago = true
         }
-        if (form.monto === '' || form.monto === null) {
+        if (form.monto === '' || form.monto === null || form.monto === 0) {
             valid = false
+            aux.monto = true
         }
         if (form.descripcion === '' || form.descripcion === null) {
             valid = false
+            aux.descripcion = true
         }
         if (form.factura) {
             if(file.factura === '' || file.factura === null){
                 valid = false
+                aux.factura = true
             }
             if(file.xml === '' || file.xml === null){
                 valid = false
+                aux.xml = true
             }
         }
+        if(form.empresa === '' || form.empresa === null) {
+            valid = false
+            aux.empresa = true
+        }
+        if (!form.afectarCuentas) { 
+            valid = false
+            aux.afectarCuentas = true
+        }
+
+        if (form.proveedor === '' || form.proveedor === null) {
+            valid = false
+            aux.proveedor = true
+        }
+        if (form.compra === '' || form.compra === null) {
+            valid = false
+            aux.compra = true
+        }
+        if (form.conta === '' || form.conta === null) {
+            valid = false
+            aux.conta = true
+        }
+        if( form.tipoGasto === '' || form.tipoGasto === null){
+            valid = false
+            aux.tipoGasto = true
+        }
+        if( form.tipoSubgasto === '' || form.tipoSubgasto === null){
+            valid = false
+            aux.tipoSubgasto = true
+        }
+        if( form.tipoPago === '' || form.tipoPago === null){
+            valid = false
+            aux.tipoPago = true
+        }
+        if (form.id_cuenta === '' || form.id_cuenta === null) {
+            valid = false
+            aux.id_cuenta = true
+        }
+
+        setErrores(aux) 
         return valid
     }
 
@@ -433,7 +493,7 @@ export default function Convertir(props) {
     return (
         <>
             <div>
-                <div className={Style.container_factura}>
+                {/* <div className={Style.container_factura}>
                     <div>
                         <InputLabel id="demo-simple-select-label">Lleva facura</InputLabel>
                         <FormGroup aria-label="position" row>
@@ -488,11 +548,11 @@ export default function Convertir(props) {
                         }    
                     </div>
                     
-                </div>
+                </div> */}
 
                 <div className={Style.container}>
                     <div>
-                        <InputLabel >Fecha de solicitud</InputLabel>
+                        <InputLabel>Fecha de solicitud</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardDatePicker
@@ -505,14 +565,13 @@ export default function Convertir(props) {
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
-                                /* error={errores.fecha ? true : false} */
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
                     </div>
 
                     <div>
-                        <InputLabel >Fecha de Pago</InputLabel>
+                        <InputLabel className={`${errores.fecha_pago ? classes.error : ''}`}>Fecha de Pago</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardDatePicker
@@ -543,12 +602,13 @@ export default function Convertir(props) {
 
                     <div>
                         <CurrencyTextField
-                            label="monto"
+                            label="monto Solicitado"
                             variant="standard"
-                            value={form.monto}
+                            value={form.monto_solicitado}
                             currencySymbol="$"
                             outputFormat="number"
                             onChange={(event, value) => handleMoney(value)}
+                            disabled
                         />
                     </div>
 
@@ -562,6 +622,7 @@ export default function Convertir(props) {
                                     onChange={handleChangeDepartamento}
                                     disabled
                                     className={classes.textField}
+                                    error={errores.departamento ? true : false}
                                 >
                                     {departamentos.map((item, index) => (
                                         <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
@@ -597,12 +658,13 @@ export default function Convertir(props) {
                     <div>
                         {departamentos.length && form.tipoGasto ?
                             <>
-                                <InputLabel id="demo-simple-select-label">Tipo de Subgasto</InputLabel>
+                                <InputLabel>Tipo de Subgasto</InputLabel>
                                 <Select
                                     name="tipoSubgasto"
                                     onChange={handleChange}
                                     value={form.tipoSubgasto}
                                     className={classes.textField}
+                                    error={errores.tipoSubgasto ? true : false}
                                 >
                                     {departamentos.find(item => item.id_area == form.departamento).partidas.find(item => item.id == form.tipoGasto).subpartidas.map((item, index) => (
                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -615,24 +677,15 @@ export default function Convertir(props) {
                     </div>
 
                     <div>
-                        {
-                            opciones ?
-                                <>
-                                    <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
-                                    <Select
-                                        name="tipoPago"
-                                        value={form.tipoPago}
-                                        onChange={handleChange}
-                                        className={classes.textField}
-                                    >
-                                        {opciones.tiposPagos.map((item, index) => (
-                                            <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
-                                        ))}
-
-                                    </Select>
-                                </>
-                                : null
-                        }
+                        <CurrencyTextField
+                            label="monto pagado"
+                            variant="standard"
+                            value={form.monto}
+                            currencySymbol="$"
+                            outputFormat="number"
+                            onChange={(event, value) => handleMoney(value)}
+                            error={errores.monto ? true : false}
+                        />
                     </div>
 
                     <div>
@@ -645,6 +698,7 @@ export default function Convertir(props) {
                                         value={form.empresa}
                                         onChange={handleChange}
                                         className={classes.textField}
+                                        error={errores.empresa ? true : false}
                                     >
                                         {opciones.empresas.map((item, index) => (
                                             <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -660,12 +714,13 @@ export default function Convertir(props) {
                         {
                             opciones && form.empresa !== "" ?
                                 <>
-                                    <InputLabel id="demo-simple-select-label">Cuenta de salida</InputLabel>
+                                    <InputLabel>Cuenta de salida</InputLabel>
                                     <Select
                                         name="id_cuenta"
                                         value={form.id_cuenta}
                                         onChange={handleChange}
                                         className={classes.textField}
+                                        error={errores.id_cuenta ? true : false}
                                     >
                                         {opciones.empresas.find(item => item.value == form.empresa).cuentas.map((item, index) => (
                                             <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -674,12 +729,13 @@ export default function Convertir(props) {
                                 </>
                                 : opciones ?
                                     <>
-                                        <InputLabel id="demo-simple-select-label">Cuenta de Salida</InputLabel>
+                                        <InputLabel>Cuenta de Salida</InputLabel>
                                         <Select
                                             name="id_cuenta"
                                             value={form.id_cuenta}
                                             onChange={handleChange}
                                             className={classes.textField}
+                                            error={errores.id_cuenta ? true : false}
                                         >
                                             {opciones.cuentas.map((item, index) => {
                                                 if (item.value == form.id_cuenta) {
@@ -695,14 +751,37 @@ export default function Convertir(props) {
 
                     <div>
                         {
+                            opciones ?
+                                <>
+                                    <InputLabel >Tipo de Pago</InputLabel>
+                                    <Select
+                                        name="tipoPago"
+                                        value={form.tipoPago}
+                                        onChange={handleChange}
+                                        className={classes.textField}
+                                        error={errores.tipoPago ? true : false}
+                                    >
+                                        {opciones.tiposPagos.map((item, index) => (
+                                            <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                        ))}
+
+                                    </Select>
+                                </>
+                                : null
+                        }
+                    </div>
+
+                    <div>
+                        {
                             estatusCompras ?
                                 <>
-                                    <InputLabel id="demo-simple-select-label">Estatus de pago</InputLabel>
+                                    <InputLabel>Estatus de pago</InputLabel>
                                     <Select
                                         name="compra"
                                         value={form.compra}
                                         onChange={handleChange}
                                         className={classes.textField}
+                                        error={errores.compra ? true : false}
                                     >
                                         {estatusCompras.map((item, index) => {
                                             if (item.nivel === 2) {
@@ -720,12 +799,13 @@ export default function Convertir(props) {
                         {
                             estatusCompras ?
                                 <>
-                                    <InputLabel id="demo-simple-select-label">Estatus de facturación</InputLabel>
+                                    <InputLabel >Estatus de facturación</InputLabel>
                                     <Select
                                         name="conta"
                                         value={form.conta}
                                         onChange={handleChange}
                                         className={classes.textField}
+                                        error={errores.conta ? true : false}
                                     >
                                         {estatusCompras.map((item, index) => {
                                             if (item.nivel === 3) {
@@ -743,7 +823,7 @@ export default function Convertir(props) {
                         {
                             opciones ?
                                 <>
-                                    <InputLabel id="demo-simple-select-label">Proveedor</InputLabel>
+                                    <InputLabel className={`${errores.proveedor ? classes.error : ''}`}>Proveedor</InputLabel>
                                     <Select
                                         name="proveedor"
                                         value={form.proveedor}
@@ -772,11 +852,12 @@ export default function Convertir(props) {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            error={errores.descripcion ? true : false}
                         />
                     </div>
 
                     <div>
-                        <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
+                        <InputLabel >Aprobar Requsición</InputLabel>
                         <Checkbox
                             checked={form.auto2}
                             onChange={handleAprueba}
@@ -787,7 +868,7 @@ export default function Convertir(props) {
                     </div>
 
                     <div>
-                        <InputLabel id="demo-simple-select-label">AFECTAR CUENTAS</InputLabel>
+                        <InputLabel className={`${errores.afectarCuentas ? classes.error : ''}`}>AFECTAR CUENTAS</InputLabel>
                         <Checkbox
                             checked={form.afectarCuentas}
                             onChange={handleCuentas}

@@ -13,7 +13,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import Checkbox from '@material-ui/core/Checkbox';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import Swal from 'sweetalert2'
@@ -24,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     textField: {
         width: '75%',
     },
+    error: {
+        color: 'red',
+    }
 }));
 
 export default function Editar(props) {
@@ -47,7 +49,7 @@ export default function Editar(props) {
         auto1: data.auto1 ? data.auto1 : false,
         auto2: data.auto2 ? data.auto2 : false,
         auto3: data.auto3 ? data.auto3 : false,
-        id_estatus: data.id_estatus,
+        id_estatus: data.id_estatus_compra,
         proveedor: data.proveedor,
         estatus_compra: data.estatus_compra,
         estatus_conta: data.estatus_conta,
@@ -56,6 +58,7 @@ export default function Editar(props) {
         empresa: "",
     })
 
+    const [errores, setErrores] = useState({})
 
     const classes = useStyles();
 
@@ -147,29 +150,90 @@ export default function Editar(props) {
 
     const validateForm = () => {
         let valid = true
+        let aux = {}
         if (form.fecha === '' || form.fecha === null) {
             valid = false
+            aux.fecha = true
+        }
+        if (form.fecha_pago === '' || form.fecha_pago === null) {
+            valid = false
+            aux.fecha_pago = true
         }
         if (form.departamento === '' || form.departamento === null) {
             valid = false
+            aux.departamento = true
         }
         if (form.tipoGasto === '' || form.tipoGasto === null) {
             valid = false
+            aux.tipoGasto = true
         }
         if (form.tipoSubgasto === '' || form.tipoSubgasto === null) {
             valid = false
+            aux.tipoSubgasto = true
         }
         if (form.tipoPago === '' || form.tipoPago === null) {
             valid = false
+            aux.tipoPago = true
         }
-        if (form.monto === '' || form.monto === null) {
-            valid = false
+        if (form.compra !== '' && form.compra !== null) {
+            let pago = estatusCompras.find(item => item.id === form.compra)
+            console.log(pago)
+            if (pago) {
+                if (pago.estatus !== 'Rechazado' && pago.estatus !== 'RECHAZADO' && pago.estatus !== 'rechazado') {
+                    if (form.monto === '' || form.monto === null || form.monto === 0) {
+                        valid = false
+                        aux.monto = true
+                    }
+                } else {
+                    
+                }
+            }
+        } else {
+            console.log('no hay compra')
+            if (form.monto === '' || form.monto === null || form.monto === 0) {
+                valid = false
+                aux.monto = true
+            }
         }
         if (form.descripcion === '' || form.descripcion === null) {
             valid = false
+            aux.descripcion = true
         }
-        return valid
+        if (form.empresa === '' || form.empresa === null) {
+            valid = false
+            aux.empresa = true
+        }
+        if (form.proveedor === '' || form.proveedor === null) {
+            valid = false
+            aux.proveedor = true
+        }
+        if (form.compra === '' || form.compra === null) {
+            valid = false
+            aux.compra = true
+        }
+        if (form.conta === '' || form.conta === null) {
+            valid = false
+            aux.conta = true
+        }
+        if (form.tipoGasto === '' || form.tipoGasto === null) {
+            valid = false
+            aux.tipoGasto = true
+        }
+        if (form.tipoSubgasto === '' || form.tipoSubgasto === null) {
+            valid = false
+            aux.tipoSubgasto = true
+        }
+        if (form.tipoPago === '' || form.tipoPago === null) {
+            valid = false
+            aux.tipoPago = true
+        }
+        if (form.id_cuenta === '' || form.id_cuenta === null) {
+            valid = false
+            aux.id_cuenta = true
+        }
 
+        setErrores(aux)
+        return valid
     }
 
     const handleAprueba = (e) => {
@@ -213,7 +277,7 @@ export default function Editar(props) {
                 </div>
 
                 <div>
-                    <InputLabel >Fecha de Pago</InputLabel>
+                    <InputLabel className={`${errores.fecha_pago ? classes.error : ''}`} >Fecha de Pago</InputLabel>
                     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                         <Grid container >
                             <KeyboardDatePicker
@@ -242,17 +306,19 @@ export default function Editar(props) {
                             shrink: true,
                         }}
                         onChange={handleChange}
+                        disabled
                     />
                 </div>
 
                 <div>
                     <CurrencyTextField
-                        label="monto"
+                        label="monto Solicitado"
                         variant="standard"
-                        value={form.monto}
+                        value={form.monto_solicitado}
                         currencySymbol="$"
                         outputFormat="number"
                         onChange={(event, value) => handleMoney(value)}
+                        disabled
                     />
                 </div>
 
@@ -277,26 +343,6 @@ export default function Editar(props) {
                     }
                     
                 </div>
-                
-                <div>
-                    {departamentos.length > 0 ?
-                        <>
-                            <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
-                            <Select
-                                value={form.tipoGasto}
-                                name="tipoGasto"
-                                onChange={handleChange}
-                                className={classes.textField}
-                            >
-                                {departamentos.find(item => item.id_area == form.departamento).partidas.map((item, index) => (
-                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                ))}
-
-                            </Select>
-                        </>
-                        : null
-                    }
-                </div>
 
                 <div>
                     {departamentos.length && form.tipoGasto ?
@@ -307,6 +353,7 @@ export default function Editar(props) {
                                 onChange={handleChange}
                                 value={form.tipoSubgasto}
                                 className={classes.textField}
+                                error={errores.tipoSubgasto ? true : false}
                             >
                                 {departamentos.find(item => item.id_area == form.departamento).partidas.find(item => item.id == form.tipoGasto).subpartidas.map((item, index) => (
                                     <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -321,6 +368,39 @@ export default function Editar(props) {
                 </div>
 
                 <div>
+                    {departamentos.length > 0 ?
+                        <>
+                            <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
+                            <Select
+                                value={form.tipoGasto}
+                                name="tipoGasto"
+                                onChange={handleChange}
+                                className={classes.textField}
+                                error={errores.tipoGasto ? true : false}
+                            >
+                                {departamentos.find(item => item.id_area == form.departamento).partidas.map((item, index) => (
+                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                ))}
+
+                            </Select>
+                        </>
+                        : null
+                    }
+                </div>
+
+                <div>
+                    <CurrencyTextField
+                        label="monto pagado"
+                        variant="standard"
+                        value={form.monto}
+                        currencySymbol="$"
+                        outputFormat="number"
+                        onChange={(event, value) => handleMoney(value)}
+                        error={errores.monto ? true : false}
+                    />
+                </div>
+
+                <div>
                     {
                         opciones ?
                             <>
@@ -330,6 +410,7 @@ export default function Editar(props) {
                                 value={form.tipoPago}
                                 onChange={handleChange}
                                 className={classes.textField}
+                                error={errores.tipoPago ? true : false}
                                 >
                                     {opciones.tiposPagos.map((item, index) => (
                                     <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -351,7 +432,8 @@ export default function Editar(props) {
                                     name="empresa"
                                     value={form.empresa}
                                     onChange={handleChange}
-                                    className={classes.textField}
+                                    className={classes.textField} 
+                                    error={errores.empresa ? true : false}
                                 >
                                     {opciones.empresas.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -373,6 +455,7 @@ export default function Editar(props) {
                                     value={form.id_cuenta}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.id_cuenta ? true : false}
                                 >
                                     {opciones.empresas.find(item => item.value == form.empresa).cuentas.map((item, index) => (
                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -387,6 +470,7 @@ export default function Editar(props) {
                                         value={form.id_cuenta}
                                         onChange={handleChange}
                                         className={classes.textField}
+                                        error={errores.id_cuenta ? true : false}
                                     >
                                         {opciones.cuentas.map((item, index) => {
                                             if (item.value == form.id_cuenta) {
@@ -410,6 +494,7 @@ export default function Editar(props) {
                                     value={form.compra}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.compra ? true : false}
                                 >
                                     {estatusCompras.map((item, index) => {
                                         if (item.nivel === 2) {
@@ -433,6 +518,7 @@ export default function Editar(props) {
                                     value={form.conta}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.conta ? true : false}
                                 >
                                     {estatusCompras.map((item, index) => {
                                         if (item.nivel === 3) {
@@ -457,6 +543,7 @@ export default function Editar(props) {
                                     onChange={handleChange}
                                     className={classes.textField}
                                     disabled
+                                    error={errores.proveedor ? true : false}
                                 >
                                     {opciones.proveedores.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -498,7 +585,7 @@ export default function Editar(props) {
             </div>
             <div className="row justify-content-end">
                 <div className="col-md-4">
-                    <button className={Style.sendButton} onClick={handleSave}>Guardar</button>
+                    <button className={Style.sendButton} onClick={handleSave}>Editar</button>
                 </div>
             </div>
         </>

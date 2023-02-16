@@ -117,7 +117,7 @@ export default function RequisicionCompras() {
                 orden_compra: item.orden_compra,
                 fecha_pago: item.fecha_pago,
                 cuenta: item.cuenta,
-                id_estatus: item.estatus ? item.estatus.id : null,
+                id_estatus: item.id_estatus_compra ? item.id_estatus_compra : null,
                 proveedor: item.id_proveedor ? item.id_proveedor : null,
                 /* estatus_admin: item.estatus_admin ? item.estatus_admin : 'Pendiente', */
                 estatus_compra: item.estatus_compra ? item.estatus_compra.estatus : 'pendiente',
@@ -130,7 +130,6 @@ export default function RequisicionCompras() {
         })
         aux = aux.reverse()
         return aux
-
     }
 
     let createtagaprobaciones = (item) => {
@@ -148,13 +147,23 @@ export default function RequisicionCompras() {
                 icono: 'fas fa-exchange-alt',
                 color: 'greenButton',
                 funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        convertir: {
-                            show: true,
-                            data: item
-                        }
-                    })
+                    if (item.auto1) {
+                        Swal.fire({
+                            title: 'Requisición ya aprobada',
+                            text: 'La requisición ya fue aprobada, no se puede convertir',
+                            icon: 'warning',
+                            confirmButtonText: 'Aceptar'
+                        })   
+                    } else {
+                        setModal({
+                            ...modal,
+                            convertir: {
+                                show: true,
+                                data: item
+                            }
+                        })    
+                    }
+                    
                 }
             },
             {
@@ -258,6 +267,7 @@ export default function RequisicionCompras() {
             {
                 estatusCompras && opcionesApi ?
                     <>
+                        
                         <Modal size="xl" title={"Aprobar Requisición de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
                             <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
                         </Modal>
@@ -280,9 +290,6 @@ export default function RequisicionCompras() {
                     </>
                     : null
             }
-            
-            
-
         </>
     )
 }

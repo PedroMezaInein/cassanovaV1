@@ -81,12 +81,12 @@ export default function Editar(props) {
         if (form.monto !== data.monto_solicitado && form.auto1) { 
             Swal.fire({
                 title: 'Estás editando el monto de la solicitud',
-                text: " Esto eliminara la aprobación de la requisición y deberá ser aprobada nuevamente",
+                text: " Esto eliminara la aprobación de la requisición y deberá ser aprobada nuevamente por contabilidad",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Si, editar!',
+                confirmButtonText: 'Si, editar y eliminar aprobación',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -113,7 +113,7 @@ export default function Editar(props) {
                                 orden_compra: data.orden_compra,
                                 fecha_pago: data.fecha_pago,
                                 id_cuenta: form.id_cuenta,
-                                id_estatus: form.id_estatus,
+                                id_estatus_compra: form.id_estatus,
                                 id_proveedor: form.proveedor,
                                 fecha_entrega: form.fecha_entrega,
                             }

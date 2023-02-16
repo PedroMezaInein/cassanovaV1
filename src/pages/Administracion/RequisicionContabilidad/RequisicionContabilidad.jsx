@@ -119,13 +119,14 @@ export default function RequisicionContabilidad() {
                 orden_compra: item.orden_compra,
                 fecha_pago: item.fecha_pago,
                 cuenta: item.cuenta,
-                id_estatus: item.estatus ? item.estatus.id : null,
+                id_estatus: item.id_estatus_compra ? item.id_estatus_compra : null,
                 proveedor: item.id_proveedor ? item.id_proveedor : null,
                 /* estatus_admin: item.estatus_admin ? item.estatus_admin : 'Pendiente', */
                 estatus_compra: item.estatus_compra ? item.estatus_compra.estatus : 'pendiente',
                 estatus_conta: item.estatus_conta ? item.estatus_conta.estatus : 'pendiente',
                 /* id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null, */
                 compra: item.estatus_compra ? item.estatus_compra.id : null,
+                id_estatus_compra: item.id_estatus_compra ? item.id_estatus_compra : null,
                 conta: item.estatus_conta ? item.estatus_conta.id : null,
                 afectacion_cuentas: item.afectacion_cuentas ? "Cuentas afectadas" : "sin afectación",
             })
