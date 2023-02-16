@@ -59,6 +59,7 @@ export default function TablaGeneral(props) {
     const [filter, setFilter] = useState(false);
     const [paginas, setPaginas] = useState(false);
     const [paginaActual, setPaginaActual] = useState(0);
+    const [errorApi, setErrorApi] = useState(false)
 
     useEffect(() => {
         getData();
@@ -106,6 +107,15 @@ export default function TablaGeneral(props) {
                     }
 
                     Swal.close();
+                })
+                .catch(res => {
+                    Swal.close()
+                    setErrorApi(true)
+                    Swal.fire({
+                        title: 'Error al cargar la información',
+                        html: `Intentalo más tarde`,
+                        icon: 'error'                        
+                    })
                 })
         } catch (error) {
             console.log(error)

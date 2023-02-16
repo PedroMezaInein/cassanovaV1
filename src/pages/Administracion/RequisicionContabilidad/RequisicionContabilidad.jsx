@@ -55,6 +55,7 @@ export default function RequisicionContabilidad() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
+        { nombre: 'Orden no.', identificador: 'orden_compra' },
         { nombre: 'Solicitante', identificador: 'solicitante', sort: false, stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
         { nombre: 'Departamento', identificador: 'departamento', sort: false, stringSearch: false },
@@ -66,7 +67,6 @@ export default function RequisicionContabilidad() {
         { nombre: 'Facturación', identificador: 'estatus_conta', sort: false, stringSearch: false },
         { nombre: 'Cuentas', identificador: 'afectacion_cuentas', sort: false, stringSearch: false },
         { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false },
-
     ]
 
     const opciones = [

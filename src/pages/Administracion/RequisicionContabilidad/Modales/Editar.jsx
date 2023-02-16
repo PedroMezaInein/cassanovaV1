@@ -1,10 +1,13 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiOptions, apiPutForm, apiPostForm } from '../../../../functions/api'
+import { apiPutForm } from '../../../../functions/api'
 
-import { setOptions } from '../../../../functions/setters'
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale'
+import Grid from '@material-ui/core/Grid';
 
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
@@ -29,7 +32,7 @@ export default function Editar(props) {
     
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
-        fecha: data.fecha,
+        fecha: new Date(data.fecha),
         departamento: data.departamento_id,
         tipoGasto: data.tipoEgreso_id,
         tipoSubgasto: data.tipoSubEgreso_id,
@@ -38,7 +41,7 @@ export default function Editar(props) {
         descripcion: data.descripcion,
         id: data.id,
         orden_compra: data.orden_compra,
-        fecha_pago: data.fecha_pago,
+        fecha_pago: data.fecha_pago ? new Date(data.fecha_pago) : '',
         id_cuenta: data.cuenta ? data.cuenta.id : null,
         monto_solicitado: data.monto_solicitado,
         auto1: data.auto1 ? data.auto1 : false,
@@ -52,7 +55,6 @@ export default function Editar(props) {
         conta: data.conta,
         empresa: "",
     })
-    console.log(data)
 
 
     const classes = useStyles();
@@ -72,6 +74,13 @@ export default function Editar(props) {
             tipoSubgasto: null
         })
     }
+
+    const handleChangeFecha = (date, tipo) => {
+        setForm({
+            ...form,
+            [tipo]: new Date(date)
+        })
+    };
 
     const handleSave = () => {
         Swal.fire({
@@ -171,7 +180,6 @@ export default function Editar(props) {
     }
 
     const handleAprueba = (e) => {
-        console.log(e.target.name)
         if (e.target.name === 'auto2') {
             setForm({
                 ...form,
@@ -192,31 +200,43 @@ export default function Editar(props) {
             <div className={Style.container}>
 
                 <div>
-                    <TextField
-                        label="Fecha de solicitud"
-                        type="date"
-                        name='fecha'
-                        defaultValue={form.fecha}
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        onChange={handleChange}
-                    />
+                    <InputLabel >Fecha de solicitud</InputLabel>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <Grid container >
+                            <KeyboardDatePicker
+
+                                format="dd/MM/yyyy"
+                                name="fecha"
+                                value={form.fecha !== '' ? form.fecha : null}
+                                placeholder="dd/mm/yyyy"
+                                onChange={e => handleChangeFecha(e, 'fecha')}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            /* error={errores.fecha ? true : false} */
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
                 </div>
 
                 <div>
-                    <TextField
-                        label="Fecha de Pago"
-                        type="date"
-                        name='fecha_pago'
-                        defaultValue={form.fecha_pago}
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        onChange={handleChange}
-                    />
+                    <InputLabel >Fecha de Pago</InputLabel>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <Grid container >
+                            <KeyboardDatePicker
+
+                                format="dd/MM/yyyy"
+                                name="fecha_pago"
+                                value={form.fecha_pago !== '' ? form.fecha_pago : null}
+                                placeholder="dd/mm/yyyy"
+                                onChange={e => handleChangeFecha(e, 'fecha_pago')}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            /* error={errores.fecha_pago ? true : false} */
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
                 </div>
 
                 <div>
@@ -233,7 +253,6 @@ export default function Editar(props) {
                 </div>
 
                 <div>
-
                     <CurrencyTextField
                         label="monto"
                         variant="standard"
@@ -242,7 +261,6 @@ export default function Editar(props) {
                         outputFormat="number"
                         onChange={(event, value) => handleMoney(value)}
                     />
-                    
                 </div>
 
                 <div>
@@ -458,7 +476,7 @@ export default function Editar(props) {
 
                 </div>
 
-                <div>
+                {/* <div>
                     <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
                     <Checkbox
                         checked={form.auto2}
@@ -467,7 +485,7 @@ export default function Editar(props) {
                         color="primary"
                         style={{ marginLeft: '20%' }}
                     />
-                </div>
+                </div> */}
 
                 <div>
                     <TextField
@@ -484,10 +502,11 @@ export default function Editar(props) {
                     />
                 </div>
 
-                <div className={Style.btnAprobar}>
-                    <button onClick={handleSave}>Guardar</button>
+            </div>
+            <div className="row justify-content-end">
+                <div className="col-md-4">
+                    <button className={Style.sendButton} onClick={handleSave}>Guardar</button>
                 </div>
-
             </div>
         </>
         )
