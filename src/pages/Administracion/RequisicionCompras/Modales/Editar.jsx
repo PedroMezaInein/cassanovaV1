@@ -49,6 +49,8 @@ export default function Editar(props) {
         proveedor: data.proveedor,
         fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
         empresa: "",
+        conta: data.conta,
+        factura: data.factura,
 
     })
 
@@ -116,6 +118,8 @@ export default function Editar(props) {
                                 id_estatus_compra: form.id_estatus,
                                 id_proveedor: form.proveedor,
                                 fecha_entrega: form.fecha_entrega,
+                                id_estatus_factura: form.factura,
+                                id_estatus_conta: form.conta,
                             }
 
                             apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
@@ -192,9 +196,11 @@ export default function Editar(props) {
                         orden_compra: data.orden_compra,
                         fecha_pago: data.fecha_pago,
                         id_cuenta: form.id_cuenta,
-                        id_estatus: form.id_estatus,
+                        id_estatus_compra: form.id_estatus,
                         id_proveedor: form.proveedor,
                         fecha_entrega: form.fecha_entrega,
+                        id_estatus_factura: form.factura,
+                        id_estatus_conta: form.conta,
                     }
 
                     apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(

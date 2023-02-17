@@ -126,6 +126,8 @@ export default function RequisicionCompras() {
                 id_estatus_compra: item.id_estatus_compra ? item.id_estatus_compra : null,
                 id_estatus_conta: item.id_estatus_conta ? item.id_estatus_conta : null,
                 fecha_entrega: item.fecha_entrega ? item.fecha_entrega : null,
+                conta: item.estatus_conta ? item.estatus_conta.id : null,
+                factura: item.estatus_factura ? item.estatus_factura.id : null,
             })
         })
         aux = aux.reverse()

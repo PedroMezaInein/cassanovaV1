@@ -49,6 +49,8 @@ export default function Convertir(props) {
         proveedor: data.proveedor,
         fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
         empresa: "",
+        conta: data.conta,
+        factura: data.factura,
     })
     const [errores, setErrores] = useState({})
 
@@ -152,6 +154,8 @@ export default function Convertir(props) {
                             id_proveedor: form.proveedor,
                             fecha_entrega: form.fecha_entrega,
                             autorizacion_compras: true,
+                            id_estatus_factura: form.factura,
+                            id_estatus_conta: form.conta,
                         }
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                             (response) => {

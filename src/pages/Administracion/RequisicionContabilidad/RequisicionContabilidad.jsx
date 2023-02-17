@@ -63,8 +63,8 @@ export default function RequisicionContabilidad() {
         { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false },
         { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
         { nombre: 'Monto pagado', identificador: 'monto_view', sort: false, stringSearch: false },
-        { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
-        { nombre: 'Facturación', identificador: 'estatus_conta', sort: false, stringSearch: false },
+        { nombre: 'Estatus', identificador: 'estatus_compra', sort: false, stringSearch: false },
+        { nombre: 'Facturación', identificador: 'estatus_factura', sort: false, stringSearch: false },
         { nombre: 'Cuentas', identificador: 'afectacion_cuentas', sort: false, stringSearch: false },
         { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false },
     ]
@@ -112,7 +112,7 @@ export default function RequisicionContabilidad() {
                 monto_solicitado: item.cantidad,
                 monto: item.monto_pago,
                 monto_view: `$${item.monto_pago.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`,
-                estatus: item.estatus ? item.estatus.estatus : 'Pendiente',
+                /* estatus: item.estatus ? item.estatus.estatus : 'Pendiente', */
                 aprobacion: createtagaprobaciones(item),
                 auto1: item.auto1,
                 auto2: item.auto2,
@@ -124,10 +124,13 @@ export default function RequisicionContabilidad() {
                 /* estatus_admin: item.estatus_admin ? item.estatus_admin : 'Pendiente', */
                 estatus_compra: item.estatus_compra ? item.estatus_compra.estatus : 'pendiente',
                 estatus_conta: item.estatus_conta ? item.estatus_conta.estatus : 'pendiente',
+                estatus_factura: item.estatus_factura ? item.estatus_factura.estatus : 'pendiente',
                 /* id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null, */
                 compra: item.estatus_compra ? item.estatus_compra.id : null,
                 id_estatus_compra: item.id_estatus_compra ? item.id_estatus_compra : null,
+                id_estatus_factura: item.id_estatus_factura ? item.id_estatus_factura : null,
                 conta: item.estatus_conta ? item.estatus_conta.id : null,
+                factura: item.estatus_factura ? item.estatus_factura.id : null,
                 afectacion_cuentas: item.afectacion_cuentas ? "Cuentas afectadas" : "sin afectación",
             })
         })

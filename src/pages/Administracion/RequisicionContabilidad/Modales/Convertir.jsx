@@ -54,13 +54,14 @@ export default function Convertir(props) {
         auto1: data.auto1 ? data.auto1 : false,
         auto2: data.auto2 ? data.auto2 : false,
         auto3: data.auto3 ? data.auto3 : false,
-        id_estatus: data.id_estatus_compra,
+        /* id_estatus: data.id_estatus_compra, */
         proveedor: data.proveedor,
         estatus_compra: data.estatus_compra,
         estatus_conta: data.estatus_conta,
         afectarCuentas: false,
         compra: data.compra,
         conta: data.conta,
+        factura: data.factura,
         empresa: "",
         factura: false,
     })
@@ -137,6 +138,7 @@ export default function Convertir(props) {
                                     /* id_estatus: form.id_estatus, */
                                     id_proveedor: form.proveedor,
                                     id_estatus_compra: form.compra,
+                                    id_estatus_factura: form.factura,
                                     id_estatus_conta: form.conta,
                                     afectar_cuentas: form.afectarCuentas,
                                     empresa: form.empresa,
@@ -294,7 +296,7 @@ export default function Convertir(props) {
             valid = false
             aux.compra = true
         }
-        if (form.conta === '' || form.conta === null) {
+        if (form.factura === '' || form.factura === null) {
             valid = false
             aux.conta = true
         }
@@ -777,8 +779,8 @@ export default function Convertir(props) {
                                 <>
                                     <InputLabel>Estatus de pago</InputLabel>
                                     <Select
-                                        name="compra"
-                                        value={form.compra}
+                                        name="conta"
+                                        value={form.conta}
                                         onChange={handleChange}
                                         className={classes.textField}
                                         error={errores.compra ? true : false}
@@ -802,7 +804,7 @@ export default function Convertir(props) {
                                     <InputLabel >Estatus de facturación</InputLabel>
                                     <Select
                                         name="conta"
-                                        value={form.conta}
+                                        value={form.factura}
                                         onChange={handleChange}
                                         className={classes.textField}
                                         error={errores.conta ? true : false}

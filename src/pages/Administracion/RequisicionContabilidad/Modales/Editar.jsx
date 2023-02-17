@@ -49,12 +49,13 @@ export default function Editar(props) {
         auto1: data.auto1 ? data.auto1 : false,
         auto2: data.auto2 ? data.auto2 : false,
         auto3: data.auto3 ? data.auto3 : false,
-        id_estatus: data.id_estatus_compra,
+        /* id_estatus: data.id_estatus_compra, */
         proveedor: data.proveedor,
         estatus_compra: data.estatus_compra,
         estatus_conta: data.estatus_conta,
         compra: data.compra,
         conta: data.conta,
+        factura: data.factura,
         empresa: "",
     })
 
@@ -84,6 +85,7 @@ export default function Editar(props) {
             [tipo]: new Date(date)
         })
     };
+    console.log(form) 
 
     const handleSave = () => {
         if (validateForm()) {
@@ -109,9 +111,10 @@ export default function Editar(props) {
                     orden_compra: form.orden_compra,
                     fecha_pago: form.fecha_pago,
                     id_cuenta: form.id_cuenta,
-                    id_estatus: form.id_estatus,
+                    /* id_estatus: form.id_estatus, */
                     id_proveedor: form.proveedor,
                     id_estatus_compra: form.compra,
+                    id_estatus_factura: form.factura,
                     id_estatus_conta: form.conta,
                 }
 
@@ -211,7 +214,7 @@ export default function Editar(props) {
             valid = false
             aux.compra = true
         }
-        if (form.conta === '' || form.conta === null) {
+        if (form.factura === '' || form.factura === null) {
             valid = false
             aux.conta = true
         }
@@ -490,8 +493,8 @@ export default function Editar(props) {
                             <>
                                 <InputLabel id="demo-simple-select-label">Estatus de pago</InputLabel>
                                 <Select
-                                    name="compra"
-                                    value={form.compra}
+                                    name="conta"
+                                    value={form.conta}
                                     onChange={handleChange}
                                     className={classes.textField}
                                     error={errores.compra ? true : false}
@@ -514,8 +517,8 @@ export default function Editar(props) {
                             <>
                                 <InputLabel id="demo-simple-select-label">Estatus de facturación</InputLabel>
                                 <Select
-                                    name="conta"
-                                    value={form.conta}
+                                    name="factura"
+                                    value={form.factura}
                                     onChange={handleChange}
                                     className={classes.textField}
                                     error={errores.conta ? true : false}
