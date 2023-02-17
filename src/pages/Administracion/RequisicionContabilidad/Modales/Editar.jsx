@@ -512,7 +512,7 @@ export default function Editar(props) {
                     {
                         estatusCompras ?
                             <>
-                                <InputLabel id="demo-simple-select-label">Estatus de facturación</InputLabel>
+                                <InputLabel >Estatus de facturación</InputLabel>
                                 <Select
                                     name="factura"
                                     value={form.factura}
