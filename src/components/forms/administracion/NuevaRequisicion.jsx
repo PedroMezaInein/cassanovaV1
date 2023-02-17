@@ -138,18 +138,18 @@ export default function NativeSelects(props) {
 
                 apiPostForm('requisicion', dataForm, user.access_token)
                     .then((data) => {
-                        Swal.close()
                         Swal.fire({
+                            title: 'Requisicion enviada',
+                            text: 'La requisicion se ha enviado correctamente',
                             icon: 'success',
-                            title: 'Nueva Requisicion',
-                            text: 'Se ha creado correctamente',
-                            timer: 5000,
-                            timerProgressBar: true,
+                            showConfirmButton: true,
+                            timer: 2000,
+                        }).then(() => {
+                            if (reload) {
+                                reload.reload()
+                            }
+                            handleClose()
                         })
-                        handleClose()
-                        if (reload) {
-                            reload.reload()
-                        }
 
                         /* if (data.isConfirmed) {
 
