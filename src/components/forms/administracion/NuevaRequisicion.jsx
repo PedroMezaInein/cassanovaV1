@@ -32,7 +32,7 @@ export default function NativeSelects(props) {
         presupuesto: '',
     });
     
-    const [errores, setErrores] = useState()
+    const [errores, setErrores] = useState({})
 
     const handleFile = (e) => {
         setState({
@@ -77,12 +77,15 @@ export default function NativeSelects(props) {
             error.presupuesto = "Seleccione un presupuesto"
             validar = false
         }
+        if (state.fecha === '' || state.fecha === null) {
+            error.fecha = "Seleccione una fecha"
+            validar = false
+        }
         
         setErrores(error)
         return validar
     }
 
-    console.log(state)
 
     function formatDate(date) {
         var year = date.getFullYear();
@@ -253,6 +256,7 @@ export default function NativeSelects(props) {
                                     value={state.tipo_gasto}
                                     name="tipo_gasto"
                                     onChange={handleChange}
+                                    error={errores.tipo_gasto ? true : false}
                                 >
                                     {departamentos.find(item => item.id_area == state.departamento).partidas.map((item, index) => (
                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -275,6 +279,7 @@ export default function NativeSelects(props) {
                                     value={state.presupuesto}
                                     name="presupuesto"
                                     onChange={handleChange}
+                                    error={errores.presupuesto ? true : false}
                                 >
                                     {
                                         presupuestos.find(item => item.id_area == state.departamento) ?
@@ -292,7 +297,7 @@ export default function NativeSelects(props) {
                     </div>
                     
                     <div className={Style.nuevaRequisicion}>
-                        <InputLabel>Fecha</InputLabel>
+                        <InputLabel error={errores.fecha ?true: false}>Fecha</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid>
                                 <KeyboardDatePicker
@@ -323,6 +328,7 @@ export default function NativeSelects(props) {
                                 shrink: true,
                             }}
                             multiline
+                            error={errores.descripcion ? true : false}
                         />
                     </div>
                 </div>

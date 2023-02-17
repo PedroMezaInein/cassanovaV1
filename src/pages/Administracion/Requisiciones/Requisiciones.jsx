@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { useSelector } from 'react-redux';
 
+import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { REQUISICIONES } from '../../../constants'
@@ -41,28 +42,51 @@ function Requisiciones () {
         pathname: '/administracion/requisicion',
     }
 
-    const proccessData = (datos) => {
 
+    const proccessData = (datos) => {
+        
         let aux = []
-        datos.Requisiciones.map((result) => {
-            aux.push(
-                {
-                    acciones: acciones(),
-                    orden_compra: result.orden_compra,
-                    solicitante: result.solicitante.name,
-                    fecha: result.fecha,
-                    departamento: result.departamento ?  result.departamento.nombre : '',
-                    tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
-                    descripcion: result.descripcion,
-                    estatus: result.estatus ? result.estatus.estatus : 'pendiente' ,
-                    tiempo_estimado: result.fecha_entrega ? result.fecha_entrega : 'no especificado',
-                    id:result.id,
-                    data:result
-                }
-            )
-        })
-        aux=aux.reverse()
-        return aux
+            datos.Requisiciones.map((result) => {
+                aux.push(
+                    {
+                        acciones: acciones(),
+                        orden_compra: result.orden_compra,
+                        solicitante: result.solicitante.name,
+                        fecha: result.fecha,
+                        departamento: result.departamento ?  result.departamento.nombre : '',
+                        tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
+                        descripcion: result.descripcion,
+                        estatus: result.estatus ? result.estatus.estatus : 'pendiente' ,
+                        tiempo_estimado: result.fecha_entrega ? result.fecha_entrega : 'no especificado',
+                        id:result.id,
+                        data:result
+                    }
+                )
+            })
+            aux=aux.reverse()
+            return aux
+    // }
+        
+        // let aux = []
+        // datos.Requisiciones.map((result) => {
+        //     aux.push(
+        //         {
+        //             acciones: acciones(),
+        //             orden_compra: result.orden_compra,
+        //             solicitante: result.solicitante.name,
+        //             fecha: result.fecha,
+        //             departamento: result.departamento ?  result.departamento.nombre : '',
+        //             tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
+        //             descripcion: result.descripcion,
+        //             estatus: result.estatus ? result.estatus.estatus : 'pendiente' ,
+        //             tiempo_estimado: result.fecha_entrega ? result.fecha_entrega : 'no especificado',
+        //             id:result.id,
+        //             data:result
+        //         }
+        //     )
+        // })
+        // aux=aux.reverse()
+        // return aux
     }
     
     const handleOpen = [

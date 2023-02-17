@@ -55,6 +55,7 @@ export default function RequisicionCompras() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
+        { nombre: 'Orden no.', identificador: 'orden_compra' },
         { nombre: 'Solicitante', identificador: 'solicitante', sort: false, stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
         { nombre: 'Departamento', identificador: 'departamento', sort: false, stringSearch: false },
@@ -64,6 +65,7 @@ export default function RequisicionCompras() {
         { nombre: 'Monto solicitado', identificador: 'monto_view', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
         { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
+        { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false },
         { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false },
     ]
 
@@ -88,7 +90,6 @@ export default function RequisicionCompras() {
     }
 
     let ProccessData = (data) => {
-        console.log(data)
         let aux = []
         data.Requisiciones.map((item, index) => {
             aux.push({
@@ -116,7 +117,7 @@ export default function RequisicionCompras() {
                 orden_compra: item.orden_compra,
                 fecha_pago: item.fecha_pago,
                 cuenta: item.cuenta,
-                id_estatus: item.estatus ? item.estatus.id : null,
+                id_estatus: item.id_estatus_compra ? item.id_estatus_compra : null,
                 proveedor: item.id_proveedor ? item.id_proveedor : null,
                 /* estatus_admin: item.estatus_admin ? item.estatus_admin : 'Pendiente', */
                 estatus_compra: item.estatus_compra ? item.estatus_compra.estatus : 'pendiente',
@@ -125,11 +126,12 @@ export default function RequisicionCompras() {
                 id_estatus_compra: item.id_estatus_compra ? item.id_estatus_compra : null,
                 id_estatus_conta: item.id_estatus_conta ? item.id_estatus_conta : null,
                 fecha_entrega: item.fecha_entrega ? item.fecha_entrega : null,
+                conta: item.estatus_conta ? item.estatus_conta.id : null,
+                factura: item.estatus_factura ? item.estatus_factura.id : null,
             })
         })
         aux = aux.reverse()
         return aux
-
     }
 
     let createtagaprobaciones = (item) => {
@@ -147,13 +149,23 @@ export default function RequisicionCompras() {
                 icono: 'fas fa-exchange-alt',
                 color: 'greenButton',
                 funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        convertir: {
-                            show: true,
-                            data: item
-                        }
-                    })
+                    if (item.auto1) {
+                        Swal.fire({
+                            title: 'Requisición ya aprobada',
+                            text: 'La requisición ya fue aprobada, no se puede convertir',
+                            icon: 'warning',
+                            confirmButtonText: 'Aceptar'
+                        })   
+                    } else {
+                        setModal({
+                            ...modal,
+                            convertir: {
+                                show: true,
+                                data: item
+                            }
+                        })    
+                    }
+                    
                 }
             },
             {
@@ -257,15 +269,16 @@ export default function RequisicionCompras() {
             {
                 estatusCompras && opcionesApi ?
                     <>
-                        <Modal size="xl" title={"Aprobar Requisicion de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
+                        
+                        <Modal size="xl" title={"Aprobar Requisición de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
                             <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
                         </Modal>
 
-                        <Modal size="xl" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
+                        <Modal size="xl" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
                             <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
                         </Modal>
 
-                        <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>
+                        <Modal size="lg" title={"Nueva requisición"} show={modal.crear.show} handleClose={handleClose('crear')}>
                             <Crear handleClose={handleClose('crear')} reload={reloadTable} />
                         </Modal>
 
@@ -279,9 +292,6 @@ export default function RequisicionCompras() {
                     </>
                     : null
             }
-            
-            
-
         </>
     )
 }
