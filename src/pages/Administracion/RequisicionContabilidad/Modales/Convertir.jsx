@@ -63,7 +63,6 @@ export default function Convertir(props) {
         conta: data.conta,
         factura: data.factura,
         empresa: "",
-        factura: false,
     })
 
     const [file, setFile] = useState({
@@ -801,7 +800,7 @@ export default function Convertir(props) {
                                 <>
                                     <InputLabel >Estatus de facturación</InputLabel>
                                     <Select
-                                        name="conta"
+                                        name="factura"
                                         value={form.factura}
                                         onChange={handleChange}
                                         className={classes.textField}
