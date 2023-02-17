@@ -263,7 +263,7 @@ export default function RequisicionCompras() {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
                 <>
-                    <TablaGeneral titulo='Solicitudes de Gasto' columnas={columnas} url='requisicion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
+                    <TablaGeneral titulo='Solicitudes de Gasto' columnas={columnas} url='requisicion/admin' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
                 </>
             </Layout>
             {
