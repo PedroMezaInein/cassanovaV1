@@ -127,7 +127,7 @@ export default function RequisicionContabilidad() {
                 id_estatus_factura: item.id_estatus_factura ? item.id_estatus_factura : null,
                 conta: item.estatus_conta ? item.estatus_conta.id : null,
                 factura: item.estatus_factura ? item.estatus_factura.id : null,
-                afectacion_cuentas: item.afectacion_cuentas ? "Cuentas afectadas" : "sin afectación",
+                afectacion_cuentas: item.auto2 ? "Cuentas afectadas" : "sin afectación",
             })
         })
         aux = aux.reverse()
@@ -163,13 +163,22 @@ export default function RequisicionContabilidad() {
                 icono: 'fas fa-exchange-alt',
                 color: 'greenButton',
                 funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        convertir: {
-                            show: true,
-                            data: item
-                        }
-                    })
+                    if (item.auto2) {
+                        Swal.fire({
+                            title: 'Requisición ya aprobada',
+                            text: 'La requisición ya fue aprobada, no se puede convertir',
+                            icon: 'warning',
+                            confirmButtonText: 'Aceptar'
+                        })
+                    } else {
+                        setModal({
+                            ...modal,
+                            convertir: {
+                                show: true,
+                                data: item
+                            }
+                        })
+                    }
                 }
             },
             {
