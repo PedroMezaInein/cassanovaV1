@@ -85,62 +85,133 @@ export default function Editar(props) {
             [tipo]: new Date(date)
         })
     };
+    console.log(errores)
 
     const handleSave = () => {
         if (validateForm()) {
-            try {
+            if (form.auto2) {
                 Swal.fire({
-                    title: 'Guardando...',
-                    allowOutsideClick: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    }
-                })
-                let newForm = {
-                    id_departamento: form.departamento,
-                    id_gasto: form.tipoGasto,
-                    descripcion: form.descripcion,
-                    id_subarea: form.tipoSubgasto,
-                    id_pago: form.tipoPago,
-                    id_solicitante: data.solicitante_id,
-                    monto_pagado: form.monto,
-                    cantidad: form.monto_solicitado,
-                    autorizacion_1: form.auto1 ? form.auto1.id: null,
-                    autorizacion_2: form.auto2 ? auth.user.id : null,
-                    orden_compra: form.orden_compra,
-                    fecha_pago: form.fecha_pago,
-                    id_cuenta: form.id_cuenta,
-                    /* id_estatus: form.id_estatus, */
-                    id_proveedor: form.proveedor,
-                    id_estatus_compra: form.compra,
-                    id_estatus_factura: form.factura,
-                    id_estatus_conta: form.conta,
-                }
+                    title: 'Cuentas afectadas',
+                    icon: 'warning',
+                    html: 'Esta requisición ya generó una afectación en las cuentas, ¿desea actualizarla?',
+                    showCancelButton: true,
+                    confirmButtonColor: 'red',
+                    confirmButtonText: 'Si, entiendo el alcance de la acción',
+                    cancelButtonText: 'No, cancelar',
+                }).then((result) => {
+                    if (result.isConfirmed) { 
+                        try {
+                            Swal.fire({
+                                title: 'Guardando...',
+                                allowOutsideClick: false,
+                                onBeforeOpen: () => {
+                                    Swal.showLoading()
+                                }
+                            })
+                            let newForm = {
+                                id_departamento: form.departamento,
+                                id_gasto: form.tipoGasto,
+                                descripcion: form.descripcion,
+                                id_subarea: form.tipoSubgasto,
+                                id_pago: form.tipoPago,
+                                id_solicitante: data.solicitante_id,
+                                monto_pagado: form.monto,
+                                cantidad: form.monto_solicitado,
+                                autorizacion_1: form.auto1 ? form.auto1.id : null,
+                                autorizacion_2: form.auto2 ? auth.user.id : null,
+                                orden_compra: form.orden_compra,
+                                fecha_pago: form.fecha_pago,
+                                id_cuenta: form.id_cuenta,
+                                /* id_estatus: form.id_estatus, */
+                                id_proveedor: form.proveedor,
+                                id_estatus_compra: form.compra,
+                                id_estatus_factura: form.factura,
+                                id_estatus_conta: form.conta,
+                            }
 
-                apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
-                    Swal.close()
-                    handleClose('editar')
-                    if (reload) {
-                        reload.reload()
+                            apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
+                                Swal.close()
+                                handleClose('editar')
+                                if (reload) {
+                                    reload.reload()
+                                }
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Guardado',
+                                    text: 'Se ha guardado correctamente',
+                                })
+                            }
+                            ).catch((error) => {
+                                Swal.close()
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Ha ocurrido un error',
+                                })
+                                console.log(error)
+                            })
+                        } catch (error) {
+                            console.log(error)
+                        }
                     }
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Guardado',
-                        text: 'Se ha guardado correctamente',
-                    })
-                    }
-                ).catch((error) => { 
-                    Swal.close()
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Ha ocurrido un error',
-                    })
-                    console.log(error)
                 })
-            } catch (error) {
-                console.log(error)
+
+            } else {
+                try {
+                    Swal.fire({
+                        title: 'Guardando...',
+                        allowOutsideClick: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+                    let newForm = {
+                        id_departamento: form.departamento,
+                        id_gasto: form.tipoGasto,
+                        descripcion: form.descripcion,
+                        id_subarea: form.tipoSubgasto,
+                        id_pago: form.tipoPago,
+                        id_solicitante: data.solicitante_id,
+                        monto_pagado: form.monto,
+                        cantidad: form.monto_solicitado,
+                        autorizacion_1: form.auto1 ? form.auto1.id : null,
+                        autorizacion_2: form.auto2 ? auth.user.id : null,
+                        orden_compra: form.orden_compra,
+                        fecha_pago: form.fecha_pago,
+                        id_cuenta: form.id_cuenta,
+                        /* id_estatus: form.id_estatus, */
+                        id_proveedor: form.proveedor,
+                        id_estatus_compra: form.compra,
+                        id_estatus_factura: form.factura,
+                        id_estatus_conta: form.conta,
+                    }
+
+                    apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
+                        Swal.close()
+                        handleClose('editar')
+                        if (reload) {
+                            reload.reload()
+                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Guardado',
+                            text: 'Se ha guardado correctamente',
+                        })
+                    }
+                    ).catch((error) => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error',
+                        })
+                        console.log(error)
+                    })
+                } catch (error) {
+                    console.log(error)
+                }
             }
+            
         } else {
             Swal.fire({
                 icon: 'error',
