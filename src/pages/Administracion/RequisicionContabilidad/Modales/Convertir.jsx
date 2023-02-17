@@ -266,7 +266,7 @@ export default function Convertir(props) {
             valid = false
             aux.descripcion = true
         }
-        if (form.factura) {
+        /* if (form.factura) {
             if(file.factura === '' || file.factura === null){
                 valid = false
                 aux.factura = true
@@ -275,7 +275,7 @@ export default function Convertir(props) {
                 valid = false
                 aux.xml = true
             }
-        }
+        } */
         if(form.empresa === '' || form.empresa === null) {
             valid = false
             aux.empresa = true
@@ -284,7 +284,6 @@ export default function Convertir(props) {
             valid = false
             aux.afectarCuentas = true
         }
-
         if (form.proveedor === '' || form.proveedor === null) {
             valid = false
             aux.proveedor = true
@@ -317,6 +316,7 @@ export default function Convertir(props) {
         setErrores(aux) 
         return valid
     }
+    console.log(errores)
 
     const handleAprueba = (e) => {
         if (e.target.name === 'auto2') {
