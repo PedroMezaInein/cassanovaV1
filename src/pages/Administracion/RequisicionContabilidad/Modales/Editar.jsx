@@ -85,7 +85,6 @@ export default function Editar(props) {
             [tipo]: new Date(date)
         })
     };
-    console.log(form) 
 
     const handleSave = () => {
         if (validateForm()) {
@@ -180,7 +179,6 @@ export default function Editar(props) {
         }
         if (form.compra !== '' && form.compra !== null) {
             let pago = estatusCompras.find(item => item.id === form.compra)
-            console.log(pago)
             if (pago) {
                 if (pago.estatus !== 'Rechazado' && pago.estatus !== 'RECHAZADO' && pago.estatus !== 'rechazado') {
                     if (form.monto === '' || form.monto === null || form.monto === 0) {
@@ -192,7 +190,6 @@ export default function Editar(props) {
                 }
             }
         } else {
-            console.log('no hay compra')
             if (form.monto === '' || form.monto === null || form.monto === 0) {
                 valid = false
                 aux.monto = true

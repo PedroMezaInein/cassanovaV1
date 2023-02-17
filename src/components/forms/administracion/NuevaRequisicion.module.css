@@ -113,3 +113,7 @@
 .nuevaRequisicion_fecha{
     width: 130px;
 }
+
+.error{
+    color: red;
+}

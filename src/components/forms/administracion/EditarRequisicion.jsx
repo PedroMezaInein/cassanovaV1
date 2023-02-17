@@ -17,7 +17,6 @@ import Swal from 'sweetalert2'
 function EditarRequisicion (props) {
 
     const { data, handleClose, reload } = props
-    console.log(data)
     const departamentos = useSelector(state => state.opciones.areas)
     const user = useSelector(state => state.authUser)
 
@@ -35,7 +34,6 @@ function EditarRequisicion (props) {
     const [errores, setErrores] = useState()
 
     const handleChangeDepartamento = (e) => {
-        console.log(e)
         setForm({
             ...form,
             [e.target.name]: e.target.value,
@@ -49,8 +47,6 @@ function EditarRequisicion (props) {
             ...form,
             [name]: event.target.value,
         });
-        console.log('hola')
-        console.log(name)
     };
 
     

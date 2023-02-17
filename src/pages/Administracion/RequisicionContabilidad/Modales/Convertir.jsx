@@ -72,8 +72,6 @@ export default function Convertir(props) {
     })
 
     const [errores, setErrores] = useState({})
-    console.log(errores)
-    console.log(form)
     const classes = useStyles();
 
     const handleChange = (e) => {

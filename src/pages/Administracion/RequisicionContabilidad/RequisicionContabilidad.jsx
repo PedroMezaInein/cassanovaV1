@@ -90,9 +90,7 @@ export default function RequisicionContabilidad() {
     }
 
     let ProccessData = (data) => {
-        console.log(data)
         let aux = []
-        console.log(data)
         data.Requisiciones.map((item, index) => {
             aux.push({
                 id: item.id,
@@ -112,7 +110,6 @@ export default function RequisicionContabilidad() {
                 monto_solicitado: item.cantidad,
                 monto: item.monto_pago,
                 monto_view: `$${item.monto_pago.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`,
-                /* estatus: item.estatus ? item.estatus.estatus : 'Pendiente', */
                 aprobacion: createtagaprobaciones(item),
                 auto1: item.auto1,
                 auto2: item.auto2,
@@ -121,11 +118,9 @@ export default function RequisicionContabilidad() {
                 cuenta: item.cuenta,
                 id_estatus: item.id_estatus_compra ? item.id_estatus_compra : null,
                 proveedor: item.id_proveedor ? item.id_proveedor : null,
-                /* estatus_admin: item.estatus_admin ? item.estatus_admin : 'Pendiente', */
                 estatus_compra: item.estatus_compra ? item.estatus_compra.estatus : 'pendiente',
                 estatus_conta: item.estatus_conta ? item.estatus_conta.estatus : 'pendiente',
                 estatus_factura: item.estatus_factura ? item.estatus_factura.estatus : 'pendiente',
-                /* id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null, */
                 compra: item.estatus_compra ? item.estatus_compra.id : null,
                 id_estatus_compra: item.id_estatus_compra ? item.id_estatus_compra : null,
                 id_estatus_factura: item.id_estatus_factura ? item.id_estatus_factura : null,

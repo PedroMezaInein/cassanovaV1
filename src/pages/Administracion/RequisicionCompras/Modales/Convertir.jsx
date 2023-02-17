@@ -51,6 +51,7 @@ export default function Convertir(props) {
         empresa: "",
         conta: data.conta,
         factura: data.factura,
+        orden_compra: data.orden_compra,
     })
     const [errores, setErrores] = useState({})
 
@@ -81,53 +82,63 @@ export default function Convertir(props) {
 
     const validateForm = () => {
         let valid = true
-        let errores = []
-        if (!form.departamento === '') {
+        let aux = []
+        if (form.fecha === '' || form.fecha === null) {
             valid = false
-            errores.departamento = 'Selecciona un departamento'
+            aux.fecha = true
         }
-        if (!form.tipoGasto === '') {
+        if (form.departamento === '' || form.departamento === null) {
             valid = false
-            errores.tipoGasto = 'Selecciona un tipo de gasto'
+            aux.departamento = true
         }
-        if (!form.tipoSubgasto === '') {
+        if (form.tipoGasto === '' || form.tipoGasto === null) {
             valid = false
-            errores.tipoSubgasto = 'Selecciona un tipo de subgasto'
+            aux.tipoGasto = true
         }
-        if (!form.tipoPago === '') {
+        if (form.tipoSubgasto === '' || form.tipoSubgasto === null) {
             valid = false
-            errores.tipoPago = 'Selecciona un tipo de pago'
+            aux.tipoSubgasto = true
         }
-        if (!form.monto === '') {
+        if (form.tipoPago === '' || form.tipoPago === null) {
             valid = false
-            errores.monto = 'Ingresa un monto'
+            aux.tipoPago = true
         }
-        if (!form.monto_pagado === '') {
+        if (form.monto === '' || form.monto === null || form.monto === 0) {
             valid = false
-            errores.monto_pagado = 'Ingresa un monto pagado'
+            aux.monto = true
         }
-        if (!form.descripcion === '') {
+        if (form.descripcion === '' || form.descripcion === null) {
             valid = false
-            errores.descripcion = 'Ingresa una descripción'
+            aux.descripcion = true
         }
-        setErrores(errores)
+        if (form.id_estatus === '' || form.id_estatus === null) {
+            valid = false
+            aux.id_estatus = true
+        }
+        if (form.proveedor === '' || form.proveedor === null) {
+            valid = false
+            aux.proveedor = true
+        }
+        setErrores(aux)
         return valid
     }
 
     const aprobar = () => {
-        if (form.auto1) {
-            Swal.fire({
-                title: '¿Estas seguro de aprobar esta solicitud?',
-                text: "Confirma los datos antes de continuar",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Si, aprobar!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (validateForm()) {
+        if (validateForm()) {
+            if (form.auto1) {
+                Swal.fire({
+                    title: '¿Estas seguro de aprobar esta solicitud?',
+                    text: "Confirma los datos antes de continuar",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, aprobar!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        
+
                         Swal.fire({
                             title: 'Aprobando...',
                             allowOutsideClick: false,
@@ -180,26 +191,27 @@ export default function Convertir(props) {
                                 text: 'Ha ocurrido un error',
                             })
                         })
-                    } else {
-                        Swal.close()
-                        Swal.fire(
-                            'Error!',
-                            'Faltan datos por llenar',
-                            'error'
-                        )
                     }
-                }
-            })
+                })
+            } else {
+                Swal.fire({
+                    title: 'Requisición no autorizada!',
+                    text: 'Debes aprobar la requisición para poder convertirla',
+                    icon: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok',
+                })
+            }
         } else {
-            Swal.fire({
-                title: 'Requisición no autorizada!',
-                text: 'Debes aprobar la requisición para poder convertirla',
-                icon: 'error',
-                showCancelButton: false,
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Ok',
-            })
+            Swal.close()
+            Swal.fire(
+                'Error!',
+                'Faltan datos por llenar',
+                'error'
+            )
         }
+        
     }
 
     const handleAprueba = (e) => {
@@ -222,6 +234,19 @@ export default function Convertir(props) {
     return (
         <>
             <div className={Style.container}>
+                <div>
+                    <TextField
+                        label="N. Orden de compra"
+                        name='orden_compra'
+                        defaultValue={form.orden_compra}
+                        className={classes.textField}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={handleChange}
+                        disabled
+                    />
+                </div>
 
                 <div>
                     <InputLabel >Fecha de solicitud</InputLabel>
@@ -265,12 +290,13 @@ export default function Convertir(props) {
 
                 <div>
                     <CurrencyTextField
-                        label="monto"
+                        label="monto solicitado"
                         variant="standard"
                         value={form.monto}
                         currencySymbol="$"
                         outputFormat="number"
                         onChange={(event, value) => handleMoney(value)}
+                        error={errores.monto ? true : false}
                     />
                 </div>
 
@@ -326,6 +352,7 @@ export default function Convertir(props) {
                                 onChange={handleChange}
                                 value={form.tipoSubgasto}
                                 className={classes.textField}
+                                error={errores.tipoSubgasto ? true : false}
                             >
                                 {departamentos.find(item => item.id_area == form.departamento).partidas.find(item => item.id == form.tipoGasto).subpartidas.map((item, index) => (
                                     <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -349,6 +376,7 @@ export default function Convertir(props) {
                                     value={form.tipoPago}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.tipoPago ? true : false}
                                 >
                                     {opciones.tiposPagos.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -371,6 +399,7 @@ export default function Convertir(props) {
                                     value={form.id_estatus}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.id_estatus ? true : false}
                                 >
                                     {estatusCompras.map((item, index) => {
                                         if (item.nivel === 1) {
@@ -394,6 +423,7 @@ export default function Convertir(props) {
                                     value={form.proveedor}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.proveedor ? true : false}
                                 >
                                     {opciones.proveedores.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>

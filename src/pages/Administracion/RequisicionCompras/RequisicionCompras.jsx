@@ -89,7 +89,6 @@ export default function RequisicionCompras() {
     }
 
     let ProccessData = (data) => {
-        console.log(data)
         let aux = []
         data.Requisiciones.map((item, index) => {
             aux.push({
