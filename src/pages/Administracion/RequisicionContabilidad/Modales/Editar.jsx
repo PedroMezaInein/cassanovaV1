@@ -85,7 +85,6 @@ export default function Editar(props) {
             [tipo]: new Date(date)
         })
     };
-    console.log(errores)
 
     const handleSave = () => {
         if (validateForm()) {
