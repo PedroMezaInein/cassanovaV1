@@ -19,9 +19,9 @@ export default function EstatusVehiculos() {
         aux.push({
           solicitante: item.user.name,
           destino: item.destino,
-          estatus: item.estatus === '1' ? 'aceptado' : 'rechazado',
+          estatus: item.estatus === '1' && item.autorizacion ? 'aceptado' : item.estatus === '1' && !item.autorizacion ? 'pendiente' : 'rechazado',
           comentarios: item.comentarios ? item.comentarios : 'sin asignar',
-          autorizacion: item.autorizacion ? item.autorizacion : 'pendiente'
+          autorizacion: item.autorizacion ? item.autorizacion.name : 'pendiente'
         })
       })
       aux=aux.reverse()

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiGet, apiPostForm, apiPutForm } from '../../../../functions/api'
+import { apiGet, apiPostForm } from '../../../../functions/api'
 
 import Style from './NuevoVehiculo.module.css'
 import DateFnsUtils from '@date-io/date-fns';
@@ -25,8 +25,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
-export default function EditarOperador(props) {
+export default function VerOperador(props) {
     const { reload, handleClose, vehiculos, operador } = props
+    console.log(props)
     const authUser = useSelector(state => state.authUser)
     const [form, setForm] = useState({
         id_vehiculo: operador.data.id_vehiculo,
@@ -36,7 +37,6 @@ export default function EditarOperador(props) {
         fecha_vencimiento: new Date(operador.data.fecha_vencimiento),
         observaciones: operador.data.observaciones,
     })
-    const [errores, setErrores] = useState({})
     const [opcionesVehiculos, setOpcionesVehiculos] = useState(false)
 
     useEffect(() => {
@@ -75,114 +75,6 @@ export default function EditarOperador(props) {
         }
     }
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value })
-    }
-
-    const handleChangeFecha = (date, tipo) => {
-        setForm({
-            ...form,
-            [tipo]: new Date(date)
-        })
-    };
-    console.log(operador)
-
-    console.log(opcionesVehiculos)
-
-    const validate = () => {
-        let errores = {}
-        let valid = true
-        if (form.usuario === '') {
-            valid = false
-            errores.usuario = 'El campo es obligatorio'
-        }
-        if (form.licencia === '') {
-            valid = false
-            errores.licencia = 'El campo es obligatorio'
-        }
-        if (form.fecha_vigencia === '') {
-            valid = false
-            errores.fecha_vigencia = 'El campo es obligatorio'
-        }
-        if (form.fecha_vencimiento === '') {
-            valid = false
-            errores.fecha_vencimiento = 'El campo es obligatorio'
-        }
-
-        setErrores(errores)
-        return valid
-    }
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        if (validate()) {
-            Swal.fire({
-                title: 'Editar Operado',
-                text: "¿Deses editar el operador?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Editar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Editando operador',
-                        text: "Por favor, espera un momento",
-                        icon: 'info',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        allowEnterKey: false,
-                        showConfirmButton: false,
-                        onBeforeOpen: () => {
-                            Swal.showLoading()
-                        }
-                    })
-
-                    try {
-                        apiPutForm(`servicios/editasignacion/${operador.id}`, form, authUser.access_token)
-                            .then(res => {
-                                Swal.close()
-                                Swal.fire({
-                                    title: 'Nuevo Operador creado',
-                                    text: "El nuevo operador ha sido creado correctamente",
-                                    icon: 'success',
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Ok'
-                                })
-                                handleClose()
-                                if (reload) {
-                                    reload.reload()
-                                }
-                            })
-                            .catch(err => {
-                                Swal.close()
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: "Ha ocurrido un error al crear el operador",
-                                    icon: 'error',
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'Ok'
-                                })
-
-                                console.log(err)
-                            })
-                    } catch (error) {
-
-                    }
-                }
-            })
-        } else {
-            Swal.fire({
-                title: 'Error',
-                text: "Por favor, llena todos los campos",
-                icon: 'error',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Ok'
-            })
-        }
-    }
-
     return (
         <>
             <div className={Style.container}>
@@ -190,10 +82,8 @@ export default function EditarOperador(props) {
                     <div>
                         <InputLabel>Selecciona el vehiculo</InputLabel>
                         <Select
-                            name="id_vehiculo"
                             value={form.id_vehiculo}
-                            onChange={handleChange}
-                            error={errores.id_vehiculo ? true : false}
+                            disabled
                         >
                             {
                                 vehiculos.map((item, index) => {
@@ -205,11 +95,7 @@ export default function EditarOperador(props) {
                     <div>
                         <InputLabel>Operador</InputLabel>
                         <Select
-
-                            name="usuario"
                             value={form.usuario}
-                            onChange={handleChange}
-                            error={errores.usuario ? true : false}
                             disabled
                         >
                             {
@@ -230,10 +116,8 @@ export default function EditarOperador(props) {
                     <div>
                         <InputLabel>No. Licencia</InputLabel>
                         <TextField
-                            name="licencia"
                             value={form.licencia}
-                            onChange={handleChange}
-                            error={errores.licencia ? true : false}
+                            disabled
                         />
                     </div>
                 </div>
@@ -245,14 +129,12 @@ export default function EditarOperador(props) {
                             <Grid container >
                                 <KeyboardDatePicker
                                     format="dd/MM/yyyy"
-                                    name="fecha_vencimiento"
                                     value={form.fecha_vencimiento !== '' ? form.fecha_vencimiento : null}
                                     placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha_vencimiento')}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
-                                    error={errores.fecha_vencimiento ? true : false}
+                                    disabled
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
@@ -264,14 +146,12 @@ export default function EditarOperador(props) {
                             <Grid container >
                                 <KeyboardDatePicker
                                     format="dd/MM/yyyy"
-                                    name="fecha_vigencia"
                                     value={form.fecha_vigencia !== '' ? form.fecha_vigencia : null}
                                     placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha_vigencia')}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
-                                    error={errores.fecha_vigencia ? true : false}
+                                    disabled
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
@@ -282,20 +162,12 @@ export default function EditarOperador(props) {
                     <div>
                         <InputLabel >Observaciones</InputLabel>
                         <TextField
-                            name="observaciones"
                             value={form.observaciones}
-                            onChange={handleChange}
-                            error={errores.observaciones ? true : false}
                             maxRows={4}
                             multiline
+                            disabled
                         />
                     </div>
-                </div>
-            </div>
-
-            <div className="row justify-content-end">
-                <div className="col-md-4">
-                    <button className={Style.sendButton} type="submit" onClick={handleSubmit}>Editar</button>
                 </div>
             </div>
         </>

@@ -207,7 +207,7 @@ export default function ControlGastos(props) {
                 <h1>Eliminar</h1>
             </Modal>
             {
-                modal.adjuntos.data &&
+                modal.ver.data &&
                 <Modal show={modal.ver.show} setShow={setModal} title='Ver Gasto' size='lg' handleClose={handleClose('ver')}>
                     <VerGasto reload={reloadTable} handleClose={handleClose('ver')} vehiculo={modal.ver.data} />
                 </Modal>

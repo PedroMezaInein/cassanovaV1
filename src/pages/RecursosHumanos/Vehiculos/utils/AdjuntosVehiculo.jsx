@@ -12,7 +12,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { apiGet } from '../../../../functions/api'
+import { apiGet, apiPutForm, apiPostForm } from '../../../../functions/api'
 import { URL_DEV } from '../../../../constants'
 import { setSingleHeader } from '../../../../functions/routers'
 
@@ -66,25 +66,31 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Adjuntos(props) {
 
-    /* const { proyecto } = props */
+    const { vehiculo } = props
+    console.log('data', vehiculo)
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
     const [value, setValue] = useState(0);
     const [form, setForm] = useState({
-        datos_de_cliente: [], //antes documentacion_cliente
+        Tenencia: [], 
+        Foto_placas: [],
+        Seguro: [],
+        Tarjeta_circulacion: [],
+        Verificacion: [],
+        Factura: [],
         file: [],
     })
-    const [activeTab, setActiveTab] = useState('datos_de_cliente')
+    const [activeTab, setActiveTab] = useState('Tenencia')
     const [adjuntos, setAdjuntos] = useState(false)
     useEffect(() => {
-        /* Swal.fire({
+        Swal.fire({
             title: 'Cargando...',
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading()
             }
-        }) */
-        /* getAdjuntos() */
+        }) 
+        getAdjuntos()
     }, [])
 
     const handleChange = (event, newValue) => {
@@ -95,27 +101,29 @@ export default function Adjuntos(props) {
         })
     };
 
-    /* const getAdjuntos = () => {
+    const getAdjuntos = () => {
         try {
-            apiGet(`v2/proyectos/proyectos/proyecto/${proyecto.id}/adjuntos`, authUser)
+            apiGet(`vehiculos/adjuntos/${vehiculo.id}`, authUser)
                 .then(res => {
-                    let adjunAux = res.data.proyecto
                     Swal.close()
-                    let aux = {
-                        datos_de_cliente: [],
+                    /* let aux = {
+                        Tenencia: [],
+                        Foto_placas: [],
+                        Seguro: [],
+                        Tarjeta_circulacion: [],
+                        Verificacion: [],
+                        Factura: [],
+
                     }
-                    //obtener la key del objeto y recorrelo
                     Object.keys(adjunAux).forEach((element) => {
                         switch (element) {
-                            case 'datos_de_cliente':
-                                aux.datos_de_cliente = adjunAux[element]
-                                break;
-                            default:
+                            case 'Tenencia':
+                                aux.Tenencia = res.data.Tenencia
                                 break;
                         }
                     });
                     console.log('aux', aux)
-                    setAdjuntos(aux)
+                    setAdjuntos(aux) */
                 })
 
         } catch (error) {
@@ -128,13 +136,14 @@ export default function Adjuntos(props) {
 
             console.log('error', error)
         }
-    } */
+    }
 
     const handleTab = (e) => {
         setActiveTab(e)
     }
 
     const handleFile = (e) => {
+        console.log(e.target.files)
         setForm({
             ...form,
             file: [...e.target.files]
@@ -150,7 +159,7 @@ export default function Adjuntos(props) {
     }
 
 
-    /* const handleSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
 
         if (validate()) {
@@ -161,30 +170,18 @@ export default function Adjuntos(props) {
                     Swal.showLoading()
                 }
             })
-            let filePath = `proyecto/${proyecto.id}/${activeTab}/${Math.floor(Date.now() / 1000)}-`
-            console.log('filePath', filePath)
-            let aux = []
-            form.file.forEach((file) => {
-                console.log(file)
-                aux.push(file)
-            })
+            let data = new FormData()
+
+            data.append('files_name_vehiculos[]', form.file[0].name)
+            data.append(`files_vehiculos[]`, form.file[0])
+            data.append('asjuntos[]', "vehiculos")
+            data.append('tipo', activeTab)
+
 
             try {
-                apiGet('v1/constant/admin-proyectos', authUser)
+                apiPostForm(`vehiculos/${vehiculo.id}/archivos/s3`, data,  authUser)
                     .then(res => {
-                        let auxPromises = aux.map((file) => {
-                            return new Promise((resolve, reject) => {
-                                new S3(res.data.alma).uploadFile(file, `${filePath}${file.name}`)
-                                    .then((data) => {
-                                        const { location, status } = data
-                                        if (status === 204)
-                                            resolve({ name: file.name, url: location })
-                                        else
-                                            reject(data)
-                                    }).catch(err => reject(err))
-                            })
-                        })
-                        Promise.all(auxPromises).then(values => { addS3FilesAxios(values) }).catch(err => console.error(err))
+                        Swal.close()
                     })
                     .catch(err => {
                         Swal.close()
@@ -193,7 +190,6 @@ export default function Adjuntos(props) {
                             title: 'Oops...',
                             text: 'Algo salio mal!',
                         })
-                        console.log('error', err)
                     })
             } catch (error) {
                 Swal.close()
@@ -202,7 +198,6 @@ export default function Adjuntos(props) {
                     title: 'Oops...',
                     text: 'Algo salio mal!',
                 })
-                console.log('error', error)
             }
         } else {
             Swal.fire({
@@ -212,46 +207,9 @@ export default function Adjuntos(props) {
                 timer: 1500
             })
         }
-    } */
+    }
 
-    /* const addS3FilesAxios = (files) => {
-        try {
-            axios.post(`${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/s3`, { archivos: files }, {
-                params: { tipo: activeTab },
-                headers: setSingleHeader(authUser)
-            })
-                .then(res => {
-                    Swal.close()
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Archivo subido correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    getAdjuntos()
-                    setForm({
-                        file: []
-                    })
-                })
-                .catch(err => {
-                    Swal.close()
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Algo salio mal!',
-                    })
-                    console.log('error', err)
-                })
-        } catch (error) {
-            Swal.close()
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Algo salio mal!',
-            })
-            console.log('error', error)
-        }
-    } */
+   
 
     const uploadButtons = () => {
         return (
@@ -280,19 +238,19 @@ export default function Adjuntos(props) {
 
                     </div>
                     <div >
-                        <button className="btn-subir" >Subir</button>
+                        <button className="btn-subir" onClick={handleSubmit} >Subir</button>
                     </div>
                 </div>
             </>
         )
     }
 
-    /* const viewAdjuntos = (tab) => {
+    const viewAdjuntos = (tab) => {
         return (
             <>
                 {
                     adjuntos && adjuntos[tab] && adjuntos[tab].length > 0 ?
-                        <CarruselAdjuntos data={adjuntos[tab]} id={proyecto.id} getAdjuntos={getAdjuntos} />
+                        <CarruselAdjuntos data={adjuntos[tab]} id={vehiculo.id} getAdjuntos={getAdjuntos} />
                         :
                         <div className="">
                             <p>No hay archivos adjuntos</p>
@@ -300,7 +258,7 @@ export default function Adjuntos(props) {
                 }
             </>
         )
-    } */
+    }
 
     return (
         <>
@@ -312,15 +270,15 @@ export default function Adjuntos(props) {
                     onChange={handleChange}
                     className={classes.tabs}
                 >
-                    <Tab label="DOCUMENTOS CLIENTES " {...a11yProps(0)} name="datos_de_cliente" onClick={() => handleTab('datos_de_cliente')} />
+                    <Tab label="Tenencia " {...a11yProps(0)} name="tenencia" onClick={() => handleTab('Tenencia')} />
                     
 
                 </Tabs>
 
                 <TabPanel value={value} index={0}>
                     <div>
-                        {uploadButtons()}
-                        {/* {viewAdjuntos('datos_de_cliente')} */}
+                        {uploadButtons('Tenencia')}
+                        {viewAdjuntos('Tenencia')}
                     </div>
                 </TabPanel>
             </div>

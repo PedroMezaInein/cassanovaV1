@@ -4,10 +4,12 @@ import Swal from 'sweetalert2'
 
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
-import { apiGet } from '../../../functions/api'
+import { apiGet, apiDelete } from '../../../functions/api'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
 import NuevoOperador from './modales/NuevoOperador'
+import EditarOperador from './modales/EditarOperador'
+import VerOperador from './modales/VerOperador'
 
 export default function TablaOperadores(props) {
     const {id} = props
@@ -137,34 +139,6 @@ export default function TablaOperadores(props) {
                 }
             },
             {
-                nombre: 'Asignar Vehiculo',
-                icono: 'fas fa-car',
-                color: 'blueButton',
-                funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        asignar_vehiculo: {
-                            show: true,
-                            data: item
-                        }
-                    })
-                }
-            },
-            {
-                nombre: 'Operador',
-                icono: 'fas fa-users',
-                color: 'blueButton',
-                funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        usuarios_autorizados: {
-                            show: true,
-                            data: item
-                        }
-                    })
-                }
-            },
-            {
                 nombre: 'Ver',
                 icono: 'fas fa-eye',
                 color: 'blueButton',
@@ -194,11 +168,19 @@ export default function TablaOperadores(props) {
                             confirmButtonText: '¡Sí, bórralo!'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                Swal.fire(
-                                    '¡Eliminado!',
-                                    'El registro ha sido eliminado.',
-                                    'success'
-                                )
+                                let recargar = reloadTable ? reloadTable.reload : false
+                                apiDelete(`servicios/eliminarasignacion/${item.id}`, userAuth.access_token)
+                                    .then(res => {
+                                        if (recargar) {
+                                            recargar()
+                                        }
+                                        Swal.fire(
+                                            '¡Eliminado!',
+                                            'El registro ha sido eliminado.',
+                                            'success'
+                                        )
+                                    })
+                                
                             }
                         })
                     } else {
@@ -243,18 +225,28 @@ export default function TablaOperadores(props) {
         <>
             <TablaGeneral titulo='Operadores' columnas={columnas} url='vehiculos/asignacion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
 
-            <Modal show={modal.editar.show} setShow={setModal} title='Editar operador' size='lg' handleClose={handleClose('editar')}>
-                
-            </Modal>
+            {
+                modal.editar.data &&
+                <Modal show={modal.editar.show} setShow={setModal} title='Editar operador' size='lg' handleClose={handleClose('editar')}>
+                        <EditarOperador handleClose={handleClose('editar')} reload={reloadTable} vehiculos={vehicles}
+                            operador={modal.editar.data} />
+                </Modal>
+            }
+            
             <Modal show={modal.eliminar.show} setShow={setModal} title='Eliminar operador' size='lg' handleClose={handleClose('eliminar')}>
                 <h1>Eliminar</h1>
             </Modal>
             <Modal show={modal.adjuntos.show} setShow={setModal} title='Adjuntos operador' size='lg' handleClose={handleClose('adjuntos')}>
                 
             </Modal>
-            <Modal show={modal.ver.show} setShow={setModal} title='Ver operador' size='lg' handleClose={handleClose('ver')}>
-                <h1>Ver</h1>
-            </Modal>
+            {
+                modal.ver.data &&
+                <Modal show={modal.ver.show} setShow={setModal} title='Información del operador' size='lg' handleClose={handleClose('ver')}>
+                        <VerOperador handleClose={handleClose('ver')} reload={reloadTable} vehiculos={vehicles}
+                            operador={modal.ver.data} />
+                </Modal>
+            }
+            
             {
                 vehicles ?
                 <Modal show={modal.crear.show} setShow={setModal} title='Crear operador' size='lg' handleClose={handleClose('crear')}>

@@ -77,8 +77,8 @@ export default function TablaSolicitudes() {
         { nombre: 'Vehículo', identificador: 'vehiculo', sort: false, stringSearch: false },
         { nombre: 'Fecha Inicio', identificador: 'fecha_ini', sort: false, stringSearch: false },
         { nombre: 'Fecha Fin', identificador: 'fecha_fin', sort: false, stringSearch: false },
-        { nombre: 'Hora Inicio', identificador: 'hora_ini', sort: false, stringSearch: false },
-        { nombre: 'Hora Fin', identificador: 'hora_fin', sort: false, stringSearch: false },
+        { nombre: 'Hora Inicio', identificador: 'hora_inicio_show', sort: false, stringSearch: false },
+        { nombre: 'Hora Fin', identificador: 'hora_fin_show', sort: false, stringSearch: false },
         { nombre: 'Destino', identificador: 'destino', sort: false, stringSearch: false },
     ];
 
@@ -92,7 +92,9 @@ export default function TablaSolicitudes() {
                     fecha_ini: result.fecha_inicio ?  result.fecha_inicio.slice(0,10) : '',
                     fecha_fin: result.fecha_fin ? result.fecha_fin.slice(0,10) : '',
                     hora_ini: result.hora_inicio ? result.hora_inicio : '',
-                    hora_fin: result.hora_fin ? result.hora_fin : '' ,
+                    hora_inicio_show: result.hora_inicio ? result.hora_inicio.slice(0,5) : '',
+                    hora_fin: result.hora_fin ? result.hora_fin : '',
+                    hora_fin_show: result.hora_fin ? result.hora_fin.slice(0,5) : '',
                     destino: result.destino ? result.destino : 'no especificado',
                     id:result.id,
                     data: result,
@@ -113,7 +115,7 @@ export default function TablaSolicitudes() {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: '¡Sí, Aprovarlo!'
+            confirmButtonText: '¡Sí, Aprobarlo!'
         }).then((result) => {
             if (result.isConfirmed) {
                 let form = {
@@ -262,18 +264,39 @@ export default function TablaSolicitudes() {
                 icono: 'fas fa-users',
                 color: 'greenButton',
                 funcion: (item) => {
-                    console.log(item)
-                    if (!item.data.autorizacion) {
-                        autorizar(item.data)
+                    if (item.data.id_vehiculo) {
+                        if (!item.data.autorizacion) {
+                            autorizar(item.data)
+                        } else {
+                            if (item.data.estatus === '0') {
+                                Swal.fire({
+                                    title: '¡Error!',
+                                    text: 'El registro ya ha sido Rechazado.',
+                                    icon: 'error',
+                                    confirmButtonText: 'Aceptar',
+                                    allowOutsideClick: false,
+                                })
+                            } else {
+                                Swal.fire({
+                                    title: '¡Error!',
+                                    text: 'El registro ya ha sido Aprobado.',
+                                    icon: 'error',
+                                    confirmButtonText: 'Aceptar',
+                                    allowOutsideClick: false,
+                                })
+                            }
+                        
+                        }    
                     } else {
                         Swal.fire({
-                            title: '¡Error!',
-                            text: 'El registro ya ha sido Rechazado o Aprobado.',
-                            icon: 'error',
+                            title: 'Vehiculo no asignado',
+                            text: 'No se ha asignado un vehiculo a la solicitud.',
+                            icon: 'warning',
                             confirmButtonText: 'Aceptar',
                             allowOutsideClick: false,
                         })
                     }
+                    
                 }
             },
             {
@@ -281,14 +304,33 @@ export default function TablaSolicitudes() {
                 icono: 'fas fa-users',
                 color: 'redButton',
                 funcion: (item) => {
-                    console.log(item)
-                    if (!item.data.autorizacion) {
-                        rechazar(item.data)
+                    if (item.data.id_vehiculo) {
+                        if (!item.data.autorizacion) {
+                            rechazar(item.data)
+                        } else {
+                            if (item.data.estatus === '0') {
+                                Swal.fire({
+                                    title: '¡Error!',
+                                    text: 'El registro ya ha sido Rechazado.',
+                                    icon: 'error',
+                                    confirmButtonText: 'Aceptar',
+                                    allowOutsideClick: false,
+                                })
+                            } else {
+                                Swal.fire({
+                                    title: '¡Error!',
+                                    text: 'El registro ya ha sido Aprobado.',
+                                    icon: 'error',
+                                    confirmButtonText: 'Aceptar',
+                                    allowOutsideClick: false,
+                                })
+                            }
+                        }
                     } else {
                         Swal.fire({
-                            title: '¡Error!',
-                            text: 'El registro ya ha sido Rechazado o Aprobado.',
-                            icon: 'error',
+                            title: 'Vehiculo no asignado',
+                            text: 'No se ha asignado un vehiculo a la solicitud.',
+                            icon: 'warning',
                             confirmButtonText: 'Aceptar',
                             allowOutsideClick: false,
                         })
@@ -312,13 +354,13 @@ export default function TablaSolicitudes() {
                         </>
                         : data.estatus === "1" && data.autorizacion ?
                             <>
-                                <div>
+                                <div className={Style.container}>
                                     <span className={Style.autorizado}>Aprobado</span>
                                 </div>
                             </>
                             : data.estatus === "0" && data.autorizacion ?
                                 <>
-                                    <div>
+                                    <div className={Style.container}>
                                         <span className={Style.rechazado}>Rechazado</span>
                                     </div>
                                 </>

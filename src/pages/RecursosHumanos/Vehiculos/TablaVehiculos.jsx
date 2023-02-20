@@ -263,7 +263,7 @@ export default function TablaVehiculos() {
                 <h1>Eliminar</h1>
             </Modal>
             <Modal show={modal.adjuntos.show} setShow={setModal} title='Adjuntos Vehículo' size='lg' handleClose={handleClose('adjuntos')}>
-                <AdjuntosVehiculos />
+                <AdjuntosVehiculos vehiculo={modal.adjuntos.data} />
             </Modal>
             <Modal show={modal.ver.show} setShow={setModal} title='Información del Vehículo' size='lg' handleClose={handleClose('ver')}>
                 <VerVehiculo vehiculo={modal.ver.data} />
