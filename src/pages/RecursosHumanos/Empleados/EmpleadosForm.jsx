@@ -133,10 +133,6 @@ class EmpleadosForm extends Component {
                     if (state.empleado) {
                         const { form, options} = this.state
                         const { empleado } = state
-                        console.log(empleado)
-                        console.log('estaa aquii')
-
-                        console.log(empleado)
 
                         form.nombre = empleado.nombre
                         form.curp = empleado.curp
@@ -159,7 +155,7 @@ class EmpleadosForm extends Component {
                         form.estudios = empleado.estudios
 
                         if (empleado.empresa) { form.empresa = empleado.empresa.id.toString() }
-                        form.fechaInicio = empleado.fecha_inicio !== null ? empleado.fecha_inicio:''
+                        form.fechaInicio = empleado.fecha_inicio !== null ? empleado.fecha_inicio :''
                         form.fechaFin = empleado.fecha_fin !== null ?  empleado.fecha_fin :''
                         form.puesto = empleado.puesto
                         form.estatus_imss = this.showStatusImss(empleado.estatus_imss);
@@ -169,7 +165,7 @@ class EmpleadosForm extends Component {
                         form.departamentos = []
                         form.nacionalidad = empleado.nacionalidad
                         // if(moment(empleado.fecha_nacimiento).isValid())
-                            form.fecha_nacimiento = moment(new Date(empleado.fecha_nacimiento)).format("YYYY-MM-DD")
+                        form.fecha_nacimiento = empleado.fecha_nacimiento ? empleado.fecha_nacimiento: ''
                             // form.fecha_nacimiento = moment(new Date()).format("YYYY/MM/DD")
                         form.domicilio = empleado.domicilio === null ? '' : empleado.domicilio
                         form.telefono_movil = empleado.telefono_movil
@@ -209,7 +205,8 @@ class EmpleadosForm extends Component {
                         form.isn = empleado.isn
                         form.checador = empleado.checador
                         form.id_patronal = empleado.id_patronal === null ? '' : empleado.id_patronal.toString()
-
+                        console.log(empleado)
+                        console.log(form)
                         this.setState({
                             ...this.state,
                             form,

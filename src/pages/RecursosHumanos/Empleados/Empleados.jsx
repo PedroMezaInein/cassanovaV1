@@ -477,7 +477,6 @@ class Empleados extends Component {
         let aux = []
         if (colaboradores)
             colaboradores.map((colaborador) => {
-                console.log(colaborador)
                 aux.push(
                     {
                         actions: this.setActions(colaborador),

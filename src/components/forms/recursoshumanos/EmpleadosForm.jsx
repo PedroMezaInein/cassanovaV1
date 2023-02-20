@@ -201,7 +201,7 @@ class EmpleadosForm extends Component {
 
                                         <div className="col-md-2">
                                             <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1} onChange={onChange} formeditado={formeditado} name="fecha_nacimiento"
-                                                type="date" value={form.fecha_nacimiento} data-date-format="DD/MMMM/YYYY" placeholder="Fecha de nacimiento" iconclass="fas fa-user" messageinc="Incorrecto. Ingresa la fecha." />
+                                                type="date" value={form.fecha_nacimiento}  placeholder="Fecha de nacimiento" iconclass="fas fa-user" messageinc="Incorrecto. Ingresa la fecha." />
                                         </div>
 
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
