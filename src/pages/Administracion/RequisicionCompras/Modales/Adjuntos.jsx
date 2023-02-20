@@ -170,8 +170,6 @@ export default function Adjuntos(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        
-        
 
         if (validate()) {
             Swal.fire({

@@ -23,7 +23,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
 
-export default function EditarVehiculo(props) {
+export default function VerVehiculo(props) { 
     const { reload, handleClose, vehiculo } = props
     const authUser = useSelector(state => state.authUser)
     const opcionesAreas = useSelector(state => state.opciones.areas)
@@ -231,6 +231,7 @@ export default function EditarVehiculo(props) {
                                     value={form.marca}
                                     onChange={handleChange}
                                     error={errores.marca ? true : false}
+                                    disabled
                                 />
                             </div>
                             <div>
@@ -240,6 +241,7 @@ export default function EditarVehiculo(props) {
                                     value={form.modelo}
                                     onChange={handleChange}
                                     error={errores.modelo ? true : false}
+                                    disabled
                                 />
                             </div>
                             <div>
@@ -249,6 +251,7 @@ export default function EditarVehiculo(props) {
                                     value={form.placas}
                                     onChange={handleChange}
                                     error={errores.placas ? true : false}
+                                    disabled
                                 />
                             </div>
                         </div>
@@ -260,6 +263,7 @@ export default function EditarVehiculo(props) {
                                     value={form.ciudad}
                                     onChange={handleChange}
                                     error={errores.ciudad ? true : false}
+                                    disabled
                                 />
                             </div>
                             <div>
@@ -270,6 +274,7 @@ export default function EditarVehiculo(props) {
                                     value={form.id_departamento}
                                     onChange={handleChange}
                                     error={errores.id_departamento ? true : false}
+                                    disabled
                                 >
                                     {
                                         opcionesAreas ? opcionesAreas.map((area, index) => {
@@ -286,6 +291,7 @@ export default function EditarVehiculo(props) {
                                     value={form.estatus}
                                     onChange={handleChange}
                                     error={errores.estatus ? true : false}
+                                    disabled
                                 >
                                     <MenuItem value={1}>Activo</MenuItem>
                                     <MenuItem value={0}>Inactivo</MenuItem>
@@ -301,6 +307,7 @@ export default function EditarVehiculo(props) {
                                     value={form.responsable}
                                     onChange={handleChange}
                                     error={errores.responsable ? true : false}
+                                    disabled
                                 >
                                     {
                                         opcionesVehiculos ? opcionesVehiculos.map((usuario, index) => {
@@ -317,7 +324,7 @@ export default function EditarVehiculo(props) {
                                     }
                                 </Select>
                             </div>
-                        </div> 
+                        </div>
                     </div>
                 </AccordionDetails>
             </Accordion>
@@ -337,6 +344,7 @@ export default function EditarVehiculo(props) {
                                     value={form.poliza}
                                     onChange={handleChange}
                                     error={errores.poliza ? true : false}
+                                    disabled
                                 />
                             </div>
                             <div>
@@ -344,7 +352,7 @@ export default function EditarVehiculo(props) {
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <Grid container >
                                         <KeyboardDatePicker
-                                            
+
                                             format="dd/MM/yyyy"
                                             name="fecha_poliza"
                                             value={form.fecha_poliza !== '' ? form.fecha_poliza : null}
@@ -354,6 +362,7 @@ export default function EditarVehiculo(props) {
                                                 'aria-label': 'change date',
                                             }}
                                             error={errores.fecha_poliza ? true : false}
+                                            disabled
                                         />
                                     </Grid>
                                 </MuiPickersUtilsProvider>
@@ -377,7 +386,7 @@ export default function EditarVehiculo(props) {
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <Grid container >
                                         <KeyboardDatePicker
-                                            
+
                                             format="dd/MM/yyyy"
                                             name="fecha_verificacion1"
                                             value={form.fecha_verificacion1 !== '' ? form.fecha_verificacion1 : null}
@@ -387,6 +396,7 @@ export default function EditarVehiculo(props) {
                                                 'aria-label': 'change date',
                                             }}
                                             error={errores.fecha_verificacion1 ? true : false}
+                                            disabled
                                         />
                                     </Grid>
                                 </MuiPickersUtilsProvider>
@@ -396,7 +406,7 @@ export default function EditarVehiculo(props) {
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <Grid container >
                                         <KeyboardDatePicker
-                                            
+
                                             format="dd/MM/yyyy"
                                             name="fecha_verificacion2"
                                             value={form.fecha_verificacion2 !== '' ? form.fecha_verificacion2 : null}
@@ -406,6 +416,7 @@ export default function EditarVehiculo(props) {
                                                 'aria-label': 'change date',
                                             }}
                                             error={errores.fecha_verificacion2 ? true : false}
+                                            disabled
                                         />
                                     </Grid>
                                 </MuiPickersUtilsProvider>
@@ -415,7 +426,7 @@ export default function EditarVehiculo(props) {
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <Grid container >
                                         <KeyboardDatePicker
-                                            
+
                                             format="dd/MM/yyyy"
                                             name="fecha_tenencia"
                                             value={form.fecha_tenencia !== '' ? form.fecha_tenencia : null}
@@ -425,6 +436,7 @@ export default function EditarVehiculo(props) {
                                                 'aria-label': 'change date',
                                             }}
                                             error={errores.fecha_tenencia ? true : false}
+                                            disabled
                                         />
                                     </Grid>
                                 </MuiPickersUtilsProvider>
@@ -434,11 +446,6 @@ export default function EditarVehiculo(props) {
                     </div>
                 </AccordionDetails>
             </Accordion>
-            <div className="row justify-content-end">
-                <div className="col-md-4">
-                    <button className={Style.sendButton} type="submit" onClick={handleSubmit}>Editar</button>
-                </div>
-            </div>
 
 
         </>

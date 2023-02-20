@@ -3,133 +3,71 @@ import { useSelector } from "react-redux";
 import Swal from 'sweetalert2'
 import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { apiPutForm } from './../../../functions/api'
+import ControlViaje from './../../RecursosHumanos/Vehiculos/ControlViaje'
+import { Modal } from './../../../components/singles'
 
 export default function SeguimientoViajes(props) {
-  const { reload } = props
-  const userAuth = useSelector((state) => state.authUser);
-  const [reloadTable, setReloadTable] = useState()
+    const { reload, startTravel, endTravel } = props
+    const userAuth = useSelector((state) => state.authUser);
+    const [reloadTable, setReloadTable] = useState()
 
-  const columnas = [
-    { nombre: 'control de viaje', identificador: 'control_de_viaje', sort: false, stringSearch: false},
-    { nombre: 'Solicitante', identificador: 'solicitante', sort: true, stringSearch: false},
-    { nombre: 'Descripcion', identificador: 'comentarios', sort: true, stringSearch: false},
-    { nombre: 'Fecha_inicio', identificador: 'fecha_inicio', sort: true, stringSearch: false},
-    { nombre: 'Fecha_fin', identificador: 'fecha_fin', sort: true, stringSearch: false},
-    { nombre: 'destino', identificador: 'destino', sort: true, stringSearch: false},
-  ]
+    const [modal, setModal] = useState({
+        control: {
+            show: false,
+            data: false
+        }
+    })
 
-  const travel = (viaje) => {
-    return (
-      <>
-      {
-        viaje.inicio_viaje ? 
+    const columnas = [
+        { nombre: 'control de viaje', identificador: 'control_de_viaje', sort: false, stringSearch: false},
+        { nombre: 'Solicitante', identificador: 'solicitante', sort: true, stringSearch: false},
+        { nombre: 'Descripcion', identificador: 'comentarios', sort: true, stringSearch: false},
+        { nombre: 'Fecha_inicio', identificador: 'fecha_inicio', sort: true, stringSearch: false},
+        { nombre: 'Fecha_fin', identificador: 'fecha_fin', sort: true, stringSearch: false},
+        { nombre: 'destino', identificador: 'destino', sort: true, stringSearch: false},
+    ]
+
+    const openModalControl = (e,viaje) => {
+        setModal({
+            control:{
+                show: true,
+                data: viaje
+            }
+        })
+    }
+
+    const travel = (viaje) => {
+        // endTravel(viaje)
+        // startTravel(viaje)
+        return (
         <>
-          <div>
-            <button className="btn btn-light-success btn-sm font-weight-bold" onClick={e=>endTravel(e,viaje)}>Finalizar viaje</button>
-          </div>
+        {
+            viaje.inicio_viaje ? 
+            <>
+            <div>
+                <button className="btn btn-light-success btn-sm font-weight-bold" onClick={e=>openModalControl(e,viaje)}>Finalizar viaje</button>
+            </div>
+            </>
+            :
+            <>
+            <div>
+                {/* <button className="btn btn-light-success btn-sm font-weight-bold" onClick={ e=> startTravel(e, viaje)}>Iniciar viaje</button> */}
+                <button className="btn btn-light-success btn-sm font-weight-bold" onClick={e=>openModalControl(e,viaje)}>Iniciar viaje</button>
+            </div>
+            </>
+        }
         </>
-        :
-        <>
-          <div>
-            {/* <button className="btn btn-light-success btn-sm font-weight-bold" onClick={ e=> startTravel(e, viaje)}>Iniciar viaje</button> */}
-            <button className="btn btn-light-success btn-sm font-weight-bold" onClick={e=>startTravel(e,viaje)}>Iniciar viaje</button>
-          </div>
-        </>
-      }
-      </>
-    )
-  }
+        )
+    }
 
-  const startTravel = (e,viaje) => {
-    Swal.fire({
-      title: '¿Quieres confirmar el inicio de tu viaje?',
-      icon: 'question',
-      showDenyButton: false,
-      showCancelButton: true,
-      confirmButtonText: 'Sí',
-      // denyButtonText: `Don't save`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: 'Cargando...',
-          allowOutsideClick: false,
-          onBeforeOpen: () => {
-              Swal.showLoading()
-          }
-       }) 
-      
-      let now = new Date()
-
-      let newForm = {
-        inicio_viaje: now.getHours() + ':' + now.getMinutes()
-      }
-
-      apiPutForm(`vehiculos/viaje/${viaje.id}`, newForm, userAuth.access_token)
-      // apiPutForm(`vehiculos/solicitud/edit/${viaje.id}`, newForm, userAuth.access_token)
-      .then((response)=>{
-          Swal.close()
-          Swal.fire('iniciado, ¡Buen viaje!', '', 'success')
-          if(reloadTable){
-              reloadTable.reload()
-          }
-      }) 
-      .catch((error)=>{  
-          Swal.close()
-          Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Ha ocurrido un error',
-          })
-      }) 
-    } 
-  })
-  }
-
-  const endTravel = (e, viaje) => {
-	Swal.fire({
-		title: '¿Estás seguro de concluir el viaje?',
-		icon: 'question',
-		showDenyButton: false,
-		showCancelButton: true,
-		confirmButtonText: 'Sí',
-	  }).then((result) => {
-		if (result.isConfirmed) {
-			Swal.fire({
-				title: 'Finalizando viaje...',
-				allowOutsideClick: false,
-				onBeforeOpen: () => {
-					Swal.showLoading()
-				}
-			}) 
-			
-			let now = new Date()
-	  
-			let newForm = {
-			  fin_viaje: now.getHours() + ':' + now.getMinutes()
-			}
-	  
-			apiPutForm(`vehiculos/viaje/${viaje.id}`, newForm, userAuth.access_token)
-			// apiPutForm(`vehiculos/solicitud/edit/${viaje.id}`, newForm, userAuth.access_token)
-			.then((response)=>{
-				Swal.close()
-			   	Swal.fire('¡listo! has concluido con el viaje ', '', 'success')
-				if(reloadTable){
-					reloadTable.reload()
-				}
-			}) 
-			.catch((error)=>{  
-				Swal.close()
-				Swal.fire({
-					icon: 'error',
-					title: 'Oops...',
-					text: 'Ha ocurrido un error',
-				})
-			})
-		  
-		} 
-	})
-  }
+    const handleClose = () => {
+        setModal({
+            control: {
+                show: false,
+                data: false
+            }
+        })
+    }
 
   const proccessData = (data) => {
     console.log(data)
@@ -143,7 +81,6 @@ export default function SeguimientoViajes(props) {
         comentarios:item.comentarios ? item.comentarios : 'sin asignar',
         fecha_inicio:item.fecha_inicio ? item.fecha_inicio.slice(0,10) : 'asignar',
         fecha_fin:item.fecha_fin ? item.fecha_fin.slice(0,10) : 'asignar',
-
       })
     })
     
@@ -162,6 +99,11 @@ export default function SeguimientoViajes(props) {
         reload={setReloadTable}
         >
       </Tabla>
+
+      
+      <Modal size="sm" title={"Control de viaje"} show={modal.control.show} handleClose={e => handleClose(e)}>
+        <ControlViaje data={modal.control.data} handleClose={e => handleClose(e)} reload={reloadTable}/>
+      </Modal>
     </>
   )     
 }

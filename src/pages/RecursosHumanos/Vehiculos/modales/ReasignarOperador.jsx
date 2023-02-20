@@ -19,19 +19,21 @@ export default function ReasignarOperador(props) {
         ...data.data,
     })
     const [vehiculo, setVehiculo] = useState({
-        id_vehiculo: data.data.vehiculo ? data.data.vehiculo.id : '',
+        /* id_vehiculo: data.data.vehiculo ? usuarios.find(item => item.id_vehiculo === data.data.vehiculo.id).id : null, */
+        id_vehiculo: null,
     })
     console.log(usuarios)
 
     const handleChange = (e) => {
-        let aux = usuarios.find(item => item.id_vehiculo === e.target.value)
+        let aux = usuarios.find(item => item.id === e.target.value)
+        console.log(aux)
         setForm({
             ...form,
             id_vehiculo: aux.id_vehiculo,
-            conductor: aux.usuario
+            conductor: aux.user.id
         })
         setVehiculo({
-            id_vehiculo: aux.id_vehiculo,
+            id_vehiculo: aux.id,
         })
     }
     
@@ -53,7 +55,6 @@ export default function ReasignarOperador(props) {
                     onBeforeOpen: () => {
                         Swal.showLoading()
                     }
-
                 })
                 try {
                     apiPutForm(`vehiculos/solicitud/edit/${data.data.id}`, form, authUser.access_token)
@@ -67,10 +68,27 @@ export default function ReasignarOperador(props) {
                                 timer: 1500
                             })
                             handleClose()
-
-                    })
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Swal.fire({
+                                title: 'Error',
+                                text: err,
+                                icon: 'error',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        })
                 } catch (error) {
-                    console.log(error)
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Error al re-asignar vehiculo',
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    
                 }
             }
         })
@@ -88,7 +106,7 @@ export default function ReasignarOperador(props) {
                         onChange={handleChange}
                     >
                         {usuarios.map((item) => (
-                            <MenuItem key={item.id} value={item.id_vehiculo}>{item.vehiculos.marca} {item.vehiculos.modelo} - {item.user.name} </MenuItem>
+                            <MenuItem key={item.id} value={item.id}>{item.vehiculos.marca} {item.vehiculos.modelo} - {item.user.name} </MenuItem>
                         ))}
                     </Select>
                 </div>

@@ -206,9 +206,13 @@ export default function ControlGastos(props) {
             <Modal show={modal.eliminar.show} setShow={setModal} title='Eliminar Gasto' size='lg' handleClose={handleClose('eliminar')}>
                 <h1>Eliminar</h1>
             </Modal>
-            <Modal show={modal.ver.show} setShow={setModal} title='Ver Gasto' size='lg' handleClose={handleClose('ver')}>
-                <VerGasto reload={reloadTable} handleClose={handleClose('ver')} vehiculo={vehiculo} />
-            </Modal>
+            {
+                modal.ver.data &&
+                <Modal show={modal.ver.show} setShow={setModal} title='Ver Gasto' size='lg' handleClose={handleClose('ver')}>
+                    <VerGasto reload={reloadTable} handleClose={handleClose('ver')} vehiculo={modal.ver.data} />
+                </Modal>
+            }
+           
             <Modal show={modal.crear.show} setShow={setModal} title='Nuevo gasto' size='lg' handleClose={handleClose('crear')}>
                 <NuevoGasto reload={reloadTable} handleClose={handleClose('crear')} vehiculo={vehiculo} />
             </Modal>

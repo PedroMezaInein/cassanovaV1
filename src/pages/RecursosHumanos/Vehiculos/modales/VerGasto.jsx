@@ -30,15 +30,16 @@ export default function NuevoGasto(props) {
     const [form, setForm] = useState({
         /* id_vehiculo: '', */
         fecha: new Date(),
-        kilometros: '',
-        fecha_servicio: '',
-        trabajo_realizado: '',
-        costo: '',
-        no_factura: '',
-        observaciones: '',
-        autorizacion_1: '',
+        kilometros: vehiculo.kilometros,
+        fecha_servicio: vehiculo.fecha_servicio,
+        trabajo_realizado: vehiculo.trabajo_realizado,
+        costo: vehiculo.costo,
+        no_factura: vehiculo.no_factura,
+        observaciones: vehiculo.observaciones,
+        autorizacion_1: vehiculo.autorizacion_1,
         estatus: 0,
     })
+    console.log(form)
     const [errores, setErrores] = useState({})
 
     const handleChange = (e) => {

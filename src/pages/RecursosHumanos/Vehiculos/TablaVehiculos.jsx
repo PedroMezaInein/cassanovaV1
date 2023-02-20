@@ -14,6 +14,7 @@ import ControlGastos from './modales/ControlGastos'
 import NuevoVehiculo from './modales/NuevoVehiculo'
 import EditarVehiculo from './modales/EditarVehiculo'
 import Operador from './modales/Operador'
+import VerVehiculo from './modales/VerVehiculo'
 
 export default function TablaVehiculos() {
     const userAuth = useSelector((state) => state.authUser);
@@ -262,10 +263,10 @@ export default function TablaVehiculos() {
                 <h1>Eliminar</h1>
             </Modal>
             <Modal show={modal.adjuntos.show} setShow={setModal} title='Adjuntos Vehículo' size='lg' handleClose={handleClose('adjuntos')}>
-                <AdjuntosVehiculos />
+                <AdjuntosVehiculos vehiculo={modal.adjuntos.data} />
             </Modal>
-            <Modal show={modal.ver.show} setShow={setModal} title='Ver Vehículo' size='lg' handleClose={handleClose('ver')}>
-                <h1>Ver</h1>
+            <Modal show={modal.ver.show} setShow={setModal} title='Información del Vehículo' size='lg' handleClose={handleClose('ver')}>
+                <VerVehiculo vehiculo={modal.ver.data} />
             </Modal>
             <Modal show={modal.crear.show} setShow={setModal} title='Crear Vehículo' size='lg' handleClose={handleClose('crear')}>
                 <NuevoVehiculo reload={reloadTable} handleClose={handleClose('crear')} />
