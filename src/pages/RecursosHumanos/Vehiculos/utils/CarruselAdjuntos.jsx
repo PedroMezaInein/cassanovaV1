@@ -8,6 +8,10 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 import Swal from 'sweetalert2'
+import axios from 'axios'
+
+import { URL_DEV } from './../../../../constants'
+import { setSingleHeader, setFormHeader } from './../../../../functions/routers'
 
 import { apiDelete } from '../../../../functions/api'
 import './../../../../styles/_adjuntosVehiculos.scss'
@@ -21,8 +25,8 @@ const useStyles = makeStyles((theme) => ({
         height: 350,
     },
     adjuntos: {
-        width: 450,
-        height: 250,
+        width: 477,
+        height: 320,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -32,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 export default function CarruselAdjuntos(props) {
     const { data, id, getAdjuntos } = props;
     let adjuntos = data
-    console.log(data)
     const classes = useStyles();
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
@@ -50,7 +53,7 @@ export default function CarruselAdjuntos(props) {
     const handleStepChange = (step) => {
         setActiveStep(step);
     };
-    const handleDelete = (index) => {
+    const handleDelete = (id_adjunto) => {
         Swal.fire({
             title: '¿Estas seguro de eliminar este adjunto?',
             text: "No podras revertir esta accion!",
@@ -69,7 +72,11 @@ export default function CarruselAdjuntos(props) {
                         Swal.showLoading();
                     }
                 })
-                apiDelete(`proyectos/${id}/adjunto/${index}`, auth)
+                let form = {
+                    id_adjunto
+                }
+                // vehiculos/adjuntos/56
+                axios.delete(`${URL_DEV}vehiculos/adjuntos/${id}`, { headers: setSingleHeader(auth), data: form })
                     .then(res => {
                         getAdjuntos()
                         Swal.close()
@@ -133,9 +140,9 @@ export default function CarruselAdjuntos(props) {
                         >
                         </object>
                         <br />
-                        <div className="text-center">
-                            <a href={item.url} target="_blank" ><button className="btn btn-success">Ver</button></a>
-                            <button className="btn btn-danger" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                        <div className="container_btns">
+                            <a href={item.url} target="_blank" ><button className="btn_ver">Ver</button></a>
+                            <button className="btn_delete" onClick={() => handleDelete(item.id)}>Eliminar</button>
                         </div>
 
                     </div>
