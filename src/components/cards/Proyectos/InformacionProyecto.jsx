@@ -39,8 +39,14 @@ export default function InformacionProyecto({ proyecto, form, addComentario, onC
 
     const handleChangeAdd = (e) => { //handleChangeSub
         const { value } = e.target
+        console.log(value)
+        let newForm = {}
         usuarios.empleados.map((usuario) => {
             if (usuario.id == parseInt(value)) {
+                newForm = {
+                    id_usuario: usuario.id,
+                    id_proyecto: proyecto.id,
+                }
                 setState({
                     ...state,
                     formulario: {
@@ -62,7 +68,8 @@ export default function InformacionProyecto({ proyecto, form, addComentario, onC
                 },
                 timer: 2000
             })
-            apiPostForm('v2/proyectos/calendario-proyectos/users/create', state.formulario, at).then((response) => {
+            
+            apiPostForm('v2/proyectos/calendario-proyectos/users/create', newForm, at).then((response) => {
                 handleGetUsers()
             })
                 .catch((error) => {
