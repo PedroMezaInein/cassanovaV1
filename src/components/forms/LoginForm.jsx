@@ -135,8 +135,8 @@ class LoginForm extends React.Component {
         await axios.post(`${URL_DEV}user/login`, form, error).then(
             (response) => {
                 const { history, login } = this.props
-                const { access_token, user, modulos } = response.data
-                login({ access_token: access_token, user: user, modulos: modulos })
+                const { access_token, user, modulos, departamento } = response.data
+                login({ access_token: access_token, user: user, modulos: modulos, departamento: departamento })
                 if(!user.permisos){
                     history.push('/login')
                 }

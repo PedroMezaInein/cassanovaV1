@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { useSelector } from 'react-redux';
 
+import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { REQUISICIONES } from '../../../constants'
@@ -41,31 +42,56 @@ function Requisiciones () {
         pathname: '/administracion/requisicion',
     }
 
-    const proccessData = (datos) => {
 
+    const proccessData = (datos) => {
+        
         let aux = []
-        datos.Requisiciones.map((result) => {
-            aux.push(
-                {
-                    acciones: acciones(),
-                    solicitante: result.solicitante.name,
-                    fecha: result.fecha,
-                    departamento: result.departamento ?  result.departamento.nombre : '',
-                    tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
-                    descripcion: result.descripcion,
-                    estatus: result.estatus ? result.estatus.estatus : 'pendiente' ,
-                    tiempo_estimado: result.fecha_entrega ? result.fecha_entrega : 'no especificado',
-                    id:result.id,
-                    data:result
-                }
-            )
-        })
-        return aux
+            datos.Requisiciones.map((result) => {
+                aux.push(
+                    {
+                        acciones: acciones(),
+                        orden_compra: result.orden_compra,
+                        solicitante: result.solicitante.name,
+                        fecha: result.fecha,
+                        departamento: result.departamento ?  result.departamento.nombre : '',
+                        tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
+                        descripcion: result.descripcion,
+                        estatus: result.estatus ? result.estatus.estatus : 'pendiente' ,
+                        tiempo_estimado: result.fecha_entrega ? result.fecha_entrega : 'no especificado',
+                        id:result.id,
+                        data:result
+                    }
+                )
+            })
+            aux=aux.reverse()
+            return aux
+    // }
+        
+        // let aux = []
+        // datos.Requisiciones.map((result) => {
+        //     aux.push(
+        //         {
+        //             acciones: acciones(),
+        //             orden_compra: result.orden_compra,
+        //             solicitante: result.solicitante.name,
+        //             fecha: result.fecha,
+        //             departamento: result.departamento ?  result.departamento.nombre : '',
+        //             tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
+        //             descripcion: result.descripcion,
+        //             estatus: result.estatus ? result.estatus.estatus : 'pendiente' ,
+        //             tiempo_estimado: result.fecha_entrega ? result.fecha_entrega : 'no especificado',
+        //             id:result.id,
+        //             data:result
+        //         }
+        //     )
+        // })
+        // aux=aux.reverse()
+        // return aux
     }
     
     const handleOpen = [
         {
-            nombre: 'Nueva Requisicion',
+            nombre: 'Nueva Requisición',
             funcion: (item) => { 
                 setModal({
                     ...modal,
@@ -106,11 +132,11 @@ function Requisiciones () {
                 
                 }
             },  
-
+           
             {
                 nombre: 'Adjuntos',
                 icono: 'fas fa-paperclip',
-                color: 'blueButton',
+                color: 'reyButton',
                 funcion: (item) => {
                     setModal({
                         ...modal,
@@ -129,7 +155,7 @@ function Requisiciones () {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
                 <Tabla
-                    titulo="Requisicion" 
+                    titulo="Requisición" 
                     columnas={REQUISICIONES}
                     url={'requisicion'}  
                     numItemsPagina={12}
@@ -141,11 +167,11 @@ function Requisiciones () {
                 </Tabla>
             </Layout>
 
-            <Modal size="lg" title={"Nueva requisicion"} show={modal.crear.show} handleClose={handleClose('crear')}>
+            <Modal size="lg" title={"Nueva requisición"} show={modal.crear.show} handleClose={handleClose('crear')}>
                 <NuevaRequisicion handleClose={handleClose('crear')} reload={reloadTable}/>
             </Modal>
 
-            <Modal size="lg" title={"Editar requisicion"} show={modal.editar.show} handleClose={handleClose('editar')}>
+            <Modal size="lg" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
                 <EditarRequisicion data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable}/>
             </Modal>
 

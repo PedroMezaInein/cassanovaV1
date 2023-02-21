@@ -55,6 +55,7 @@ export default function RequisicionContabilidad() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
+        { nombre: 'Orden no.', identificador: 'orden_compra' },
         { nombre: 'Solicitante', identificador: 'solicitante', sort: false, stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
         { nombre: 'Departamento', identificador: 'departamento', sort: false, stringSearch: false },
@@ -62,11 +63,11 @@ export default function RequisicionContabilidad() {
         { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false },
         { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
         { nombre: 'Monto pagado', identificador: 'monto_view', sort: false, stringSearch: false },
-        { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
-        { nombre: 'Facturación', identificador: 'estatus_conta', sort: false, stringSearch: false },
+        { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
+        { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false },
+        { nombre: 'Facturación', identificador: 'estatus_factura', sort: false, stringSearch: false },
         { nombre: 'Cuentas', identificador: 'afectacion_cuentas', sort: false, stringSearch: false },
         { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false },
-
     ]
 
     const opciones = [
@@ -90,9 +91,7 @@ export default function RequisicionContabilidad() {
     }
 
     let ProccessData = (data) => {
-        console.log(data)
         let aux = []
-        console.log(data)
         data.Requisiciones.map((item, index) => {
             aux.push({
                 id: item.id,
@@ -112,22 +111,23 @@ export default function RequisicionContabilidad() {
                 monto_solicitado: item.cantidad,
                 monto: item.monto_pago,
                 monto_view: `$${item.monto_pago.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`,
-                estatus: item.estatus ? item.estatus.estatus : 'Pendiente',
                 aprobacion: createtagaprobaciones(item),
                 auto1: item.auto1,
                 auto2: item.auto2,
                 orden_compra: item.orden_compra,
                 fecha_pago: item.fecha_pago,
                 cuenta: item.cuenta,
-                id_estatus: item.estatus ? item.estatus.id : null,
+                id_estatus: item.id_estatus_compra ? item.id_estatus_compra : null,
                 proveedor: item.id_proveedor ? item.id_proveedor : null,
-                /* estatus_admin: item.estatus_admin ? item.estatus_admin : 'Pendiente', */
                 estatus_compra: item.estatus_compra ? item.estatus_compra.estatus : 'pendiente',
                 estatus_conta: item.estatus_conta ? item.estatus_conta.estatus : 'pendiente',
-                /* id_estatus_admin: item.id_estatus_admin ? item.id_estatus_admin : null, */
+                estatus_factura: item.estatus_factura ? item.estatus_factura.estatus : 'pendiente',
                 compra: item.estatus_compra ? item.estatus_compra.id : null,
+                id_estatus_compra: item.id_estatus_compra ? item.id_estatus_compra : null,
+                id_estatus_factura: item.id_estatus_factura ? item.id_estatus_factura : null,
                 conta: item.estatus_conta ? item.estatus_conta.id : null,
-                afectacion_cuentas: item.afectacion_cuentas ? "Cuentas afectadas" : "sin afectación",
+                factura: item.estatus_factura ? item.estatus_factura.id : null,
+                afectacion_cuentas: item.auto2 ? "Cuentas afectadas" : "sin afectación",
             })
         })
         aux = aux.reverse()
@@ -163,13 +163,22 @@ export default function RequisicionContabilidad() {
                 icono: 'fas fa-exchange-alt',
                 color: 'greenButton',
                 funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        convertir: {
-                            show: true,
-                            data: item
-                        }
-                    })
+                    if (item.auto2) {
+                        Swal.fire({
+                            title: 'Requisición ya aprobada',
+                            text: 'La requisición ya fue aprobada, no se puede convertir',
+                            icon: 'warning',
+                            confirmButtonText: 'Aceptar'
+                        })
+                    } else {
+                        setModal({
+                            ...modal,
+                            convertir: {
+                                show: true,
+                                data: item
+                            }
+                        })
+                    }
                 }
             },
             {
@@ -267,7 +276,7 @@ export default function RequisicionContabilidad() {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
                 <>
-                    <TablaGeneral titulo='Gasto' columnas={columnas} url='requisicion' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
+                    <TablaGeneral titulo='Gasto' columnas={columnas} url='requisicion/admin' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
                 </>
             </Layout>
 

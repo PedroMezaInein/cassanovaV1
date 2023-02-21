@@ -1,8 +1,13 @@
 import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
-import {apiPutForm} from '../../../../functions/api'
+import { apiPutForm } from '../../../../functions/api'
 
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale'
+import Grid from '@material-ui/core/Grid';
+
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
@@ -26,7 +31,7 @@ export default function Editar(props) {
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
-        fecha: data.fecha,
+        fecha: new Date(data.fecha),
         departamento: data.departamento_id,
         tipoGasto: data.tipoEgreso_id,
         tipoSubgasto: data.tipoSubEgreso_id,
@@ -42,11 +47,14 @@ export default function Editar(props) {
         id_estatus: data.id_estatus,
         checked: data.auto1 ? true : false,
         proveedor: data.proveedor,
-        fecha_entrega: data.fecha_entrega,
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
         empresa: "",
+        conta: data.conta,
+        factura: data.factura,
+        orden_compra: data.orden_compra,
 
     })
-
+    const [errores, setErrores] = useState({})
     const classes = useStyles();
 
     const handleChange = (e) => {
@@ -55,6 +63,13 @@ export default function Editar(props) {
             [e.target.name]: e.target.value
         })
     }
+
+    const handleChangeFecha = (date, tipo) => {
+        setForm({
+            ...form,
+            [tipo]: new Date(date)
+        })
+    };
 
     const handleChangeDepartamento = (e) => {
         setForm({
@@ -66,110 +81,216 @@ export default function Editar(props) {
     }
 
     const handleSave = () => {
-        Swal.fire({
-            title: 'Guardando...',
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            }
-        })
-        if (validateForm()) {
-            try {
-                Swal.fire({
-                    title: 'Guardando...',
-                    allowOutsideClick: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    }
-                })
-                let newForm = {
-                    id_departamento: form.departamento,
-                    id_gasto: form.tipoGasto,
-                    descripcion: form.descripcion,
-                    id_subarea: form.tipoSubgasto,
-                    id_pago: form.tipoPago,
-                    id_solicitante: data.solicitante_id,
-                    monto_pagado: form.monto_pagado,
-                    cantidad: form.monto,
-                    autorizacion_1: form.auto1 ? auth.user.id : null,
-                    autorizacion_2: form.auto2 ? form.auto2.id : null,
-                    orden_compra: data.orden_compra,
-                    fecha_pago: data.fecha_pago,
-                    id_cuenta: form.id_cuenta,
-                    id_estatus: form.id_estatus,
-                    id_proveedor: form.proveedor,
-                    fecha_entrega: form.fecha_entrega,
-                }
+        if (form.monto !== data.monto_solicitado && form.auto1) { 
+            Swal.fire({
+                title: 'Estás editando el monto de la solicitud',
+                text: " Esto eliminara la aprobación de la requisición y deberá ser aprobada nuevamente por contabilidad",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, editar y eliminar aprobación',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (validateForm()) {
+                        try {
+                            Swal.fire({
+                                title: 'Guardando...',
+                                allowOutsideClick: false,
+                                onBeforeOpen: () => {
+                                    Swal.showLoading()
+                                }
+                            })
+                            let newForm = {
+                                id_departamento: form.departamento,
+                                id_gasto: form.tipoGasto,
+                                descripcion: form.descripcion,
+                                id_subarea: form.tipoSubgasto,
+                                id_pago: form.tipoPago,
+                                id_solicitante: data.solicitante_id,
+                                monto_pagado: form.monto_pagado,
+                                cantidad: form.monto,
+                                autorizacion_1: form.auto1 ? auth.user.id : null,
+                                autorizacion_2: form.auto2 && form.monto === data.monto_solicitado ? form.auto2.id : null,
+                                orden_compra: data.orden_compra,
+                                fecha_pago: data.fecha_pago,
+                                id_cuenta: form.id_cuenta,
+                                id_estatus_compra: form.id_estatus,
+                                id_proveedor: form.proveedor,
+                                fecha_entrega: form.fecha_entrega,
+                                id_estatus_factura: form.factura,
+                                id_estatus_conta: form.conta,
+                            }
 
-                apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
-                    (response) => {
-                        handleClose('editar')
-                        if (reload) {
-                            reload.reload()
+                            apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
+                                (response) => {
+                                    Swal.close()
+                                    handleClose('editar')
+                                    if (reload) {
+                                        reload.reload()
+                                    }
+                                    
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Guardado',
+                                        text: 'Se ha guardado correctamente',
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                    })
+                                }, (error) => { }
+                            ).catch((error) => {
+                                Swal.close()
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Ha ocurrido un error',
+                                })
+                            })
+                        } catch (error) {
+                            Swal.close()
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Ha ocurrido un error',
+                            })
                         }
+                    } else {
                         Swal.close()
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Guardado',
-                            text: 'Se ha guardado correctamente',
-                            timer: 2000,
-                            timerProgressBar: true,
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Todos los campos son obligatorios',
                         })
-                    }, (error) => { }
-                ).catch((error) => {
+                    }
+                }
+            })
+        } else {
+            Swal.close()
+            Swal.fire({
+                title: 'Guardando...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            if (validateForm()) {
+                try {
+                    Swal.fire({
+                        title: 'Guardando...',
+                        allowOutsideClick: false,
+                        onBeforeOpen: () => {
+                            Swal.showLoading()
+                        }
+                    })
+                    let newForm = {
+                        id_departamento: form.departamento,
+                        id_gasto: form.tipoGasto,
+                        descripcion: form.descripcion,
+                        id_subarea: form.tipoSubgasto,
+                        id_pago: form.tipoPago,
+                        id_solicitante: data.solicitante_id,
+                        monto_pagado: form.monto_pagado,
+                        cantidad: form.monto,
+                        autorizacion_1: form.auto1 ? form.auto1.id : null,
+                        autorizacion_2: form.auto2 && form.monto === data.monto_solicitado ? form.auto2.id : null,
+                        orden_compra: data.orden_compra,
+                        fecha_pago: data.fecha_pago,
+                        id_cuenta: form.id_cuenta,
+                        id_estatus_compra: form.id_estatus,
+                        id_proveedor: form.proveedor,
+                        fecha_entrega: form.fecha_entrega,
+                        id_estatus_factura: form.factura,
+                        id_estatus_conta: form.conta,
+                    }
+
+                    apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
+                        (response) => {
+                            Swal.close()
+                            handleClose('editar')
+                            if (reload) {
+                                reload.reload()
+                            }
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Guardado',
+                                text: 'Se ha guardado correctamente',
+                                timer: 2000,
+                                timerProgressBar: true,
+                            })
+                        }, (error) => { }
+                    ).catch((error) => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error',
+                        })
+                    })
+                } catch (error) {
                     Swal.close()
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
                         text: 'Ha ocurrido un error',
                     })
-                })
-            } catch (error) {
+                }
+            } else {
                 Swal.close()
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Ha ocurrido un error',
+                    text: 'Todos los campos son obligatorios',
                 })
             }
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Todos los campos son obligatorios',
-            })
         }
+       
     }
 
     const validateForm = () => {
         let valid = true
+        let aux = []
         if (form.fecha === '' || form.fecha === null) {
             valid = false
+            aux.fecha = true
         }
         if (form.departamento === '' || form.departamento === null) {
             valid = false
+            aux.departamento = true
         }
         if (form.tipoGasto === '' || form.tipoGasto === null) {
             valid = false
+            aux.tipoGasto = true
         }
         if (form.tipoSubgasto === '' || form.tipoSubgasto === null) {
             valid = false
+            aux.tipoSubgasto = true
         }
         if (form.tipoPago === '' || form.tipoPago === null) {
             valid = false
+            aux.tipoPago = true
         }
-        if (form.monto === '' || form.monto === null) {
+        if (form.monto === '' || form.monto === null || form.monto === 0) {
             valid = false
+            aux.monto = true
         }
         if (form.descripcion === '' || form.descripcion === null) {
             valid = false
+            aux.descripcion = true
         }
+        if (form.id_estatus === '' || form.id_estatus === null) { 
+            valid = false
+            aux.id_estatus = true
+        }
+        if (form.proveedor === '' || form.proveedor === null) {
+            valid = false
+            aux.proveedor = true
+        }
+        setErrores(aux)
         return valid
-
     }
 
     const handleAprueba = (e) => {
-        console.log(e.target.name)
         if (e.target.name === 'auto1') {
             setForm({
                 ...form,
@@ -179,7 +300,6 @@ export default function Editar(props) {
     }
 
     const handleMoney = (e) => {
-        console.log(e)
         setForm({
             ...form,
             monto: e
@@ -190,42 +310,69 @@ export default function Editar(props) {
     return (
         <>
             <div className={Style.container}>
-
                 <div>
                     <TextField
-                        label="Fecha de solicitud"
-                        type="date"
-                        name='fecha'
-                        defaultValue={form.fecha}
+                        label="N. Orden de compra"
+                        name='orden_compra'
+                        defaultValue={form.orden_compra}
                         className={classes.textField}
                         InputLabelProps={{
                             shrink: true,
                         }}
+                        onChange={handleChange}
+                        disabled
                     />
                 </div>
 
                 <div>
-                    <TextField
-                        name='fecha_entrega'
-                        label="Fecha de entrega"
-                        type="date"
-                        defaultValue={form.fecha_entrega}
-                        onChange={handleChange}
-                        className={classes.textField}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
+                    <InputLabel >Fecha de solicitud</InputLabel>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <Grid container >
+                            <KeyboardDatePicker
+
+                                format="dd/MM/yyyy"
+                                name="fecha"
+                                value={form.fecha !== '' ? form.fecha : null}
+                                placeholder="dd/mm/yyyy"
+                                onChange={e => handleChangeFecha(e, 'fecha')}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                                /* error={errores.fecha ? true : false} */
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
+                </div>
+
+                <div>
+                    <InputLabel >Fecha de entrega</InputLabel>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <Grid container >
+                            <KeyboardDatePicker
+
+                                format="dd/MM/yyyy"
+                                name="fecha_entrega"
+                                value={form.fecha_entrega !== '' ? form.fecha_entrega : null}
+                                placeholder="dd/mm/yyyy"
+                                onChange={e => handleChangeFecha(e, 'fecha_entrega')}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            /* error={errores.fecha_entrega ? true : false} */
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
                 </div>
 
                 <div>
                     <CurrencyTextField
-                        label="monto"
+                        label="monto solicitado"
                         variant="standard"
                         value={form.monto}
                         currencySymbol="$"
                         outputFormat="number"
                         onChange={(event, value) => handleMoney(value)}
+                        error={errores.monto ? true : false}
                     />
                 </div>
 
@@ -279,6 +426,7 @@ export default function Editar(props) {
                                 onChange={handleChange}
                                 value={form.tipoSubgasto}
                                 className={classes.textField}
+                                error={errores.tipoSubgasto ? true : false}
                             >
                                 {departamentos.find(item => item.id_area == form.departamento).partidas.find(item => item.id == form.tipoGasto).subpartidas.map((item, index) => (
                                     <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -302,6 +450,7 @@ export default function Editar(props) {
                                     value={form.tipoPago}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.tipoPago ? true : false}
                                 >
                                     {opciones.tiposPagos.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -324,6 +473,7 @@ export default function Editar(props) {
                                     value={form.id_estatus}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.id_estatus ? true : false}
                                 >
                                     {estatusCompras.map((item, index) => {
                                         if (item.nivel === 1) {
@@ -347,6 +497,7 @@ export default function Editar(props) {
                                     value={form.proveedor}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.proveedor ? true : false}
                                 >
                                     {opciones.proveedores.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -433,7 +584,7 @@ export default function Editar(props) {
                     />  
                 </div>
 
-                <div>
+                {/* <div>
                     <InputLabel id="demo-simple-select-label">Aprobar Requsición</InputLabel>
                     <Checkbox
                         checked={form.auto1}
@@ -442,12 +593,16 @@ export default function Editar(props) {
                         color="primary"
                         style={{ marginLeft: '20%' }}
                     />
-                </div>
+                </div> */}
 
-                <div className={Style.btnAprobar}>
-                    <button onClick={handleSave}>Guardar</button>
-                </div>
+                
 
+            </div>
+
+            <div className="row justify-content-end">
+                <div className="col-md-4">
+                    <button className={Style.sendButton} onClick={handleSave}>Guardar</button>
+                </div>
             </div>
         </>
         )

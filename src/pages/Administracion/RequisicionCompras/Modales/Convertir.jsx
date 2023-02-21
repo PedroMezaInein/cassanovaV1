@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiOptions, apiPutForm, apiPostForm } from '../../../../functions/api'
+import { apiPutForm } from '../../../../functions/api'
 
-import { setOptions } from '../../../../functions/setters'
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale'
+import Grid from '@material-ui/core/Grid';
 
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
@@ -25,11 +28,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Convertir(props) { 
     const { data, handleClose, reload, opciones, estatusCompras } = props
-    console.log(props)
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
-        fecha: data.fecha,
+        fecha: new Date(data.fecha),
         departamento: data.departamento_id,
         tipoGasto: data.tipoEgreso_id,
         tipoSubgasto: data.tipoSubEgreso_id,
@@ -45,8 +47,11 @@ export default function Convertir(props) {
         id_estatus: data.id_estatus,
         checked: data.auto1 ? true : false,
         proveedor: data.proveedor,
-        fecha_entrega: data.fecha_entrega,
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
         empresa: "",
+        conta: data.conta,
+        factura: data.factura,
+        orden_compra: data.orden_compra,
     })
     const [errores, setErrores] = useState({})
 
@@ -59,6 +64,13 @@ export default function Convertir(props) {
         })
     }
 
+    const handleChangeFecha = (date, tipo) => {
+        setForm({
+            ...form,
+            [tipo]: new Date(date)
+        })
+    };
+
     const handleChangeDepartamento = (e) => {
         setForm({
             ...form,
@@ -70,53 +82,63 @@ export default function Convertir(props) {
 
     const validateForm = () => {
         let valid = true
-        let errores = []
-        if (!form.departamento === '') {
+        let aux = []
+        if (form.fecha === '' || form.fecha === null) {
             valid = false
-            errores.departamento = 'Selecciona un departamento'
+            aux.fecha = true
         }
-        if (!form.tipoGasto === '') {
+        if (form.departamento === '' || form.departamento === null) {
             valid = false
-            errores.tipoGasto = 'Selecciona un tipo de gasto'
+            aux.departamento = true
         }
-        if (!form.tipoSubgasto === '') {
+        if (form.tipoGasto === '' || form.tipoGasto === null) {
             valid = false
-            errores.tipoSubgasto = 'Selecciona un tipo de subgasto'
+            aux.tipoGasto = true
         }
-        if (!form.tipoPago === '') {
+        if (form.tipoSubgasto === '' || form.tipoSubgasto === null) {
             valid = false
-            errores.tipoPago = 'Selecciona un tipo de pago'
+            aux.tipoSubgasto = true
         }
-        if (!form.monto === '') {
+        if (form.tipoPago === '' || form.tipoPago === null) {
             valid = false
-            errores.monto = 'Ingresa un monto'
+            aux.tipoPago = true
         }
-        if (!form.monto_pagado === '') {
+        if (form.monto === '' || form.monto === null || form.monto === 0) {
             valid = false
-            errores.monto_pagado = 'Ingresa un monto pagado'
+            aux.monto = true
         }
-        if (!form.descripcion === '') {
+        if (form.descripcion === '' || form.descripcion === null) {
             valid = false
-            errores.descripcion = 'Ingresa una descripción'
+            aux.descripcion = true
         }
-        setErrores(errores)
+        if (form.id_estatus === '' || form.id_estatus === null) {
+            valid = false
+            aux.id_estatus = true
+        }
+        if (form.proveedor === '' || form.proveedor === null) {
+            valid = false
+            aux.proveedor = true
+        }
+        setErrores(aux)
         return valid
     }
 
     const aprobar = () => {
-        if (form.auto1) {
-            Swal.fire({
-                title: '¿Estas seguro de aprobar esta solicitud?',
-                text: "Confirma los datos antes de continuar",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Si, aprobar!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (validateForm()) {
+        if (validateForm()) {
+            if (form.auto1) {
+                Swal.fire({
+                    title: '¿Estas seguro de aprobar esta solicitud?',
+                    text: "Confirma los datos antes de continuar",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, aprobar!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        
+
                         Swal.fire({
                             title: 'Aprobando...',
                             allowOutsideClick: false,
@@ -135,25 +157,28 @@ export default function Convertir(props) {
                             monto_pagado: form.monto_pagado,
                             cantidad: form.monto,
                             autorizacion_1: form.auto1 && form.auto1.id ? form.auto1.id : form.auto1,
-                            autorizacion_2: form.auto2 ? form.auto2.id : null,
+                            autorizacion_2: form.monto === data.monto_solicitado ? form.auto2 ? form.auto2.id : null : null,
                             orden_compra: data.orden_compra,
                             fecha_pago: data.fecha_pago,
                             id_cuenta: form.id_cuenta,
-                            id_estatus: form.id_estatus,
+                            id_estatus_compra: form.id_estatus,
                             id_proveedor: form.proveedor,
                             fecha_entrega: form.fecha_entrega,
+                            autorizacion_compras: true,
+                            id_estatus_factura: form.factura,
+                            id_estatus_conta: form.conta,
                         }
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                             (response) => {
+                                Swal.close()
                                 handleClose('convertir')
                                 if (reload) {
                                     reload.reload()
                                 }
-                                Swal.close()
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Guardado',
-                                    text: 'Se ha guardado correctamente',
+                                    title: 'Aprobado!',
+                                    text: 'Se ha aprobado correctamente',
                                     timer: 2000,
                                     timerProgressBar: true,
                                 })
@@ -166,31 +191,30 @@ export default function Convertir(props) {
                                 text: 'Ha ocurrido un error',
                             })
                         })
-                    } else {
-                        Swal.fire(
-                            'Error!',
-                            'Faltan datos por llenar',
-                            'error'
-                        )
                     }
-                }
-            })
+                })
+            } else {
+                Swal.fire({
+                    title: 'Requisición no autorizada!',
+                    text: 'Debes aprobar la requisición para poder convertirla',
+                    icon: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok',
+                })
+            }
         } else {
-            Swal.fire({
-                title: 'Requisición no autorizada!',
-                text: 'Debes aprobar la requisición para poder convertirla',
-                icon: 'error',
-                showCancelButton: false,
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Ok',
-            })
+            Swal.close()
+            Swal.fire(
+                'Error!',
+                'Faltan datos por llenar',
+                'error'
+            )
         }
         
-                
     }
 
     const handleAprueba = (e) => {
-        console.log(e.target.name)
         if (e.target.name === 'auto1') {
             setForm({
                 ...form,
@@ -210,40 +234,69 @@ export default function Convertir(props) {
     return (
         <>
             <div className={Style.container}>
-
                 <div>
                     <TextField
-                        label="Fecha de solicitud"
-                        type="date"
-                        name='fecha'
-                        defaultValue={form.fecha}
-                        className={classes.textField}
-                        
-                    />
-                </div>
-
-                <div>
-                    <TextField
-                        name='fecha_entrega'
-                        label="Fecha de entrega"
-                        type="date"
-                        defaultValue={form.fecha_entrega}
-                        onChange={handleChange}
+                        label="N. Orden de compra"
+                        name='orden_compra'
+                        defaultValue={form.orden_compra}
                         className={classes.textField}
                         InputLabelProps={{
                             shrink: true,
                         }}
+                        onChange={handleChange}
+                        disabled
                     />
                 </div>
 
                 <div>
+                    <InputLabel >Fecha de solicitud</InputLabel>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <Grid container >
+                            <KeyboardDatePicker
+
+                                format="dd/MM/yyyy"
+                                name="fecha"
+                                value={form.fecha !== '' ? form.fecha : null}
+                                placeholder="dd/mm/yyyy"
+                                onChange={e => handleChangeFecha(e, 'fecha')}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            /* error={errores.fecha ? true : false} */
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
+                </div>
+
+                <div>
+                    <InputLabel >Fecha de entrega</InputLabel>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <Grid container >
+                            <KeyboardDatePicker
+
+                                format="dd/MM/yyyy"
+                                name="fecha_entrega"
+                                value={form.fecha_entrega !== '' ? form.fecha_entrega : null}
+                                placeholder="dd/mm/yyyy"
+                                onChange={e => handleChangeFecha(e, 'fecha_entrega')}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            /* error={errores.fecha_entrega ? true : false} */
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
+                </div>
+
+                <div>
                     <CurrencyTextField
-                        label="monto"
+                        label="monto solicitado"
                         variant="standard"
                         value={form.monto}
                         currencySymbol="$"
                         outputFormat="number"
                         onChange={(event, value) => handleMoney(value)}
+                        error={errores.monto ? true : false}
                     />
                 </div>
 
@@ -299,6 +352,7 @@ export default function Convertir(props) {
                                 onChange={handleChange}
                                 value={form.tipoSubgasto}
                                 className={classes.textField}
+                                error={errores.tipoSubgasto ? true : false}
                             >
                                 {departamentos.find(item => item.id_area == form.departamento).partidas.find(item => item.id == form.tipoGasto).subpartidas.map((item, index) => (
                                     <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -322,6 +376,7 @@ export default function Convertir(props) {
                                     value={form.tipoPago}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.tipoPago ? true : false}
                                 >
                                     {opciones.tiposPagos.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -344,6 +399,7 @@ export default function Convertir(props) {
                                     value={form.id_estatus}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.id_estatus ? true : false}
                                 >
                                     {estatusCompras.map((item, index) => {
                                         if (item.nivel === 1) {
@@ -367,6 +423,7 @@ export default function Convertir(props) {
                                     value={form.proveedor}
                                     onChange={handleChange}
                                     className={classes.textField}
+                                    error={errores.proveedor ? true : false}
                                 >
                                     {opciones.proveedores.map((item, index) => (
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -462,10 +519,16 @@ export default function Convertir(props) {
                     />
                 </div>
 
-                <div className={Style.btnAprobar}>
+                {/* <div className={Style.btnAprobar}>
                     <button onClick={aprobar}>Convertir</button>
-                </div>
+                </div> */}
 
+            </div>
+
+            <div className="row justify-content-end">
+                <div className="col-md-4">
+                    <button className={Style.sendButton} onClick={aprobar}>Convertir</button>
+                </div>
             </div>
         </>
     )

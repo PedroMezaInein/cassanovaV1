@@ -1,0 +1,189 @@
+.container-adjuntos {
+    max-height: 600px;
+    max-width: 600px;
+}
+
+.body-adjuntos {
+    max-height: 500px;
+    max-width: 500px;
+}
+
+.file {
+    margin-right: 15rem;
+
+}
+
+.file input {
+    display: none;
+}
+
+.file label {
+    border: none;
+    background-color: #315694;
+    color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.file label:hover {
+    background-color: #9CC4E4;
+}
+
+.file-name {
+    color: #2171c1;
+    font-weight: bold;
+    background-color: #e1f0ff;
+    width: 150px;
+    padding: 0.3rem;
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.btn-subir {
+    margin-top: 1rem;
+    width: 7rem;
+    height: 2.5rem;
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.btn-subir:hover {
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+
+}
+
+.btn-subir:active {
+    background: #FFD549;
+    color: white;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    transform: translateY(4px);
+}
+
+.btn-selectFile {
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.upload_buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container_btns{
+    display: flex;
+    justify-content: space-evenly;
+    padding: 1rem;
+}
+
+.btn_ver{
+    background: #3A89C9;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.btn_ver:hover{
+    background: #3A89C9;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: rgba(0, 0, 0, 0.75);
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.btn_ver:active{
+    background: #3A89C9;
+    color: rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    transform: translateY(4px);
+}
+
+.btn_delete{
+    background: #F26C4F;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.btn_delete:hover{
+    background: #F26C4F;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: rgba(0, 0, 0, 0.75);
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.btn_delete:active{
+    background: #F26C4F;
+    color: rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    transform: translateY(4px);
+}
+
+.not_adjuntos{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40%;
+    font-weight: bold; 
+}
+
+.not_adjuntos span{
+    background: rgba(58, 137, 201, 0.5);
+    padding: 0.5rem;
+    color: #2171c1;
+    border-radius: 5px;
+}
+
+.not_file{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold; 
+}
+
+.not_file span{
+    background: rgba(242, 108, 79, 0.5);
+    padding: 0.5rem;
+    color: #F26C4F;
+    border-radius: 5px;
+}
+
+.selected_file{
+    display: flex;
+    font-weight: bold; 
+    border-radius: 5px;
+    background: rgba(58, 137, 201, 0.25);
+}
+
+.selected_file div span{
+    padding: 0.5rem;
+    border-radius: 5px;
+    
+    
+}
+
+.delete_file{
+    margin-right: 0px;
+    font-weight: bold; 
+    cursor: pointer;
+    color: red;
+}

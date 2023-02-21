@@ -1,0 +1,32 @@
+@media (min-width: 1200px) {
+}
+
+/*TELÉFONO CELULAR LG*/
+@media (max-width: 1199px) and (min-width: 992px){
+  
+}
+
+/*TELÉFONO CELULAR MD*/
+@media (max-width: 991px) and (min-width: 768px){
+
+}
+
+/*TELÉFONO CELULAR SM*/
+@media(max-width: 767px) and (min-width: 401px){
+    .fecha{
+        width: 150px;
+    }
+    .text{
+        width: 90%;
+    }
+}
+
+/*TELÉFONO CELULAR XS*/
+@media (max-width: 400px){
+   .fecha{
+    width: 115px;
+   }
+   .text{
+    width: 115px;
+   }
+}

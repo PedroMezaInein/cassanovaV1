@@ -1,35 +1,40 @@
 import React, {useState, useEffect} from "react"
 import { useSelector } from "react-redux";
 import Swal from 'sweetalert2'
-import { makeStyles } from '@material-ui/core/styles';
+
+import { apiPostForm } from '../../../functions/api'
+
+import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale'
+import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import { apiPostForm } from '../../../functions/api'
 
-import '../../../styles/_nuevaRequisicion.scss'
-import '../../../styles/_editarRequisicion.scss'
+import Style from './NuevaRequisicion.module.css'
+import './../../../styles/_nuevaRequisicion.scss'
 
 export default function NativeSelects(props) {
     const {handleClose, reload} = props
-    const user = useSelector(state=> state.authUser)
+    const user = useSelector(state => state.authUser)
+    const departamento = useSelector(state => state.authUser.departamento)
     const departamentos = useSelector(state => state.opciones.areas)
-    console.log(user)
+    const presupuestos = useSelector(state => state.opciones.presupuestos)
     const [state, setState] = useState({
         solicitante: user.user.id,
-        fecha:new Date().toISOString().split('T')[0],
-        departamento: '',
+        fecha:'',
+        departamento: departamento.departamentos[0].id,
         tipo_gasto: '', //partida
         descripcion: '',
         solicitud: '',
+        presupuesto: '',
     });
     
-    const [errores, setErrores] = useState()
+    const [errores, setErrores] = useState({})
 
     const handleFile = (e) => {
-        console.log(e.target.files)
         setState({
             ...state,
             solicitud: e.target.files[0]
@@ -43,11 +48,15 @@ export default function NativeSelects(props) {
             ...state,
             [name]: event.target.value,
         });
-        console.log('hola')
-        console.log(name)
     };
 
-    console.log(state)
+    const handleChangeFecha = (date, tipo) => {
+        setState({
+            ...state,
+            [tipo]: new Date(date)
+        })
+    };
+
 
     const validateForm = () => {
         let validar = true
@@ -64,13 +73,33 @@ export default function NativeSelects(props) {
             error.descripcion = "Escriba una descripcion"
             validar = false
         }
+        if (state.presupuesto === '') {
+            error.presupuesto = "Seleccione un presupuesto"
+            validar = false
+        }
+        if (state.fecha === '' || state.fecha === null) {
+            error.fecha = "Seleccione una fecha"
+            validar = false
+        }
         
         setErrores(error)
         return validar
     }
 
+
+    function formatDate(date) {
+        var year = date.getFullYear();
+      
+        var month = (1 + date.getMonth()).toString();
+        month = month.length > 1 ? month : '0' + month;
+      
+        var day = date.getDate().toString();
+        day = day.length > 1 ? day : '0' + day;
+        
+        return year + '/' + month + '/' + day;
+      }
+
     const enviar = () =>{
-        // if(Object.keys(validacion()).length ===0){
         if(validateForm()){
 
             Swal.fire({
@@ -88,8 +117,9 @@ export default function NativeSelects(props) {
                     id_departamento: state.departamento,
                     id_gasto: state.tipo_gasto,
                     descripcion: state.descripcion,
-                    fecha: state.fecha,
-                    solicitud: state.solicitud
+                    fecha: formatDate(state.fecha),
+                    solicitud: state.solicitud,
+                    presupuesto: state.presupuesto
                 }
 
                 let aux = Object.keys(newForm)
@@ -111,18 +141,18 @@ export default function NativeSelects(props) {
 
                 apiPostForm('requisicion', dataForm, user.access_token)
                     .then((data) => {
-                        Swal.close()
                         Swal.fire({
+                            title: 'Requisicion enviada',
+                            text: 'La requisicion se ha enviado correctamente',
                             icon: 'success',
-                            title: 'Nueva Requisicion',
-                            text: 'Se ha creado correctamente',
-                            timer: 5000,
-                            timerProgressBar: true,
+                            showConfirmButton: true,
+                            timer: 2000,
+                        }).then(() => {
+                            if (reload) {
+                                reload.reload()
+                            }
+                            handleClose()
                         })
-                        handleClose()
-                        if (reload) {
-                            reload.reload()
-                        }
 
                         /* if (data.isConfirmed) {
 
@@ -149,7 +179,7 @@ export default function NativeSelects(props) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Ha ocurrido un error',
+                            text: 'Ha ocurrido un error 1',
                         })
                         console.log(error)
                     })
@@ -158,7 +188,7 @@ export default function NativeSelects(props) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Ha ocurrido un error',
+                    text: 'Ha ocurrido un error 2',
                 })
                 console.log(error)
             }
@@ -174,7 +204,6 @@ export default function NativeSelects(props) {
     }
 
     const handleChangeDepartamento = (e) => {
-        console.log(e)
         setState({
             ...state,
             [e.target.name]: e.target.value,
@@ -183,127 +212,152 @@ export default function NativeSelects(props) {
     }
     
     return (
-        <div className='nuevaRequisicion'>
-            <div className='nuevaRequisicion_bloque1'>
+        <>
+            <div className={Style.container}>
+                <div >
 
-                {/* SOLICITANTE */}
-                <div>
-                    <TextField className='nuevaRequisicion_solicitante'
-                        label="Solicitante"
-                        type="text"
-                        defaultValue={user.user.name}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                        disabled
-                    />
+                    <div>
+                        <TextField 
+                            label="Solicitante"
+                            type="text"
+                            defaultValue={user.user.name}
+                            InputLabelProps={{
+                            shrink: true,
+                            }}
+                            disabled
+                        />
+                    </div>
+                    
+                    <div >
+                        {departamentos.length > 0 ?
+                            <>
+                                <InputLabel>Departamento</InputLabel>
+                                <Select
+                                    value={state.departamento}
+                                    name="departamento"
+                                    onChange={handleChangeDepartamento}
+                                    disabled
+                                >
+                                    {departamentos.map((item, index) => (
+                                        <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+                                    ))}
+
+                                </Select>
+                            </>
+                            : null
+                        }
+                    </div>
+
+                    <div>  
+                        {departamentos.length > 0 && state.departamento !== ''?
+                            <>
+                                <InputLabel>Tipo de Gasto</InputLabel>
+                                <Select
+                                    value={state.tipo_gasto}
+                                    name="tipo_gasto"
+                                    onChange={handleChange}
+                                    error={errores.tipo_gasto ? true : false}
+                                >
+                                    {departamentos.find(item => item.id_area == state.departamento).partidas.map((item, index) => (
+                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                    ))}
+
+                                </Select>
+                            </>
+                            : null
+                        }
+                    </div>
+
                 </div>
-                
-                {/* DEPARTAMENTO */}
-                <div className="nuevaRequisicion_departamento">
-                    {departamentos.length > 0 ?
-                        <>
-                            <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
-                            <Select
-                                value={state.departamento}
-                                name="departamento"
-                                onChange={handleChangeDepartamento}
-                            >
-                                {departamentos.map((item, index) => (
-                                    <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
-                                ))}
 
-                            </Select>
-                        </>
-                        : null
-                    }
-                </div>
-                {errores && errores.departamento && state.departamento === '' &&<span className='error_departamento'>{errores.departamento}</span>}
+                <div className={Style.nuevaRequisicion_segundoBloque}>
+                    <div className={Style.nuevaRequisicion}>
+                        {presupuestos.length > 0 && state.departamento !== '' ?
+                            <>
+                                <InputLabel>Presupuesto</InputLabel>
+                                <Select
+                                    value={state.presupuesto}
+                                    name="presupuesto"
+                                    onChange={handleChange}
+                                    error={errores.presupuesto ? true : false}
+                                >
+                                    {
+                                        presupuestos.find(item => item.id_area == state.departamento) ?
+                                            [presupuestos.find(item => item.id_area == state.departamento)].map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))
+                                            : <MenuItem value={null}>No hay presupuestos</MenuItem>
 
 
-                {/* GASTO */}
-                <div className="nuevaRequisicion_gasto">  
-                    {departamentos.length > 0 && state.departamento !== ''?
-                        <>
-                            <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
-                            <Select
-                                value={state.tipo_gasto}
-                                name="tipo_gasto"
-                                onChange={handleChange}
-                            >
-                                {departamentos.find(item => item.id_area == state.departamento).partidas.map((item, index) => (
-                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                ))}
+                                    }
+                                </Select>
+                            </>
+                            : null
+                        }
+                    </div>
+                    
+                    <div className={Style.nuevaRequisicion}>
+                        <InputLabel error={errores.fecha ?true: false}>Fecha</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid>
+                                <KeyboardDatePicker
+                                    className={Style.nuevaRequisicion_fecha}
+                                    format="dd/MM/yyyy"
+                                    name='fecha'
+                                    value={state.fecha !=='' ? state.fecha : null}
+                                    onChange={e=>handleChangeFecha(e,'fecha')}
+                                    // defaultValue={state.fecha}
+                                    placeholder="dd/mm/yyyy"
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
+                    </div>
 
-                            </Select>
-                        </>
-                        : null
-                    }
-                </div>
-                {errores && errores.tipo_gasto && state.departamento !== '' && (state.tipo_gasto === '' || state.tipo_gasto === null) && <span className='error_gasto'>{errores.tipo_gasto}</span>}
-
-
-                {/* FECHA */}
-                <div>
-                    <FormControl>
-                        <form>
-                            <TextField
-                                id="fecha"
-                                label="Fecha"
-                                type="date"
-                                name='fecha'
-                                onChange={handleChange}
-                                defaultValue={state.fecha}
-                                InputLabelProps={{
+                    <div>
+                        <TextField
+                            label="Descripcion"
+                            placeholder="Deja una descripción"
+                            onChange={handleChange}
+                            margin="normal"
+                            name='descripcion'
+                            defaultValue={state.descripcion}
+                            InputLabelProps={{
                                 shrink: true,
-                                }}
-                            />
-                        </form>
-                    </FormControl>
+                            }}
+                            multiline
+                            error={errores.descripcion ? true : false}
+                        />
+                    </div>
                 </div>
 
             </div>
 
-            {/* DESCRIPCION */}
-            <div className='nuevaRequisicion_comentario'>
-               <FormControl className='comentario'>
-
-                    <TextField 
-                        label="Descripcion"
-                        style={{ margin: 8 }}
-                        placeholder="Deja una descripción"
-                        onChange={handleChange}
-                        margin="normal"
-                        name='descripcion'
-                        defaultValue={state.descripcion}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                    />
-                </FormControl> 
-            </div>
-            {errores && errores.descripcion && state.descripcion === '' && <span className='error_descripcion'>{errores.descripcion}</span>}
-
-
-            {/* ADJUNTOS */}
-            <div className='nuevaRequisicion_adjunto'>
-                <p id='adjuntos'>Agregar archivos
-                    <input className='nuevaRequisicion_adjunto_input' type='file' onChange={handleFile}></input>
-                </p>
-                <div>
-                    {state.solicitud.name ? <div className='adjunto_nombre'>{state.solicitud.name}</div> : null}
+            <div>
+                <div className={Style.file}>
+                    {/* <p id='adjuntos'>Agregar archivos
+                        <input className='nuevaRequisicion_adjunto_input' type='file' onChange={handleFile}></input>
+                    </p> */}
+                    <label htmlFor="file">Seleccionar archivo(s)</label>
+                    <input type="file" id='file' name="file" onChange={handleFile} />
+                    <div>
+                        {state.solicitud.name ? <div className='file-name'>{state.solicitud.name}</div> : null}
+                    </div>
+                    
                 </div>
-            </div>  
-            {/* {errores && errores.solicitud && !state.solicitud.name && <span className='error_adjunto'>{errores.solicitud}</span>} */}
 
+                <div className="row justify-content-end mt-n18">
+                    <div className="col-md-4">
+                        <button className={Style.sendButton} onClick={enviar}>Agregar</button>
+                    </div>
+                </div>
 
-            {/* ENVIAR */}
-            <div className='nuevaRequisicion_enviar'>
-                <button className='nuevaRequisicion_boton' onClick={enviar}>Agregar
-                </button>  
+                
             </div>
-
-        </div>
+        </>
+        
 
     );  
 }

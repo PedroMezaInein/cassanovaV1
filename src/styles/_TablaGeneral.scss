@@ -44,11 +44,36 @@
     height: 50px;
 }
 
+#card-menu{
+    background-color: white;
+    width: 180px;
+}
+
 #dropdown-basic{
     width: 100px;
     height: 34px;
     background: #F26C4F;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);    
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+}
+
+#dropdown-basic:hover {
+    background: #F26C4F;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+
+}
+
+#dropdown-basic:active {
+    background: #F26C4F;
+    color: white;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    transform: translateY(4px);
 }
 
 .TitleColumn {
@@ -131,35 +156,56 @@
     margin-bottom: 2px;
 }
 
-.redButton{
-    background-color: #fd7369;
-    border-radius: 5px;
-    color: white;
-}
-
 .redButton:hover{
     cursor: pointer;
-    background-color: #ffada7;
+    background-color: rgba(242, 108, 79, 0.25);
 }
 
-.blueButton{
-    background-color: #73c0ff;
-    border-radius: 5px;
-    color: white;
+.redButton:hover > i{
+    color: #F26C4F;
 }
 
 .blueButton:hover {
     cursor: pointer;
-    background-color: #a9d8ff;
+    background-color: rgba(58, 137, 201, 0.25);
 }
 
-.greenButton{
-    background-color: #22d41c;
-    border-radius: 5px;
-    color: white;
+.blueButton:hover > i{
+    color: #3A89C9;
+}
+
+.perryButton:hover {
+    cursor: pointer;
+    background-color: rgba(22, 147, 165, 0.25);
+}
+
+.perryButton:hover > i{
+    color: #1693A5;
+}
+
+.reyButton:hover {
+    cursor: pointer;
+    background-color: rgba(27, 50, 95, 0.4);
+}
+
+.reyButton:hover > i{
+    color: #1B325F;
 }
 
 .greenButton:hover {
     cursor: pointer;
-    background-color: #87f784;
+    background-color: rgba(216, 216, 192, 0.5);
+}
+
+.greenButton:hover > i{
+    color: black;
+}
+
+.yellowButton:hover {
+    cursor: pointer;
+    background-color: rgba(255, 213, 73, 0.5);
+}
+
+.yellowButton:hover > i{
+    color: black;
 }
