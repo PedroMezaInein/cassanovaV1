@@ -4,7 +4,7 @@ import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
 import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import Modal from '../../../components/singles/Modal'
 import Adjuntos from './Adjuntos'
-import AgregarComentario from './AgregarComentario'
+import AdjuntosObservaciones from './utils/AdjuntosObservacion'
 
 export default function ObservacionesVehiculo({ closeModal, rh, }) {
     const userAuth = useSelector((state) => state.authUser);
@@ -16,10 +16,6 @@ export default function ObservacionesVehiculo({ closeModal, rh, }) {
             data: false
         },
         adjuntos: {
-            show: false,
-            data: false
-        },
-        comentario: {
             show: false,
             data: false
         },
@@ -43,7 +39,7 @@ export default function ObservacionesVehiculo({ closeModal, rh, }) {
                 funcion: (item) => {
                     setModal({
                         ...modal,
-                        adjuntos: {
+                        evidencias: {
                             show: true,
                             data: item
                         }
@@ -57,7 +53,7 @@ export default function ObservacionesVehiculo({ closeModal, rh, }) {
                 funcion: (item) => {
                     setModal({
                         ...modal,
-                        evidencias: {
+                        adjuntos: {
                             show: true,
                             data: item
                         }
@@ -78,43 +74,6 @@ export default function ObservacionesVehiculo({ closeModal, rh, }) {
         })
     }
 
-    // const estadoVehiculo = () => {
-    //     return (
-    //         <>
-    //             <div>
-    //                 <button onClick={startAlert}>Agregar fotos</button>
-    //             </div>
-    //             <div>
-    //                  <TextField
-    //                     id="standard-multiline-static"
-    //                     label="Comentario"
-    //                     multiline
-    //                     rows={4}
-    //                     // defaultValue="Default Value"
-    //                 />
-    //             </div>
-    //         </>
-    //     )
-    // }
-
-    // const startAlert = () => {
-    //     Swal.fire({
-    //         title: '¿Quieres confirmar el inicio de tu viaje?',
-    //         icon: 'question',
-    //         showDenyButton: false,
-    //         showCancelButton: true,
-    //         confirmButtonText: 'Sí',
-    //         // denyButtonText: `Don't save`,
-    //       }).then((result) => {
-    //         /* Read more about isConfirmed, isDenied below */
-    //         if (result.isConfirmed) {
-    //           Swal.fire('iniciado, ¡Buen viaje!', '', 'success')
-    //         } else if (result.isDenied) {
-    //           Swal.fire('Changes are not saved', '', 'info')
-    //         }
-    //     })
-    // }
-
     const proccessData = (data) => {
         let aux = []
 
@@ -124,6 +83,7 @@ export default function ObservacionesVehiculo({ closeModal, rh, }) {
                 modelo: item.vehiculos.modelo,
                 placas: item.vehiculos.placas,
                 observaciones: item.observaciones ? item.observaciones : 'sin asignar',
+                id: item.id
             })
         })
 
@@ -145,12 +105,12 @@ export default function ObservacionesVehiculo({ closeModal, rh, }) {
           </Tabla>
 
             <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>
-                <Adjuntos data={modal.adjuntos.data} />
+                <AdjuntosObservaciones vehiculo={modal.adjuntos.data} />
             </Modal>
 
-            <Modal size="sm" title={"comentario"} show={modal.comentario.show} handleClose={handleClose('comentario')}>
+            {/* <Modal size="sm" title={"comentario"} show={modal.comentario.show} handleClose={handleClose('comentario')}>
                 <AgregarComentario data={modal.comentario.data} />
-            </Modal>
+            </Modal> */}
         </>
     )     
 }
