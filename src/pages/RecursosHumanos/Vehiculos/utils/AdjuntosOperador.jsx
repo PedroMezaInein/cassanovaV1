@@ -72,11 +72,7 @@ export default function Adjuntos(props) {
     const [value, setValue] = useState(0);
     const [form, setForm] = useState({
         Licencia: [],
-        Foto_placas: [],
-        Seguro: [],
-        Tarjeta_circulacion: [],
-        Verificacion: [],
-        Factura: [],
+        Evidencia: [],
         file: [],
     })
     const [activeTab, setActiveTab] = useState('Licencia')
@@ -102,42 +98,24 @@ export default function Adjuntos(props) {
 
     const getAdjuntos = () => {
         try {
-            apiGet(`servicios/adjuntos/${vehiculo.id}`, authUser)
+            apiGet(`servicios/adjuntos/${operador.id}`, authUser)
                 .then(res => {
                     let adjunAux = res.data.vehiculos.adjuntos
                     Swal.close()
                     let aux = {
                         Licencia: [],
-                        Foto_placas: [],
-                        Seguro: [],
-                        Tarjeta_circulacion: [],
-                        Verificacion: [],
-                        Factura: [],
-
+                        Evidencia: [],
                     }
                     adjunAux.forEach((element) => {
                         switch (element.pivot.tipo) {
                             case 'Licencia':
                                 aux.Licencia = [...aux.Licencia, element]
                                 break;
-                            case 'Foto_placas':
-                                aux.Foto_placas = [...aux.Foto_placas, element]
-                                break;
-                            case 'Seguro':
-                                aux.Seguro = [...aux.Seguro, element]
-                                break;
-                            case 'Tarjeta_circulacion':
-                                aux.Tarjeta_circulacion = [...aux.Tarjeta_circulacion, element]
-                                break;
-                            case 'Verificacion':
-                                aux.Verificacion = [...aux.Verificacion, element]
-                                break;
-                            case 'Factura':
-                                aux.Factura = [...aux.Factura, element]
+                            case 'Evidencia':
+                                aux.Evidencia = [...aux.Evidencia, element]
                                 break;
                             default:
                                 break;
-
                         }
                     });
                     setAdjuntos(aux)
@@ -193,14 +171,13 @@ export default function Adjuntos(props) {
             })
             let data = new FormData()
 
-            data.append('files_name_vehiculos[]', form.file[0].name)
             data.append(`files_vehiculos[]`, form.file[0])
-            data.append('asjuntos[]', "vehiculos")
             data.append('tipo', activeTab)
+            data.append('descripcion', activeTab)
 
 
             try {
-                apiPostForm(`servicios/${vehiculo.id}/adjuntos/s3`, data, authUser)
+                apiPostForm(`servicios/${operador.id}/adjuntos/s3`, data, authUser)
                     .then(res => {
                         Swal.close()
                         getAdjuntos()
@@ -279,7 +256,7 @@ export default function Adjuntos(props) {
             <>
                 {
                     adjuntos && adjuntos[tab] && adjuntos[tab].length > 0 ?
-                        <CarruselAdjuntos data={adjuntos[tab]} id={vehiculo.id} getAdjuntos={getAdjuntos} />
+                        <CarruselAdjuntos data={adjuntos[tab]} id={operador.id} getAdjuntos={getAdjuntos} />
                         :
                         <div className="not_adjuntos">
                             <span>No hay archivos adjuntos</span>
@@ -300,12 +277,19 @@ export default function Adjuntos(props) {
                     className={classes.tabs}
                 >
                     <Tab label="Licencia " {...a11yProps(0)} name="licencia" onClick={() => handleTab('Licencia')} />
+                    <Tab label="Evidencia" {...a11yProps(1)} name="evidencia" onClick={() => handleTab('Evidencia')} />
                 </Tabs>
 
                 <TabPanel value={value} index={0}>
                     <div>
                         {uploadButtons('Licencia')}
                         {viewAdjuntos('Licencia')}
+                    </div>
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    <div>
+                        {uploadButtons('Evidencia')}
+                        {viewAdjuntos('Evidencia')}
                     </div>
                 </TabPanel>
             </div>

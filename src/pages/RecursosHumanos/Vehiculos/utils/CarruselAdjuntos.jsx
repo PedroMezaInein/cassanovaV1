@@ -76,7 +76,7 @@ export default function CarruselAdjuntos(props) {
                     id_adjunto
                 }
                 // vehiculos/adjuntos/56
-                axios.delete(`${URL_DEV}vehiculos/adjuntos/${id}`, { headers: setSingleHeader(auth), data: form })
+                axios.delete(`${URL_DEV}servicios/adjuntos/${id_adjunto}`, { headers: setSingleHeader(auth), data: form })
                     .then(res => {
                         getAdjuntos()
                         Swal.close()
