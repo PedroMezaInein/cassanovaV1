@@ -20,9 +20,9 @@ const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: 480,
+        maxWidth: 600,
         flexGrow: 1,
-        height: 350,
+        height: 300,
     },
     adjuntos: {
         width: 477,
@@ -30,6 +30,14 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    description: {
+        width: 477,
+        maxHeight: 120,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: '#000'
     },
 }));
 
@@ -140,7 +148,6 @@ export default function CarruselAdjuntos(props) {
                             className={classes.adjuntos}
                         >
                         </object>
-                        <br />
                         <div className="container_btns">
                             <a href={item.url} target="_blank" ><button className="btn_ver">Ver</button></a>
                             {
@@ -151,7 +158,10 @@ export default function CarruselAdjuntos(props) {
                                         : null
                             }
                         </div>
-
+                        <div className={classes.description}>
+                            
+                            <span>{ item.pivot.descripcion}</span>
+                        </div>
                     </div>
                 ))}
             </AutoPlaySwipeableViews>
