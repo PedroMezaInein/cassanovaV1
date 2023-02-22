@@ -176,7 +176,7 @@ function Requisiciones () {
                 <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={true}/>
             </Modal>
 
-            <Modal size="lg" title={"ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
+            <Modal size="md" title={"ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
                 <VerRequisicion data={modal.ver.data} verRequisicion={true}/>
             </Modal>
             
