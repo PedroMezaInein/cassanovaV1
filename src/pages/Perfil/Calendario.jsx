@@ -19,6 +19,7 @@ import Swal from 'sweetalert2'
 import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie'
 import {  setOptions } from '../../functions/setters'
 import { Button } from '../../components/form-components'
+import { apiGet } from './../../functions/api'
 
 import CreateSalaJuntas from './../RecursosHumanos/Reuniones/SalaJuntas/CreateSalaJuntas'
 import EnrollUser from './../RecursosHumanos/Reuniones/Cursos/EnrollUser'
@@ -120,9 +121,11 @@ class Calendario extends Component {
             lider: []
         },
         enrollUser:[],
+        viajesActivos: false,
     };
 
     componentDidMount() {
+        this.getViajes()
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         permisos.find(function (element, index) {
@@ -152,6 +155,21 @@ class Calendario extends Component {
             }
         }
         this.setState({ ...this.state, form })
+    }
+
+    getViajes = () => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        apiGet('vehiculos/usuario', access_token)
+        .then(res => {
+            if(res.data.solicitudes.length > 0){
+                this.setState({
+                    ...this.State,
+                    viajesActivos: true
+                })
+            }
+        }).catch(res=> {
+        })
     }
 
     getEnrollUser = async () => { 
@@ -1530,7 +1548,7 @@ class Calendario extends Component {
     }
 
     render() {
-        const { permisosM, incapacidadesM, events, options, form, title, formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento, evento, enrollUser } = this.state
+        const { permisosM, incapacidadesM, events, options, form, title, formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento, evento, enrollUser, viajesActivos } = this.state
         return (
             <Layout {...this.props}>
                 {/* <Tab.Container defaultActiveKey={activeKeyTab} activeKey={activeKeyTab} className="p-5"> */}
@@ -1572,8 +1590,15 @@ class Calendario extends Component {
                                     >
                                         <Dropdown.Item onClick={this.openModalVehiculo}>Solicitar Vehículo</Dropdown.Item>
                                         <Dropdown.Item onClick={this.openModalEstatusVehiculo}>Estatus de solicitud</Dropdown.Item>
-                                        <Dropdown.Item onClick={this.openModalSeguimientoViajes}>Seguimiento de viajes</Dropdown.Item>
-                                        <Dropdown.Item onClick={this.openModalObservacionesVehiculo}>Observaciones</Dropdown.Item>
+                                        {
+                                            viajesActivos ? 
+                                            <>
+                                                <Dropdown.Item onClick={this.openModalSeguimientoViajes}>Seguimiento de viajes</Dropdown.Item>
+                                                <Dropdown.Item onClick={this.openModalObservacionesVehiculo}>Observaciones</Dropdown.Item>
+                                            </>
+                                            : null
+                                        }
+                                       
                                     </DropdownButton>
                                 }
                             </div>

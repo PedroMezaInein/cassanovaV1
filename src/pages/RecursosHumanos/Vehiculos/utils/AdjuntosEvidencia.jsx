@@ -16,7 +16,7 @@ import { apiGet, apiPutForm, apiPostForm } from '../../../../functions/api'
 import { URL_DEV } from '../../../../constants'
 import { setSingleHeader } from '../../../../functions/routers'
 
-import CarruselAdjuntos from './CarruselAdjuntos'
+import CarruselAdjuntos from './CarruselAdjuntosEvidencias'
 import './../../../../styles/_adjuntosVehiculos.scss'
 
 function TabPanel(props) {
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Adjuntos(props) {
 
-    const { vehiculo } = props
+    const { data } = props
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
     const [value, setValue] = useState(0);
@@ -97,8 +97,10 @@ export default function Adjuntos(props) {
 
     const getAdjuntos = () => {
         try {
-            apiGet(`servicios/adjuntos/${vehiculo.id}`, authUser)
+
+            apiGet(`servicios/adjuntos/${data.id}`, authUser)
                 .then(res => {
+
                     let adjunAux = res.data.vehiculos.adjuntos
                     Swal.close()
                     let aux = {
@@ -165,16 +167,15 @@ export default function Adjuntos(props) {
                     Swal.showLoading()
                 }
             })
-            let data = new FormData()
+            let datas = new FormData()
 
-            data.append('files_name_vehiculos[]', form.file[0].name)
-            data.append(`files_vehiculos[]`, form.file[0])
-            data.append('asjuntos[]', "vehiculos")
-            data.append('tipo', activeTab)
-
+            datas.append('files_name_vehiculos[]', form.file[0].name)
+            datas.append(`files_vehiculos[]`, form.file[0])
+            datas.append('asjuntos[]', "vehiculos")
+            datas.append('tipo', activeTab)
 
             try {
-                apiPostForm(`vehiculos/${vehiculo.id}/archivos/s3`, data,  authUser)
+                apiPostForm(`servicios/${data.id}/adjuntos/s3`, datas,  authUser)
                     .then(res => {
                         Swal.close()
                         getAdjuntos()
@@ -253,7 +254,7 @@ export default function Adjuntos(props) {
             <>
                 {
                     adjuntos && adjuntos[tab] && adjuntos[tab].length > 0 ?
-                        <CarruselAdjuntos data={adjuntos[tab]} id={vehiculo.id} getAdjuntos={getAdjuntos} />
+                        <CarruselAdjuntos data={adjuntos[tab]} id={data.id} getAdjuntos={getAdjuntos} />
                         :
                         <div className="not_adjuntos">
                             <span>No hay archivos adjuntos</span>
