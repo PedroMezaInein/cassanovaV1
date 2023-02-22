@@ -40,6 +40,7 @@ export default function CarruselAdjuntos(props) {
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
     const auth = useSelector(state => state.authUser.access_token)
+    const isAdmin = useSelector(state => state.authUser.user.tipo.id)
     const maxSteps = adjuntos.length;
 
     const handleNext = () => {
@@ -76,7 +77,7 @@ export default function CarruselAdjuntos(props) {
                     id_adjunto
                 }
                 // vehiculos/adjuntos/56
-                axios.delete(`${URL_DEV}servicios/adjuntos/${id_adjunto}`, { headers: setSingleHeader(auth), data: form })
+                axios.delete(`${URL_DEV}vehiculos/adjuntos/${id_adjunto}`, { headers: setSingleHeader(auth), data: form })
                     .then(res => {
                         getAdjuntos()
                         Swal.close()
@@ -142,7 +143,13 @@ export default function CarruselAdjuntos(props) {
                         <br />
                         <div className="container_btns">
                             <a href={item.url} target="_blank" ><button className="btn_ver">Ver</button></a>
-                            <button className="btn_delete" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                            {
+                                isAdmin === 1 && item.pivot.tipo === "Evidencia" ?
+                                    <button className="btn_delete" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                                    : item.pivot.tipo !== "Evidencia" ?
+                                        <button className="btn_delete" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                                        : null
+                            }
                         </div>
 
                     </div>
