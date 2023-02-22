@@ -12,10 +12,8 @@ const useOptionsArea = () => {
         apiGet('areas', user.access_token)
             .then((response) => {
                 setOpciones(response.data)
-                console.log(response.data)
             })
             .catch((error) => {
-                console.log(error)
             })
     }, [])
 
