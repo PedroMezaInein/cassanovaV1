@@ -58,6 +58,7 @@ function Requisiciones () {
                         orden_compra: result.orden_compra,
                         solicitante: result.solicitante.name,
                         fecha: result.fecha,
+                        fecha_view: reformatDate(result.fecha),
                         departamento: result.departamento ?  result.departamento.nombre : '',
                         tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
                         descripcion: result.descripcion,
@@ -70,6 +71,11 @@ function Requisiciones () {
             })
             aux=aux.reverse()
             return aux
+    }
+
+    function reformatDate(dateStr) {
+        var dArr = dateStr.split("-");  // ex input: "2010-01-18"
+        return dArr[2] + "/" + dArr[1] + "/" + dArr[0]/* .substring(2) */; //ex output: "18/01/10"
     }
     
     const handleOpen = [
