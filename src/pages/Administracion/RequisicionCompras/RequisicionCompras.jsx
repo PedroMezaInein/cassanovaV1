@@ -56,7 +56,7 @@ export default function RequisicionCompras() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
-        { nombre: 'Orden no.', identificador: 'orden_compra' },
+        { nombre: 'Orden no.', identificador: 'orden_compra', sort: false, },
         { nombre: 'Solicitante', identificador: 'solicitante', sort: false, stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha_view', sort: false, stringSearch: false },
         { nombre: 'Departamento', identificador: 'departamento', sort: false, stringSearch: false },
@@ -67,7 +67,7 @@ export default function RequisicionCompras() {
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
         /* { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
         { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false }, */
-        { nombre: 'Estatus', identificador: 'semaforo', sort: false, stringSearch: false },
+        { nombre: 'Estatus', identificador: 'semaforo', sort: true, stringSearch: false },
         /* { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false }, */
     ]
 

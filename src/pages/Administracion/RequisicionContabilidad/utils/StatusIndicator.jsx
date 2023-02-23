@@ -5,7 +5,6 @@ import Style from './StatusIndicator.module.css';
 
 export default function StatusIndicator(props) { 
     const { estatus_compra, estatus_conta, auto1, auto2, estatus_factura } = props.data
-    console.log(props.data)
     const [modal, setModal] = useState({
         status: {
             data: false,

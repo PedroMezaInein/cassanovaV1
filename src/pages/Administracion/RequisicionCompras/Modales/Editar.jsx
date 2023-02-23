@@ -53,8 +53,10 @@ export default function Editar(props) {
         conta: data.conta,
         factura: data.factura,
         orden_compra: data.orden_compra,
+        labelPorveedor: data.proveedor ? opciones.proveedores.find(proveedor => proveedor.value == data.proveedor).name: 'Proveedor',
 
     })
+    console.log(form)
     const [errores, setErrores] = useState({})
     const classes = useStyles();
 
@@ -307,6 +309,15 @@ export default function Editar(props) {
         })
     }
 
+    const handleChangeProveedor = (e, value) => {
+        if (value && value.name) {
+            setForm({
+                ...form,
+                proveedor: value.value,
+                labelPorveedor: opciones.proveedores.find(proveedor => proveedor.value == value.value).name
+            })
+        }
+    }
 
     return (
         <>
@@ -490,7 +501,7 @@ export default function Editar(props) {
 
                 <div>
                     {
-                        opciones ?
+                        opciones  ?
                             <>
                                 {/* <InputLabel id="demo-simple-select-label">Proveedor</InputLabel>
                                 <Select
@@ -505,87 +516,20 @@ export default function Editar(props) {
                                     ))}
 
                                 </Select> */}
-                                {/* <Autocomplete
-                                    value={form.proveedor}
+                                <Autocomplete
                                     name="proveedor"
                                     options={opciones.proveedores}
                                     getOptionLabel={(option) => option.name}
-                                    style={{ width: 300 }}
-                                    onChange={handleChange}
-                                    renderInput={(params) => <TextField {...params} label="Proveedor" variant="outlined" />}
-                                /> */}
+                                    style={{ width: 230, paddingRight: '1rem' }}
+                                    onChange={(event, value) => handleChangeProveedor(event, value)}
+                                    renderInput={(params) => <TextField {...params} label={form.labelPorveedor} variant="outlined" />}
+                                />
                                 
                             </>
                             : null
                     }
 
                 </div>
-
-                <div>
-                    
-
-                    
-                    
-
-                </div>
-                
-                {/* <div>
-                    {
-                        opciones ?
-                            <>
-                                <InputLabel id="demo-simple-select-label">Empresa</InputLabel>
-                                <Select
-                                    name="empresa"
-                                    value={form.empresa}
-                                    onChange={handleChange}
-                                    className={classes.textField}
-                                >
-                                    {opciones.empresas.map((item, index) => (
-                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
-                                    ))}
-                                </Select>
-
-                            </>
-                            : null
-                    }
-                </div>
-
-                <div>
-                    {
-                        opciones && form.empresa !== "" ?
-                            <>
-                                <InputLabel id="demo-simple-select-label">Cuenta de salida</InputLabel>
-                                <Select
-                                    name="id_cuenta"
-                                    value={form.id_cuenta}
-                                    onChange={handleChange}
-                                    className={classes.textField}
-                                >
-                                    {opciones.empresas.find(item => item.value == form.empresa).cuentas.map((item, index) => (
-                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                    ))}
-                                </Select>
-                            </>
-                            : opciones ? 
-                                <>
-                                    <InputLabel id="demo-simple-select-label">Cuenta de Salida</InputLabel>
-                                    <Select
-                                        name="id_cuenta"
-                                        value={form.id_cuenta}
-                                        onChange={handleChange}
-                                        className={classes.textField}
-                                    >
-                                        {opciones.cuentas.map((item, index) => {
-                                            if (item.value == form.id_cuenta) {
-                                                return <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
-                                            }
-                                        })}
-
-                                    </Select>
-                                </>
-                                : null
-                    }
-                </div> */}
 
                 <div>
                     <TextField
