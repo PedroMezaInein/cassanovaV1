@@ -20,7 +20,7 @@ const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: 600,
+        maxWidth: 550,
         flexGrow: 1,
         height: 300,
     },
@@ -37,7 +37,8 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        color: '#000'
+        color: '#000',
+        marginTop: 5
     },
 }));
 
