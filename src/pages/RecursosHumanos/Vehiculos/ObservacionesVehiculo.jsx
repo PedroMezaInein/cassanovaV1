@@ -83,7 +83,7 @@ export default function ObservacionesVehiculo({ closeModal, rh, }) {
                 modelo: item.vehiculos.modelo,
                 placas: item.vehiculos.placas,
                 observaciones: item.observaciones ? item.observaciones : 'sin asignar',
-                id: item.id
+                id: item.id_vehiculo
             })
         })
 
