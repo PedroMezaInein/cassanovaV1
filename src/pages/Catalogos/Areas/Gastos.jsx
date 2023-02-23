@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { useSelector } from 'react-redux'
 
-import { URL_DEV, AREAS_GASTOS_COLUMNS } from '../../../constants'
+import { AREAS_GASTOS_COLUMNS } from '../../../constants'
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import ModalAgregar from '../../../pages/Catalogos/Areas/ModalAgregar'
@@ -86,7 +86,6 @@ export default function Gastos (){
                 data: info
             }
         })
-        console.log('hpokcdsinm')
     }
 
     const proccessData = (e) => {
@@ -115,7 +114,6 @@ export default function Gastos (){
                                 })    
                             })
                             
-
                             auxPartidas.push({
                                 id:idpartida,
                                 nombre:partida,

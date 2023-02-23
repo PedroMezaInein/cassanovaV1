@@ -35,8 +35,75 @@ export default function ModalAgregar (props) {
             ...form,
             [event.target.name]: event.target.value,
             partida: '',
-            // subPartida: null,
-            // arraySubPartidas: []
+            subPartida: null,
+            arraySubPartidas: []
+        })
+    }
+    
+     //de aqui son nuevas funciones handlechange
+
+    const handleChangePartida=(e)=>{
+        setForm({
+            ...form,
+            partida:e.target.value,
+            i_text:'',
+            i_select:'',
+            subPartida: null,
+            arraySubPartidas: []
+        })
+        
+    }
+
+    const handleChange=(e)=>{
+    setForm({
+        ...form,
+        [e.target.name]:e.target.value,
+        })
+
+    }
+
+    const handleEnterSub=(e)=>{
+        if(e.key==='Enter' ){
+            setForm({
+                ...form,
+                arraySubPartidas: [...form.arraySubPartidas, {nombre:form.subPartida}],
+                subPartida:''
+            })
+        }
+    }
+
+    const handleDeleteSub= (e) =>{
+        const indiceSub = form.arraySubPartidas.findIndex(sub => sub.nombre === e)
+        const newSub = [...form.arraySubPartidas]
+        newSub.splice(indiceSub,1) // elimino la subpartida indicando el indice en donde se encontraba
+        setForm({
+            ...form,
+            arraySubPartidas: newSub
+        })
+    }
+
+    const handleChangePrueba = (e) =>{
+        if(e.key==='Enter' ){
+            setForm({
+                ...form,
+                i_text:'',
+                i_select: '',
+                subPartida: null,
+                arraySubPartidas: [],
+                partida: e.target.value
+            })
+        } else {
+            setForm({
+                ...form,
+                [e.target.name]:e.target.value,
+            })   
+        }
+    }
+
+    const handleDeletePartida = ()=>{
+        setForm({
+            ...form,
+            partida:''
         })
     }
 
@@ -110,70 +177,6 @@ export default function ModalAgregar (props) {
             })
         }
         
-    }
-     //de aqui son nuevas funciones handlechange
-
-    const handleChangePartida=(e)=>{
-        setForm({
-            ...form,
-            partida:e.target.value,
-            i_text:'',
-            i_select:'',
-            // subPartida: null,
-            // arraySubPartidas: []
-        })
-        
-    }
-
-    const handleChange=(e)=>{
-    setForm({
-        ...form,
-        [e.target.name]:e.target.value,
-        })
-
-    }
-
-    const handleEnterSub=(e)=>{
-        if(e.key==='Enter' ){
-            setForm({
-                ...form,
-                arraySubPartidas: [...form.arraySubPartidas, {nombre:form.subPartida}],
-                subPartida:''
-            })
-        }
-    }
-
-    const handleDeleteSub= (e) =>{
-        const indiceSub = form.arraySubPartidas.findIndex(sub => sub.nombre === e)
-        const newSub = [...form.arraySubPartidas]
-        newSub.splice(indiceSub,1) // elimino la subpartida indicando el indice en donde se encontraba
-        setForm({
-            ...form,
-            arraySubPartidas: newSub
-        })
-    }
-
-    const handleChangePrueba = (e) =>{
-        if(e.key==='Enter' ){
-            setForm({
-                ...form,
-                i_text:'',
-                i_select: '',
-                partida: e.target.value
-            })
-        } else {
-            setForm({
-                ...form,
-                [e.target.name]:e.target.value,
-            })   
-        }
-    }
-
-    const handleDeletePartida = ()=>{
-        setForm({
-            ...form,
-            partida:''
-        })
     }
 
     const submit = () =>{
