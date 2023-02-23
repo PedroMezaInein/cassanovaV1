@@ -20,3 +20,8 @@
     padding: 3px;
     border-radius: 5px;
 }
+
+.verRequisicion{
+    display: flex;
+    flex-direction: row;
+}
