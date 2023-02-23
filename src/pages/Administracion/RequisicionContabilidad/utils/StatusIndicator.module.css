@@ -36,3 +36,18 @@
 .redBox{
     background-color: rgba(242, 108, 79, 0.85);;
 }
+
+.modalContainer{
+    margin-top: 1rem;
+    width: 100%;
+    height: 100%;
+}
+
+.circleStatus{
+    width: 2rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    color: white;
+    margin-left: 1px;
+    background-color: #1693A5;
+}

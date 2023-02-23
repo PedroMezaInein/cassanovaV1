@@ -4,7 +4,8 @@ import { Modal } from '../../../../components/singles'
 import Style from './StatusIndicator.module.css';
 
 export default function StatusIndicator(props) { 
-    const { estatus_compra, estatus_conta, auto1, auto2 } = props.data
+    const { estatus_compra, estatus_conta, auto1, auto2, estatus_factura } = props.data
+    console.log(props.data)
     const [modal, setModal] = useState({
         status: {
             data: false,
@@ -52,12 +53,24 @@ export default function StatusIndicator(props) {
                 >
                     <span>4</span>
                 </div>
+                <div
+                    className={estatus_factura && (estatus_factura.estatus === "Facturado" || estatus_factura.estatus === "FACTURADO") ? Style.greenBox : estatus_factura && (estatus_factura.estatus === "Pendiente de factura" || estatus_factura.estatus === "PENDIENTE DE FACTURA") ? Style.yellowBox : estatus_factura ? Style.yellowBox : Style.grayBox}
+                    title={`Estatus factura: ${estatus_factura ? estatus_factura.estatus : 'Pendiente'}`}
+                >
+                    <span>5</span>
+                </div>
+                <div
+                    className={auto2 ? Style.greenBox : Style.grayBox}
+                    title={`Cuentas: ${auto2 ? 'Afectadas' : 'sin afectar'}}`}
+                >
+                    <span>6</span>
+                </div>
             </div>
             <Modal size="md" title={"Estatus"} show={modal.status.show} handleClose={handleClose}>
                 <div>
                     <div>
                         <span>
-                            Estatus compras:
+                             Estatus compras:
                             <span style={{fontWeight: 'bold'}}>
                                 {estatus_compra ? estatus_compra.estatus : 'Pendiente'}
                             </span>
@@ -65,7 +78,7 @@ export default function StatusIndicator(props) {
                     </div>
                     <div>
                         <span>
-                            Estatus contabilidad: 
+                             Estatus contabilidad: 
                             <span style={{fontWeight: 'bold'}}>
                                 {estatus_conta ? estatus_conta.estatus : 'Pendiente'}
                             </span>
@@ -87,7 +100,22 @@ export default function StatusIndicator(props) {
                             </span>
                         </span>
                     </div>
-                    
+                    <div>
+                        <span>
+                            Estatus factura:
+                            <span style={{ fontWeight: 'bold' }}>
+                                {estatus_factura ? estatus_factura.estatus : 'Pendiente'}
+                            </span>
+                        </span>
+                    </div>
+                    <div>
+                        <span>
+                            Cuentas:
+                            <span style={{ fontWeight: 'bold' }}>
+                                {auto2 ? 'Afectadas' : 'sin afectar'}
+                            </span>
+                        </span>
+                    </div>
                 </div>
             </Modal> 
         </>

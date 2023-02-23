@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
@@ -491,7 +492,7 @@ export default function Editar(props) {
                     {
                         opciones ?
                             <>
-                                <InputLabel id="demo-simple-select-label">Proveedor</InputLabel>
+                                {/* <InputLabel id="demo-simple-select-label">Proveedor</InputLabel>
                                 <Select
                                     name="proveedor"
                                     value={form.proveedor}
@@ -503,14 +504,30 @@ export default function Editar(props) {
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
                                     ))}
 
-                                </Select>
+                                </Select> */}
+                                {/* <Autocomplete
+                                    value={form.proveedor}
+                                    name="proveedor"
+                                    options={opciones.proveedores}
+                                    getOptionLabel={(option) => option.name}
+                                    style={{ width: 300 }}
+                                    onChange={handleChange}
+                                    renderInput={(params) => <TextField {...params} label="Proveedor" variant="outlined" />}
+                                /> */}
+                                
                             </>
                             : null
                     }
 
                 </div>
 
+                <div>
+                    
 
+                    
+                    
+
+                </div>
                 
                 {/* <div>
                     {

@@ -65,10 +65,10 @@ export default function RequisicionCompras() {
         { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
         { nombre: 'Monto solicitado', identificador: 'monto_view', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
-        { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
-        { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false },
+        /* { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
+        { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false }, */
         { nombre: 'Estatus', identificador: 'semaforo', sort: false, stringSearch: false },
-        { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false },
+        /* { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false }, */
     ]
 
     const opciones = [
@@ -140,7 +140,7 @@ export default function RequisicionCompras() {
 
     function reformatDate(dateStr) {
         var dArr = dateStr.split("-");  // ex input: "2010-01-18"
-        return dArr[2] + "/" + dArr[1] + "/" + dArr[0].substring(2); //ex output: "18/01/10"
+        return dArr[2] + "/" + dArr[1] + "/" + dArr[0]/* .substring(2) */; //ex output: "18/01/10"
     }
 
     const createStatusIndicator = (item) => {
