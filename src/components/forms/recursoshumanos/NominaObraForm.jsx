@@ -75,7 +75,7 @@ class NominaObraForm extends Component {
             array.push(element)
         })
         if (aux)
-            array.push({ 'label': aux.nombre, 'name': `${aux.nombre}  ${aux.apellido_paterno ? aux.apellido_paterno : ''} ${aux.apellido_materno ? aux.apellido_materno : ''}`, 'value': aux.id.toString() })
+            array.push({ 'label': `${aux.nombre}  ${aux.apellido_paterno ? aux.apellido_paterno : ''} ${aux.apellido_materno ? aux.apellido_materno : ''}`, 'name': `${aux.nombre}  ${aux.apellido_paterno ? aux.apellido_paterno : ''} ${aux.apellido_materno ? aux.apellido_materno : ''}`, 'value': aux.id.toString() })
         return array
     }
 
