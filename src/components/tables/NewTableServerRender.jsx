@@ -618,7 +618,7 @@ class NewTableServerRender extends Component {
                             {
                                 filtrar_exportar === true ?
                                     <button onClick={exportarFiltrar} className="btn btn-primary font-weight-bold mr-2">
-                                        <i className="far fa-file-excel"></i> FILTRAR Y EXPORTAR
+                                        <i className="far fa-file-excel"></i>EXPORTAR
                                     </button>
                                     :
                                     ""

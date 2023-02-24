@@ -729,7 +729,7 @@ class NominaObra extends Component {
                         elements={data.adjuntos}
                     />
                 </Modal>
-                <Modal size='md' show={modal.filterExport} handleClose={this.handleCloseExport} title='Filtrar y exportar nómina de obra'>
+                <Modal size='md' show={modal.filterExport} handleClose={this.handleCloseExport} title='Exportar nómina de obra'>
                     <ExportarNominaObra data={options} />
                 </Modal>
 
