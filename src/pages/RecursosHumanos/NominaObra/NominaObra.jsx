@@ -14,6 +14,8 @@ import TableForModals from '../../../components/tables/TableForModals'
 import $ from "jquery";
 import { setSingleHeader } from '../../../functions/routers'
 
+import ExportarNominaObra from './ExportarNominaObra'
+
 class NominaObra extends Component {
     state = {  
         formeditado:0,
@@ -21,6 +23,7 @@ class NominaObra extends Component {
             form: false,
             delete: false,
             adjuntos: false,
+            filterExport: false,
         },
         data:{
             adjuntos: []
@@ -68,6 +71,12 @@ class NominaObra extends Component {
         if (!nominaobra)
             history.push('/')
             this.getOptionsAxios()
+    }
+
+    openModalExportarFiltrar = () => {
+        const { modal } = this.state
+        modal.filterExport = true
+        this.setState({ ...this.state, modal })
     }
     
     changeSinglePage = (nomina) => {
@@ -468,6 +477,15 @@ class NominaObra extends Component {
         })
     }
 
+    handleCloseExport = () => {
+        const { modal } = this.state
+        modal.filterExport = false
+        this.setState({
+            ...this.state,
+            modal,
+        })
+    }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -665,7 +683,7 @@ class NominaObra extends Component {
     }
     
     render() {
-        const { modal, form, adjuntos, data} = this.state
+        const { modal, form, adjuntos, data, options } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <NewTableServerRender   
@@ -674,7 +692,7 @@ class NominaObra extends Component {
                     mostrar_boton={true}
                     url = '/rh/nomina-obras/add'
                     abrir_modal={false} 
-                    mostrar_acciones={true} 
+                    mostrar_acciones={true}
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': {function: this.openModalDelete},
@@ -688,6 +706,8 @@ class NominaObra extends Component {
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
+                    filtrar_exportar={true}
+                    exportarFiltrar={this.openModalExportarFiltrar}
                 />
                 <ModalDelete title={'¿Desea eliminar la nómina?'} show = { modal.delete } handleClose = { this.handleCloseModalDelete } onClick=  { (e) => { e.preventDefault(); waitAlert(); this.deleteNominaObraAxios() }}>
                 </ModalDelete>
@@ -708,6 +728,9 @@ class NominaObra extends Component {
                         dataID='adjuntos'
                         elements={data.adjuntos}
                     />
+                </Modal>
+                <Modal size='md' show={modal.filterExport} handleClose={this.handleCloseExport} title='Filtrar y exportar nómina de obra'>
+                    <ExportarNominaObra data={options} />
                 </Modal>
 
             </Layout>

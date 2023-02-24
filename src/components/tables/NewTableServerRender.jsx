@@ -559,7 +559,7 @@ class NewTableServerRender extends Component {
         }
     }
     render() {
-        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody, restante_empresa, habilitar, text_habilitar, customcard, customheader, customtitle, customsubtitle, customlabel, icon_habilitar, children} = this.props
+        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody, restante_empresa, habilitar, text_habilitar, customcard, customheader, customtitle, customsubtitle, customlabel, icon_habilitar, children, filtrar_exportar, exportarFiltrar } = this.props
         return (
             <>
                 <Card id={cardTable} className={`card-custom card-sticky ${customcard}`}>
@@ -614,6 +614,15 @@ class NewTableServerRender extends Component {
                                         </a>
                                     :
                                     ""
+                            }
+                            {
+                                filtrar_exportar === true ?
+                                    <button onClick={exportarFiltrar} className="btn btn-primary font-weight-bold mr-2">
+                                        <i className="far fa-file-excel"></i> FILTRAR Y EXPORTAR
+                                    </button>
+                                    :
+                                    ""
+
                             }
                         </div>
                     </Card.Header>
