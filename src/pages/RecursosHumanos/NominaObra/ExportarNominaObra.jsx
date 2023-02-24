@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { catchErrors, apiPostForm } from '../../../functions/api'
+import { catchErrors, apiPostForm, apiPostFormResponseBlob } from '../../../functions/api'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
@@ -14,8 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import './ExportNominaObra.css'
-
+import Style from './ExportNominaObra.module.css'
 
 export default function ExportarNominaObra(props) {
     const auth = useSelector(state => state.authUser.access_token)
@@ -78,7 +77,7 @@ export default function ExportarNominaObra(props) {
                     fecha_fin: form.fechaFin,
                     id_proyecto: form.proyecto
                 }
-                apiPostForm('rh/nomina-obra/exportar', newForm, auth)
+                apiPostFormResponseBlob('rh/nomina-obra/exportar', newForm, auth)
                     .then(response => {
                         //auto download xml response not blow
                         const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -125,7 +124,7 @@ export default function ExportarNominaObra(props) {
 
     return (
         <>
-            <div>
+            <div className={Style.container}>
                 <div>
                     <div>
                         <InputLabel id="fecha_poliza">Fecha Inicio</InputLabel>
@@ -163,6 +162,9 @@ export default function ExportarNominaObra(props) {
                             </Grid>
                         </MuiPickersUtilsProvider>
                     </div>
+                    
+                </div>
+                <div>
                     <div>
                         <Autocomplete
                             name="Poryecto"
@@ -176,8 +178,11 @@ export default function ExportarNominaObra(props) {
                     </div>
                 </div>
             </div>
-            <div>
-                <button onClick={handleSubmit}>Exportar</button>
+
+            <div className="row justify-content-end">
+                <div className="col-md-4">
+                    <button className={Style.sendButton} type="submit" onClick={handleSubmit}>Exportar</button>
+                </div>
             </div>
 
         </>
