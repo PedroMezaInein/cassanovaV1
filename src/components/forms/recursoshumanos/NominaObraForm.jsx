@@ -58,7 +58,7 @@ class NominaObraForm extends Component {
         return suma
     }
 
-    setOptions = key => {
+    /* setOptions = key => {
         const { options, form, usuarios } = this.props
         let array = []
         let newAux = []
@@ -77,7 +77,24 @@ class NominaObraForm extends Component {
         if (aux)
             array.push({ 'label': aux.nombre, 'name': aux.nombre, 'value': aux.id.toString() })
         return array
+    } */
+
+    setOptions = key => {
+        const { options, form, usuarios } = this.props
+        let array = []
+        if (form.nominasObra[key].usuario === '')
+            return options.usuarios
+        let aux = usuarios.find((element) => {
+            return element.id.toString() === form.nominasObra[key].usuario
+        })
+        options.usuarios.forEach((element) => {
+            array.push(element)
+        })
+        if (aux)
+            array.push({ 'label': aux.nombre, 'name': aux.nombre, 'value': aux.id.toString() })
+        return array
     }
+   
 
     render() {
         const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange,
