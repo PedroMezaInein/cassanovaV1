@@ -104,7 +104,7 @@ class EgresosForm extends Component {
 
     render() {
         const { type, egreso, solicitud, prestacion, pago } = this.state
-        const { history, location, authUser: { access_token } } = this.props
+        const { history, location, authUser: { access_token }, areas } = this.props
         return (
             <Layout active='administracion'  {...this.props}>
                 <Card className="card-custom">
@@ -114,7 +114,7 @@ class EgresosForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <EgresosFormNew type={type} at={access_token} dato={egreso} solicitud={solicitud} history={history} location={location} prestacion={prestacion} pago={pago}/>
+                        <EgresosFormNew type={type} at={access_token} dato={egreso} solicitud={solicitud} history={history} location={location} prestacion={prestacion} pago={pago} areas={areas} />
                     </Card.Body>
                 </Card>
             </Layout>
@@ -122,7 +122,7 @@ class EgresosForm extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapStateToProps = state => { return { authUser: state.authUser, areas: state.opciones.areas } }
 const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(EgresosForm);

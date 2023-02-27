@@ -15,6 +15,14 @@ import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from '../../
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 import { CalendarDay, RadioGroupGray, InputGray, FileInput, SelectSearchGray, InputMoneyGray, Input, Select, SelectSearch, Button, InputNumber, InputPhone } from '../../form-components'
 
+import InputLabel from '@material-ui/core/InputLabel';
+import SelectMUI from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
+import { areIntervalsOverlapping } from 'date-fns/fp'
+
 class EgresosFormNew extends Component {
 
     state = {
@@ -31,6 +39,7 @@ class EgresosFormNew extends Component {
             leadId: '',
             area: '',
             subarea: '',
+            partida: '',
             proveedor: '',
             empresa: '',
             descripcion: '',
@@ -397,7 +406,6 @@ class EgresosFormNew extends Component {
                 const keys = Object.keys(jsonObj)
                 let obj = {}
                 let errores = []
-                console.log(obj)
                 if (keys.includes('cfdi:Receptor')) {
                     obj.rfc_receptor = jsonObj['cfdi:Receptor']['Rfc']
                     obj.nombre_receptor = jsonObj['cfdi:Receptor']['Nombre']
@@ -561,7 +569,6 @@ class EgresosFormNew extends Component {
 
     getOptions = async () => {
         const { at, state } = this.props
-        console.log(this.props)
         apiOptions(`v2/administracion/egresos`, at).then(
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proveedores } = response.data
@@ -834,7 +841,7 @@ class EgresosFormNew extends Component {
     }
     getEgreso = async () => {
         waitAlert()
-        const { dato, at } = this.props
+        const { dato, at, areas } = this.props
         apiGet(`v2/administracion/egresos/${dato.id}`, at).then(
             (response) => {
                 const { egreso } = response.data
@@ -874,6 +881,21 @@ class EgresosFormNew extends Component {
 
                 if (egreso.estatus_compra) {
                     form.estatusCompra = egreso.estatus_compra ? egreso.estatus_compra.id.toString() : ''
+                }
+
+                if (egreso.partida && egreso.area) {
+                    form.partida = `${egreso.partida.id}`
+                } else if (egreso.subarea && areas.length > 0) {
+                    if (areas.find((area) =>  area.id_area == egreso.area.id )) {
+                        areas.find((area) =>  area.id_area == egreso.area.id ).partidas.map((partida) => { 
+                            partida.subpartidas.map((subpartida) => {
+                                if (subpartida.id == egreso.subarea.id) {
+                                    form.partida = `${partida.id}`
+                                }
+                            })
+                        })    
+                    }
+                    
                 }
 
                 form.total = egreso.monto
@@ -974,9 +996,17 @@ class EgresosFormNew extends Component {
         }
     }
 
+    handleChangeArea = (e) => {
+        this.updateSelect(`${e.target.value}`, e.target.name)
+    }
+
+    handleChangeSubarea = (e) => { 
+        this.updateSelect(`${e.target.value}`, e.target.name)
+    }
+
     render() {
         const { formeditado, form, options, modal } = this.state
-        const { type } = this.props
+        const { type, areas } = this.props
         return (
 
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -1266,17 +1296,99 @@ class EgresosFormNew extends Component {
                             </div>
                             <div className="col-md-8 align-self-center">
                                 <div className="row mx-0">
-                                    <div className="col md-6">
+                                    {/* <div className="col md-6">
                                         <SelectSearchGray options={options.areas} placeholder='Selecciona el área' value={form.area}
                                             onChange={(value) => { this.updateSelect(value, 'area') }} withtaglabel={1} withtextlabel={1}
                                             withicon={1} iconclass="far fa-window-maximize" messageinc="Selecciona el área"
                                             formeditado={formeditado} requirevalidation={1} />
                                     </div>
+                                    
                                     <div className="col md-6">
                                         <SelectSearchGray options={options.subareas} placeholder='Selecciona subarea' value={form.subarea}
                                             onChange={(value) => { this.updateSelect(value, 'subarea') }} withtaglabel={1} withtextlabel={1}
                                             withicon={1} iconclass="far fa-window-restore" messageinc="Selecciona el subárea"
                                             formeditado={formeditado} requirevalidation={1} />
+                                    </div> */}
+                                    <div className="col md-3">
+                                    {areas.length > 0 ?
+                                            <>
+                                                {/* <InputLabel id="demo-simple-select-label">Selecciona el área</InputLabel>
+                                                
+                                                <Autocomplete
+                                                    name="area"
+                                                    options={areas}
+                                                    getOptionLabel={(option) => option.nombreArea}
+                                                    style={{ width: 230, paddingRight: '1rem' }}
+                                                    onChange={(event, value) => this.handleChangeArea(event, value, 'area')}
+                                                    renderInput={(params) => <TextField {...params} label={form.labelPorveedor} variant="outlined" />}
+                                                /> */}
+                                                <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
+                                                <SelectMUI
+                                                    value={form.area}
+                                                    name="area"
+                                                    onChange={e => this.handleChangeArea(e)}
+                                                    style={{ width: 230, paddingRight: '2px' }}
+                                                    
+                                                >
+                                                    {areas.map((item, index) => (
+                                                        <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+                                                    ))}
+
+                                                </SelectMUI>
+                                            </>
+                                            : null
+                                        }
+                                    </div >
+                                
+                                    <div className="col md-3">
+                                        {areas.length > 0 && form.partida !== '' && form.area!==''?
+                                            <>
+                                                <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
+                                                <SelectMUI
+                                                    /* value={form.tipoGasto} */
+                                                    value={form.partida}
+                                                    name="partida"
+                                                    onChange={e => this.handleChangeSubarea(e)}
+                                                    style={{ width: 230, paddingRight: '2px' }}
+                                                >
+                                                    {areas.find(item => item.id_area == form.area).partidas.map((item, index) => (
+                                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                                    ))}
+
+                                                </SelectMUI>
+                                            </>
+                                            : null
+                                        }
+                                    </div>
+                                    
+                                    <div className="col md-3 mt-5">
+                                        {areas.length && form.area !== '' && form.partida !== ''?
+                                            <>
+                                                {
+                                                    areas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida) ?
+                                                        <>
+                                                        <InputLabel id="demo-simple-select-label">Tipo de Subgasto</InputLabel>
+                                                        <SelectMUI
+                                                            name="subarea"
+                                                            onChange={e => this.handleChangeSubarea(e)}
+                                                                value={form.subarea}
+                                                                style={{ width: 230, paddingRight: '2px' }}
+                                                        >
+                                                            {areas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
+                                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                                            ))}
+
+                                                        </SelectMUI>    
+                                                        </>
+                                                        : null
+
+                                                }
+                                                
+                                            </>
+                                            : null
+
+                                        }
+
                                     </div>
                                     <div className="col-md-12">
                                         <div className="separator separator-dashed mt-1 mb-2" />
