@@ -1341,7 +1341,7 @@ class EgresosFormNew extends Component {
                                     </div >
                                 
                                     <div className="col md-3">
-                                        {areas.length > 0 && form.partida !== '' && form.area!==''?
+                                        {areas.length > 0 && form.area!==''?
                                             <>
                                                 <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
                                                 <SelectMUI
