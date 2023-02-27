@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField';
 
 import { apiPostForm } from '../../../functions/api'
 
-import '../../../styles/_agregarGasto.scss'
+import './AreaStyle/_agregarGasto.scss'
 
 export default function ModalAgregar (props) {
     const {handleClose, reload} = props
@@ -126,59 +126,6 @@ export default function ModalAgregar (props) {
         return validar
     }
 
-    const enviar = (e) => {
-        if(validateForm()){
-
-            Swal.fire({
-                title: 'Cargando...',
-                allowOutsideClick: false,
-                onBeforeOpen: () => {
-                    Swal.showLoading()
-                }
-            }) 
-        } else {
-
-            let newForm = {
-                id_area: form.area,
-                id_partida: form.partida,
-                id_subPartida: form.subPartida,
-            }
-        
-            apiPostForm('requisicion', newForm, user.access_token)
-            .then((data)=>{
-                Swal.close()
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Nueva Requisicion',
-                    text: 'Se ha creado correctamente',
-                    timer: 5000,
-                    timerProgressBar: true,
-                })
-                handleClose()
-                if(reload){
-                    reload.reload()
-                }
-                
-                if (data.isConfirmed) {  
-                    Swal.fire('Se creó con éxito')
-                }
-
-                else if (data.isDenied) {
-                    Swal.fire('Faltan campos', '', 'info')
-                }
-            })
-            .catch((errores)=>{  
-                Swal.close()
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Ha ocurrido un error',
-                })
-            })
-        }
-        
-    }
-
     const submit = () =>{
         if(Object.keys(validateForm()).length ===0){
         //if(validateForm()){
@@ -201,6 +148,7 @@ export default function ModalAgregar (props) {
                 }),
                 tipo: 'egresos'
             }
+            console.log(newForm)
  
             apiPostForm('areas', newForm, user.access_token)
             .then((data)=>{
@@ -258,11 +206,12 @@ export default function ModalAgregar (props) {
     }
 
     return (
-        <div className='agregar'>
 
-            <div className='agregar_area'>
+        <div>
+            <div className='area'>
+
                 {/* AREA */}
-                <div className=" area">
+                <div>
                     {departamentos.length > 0 ?
                         <>
                             <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
@@ -280,13 +229,12 @@ export default function ModalAgregar (props) {
                         : null
                     }
                 </div>
-                {errores && errores.area && form.area === '' &&<span className='error_area'>{errores.area}</span>}
 
-                {/* PARTIDA */}
-                <div className='agregar_partidas'>
+                {/* PARTIDAS */}
+                <div>
                     {departamentos.length > 0 && form.area !== ''?
                         <>
-                            <div>Selecciona o crea una nueva partida </div>
+                            <div className='subtitulo'>Selecciona o crea una nueva partida </div>
                             <div className='partidas'>
                                 <div>
                                     <InputLabel id="demo-simple-select-label">Partida</InputLabel>
@@ -295,59 +243,67 @@ export default function ModalAgregar (props) {
                                         name="partida"
                                         onChange={handleChangePartida}
                                     >
-                                        {departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
-                                            <MenuItem key={index} value={item}>{item.nombre}</MenuItem>
-                                        ))}
+                                    {departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
+                                        <MenuItem key={index} value={item}>{item.nombre}</MenuItem>
+                                    ))}
 
                                     </Select>
                                 </div>
-
-                                <div>
-                                    <TextField 
-                                        label="Crea una partida"
-                                        style={{ margin: 8 }}
-                                        placeholder="Enter para crear partida"
-                                        onChange={handleChangePrueba}
-                                        onKeyPress={handleChangePrueba}
-                                        margin="normal"
-                                        name='i_text'
-                                        /* defaultValue={form.i_text} */
-                                        value={form.i_text}
-                                        InputLabelProps={{
-                                        shrink: true,
-                                        }}
-                                    /> 
-                                </div>
                             </div>
-
-                            {/* <label>Partida</label>
-                            <br></br>
-                            <input name='partida' type='text' value={form.partida} onChange={handleChangePartida}></input> */}
                         </>
                         :
                         null
-                    }
+                    }     
+                </div>
 
-                    <div>
+                <div>
+                    {departamentos.length > 0 && form.area !== ''?
+
+                        <>
+                            <div>
+                                <TextField 
+                                    label="Crea una partida"
+                                    // style={{ margin: 8 }}
+                                    placeholder="Enter para crear partida"
+                                    onChange={handleChangePrueba}
+                                    onKeyPress={handleChangePrueba}
+                                    // margin="normal"
+                                    name='i_text'
+                                    /* defaultValue={form.i_text} */
+                                    value={form.i_text}
+                                    InputLabelProps={{
+                                    shrink: true,
+                                    }}
+                                /> 
+                            </div>
+                        </>
+                        :
+                        null
+                    }   
+                    <div className='etiqueta_partida'>
                         {
                             form.partida !== '' && form.partida.nombre ?
                             <>
-                                <div><span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida.nombre}</div>
+                                <div>
+                                    <span className='nombre_partida'>
+                                        <span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida.nombre}
+                                    </span>
+                                </div>
                             </> 
                             : form.partida !== '' ?
-                                <div><span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida}</div>
+                                <div>
+                                    <span className='nombre_partida'>
+                                        <span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida}
+                                    </span>
+                                </div>
                                 : null
-                            
+                        
                         }
-                    </div>
+                    </div>  
                 </div>
-
-                {/* {errores && errores.partida && form.area !== '' && (form.partida === '' || form.partida === null) && <span className=''>{errores.partida}</span>}  */}
             </div>
 
-
-            {/* SUBPARTIDA */}
-            <div className='agregar_subpartida'>
+            <div className='subpartida'>
                 {departamentos.length > 0 && form.partida && form.partida !== ''?
                     <>
                         {/* <TextField 
@@ -374,14 +330,21 @@ export default function ModalAgregar (props) {
             <div className='subpartidas'>
                 {
                     form.arraySubPartidas.length > 0 && form.partida && form.partida !== '' ?
-                    <>
-                        {form.arraySubPartidas.map(subpartida=>{
-                            return <><span className='sub_eliminar' onClick={(e)=>handleDeleteSub(subpartida.nombre)}>X</span><span className='eliminar_sub'>{subpartida.nombre}</span></>
-                        })}
-                    </>
+                        <>
+                            {form.arraySubPartidas.map(subpartida=>{
+                                return <>
+                                    <span className='sub_partida'>
+                                        <span className='sub_eliminar' onClick={(e)=>handleDeleteSub(subpartida.nombre)}>X</span>
+                                        <span>{subpartida.nombre}</span>
+                                    </span>
+                                </>
+                             
+                            })}
+                        </>
                     :null
                 }
             </div>
+            
             {errores && errores.subPartida && form.partida !== '' && form.partida !== null && (form.subPartida === '' || form.subPartida === null) &&<span>{errores.subPartida}</span>}
 
 
@@ -392,8 +355,149 @@ export default function ModalAgregar (props) {
                 </button> 
             </div>
         </div>
+        
     )
 }
+
+
+
+
+// {/* <div className='agregar'>
+
+//             <div className='agregar_area'>
+//                 AREA
+//                 <div className=" area">
+//                     {departamentos.length > 0 ?
+//                         <>
+//                             <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
+//                             <Select
+//                                 value={form.area}
+//                                 name="area"
+//                                 onChange={handleChangeArea}
+//                             >
+//                                 {departamentos.map((item, index) => (
+//                                     <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+//                                 ))}
+
+//                             </Select>
+//                         </>
+//                         : null
+//                     }
+//                 </div>
+//                 {errores && errores.area && form.area === '' &&<span className='error_area'>{errores.area}</span>}
+
+//                 PARTIDA
+//                 <div className='agregar_partidas'>
+//                     {departamentos.length > 0 && form.area !== ''?
+                    
+//                         <>
+//                             <div>Selecciona o crea una nueva partida </div>
+//                             <div className='partidas'>
+//                                 <div>
+//                                     <InputLabel id="demo-simple-select-label">Partida</InputLabel>
+//                                     <Select
+//                                         value={form.i_select}
+//                                         name="partida"
+//                                         onChange={handleChangePartida}
+//                                     >
+//                                         {departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
+//                                             <MenuItem key={index} value={item}>{item.nombre}</MenuItem>
+//                                         ))}
+
+//                                     </Select>
+//                                 </div>
+
+//                                 <div>
+//                                     <TextField 
+//                                         label="Crea una partida"
+//                                         style={{ margin: 8 }}
+//                                         placeholder="Enter para crear partida"
+//                                         onChange={handleChangePrueba}
+//                                         onKeyPress={handleChangePrueba}
+//                                         margin="normal"
+//                                         name='i_text'
+//                                         /* defaultValue={form.i_text} */
+//                                         value={form.i_text}
+//                                         InputLabelProps={{
+//                                         shrink: true,
+//                                         }}
+//                                     /> 
+//                                 </div>
+//                             </div>
+
+//                             {/* <label>Partida</label>
+//                             <br></br>
+//                             <input name='partida' type='text' value={form.partida} onChange={handleChangePartida}></input> */}
+//                         </>
+//                         :
+//                         null
+//                     }
+
+//                     <div>
+//                         {
+//                             form.partida !== '' && form.partida.nombre ?
+//                             <>
+//                                 <div><span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida.nombre}</div>
+//                             </> 
+//                             : form.partida !== '' ?
+//                                 <div><span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida}</div>
+//                                 : null
+                            
+//                         }
+//                     </div>
+//                 </div>
+
+//                 {/* {errores && errores.partida && form.area !== '' && (form.partida === '' || form.partida === null) && <span className=''>{errores.partida}</span>}  */}
+//             </div>
+
+
+//             SUBPARTIDA
+//             <div className='agregar_subpartida'>
+//                 {departamentos.length > 0 && form.partida && form.partida !== ''?
+//                     <>
+//                         {/* <TextField 
+//                             label="Sub partida"
+//                             style={{ margin: 8 }}
+//                             placeholder="Nueva sub partida"
+//                             onChange={handleChange}
+//                             onKeyPress={handleEnterSub}
+//                             margin="normal"
+//                             name='subPartida'
+//                             type='text'
+//                             defaultValue={form.subPartida}
+//                             InputLabelProps={{
+//                             shrink: true,
+//                             }}
+//                         />  */}
+//                         <label>Subpartida</label>
+//                         <input name='subPartida' type='text' value={form.subPartida ? form.subPartida : ''} onKeyPress={handleEnterSub}  onChange={handleChange}></input>
+//                     </>
+//                     : null
+//                 } 
+//             </div>
+
+//             <div className='subpartidas'>
+//                 {
+//                     form.arraySubPartidas.length > 0 && form.partida && form.partida !== '' ?
+//                     <>
+//                         {form.arraySubPartidas.map(subpartida=>{
+//                             return <><span className='sub_eliminar' onClick={(e)=>handleDeleteSub(subpartida.nombre)}>X</span><span className='eliminar_sub'>{subpartida.nombre}</span></>
+//                         })}
+//                     </>
+//                     :null
+//                 }
+//             </div>
+//             {errores && errores.subPartida && form.partida !== '' && form.partida !== null && (form.subPartida === '' || form.subPartida === null) &&<span>{errores.subPartida}</span>}
+
+
+//             ENVIAR
+//             <div className='boton'>
+//                 <button onClick={submit}>
+//                     Agregar
+//                 </button> 
+//             </div>
+//         </div> */}
+
 
 
 
