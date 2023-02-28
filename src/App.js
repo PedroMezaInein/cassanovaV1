@@ -20,6 +20,7 @@ import TablaOperadores from './pages/RecursosHumanos/Vehiculos/TablaOperadores';
 import TablaSolicitudes from './pages/RecursosHumanos/Vehiculos/TablaSolicitudes';
 
 import TicketsUser from './pages/Ti/Tickets/TicketsUserTable';
+import TicketsTi from './pages/Ti/Tickets/TicketsTiTable';
 
 const Login = React.lazy(() => import('./pages/Login') )
 const Home = React.lazy(() => import('./pages/Home') )
@@ -572,7 +573,8 @@ class App extends Component{
 
                     {/* ANCHOR Routes for plataforma */}
                     <Route path = "/plataforma/notificaciones" exact component ={ NotificacionesCorreos } />
-                        <Route path="/ti/tickets-usuario" exact component={TicketsUser } />
+                    <Route path="/ti/tickets-usuario" exact component={TicketsUser } />
+                    <Route path="/ti/tickets-ti" exact component={TicketsTi } />
 
                     {/* ANCHOR NOT FOUND ROUTE */}
 
