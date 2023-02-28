@@ -1,6 +1,6 @@
 import React, { Component, } from 'react'
 import moment from 'moment'
-import { setSingleHeader,} from '../../../functions/routers'
+import { setSingleHeader, } from '../../../functions/routers'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { Modal } from '../../../components/singles'
@@ -19,9 +19,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import SelectMUI from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
-import { areIntervalsOverlapping } from 'date-fns/fp'
 
 class EgresosFormNew extends Component {
 
@@ -47,9 +44,9 @@ class EgresosFormNew extends Component {
             comision: 0,
             factura: 'Sin factura',
             fecha: new Date(),
-            facturaItem:{
-                nombre_emisor:'',
-                nombre_receptor:'',
+            facturaItem: {
+                nombre_emisor: '',
+                nombre_receptor: '',
             },
             adjuntos: {
                 xml: {
@@ -68,7 +65,7 @@ class EgresosFormNew extends Component {
             facturaObject: {},
             tipoImpuesto: '1'.toString(),
             estatusCompra: '2'.toString(),
-            tipoPago : '4'.toString(),
+            tipoPago: '4'.toString(),
         },
         options: {
             empresas: [],
@@ -111,7 +108,7 @@ class EgresosFormNew extends Component {
         }
         if (!proveedor) {
             // console.log('no proveedor')
-         this.getOptionsProv()
+            this.getOptionsProv()
 
         }
     }
@@ -143,7 +140,7 @@ class EgresosFormNew extends Component {
         const { at } = this.props
         apiGet('proveedores/options', at).then((response) => {
             Swal.close()
-            const {  bancos, tipos_cuentas } = response.data
+            const { bancos, tipos_cuentas } = response.data
             const { options } = this.state
             options['bancos'] = setSelectOptions(bancos, 'nombre')
             options['tipos'] = setSelectOptions(tipos_cuentas, 'tipo')
@@ -202,14 +199,15 @@ class EgresosFormNew extends Component {
 
         const { form } = this.state
         const { at } = this.props
+        form.id_partidas = form.partida
         await axios.post(URL_DEV + 'proveedores', form, { headers: setSingleHeader(at) }).then(
             (response) => {
                 form.proveedor = response.data.proveedor.id.toString()
                 this.setState({
-                    ...this.state,form
+                    ...this.state, form
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
-       
+
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -231,12 +229,12 @@ class EgresosFormNew extends Component {
         this.setState({
             ...this.state,
             options,
-            
+
         })
     }
 
     updateSelect = (value, name) => {
-        const { form, options,data } = this.state
+        const { form, options, data } = this.state
         form[name] = value
         let item = ''
         switch (name) {
@@ -268,18 +266,18 @@ class EgresosFormNew extends Component {
                     return false
                 })
                 break;
-                // console.log(item)
-                // item = options.proveedores.find((elemento) => {
-                //     return elemento.value === value
-                // })
-                // if (item) {
-                //     form.proveedor = ''
-                //     options.proveedores = setOptions(item.proveedores, 'nombre', 'id')
-                // } else {
-                //     options.proveedores = setOptions(options.proveedores, 'nombre', 'id')
-                // }
-                // break;
-            
+            // console.log(item)
+            // item = options.proveedores.find((elemento) => {
+            //     return elemento.value === value
+            // })
+            // if (item) {
+            //     form.proveedor = ''
+            //     options.proveedores = setOptions(item.proveedores, 'nombre', 'id')
+            // } else {
+            //     options.proveedores = setOptions(options.proveedores, 'nombre', 'id')
+            // }
+            // break;
+
             case 'tipoPago':
                 if (form.facturaObject) {
                     let tipoPago = options.tiposPagos.find((elemento) => {
@@ -376,7 +374,7 @@ class EgresosFormNew extends Component {
         this.setState({ ...this.state, modal })
     }
     onChangeFactura = (e) => {
-        
+
         waitAlert()
         const { files, name } = e.target
         const { form, options, data } = this.state
@@ -411,7 +409,7 @@ class EgresosFormNew extends Component {
                     obj.nombre_receptor = jsonObj['cfdi:Receptor']['Nombre']
                     obj.uso_cfdi = jsonObj['cfdi:Receptor']['UsoCFDI']
                     form.nombre = obj.nombre_receptor
-                  
+
                     this.setState({
                         ...this.state,
                         form
@@ -422,7 +420,7 @@ class EgresosFormNew extends Component {
                     obj.nombre_emisor = jsonObj['cfdi:Emisor']['Nombre']
                     obj.regimen_fiscal = jsonObj['cfdi:Emisor']['RegimenFiscal']
                     form.rfc = obj.rfc_emisor
-                    form.razonSocial = obj.nombre_emisor 
+                    form.razonSocial = obj.nombre_emisor
                     this.setState({
                         ...this.state,
                         form
@@ -490,7 +488,7 @@ class EgresosFormNew extends Component {
                 }
                 if (!proveedor) {
                     // console.log('negativo')
-                    
+
                     Swal.fire({
                         title: '¿DESEAS AGREGAR UN NUEVO PROVEEDOR?',
                         icon: "question",
@@ -535,12 +533,12 @@ class EgresosFormNew extends Component {
                     form.total = obj.total
                     form.estatusCompra = '2'.toString()
                     form.tipoPago = '4'.toString()
-                    
+
                     this.setState({ ...this.state, form, options })
                     this.checkFactura(obj)
                 }
             } else {
-              
+
                 form.facturaObject = {}
                 form.facturaItem = ''
                 form.adjuntos.xml.files = []
@@ -619,6 +617,7 @@ class EgresosFormNew extends Component {
     editEgresoAxios = async () => {
         const { dato, at } = this.props
         const { form } = this.state
+        form.id_partidas = form.partida
         apiPutForm(`v3/administracion/egresos/${dato.id}`, form, at).then(
             (response) => {
                 const { history } = this.props
@@ -631,6 +630,7 @@ class EgresosFormNew extends Component {
     addEgreso = () => {
         const { form } = this.state
         const { at, prestacion, pago } = this.props
+        form.id_partidas = form.partida
         apiPostForm('v3/administracion/egresos', form, at).then(
             (response) => {
                 const { egreso } = response.data
@@ -883,19 +883,19 @@ class EgresosFormNew extends Component {
                     form.estatusCompra = egreso.estatus_compra ? egreso.estatus_compra.id.toString() : ''
                 }
 
-                if (egreso.partida && egreso.area) {
-                    form.partida = `${egreso.partida.id}`
+                if (egreso.id_partidas && egreso.area) {
+                    form.partida = `${egreso.id_partidas}`
                 } else if (egreso.subarea && areas.length > 0) {
-                    if (areas.find((area) =>  area.id_area == egreso.area.id )) {
-                        areas.find((area) =>  area.id_area == egreso.area.id ).partidas.map((partida) => { 
+                    if (areas.find((area) => area.id_area == egreso.area.id)) {
+                        areas.find((area) => area.id_area == egreso.area.id).partidas.map((partida) => {
                             partida.subpartidas.map((subpartida) => {
                                 if (subpartida.id == egreso.subarea.id) {
                                     form.partida = `${partida.id}`
                                 }
                             })
-                        })    
+                        })
                     }
-                    
+
                 }
 
                 form.total = egreso.monto
@@ -932,7 +932,7 @@ class EgresosFormNew extends Component {
             if (pago.subarea) {
                 form.subarea = pago.subarea.id.toString()
             }
-        } 
+        }
         Swal.close()
         this.setState({ ...this.state, form, options })
     }
@@ -971,11 +971,11 @@ class EgresosFormNew extends Component {
             if (form.factura === 'Con factura') {
                 return true
             }
-            else{
-                form.adjuntos.xml.value=''
-                form.adjuntos.xml.files=[]
-                form.adjuntos.pdf.files=[]
-                form.adjuntos.pdf.value=''
+            else {
+                form.adjuntos.xml.value = ''
+                form.adjuntos.xml.files = []
+                form.adjuntos.pdf.files = []
+                form.adjuntos.pdf.value = ''
             }
         }
 
@@ -1000,7 +1000,7 @@ class EgresosFormNew extends Component {
         this.updateSelect(`${e.target.value}`, e.target.name)
     }
 
-    handleChangeSubarea = (e) => { 
+    handleChangeSubarea = (e) => {
         this.updateSelect(`${e.target.value}`, e.target.name)
     }
 
@@ -1016,177 +1016,177 @@ class EgresosFormNew extends Component {
                     this.setState({ ...this.state, modal })
                 }} >
                     {/* modaleditando */}
-                <Form id="form-proveedor">
-                <div className="form-group row form-group-marginless mt-4">
-                    <div className="col-md-4">
-                        <Input
-                            requirevalidation={0}
-                            name="nombre"
-                            value={form.nombre}
-                            placeholder="NOMBRE DE CONTACTO"
-                            onChange={this.onChangeProv}
-                            iconclass={"far fa-user"}
-                            formeditado={0}
-                            messageinc="Incorrecto. Ingresa el nombre."
-                        />
-                    </div>
-                    <div className="col-md-4">
-                        <Input
-                            requirevalidation={0}
-                            name="razonSocial"
-                            value={form.razonSocial}
-                            placeholder="RAZÓN SOCIAL / NOMBRE DE LA EMPRESA"
-                            onChange={this.onChangeProv}
-                            iconclass={"far fa-building"}
-                            formeditado={0}
-                            messageinc="Incorrecto. Ingresa la razón social."
-                        />
-                    </div>
-                    <div className="col-md-4">
-                        <Input
-                            name="rfc"
-                            value={form.rfc}
-                            placeholder="RFC"
-                            onChange={this.onChangeProv}
-                            iconclass={"far fa-file-alt"}
-                            patterns={RFC}
-                            formeditado={formeditado}
-                            messageinc="Incorrecto. Ej. ABCD001122ABC"
-                            maxLength="13"
-                        />
-                    </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                        <Input
-                            requirevalidation={0}
-                            name="correo"
-                            value={form.correo}
-                            placeholder="CORREO ELECTRÓNICO"
-                            type="email"
-                            onChange={this.onChangeProv}
-                            iconclass={"fas fa-envelope"}
-                            messageinc="Incorrecto. Ej. usuario@dominio.com"
-                            patterns={EMAIL}
-                            formeditado={formeditado}
-                        />
-                    </div>
-                    <div className="col-md-4">
-                        <InputPhone
-                            requirevalidation={0}
-                            thousandseparator={false}
-                            prefix={''}
-                            name="telefono"
-                            value={form.telefono}
-                            placeholder="TELÉFONO"
-                            onChange={this.onChangeProv}
-                            iconclass={"fas fa-mobile-alt"}
-                            messageinc="Incorrecto. Ingresa el número de teléfono."
-                            patterns={TEL}
-                            formeditado={formeditado}
-                        />
-                    </div>
-                    <div className="col-md-4">
-                        <InputNumber
-                            requirevalidation={0}
-                            name="numCuenta"
-                            value={form.numCuenta}
-                            placeholder="NÚMERO DE CUENTA"
-                            onChange={this.onChangeProv}
-                            iconclass={" fas fa-id-card "}
-                            formeditado={formeditado}
-                            messageinc="Incorrecto. Ingresa el número de cuenta."
-                        />
-                    </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
-                        <Select
-                            requirevalidation={0}
-                            name='tipo'
-                            options={options.tipos}
-                            placeholder='SELECCIONA EL TIPO DE CUENTA'
-                            value={form.tipo}
-                            onChange={this.onChangeProv}
-                            formeditado={formeditado}
-                            iconclass={" far fa-address-card"}
-                        />
-                    </div>
-                    <div className="col-md-4">
-                        <Select
-                            requirevalidation={0}
-                            name='banco'
-                            options={options.bancos}
-                            placeholder='SELECCIONA EL BANCO'
-                            value={form.banco}
-                            onChange={this.onChangeProv}
-                            formeditado={formeditado}
-                            iconclass={" fab fa-cc-discover "}
-                        />
-                    </div>
-                    {
-                        form.leadId ?
-                            <Input
-                                name="leadId"
-                                value={form.leadIn}
-                                readOnly
-                                hidden
-                            />
-                            : ''
-                    }
-                    <div className="col-md-4">
-                        <SelectSearch
-                            required
-                            options={options.areas}
-                            placeholder="SELECCIONA EL ÁREA"
-                            name="area"
-                            value={form.area}
-                            onChange={(value) => { this.updateSelect(value, 'area') }}
-                            formeditado={formeditado}
-                            iconclass={"far fa-window-maximize"}
-                            messageinc="Incorrecto. Selecciona el área"
-                        />
-                    </div>
-                </div>
-                <div className="form-group row form-group-marginless">
-                    {
-                        form.area ?
+                    <Form id="form-proveedor">
+                        <div className="form-group row form-group-marginless mt-4">
+                            <div className="col-md-4">
+                                <Input
+                                    requirevalidation={0}
+                                    name="nombre"
+                                    value={form.nombre}
+                                    placeholder="NOMBRE DE CONTACTO"
+                                    onChange={this.onChangeProv}
+                                    iconclass={"far fa-user"}
+                                    formeditado={0}
+                                    messageinc="Incorrecto. Ingresa el nombre."
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <Input
+                                    requirevalidation={0}
+                                    name="razonSocial"
+                                    value={form.razonSocial}
+                                    placeholder="RAZÓN SOCIAL / NOMBRE DE LA EMPRESA"
+                                    onChange={this.onChangeProv}
+                                    iconclass={"far fa-building"}
+                                    formeditado={0}
+                                    messageinc="Incorrecto. Ingresa la razón social."
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <Input
+                                    name="rfc"
+                                    value={form.rfc}
+                                    placeholder="RFC"
+                                    onChange={this.onChangeProv}
+                                    iconclass={"far fa-file-alt"}
+                                    patterns={RFC}
+                                    formeditado={formeditado}
+                                    messageinc="Incorrecto. Ej. ABCD001122ABC"
+                                    maxLength="13"
+                                />
+                            </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-4">
+                                <Input
+                                    requirevalidation={0}
+                                    name="correo"
+                                    value={form.correo}
+                                    placeholder="CORREO ELECTRÓNICO"
+                                    type="email"
+                                    onChange={this.onChangeProv}
+                                    iconclass={"fas fa-envelope"}
+                                    messageinc="Incorrecto. Ej. usuario@dominio.com"
+                                    patterns={EMAIL}
+                                    formeditado={formeditado}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <InputPhone
+                                    requirevalidation={0}
+                                    thousandseparator={false}
+                                    prefix={''}
+                                    name="telefono"
+                                    value={form.telefono}
+                                    placeholder="TELÉFONO"
+                                    onChange={this.onChangeProv}
+                                    iconclass={"fas fa-mobile-alt"}
+                                    messageinc="Incorrecto. Ingresa el número de teléfono."
+                                    patterns={TEL}
+                                    formeditado={formeditado}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <InputNumber
+                                    requirevalidation={0}
+                                    name="numCuenta"
+                                    value={form.numCuenta}
+                                    placeholder="NÚMERO DE CUENTA"
+                                    onChange={this.onChangeProv}
+                                    iconclass={" fas fa-id-card "}
+                                    formeditado={formeditado}
+                                    messageinc="Incorrecto. Ingresa el número de cuenta."
+                                />
+                            </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-4">
+                                <Select
+                                    requirevalidation={0}
+                                    name='tipo'
+                                    options={options.tipos}
+                                    placeholder='SELECCIONA EL TIPO DE CUENTA'
+                                    value={form.tipo}
+                                    onChange={this.onChangeProv}
+                                    formeditado={formeditado}
+                                    iconclass={" far fa-address-card"}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <Select
+                                    requirevalidation={0}
+                                    name='banco'
+                                    options={options.bancos}
+                                    placeholder='SELECCIONA EL BANCO'
+                                    value={form.banco}
+                                    onChange={this.onChangeProv}
+                                    formeditado={formeditado}
+                                    iconclass={" fab fa-cc-discover "}
+                                />
+                            </div>
+                            {
+                                form.leadId ?
+                                    <Input
+                                        name="leadId"
+                                        value={form.leadIn}
+                                        readOnly
+                                        hidden
+                                    />
+                                    : ''
+                            }
                             <div className="col-md-4">
                                 <SelectSearch
                                     required
-                                    options={options.subareas}
-                                    placeholder="SELECCIONA EL SUBÁREA"
-                                    name="subarea"
-                                    value={form.subarea}
-                                    onChange={(value) => { this.updateSelect(value, 'subarea') }}
+                                    options={options.areas}
+                                    placeholder="SELECCIONA EL ÁREA"
+                                    name="area"
+                                    value={form.area}
+                                    onChange={(value) => { this.updateSelect(value, 'area') }}
                                     formeditado={formeditado}
-                                    iconclass={"far fa-window-restore"}
-                                    messageinc="Incorrecto. Selecciona el subárea"
+                                    iconclass={"far fa-window-maximize"}
+                                    messageinc="Incorrecto. Selecciona el área"
                                 />
                             </div>
-                            : ''
-                    }
-                </div>
-                <div className="card-footer py-3 pr-1">
-                    <div className="row mx-0">
-                        <div className="col-lg-12 text-right pr-0 pb-0">
-                            <Button icon='' className="btn btn-primary mr-2"
-                                onClick={
-                                    (e) => {
-                                        e.preventDefault()
-                                        waitAlert()
-                                        this.addProveedorAxios()
-                                        this.getOptions()
-                                    }
-                                }
-                                text="ENVIAR"
-                            />
                         </div>
-                    </div>
-                </div>
-            </Form>
+                        <div className="form-group row form-group-marginless">
+                            {
+                                form.area ?
+                                    <div className="col-md-4">
+                                        <SelectSearch
+                                            required
+                                            options={options.subareas}
+                                            placeholder="SELECCIONA EL SUBÁREA"
+                                            name="subarea"
+                                            value={form.subarea}
+                                            onChange={(value) => { this.updateSelect(value, 'subarea') }}
+                                            formeditado={formeditado}
+                                            iconclass={"far fa-window-restore"}
+                                            messageinc="Incorrecto. Selecciona el subárea"
+                                        />
+                                    </div>
+                                    : ''
+                            }
+                        </div>
+                        <div className="card-footer py-3 pr-1">
+                            <div className="row mx-0">
+                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                    <Button icon='' className="btn btn-primary mr-2"
+                                        onClick={
+                                            (e) => {
+                                                e.preventDefault()
+                                                waitAlert()
+                                                this.addProveedorAxios()
+                                                this.getOptions()
+                                            }
+                                        }
+                                        text="ENVIAR"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </Form>
                 </Modal>
                 <div className="wizard-nav">
                     <div className="wizard-steps">
@@ -1255,7 +1255,7 @@ class EgresosFormNew extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    :                                     
+                                    :
                                     <></>
                             }
                             <div className="col-md-12 mt-5">
@@ -1274,14 +1274,14 @@ class EgresosFormNew extends Component {
                             </div>
                         </div>
                         <div className="d-flex justify-content-between border-top mt-3 pt-3">
-                                <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"
-                                    onClick={()=>{this.openModalSee()}}>
-                                    Agregar Proveedor
-                                </button>
-                                <button type="button" className="btn btn-primary font-weight-bold text-uppercase"
-                                    onClick={openWizard2} data-wizard-type="action-next">
-                                    Siguiente
-                                </button>
+                            <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase"
+                                onClick={() => { this.openModalSee() }}>
+                                Agregar Proveedor
+                            </button>
+                            <button type="button" className="btn btn-primary font-weight-bold text-uppercase"
+                                onClick={openWizard2} data-wizard-type="action-next">
+                                Siguiente
+                            </button>
 
                         </div>
                     </div>
@@ -1310,7 +1310,7 @@ class EgresosFormNew extends Component {
                                             formeditado={formeditado} requirevalidation={1} />
                                     </div> */}
                                     <div className="col md-3">
-                                    {areas.length > 0 ?
+                                        {areas.length > 0 ?
                                             <>
                                                 {/* <InputLabel id="demo-simple-select-label">Selecciona el área</InputLabel>
                                                 
@@ -1328,7 +1328,7 @@ class EgresosFormNew extends Component {
                                                     name="area"
                                                     onChange={e => this.handleChangeArea(e)}
                                                     style={{ width: 230, paddingRight: '2px' }}
-                                                    
+
                                                 >
                                                     {areas.map((item, index) => (
                                                         <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
@@ -1339,9 +1339,9 @@ class EgresosFormNew extends Component {
                                             : null
                                         }
                                     </div >
-                                
+
                                     <div className="col md-3">
-                                        {areas.length > 0 && form.area!==''?
+                                        {areas.length > 0 && form.area !== '' ?
                                             <>
                                                 <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
                                                 <SelectMUI
@@ -1360,36 +1360,37 @@ class EgresosFormNew extends Component {
                                             : null
                                         }
                                     </div>
-                                    
+
                                     <div className="col md-3 mt-5">
-                                        {areas.length && form.area !== '' && form.partida !== ''?
+                                        {areas.length && form.area !== '' && form.partida !== '' ?
                                             <>
                                                 {
                                                     areas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida) ?
                                                         <>
-                                                        <InputLabel id="demo-simple-select-label">Tipo de Subgasto</InputLabel>
-                                                        <SelectMUI
-                                                            name="subarea"
-                                                            onChange={e => this.handleChangeSubarea(e)}
+                                                            <InputLabel id="demo-simple-select-label">Tipo de Subgasto</InputLabel>
+                                                            <SelectMUI
+                                                                name="subarea"
+                                                                onChange={e => this.handleChangeSubarea(e)}
                                                                 value={form.subarea}
                                                                 style={{ width: 230, paddingRight: '2px' }}
-                                                        >
-                                                            {areas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
-                                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                                            ))}
+                                                            >
+                                                                {areas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
+                                                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                                                ))}
 
-                                                        </SelectMUI>    
+                                                            </SelectMUI>
                                                         </>
                                                         : null
 
                                                 }
-                                                
+
                                             </>
                                             : null
 
                                         }
 
                                     </div>
+                                    
                                     <div className="col-md-12">
                                         <div className="separator separator-dashed mt-1 mb-2" />
                                     </div>
@@ -1433,7 +1434,7 @@ class EgresosFormNew extends Component {
                                     messageinc="Selecciona el tipo de pago" formeditado={formeditado}
                                     requirevalidation={1} />
                             </div>
-                            
+
                             <div className="col-md-4">
                                 <SelectSearchGray options={options.estatusCompras} placeholder='Selecciona el estatus de la compra'
                                     value={form.estatusCompra} onChange={(value) => { this.updateSelect(value, 'estatusCompra') }}
