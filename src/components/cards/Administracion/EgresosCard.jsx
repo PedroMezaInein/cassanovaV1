@@ -82,7 +82,7 @@ export default class EgresosCard extends Component {
                 areas.find((area) => area.id_area == egreso.area_id).partidas.map((partida) => {
                     partida.subpartidas.map((subpartida) => {
                         if (subpartida.id == egreso.subarea.id) {
-                            partidaAux = partida
+                            partidaAux = partida.nombre
                         }
                     })
                 })
