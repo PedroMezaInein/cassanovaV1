@@ -18,6 +18,7 @@ import RequisicionContabilidad from './pages/Administracion/RequisicionContabili
 import TablaVehiculos from './pages/RecursosHumanos/Vehiculos/TablaVehiculos';
 import TablaOperadores from './pages/RecursosHumanos/Vehiculos/TablaOperadores';
 import TablaSolicitudes from './pages/RecursosHumanos/Vehiculos/TablaSolicitudes';
+import SoporteTecnicoTable from './pages/Ti/Soporte/SoporteTecnicoTable';
 
 import TicketsUser from './pages/Ti/Tickets/TicketsUserTable';
 import TicketsTi from './pages/Ti/Tickets/TicketsTiTable';
@@ -575,6 +576,7 @@ class App extends Component{
                     <Route path = "/plataforma/notificaciones" exact component ={ NotificacionesCorreos } />
                     <Route path="/ti/tickets-usuario" exact component={TicketsUser } />
                     <Route path="/ti/tickets-ti" exact component={TicketsTi } />
+                    <Route path="/ti/soporte" exact component={SoporteTecnicoTable } />
 
                     {/* ANCHOR NOT FOUND ROUTE */}
 

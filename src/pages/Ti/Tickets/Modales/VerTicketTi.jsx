@@ -24,7 +24,7 @@ import Divider from '@material-ui/core/Divider';
 
 import Style from './TicketsTi.module.css'
 
-export default function EditarTicketTi(props) {
+export default function VerTicketTi(props) {
     const { data, reload, handleClose } = props
     const authUser = useSelector(state => state.authUser)
     const [form, setForm] = useState({
@@ -38,52 +38,6 @@ export default function EditarTicketTi(props) {
         funcionalidad: ''
     })
     const [errores, setErrores] = useState({})
-
-    const handleChange = e => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        })
-    }
-
-    const handleEnter = e => {
-        if (e.key === 'Enter') {
-            if (form.funcionalidad !== '') {
-                setForm({
-                    ...form,
-                    funcionalidades: [...form.funcionalidades, {
-                        funcionalidad: form.funcionalidad,
-                        estatus: 0,
-                        user: []
-                    }],
-                    funcionalidad: ''
-                })
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'No puedes agregar una funcionalidad vacía',
-                })
-            }
-        }
-    }
-
-    const handleChangeFecha = (date, tipo) => {
-        setForm({
-            ...form,
-            [tipo]: new Date(date)
-        })
-    };
-
-    const handleDelete = (index) => { 
-        setForm({
-            ...form,
-            funcionalidades: form.funcionalidades.filter((item, i) => i !== index)
-        })
-    }
-
-    console.log(form)
-
     return (
         <>
             <div className={Style.container}>
@@ -98,7 +52,6 @@ export default function EditarTicketTi(props) {
                                     name="fecha"
                                     value={form.fecha !== '' ? form.fecha : null}
                                     placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha')}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
@@ -117,17 +70,17 @@ export default function EditarTicketTi(props) {
                                     name="fecha_entrega"
                                     value={form.fecha_entrega !== '' ? form.fecha_entrega : null}
                                     placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha_entrega')}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
+                                    disabled
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
                     </div>
-                    
-                    
-                    
+
+
+
                 </div>
                 <div>
                     <div>
@@ -135,8 +88,7 @@ export default function EditarTicketTi(props) {
                         <Select
                             name="tipo"
                             value={form.tipo}
-                            onChange={handleChange}
-                            error={errores.estatus ? true : false}
+                            disabled
                         >
                             <MenuItem value={0}>cambio</MenuItem>
                             <MenuItem value={1}>soporte</MenuItem>
@@ -154,8 +106,7 @@ export default function EditarTicketTi(props) {
                         <Select
                             name="estatus"
                             value={form.estatus}
-                            onChange={handleChange}
-                            error={errores.estatus ? true : false}
+                            disabled
                         >
                             <MenuItem value={0}>Solicitado</MenuItem>
                             <MenuItem value={1}>Autorizado</MenuItem>
@@ -165,16 +116,15 @@ export default function EditarTicketTi(props) {
                             <MenuItem value={5}>Rechazado</MenuItem>
                         </Select>
                     </div>
-                    
+
                     <div>
                         <InputLabel>descripción</InputLabel>
                         <TextField
                             name="descripcion"
                             value={form.descripcion}
-                            onChange={handleChange}
-                            error={errores.descripcion ? true : false}
                             maxRows={4}
                             multiline
+                            disabled
                         />
                     </div>
                 </div>
@@ -184,13 +134,11 @@ export default function EditarTicketTi(props) {
                         <TextField
                             name="funcionalidad"
                             value={form.funcionalidad}
-                            onChange={handleChange}
-                            onKeyPress={handleEnter}
-                            error={errores.funcionalidades ? true : false}
                             maxRows={4}
                             multiline
+                            disabled
                         />
-                        
+
                     </div>
                 </div>
                 <div>
@@ -198,20 +146,13 @@ export default function EditarTicketTi(props) {
                         {
                             form.funcionalidades.length > 0 ?
                                 form.funcionalidades.map((item, index) => (
-                                    <div key={index} className={Style.containerFuncionalidad}><span onClick={e => handleDelete(index)} className={Style.deleteFuncionalidad}>X</span><span className={Style.textFuncionalidad}>{item.funcionalidad}</span></div>
+                                    <div key={index} className={Style.containerFuncionalidad}><span className={Style.textFuncionalidad}>{item.funcionalidad}</span></div>
                                 ))
-                                : <div>No hay funcionalidades</div>
+                            : <div>No hay funcionalidades</div>
                         }
                     </div>
                 </div>
             </div>
-
-            <div className="row justify-content-end">
-                <div className="col-md-4">
-                    <button className={Style.sendButton} type="submit" >Editar</button>
-                </div>
-            </div>
-           
         </>
     )
 }
