@@ -22,10 +22,10 @@ export default function NuevoTicket (props) {
     const departamento = useSelector(state => state.authUser.departamento)
     const [errores, setErrores] = useState({})
     const[state, setState] = useState({
-        // departamento: departamento.departamentos[0].id,
+        departamento: departamento.departamentos[0].id,
         tipo: '',
         descripcion: '',
-        fecha: '',
+        fecha: new Date(),
     })
 
     const handleChange = (event) => {
@@ -46,7 +46,7 @@ export default function NuevoTicket (props) {
         var day = date.getDate().toString();
         day = day.length > 1 ? day : '0' + day;
         
-        return year + '/' + month + '/' + day;
+        return day+ '/' + month + '/' + year;
     }
 
     const validateForm = () => {
@@ -65,8 +65,6 @@ export default function NuevoTicket (props) {
         return validar
     }
 
-    const tiempo = Date.now();
-
     const enviar = () =>{
         if(validateForm()){
 
@@ -78,7 +76,6 @@ export default function NuevoTicket (props) {
                 }
             }) 
             try {
-                let dataForm = new FormData()
 
                 let newForm = {
                     tipo: state.tipo,
@@ -87,7 +84,8 @@ export default function NuevoTicket (props) {
                     solicitud: state.solicitud,
                 }
 
-                apiPostForm('requisicion', dataForm, user.access_token)
+
+                apiPostForm('ti', newForm, user.access_token)
                     .then((data) => {
                         Swal.fire({
                             title: 'Requisicion enviada',
@@ -156,7 +154,7 @@ export default function NuevoTicket (props) {
                                 className='nuevo_ticket_fecha'
                                 format="dd/MM/yyyy"
                                 name='fecha'
-                                value={tiempo}
+                                value={state.fecha}
                                 // onChange={e=>handleChangeFecha(e,'fecha')}
                                 // defaultValue={state.fecha}
                                 placeholder="dd/mm/yyyy"
@@ -203,7 +201,7 @@ export default function NuevoTicket (props) {
             </div>
 
             <div className="nuevo_ticket_boton">
-                <button className='sendButton'>Agregar</button>
+                <button className='sendButton' onClick={enviar}>Agregar</button>
             </div>
         </>
     )

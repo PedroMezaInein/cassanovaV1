@@ -56,13 +56,17 @@ export default function TicketsUserTable() {
     ];
 
     const ProccessData = (data) => {
-        let aux = [
-            { fecha: '10-04-2023',id_tipo:'0', tipo: 'Mantenimiento', estatus: 'Pendiente', aprobacion: 'Pendiente', funcionalidad: 'Limpieza de laptop del área de RH', fecha_entrega: '11-04-2023' },
-            { fecha: '13-04-2023',id_tipo:'1', tipo: 'Módulo', estatus: 'En proceso', aprobacion: 'Aprobada', funcionalidad: 'Módulo para solicitar vehículos', fecha_entrega: '20-04-2023' },
-            { fecha: '14-04-2023',id_tipo:'2', tipo: 'Funcionalidad', estatus: 'En proceso', aprobacion: 'Aprobada', funcionalidad: 'Agregar botón para poder cancelar vehículo', fecha_entrega: '15-04-2023' },
-            { fecha: '20-04-2023',id_tipo:'1', tipo: 'Mantenimiento', estatus: 'Terminado', aprobacion: 'Aprobada', funcionalidad: 'Actualizar S.O de laptop de Adriana', fecha_entrega: '21-04-2023' },
-            { fecha: '20-04-2023',id_tipo:'1', tipo: 'Mantenimiento', estatus: 'Cancelada', aprobacion: 'Cancelada', funcionalidad: 'Actualizar S.O de laptop de Vanessa', fecha_entrega: '' },
-        ]
+        let aux = []
+        data.ti.map((item) => {
+            aux.push({
+                departamento: item.departamento,
+                descripcion: item.descripcion,
+                estatus: item.estatus,
+                fecha: item.fecha,
+                fecha_entrega: item.fecha_entrega,
+                id: item.id
+            })
+        })
         return aux
     }
 
@@ -210,7 +214,7 @@ export default function TicketsUserTable() {
                 <TablaGeneral 
                     titulo='Tickets' 
                     columnas={columnas} 
-                    url='vehiculos' 
+                    url='ti' 
                     ProccessData={ProccessData} 
                     numItemsPagina={12} 
                     acciones={createAcciones()}  
