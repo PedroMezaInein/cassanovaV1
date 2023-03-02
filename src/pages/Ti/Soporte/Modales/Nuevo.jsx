@@ -28,12 +28,12 @@ export default function Editar(props) {
     const { data, reload, handleClose } = props
     const authUser = useSelector(state => state.authUser)
     const [form, setForm] = useState({
-        fecha: new Date(data.fecha),
-        fecha_servicio: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
-        tipo: data.tipo,
-        estatus: data.estatus,
-        descripcion: data.descripcion,
-        autorizacion: data.autorizacion,
+        fecha: new Date(),
+        fecha_servicio: '',
+        tipo: '',
+        estatus: '',
+        descripcion: '',
+        autorizacion:'',
     })
     const [errores, setErrores] = useState({})
 
@@ -176,12 +176,12 @@ export default function Editar(props) {
                         />
                     </div>
                 </div>
-                
+
             </div>
 
             <div className="row justify-content-end">
                 <div className="col-md-4">
-                    <button className={Style.sendButton} type="submit" >Editar</button>
+                    <button className={Style.sendButton} type="submit" >Crear</button>
                 </div>
             </div>
 
