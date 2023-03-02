@@ -159,7 +159,6 @@ export default function NuevoGasto(props) {
             })
         }
     }
-    console.log(errores)
 
     return (
         <>

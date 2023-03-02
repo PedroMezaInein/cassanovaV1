@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import { Form, Row } from 'react-bootstrap'
 import { InputGray, InputMoneyGray, ReactSelectSearchGray, Button, RangeCalendar } from '../../form-components'
 
+import InputLabel from '@material-ui/core/InputLabel';
+import SelectMUI from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 class EngresosFilters extends Component {
 
     state = {
@@ -9,6 +13,8 @@ class EngresosFilters extends Component {
             fechas: { start: null, end: null },
             proveedor: '',
             area: '',
+            id_partidas: '',
+            id_subpartida: '',
             subarea: '',
             total: '',
             empresa: '',
@@ -104,7 +110,8 @@ class EngresosFilters extends Component {
 
     render() {
         const { form } = this.state
-        const { options } = this.props
+        
+        const { options, areas } = this.props
         return (
             <Form onSubmit={this.onSubmit} >
                 <Row className="mx-0 mt-5 mb-8">
@@ -163,9 +170,10 @@ class EngresosFilters extends Component {
                                             form.area = ''
                                             this.setState({ ...this.state, form })
                                         }}}
-                                    />
+                                />
+                                
                             </div>
-                            {
+                            {/* {
                                 form.area ?
                                     <div className="col-md-4 col-xxl-3 mb-5">
                                         <ReactSelectSearchGray placeholder='Selecciona el subárea' defaultvalue={form.subarea} iconclass='las la-window-maximize icon-xl'
@@ -179,9 +187,58 @@ class EngresosFilters extends Component {
                                             />
                                     </div>
                                     : <></>
-                            }
+                            } */}
+                            
+                                {areas.length > 0 && form.area !== '' && areas.find(item => item.id_area == form.area.value) ?
+                                    <div className="col-md-4 col-xxl-3 mb-5">
+                                        <label className="col-form-label font-weight-bold text-dark-60">Partida</label>
+                                        <SelectMUI
+                                            value={form.id_partidas}
+                                            onChange={e => this.updateSelect(e.target.value, 'id_partidas') }
+                                            style={{ width: '100%' }}
+                                        >
+                                            {areas.find(item => item.id_area == form.area.value).partidas.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))}
+
+                                        </SelectMUI>
+                                    </div>
+                                    : null
+                                }    
+                            
+                            
+                            
+                                {areas.length && form.area !== '' && form.id_partidas !== '' ?
+                                    <>
+                                        {
+                                            console.log(areas.find(item => item.id_area == form.area.value).partidas.find(item => item.id == form.s))
+                                        }
+                                        {
+                                            areas.find(item => item.id_area == form.area.value).partidas.find(item => item.id == form.id_partidas) ?
+                                                <div className="col-md-4 col-xxl-3 mb-4 mt-5">
+                                                    <InputLabel >Tipo de Subgasto</InputLabel>
+                                                    <SelectMUI
+                                                        style={{ width: '100%' }}
+                                                        onChange={e => this.updateSelect(e.target.value, 'id_subpartida')}
+                                                        value={form.id_subpartida}
+                                                    >
+                                                        {areas.find(item => item.id_area == form.area.value).partidas.find(item => item.id == form.id_partidas).subpartidas.map((item, index) => (
+                                                            <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                                        ))}
+
+                                                    </SelectMUI>
+                                                </div>
+                                                : null
+
+                                        }
+
+                                    </>
+                                    : null
+
+                                }
+                            
                             <div className="col-md-4 col-xxl-3 mb-5">
-                                <ReactSelectSearchGray placeholder='Selecciona el estatus de compra' defaultvalue={form.estatusCompra} iconclass='las la-check-circle icon-xl'
+                                <ReactSelectSearchGray placeholder='estatus de compra' defaultvalue={form.estatusCompra} iconclass='las la-check-circle icon-xl'
                                     options={options.estatusCompras} 
                                     onChange={(value) => {
                                         if (value !== null) { this.updateSelect(value, 'estatusCompra') } 
@@ -189,7 +246,7 @@ class EngresosFilters extends Component {
                                             form.estatusCompra = 0
                                             this.setState({ ...this.state, form })
                                         }}}
-                                    />
+                                />
                             </div>
                             <div className="col-md-4 col-xxl-3 mb-5">
                                 <InputMoneyGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0}

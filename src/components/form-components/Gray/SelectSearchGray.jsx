@@ -8,7 +8,7 @@ class SelectSearchGray extends Component {
     }
     renderFontValue = (valueProps, onChange) => {
         const { requirevalidation } = this.state
-        const { customstyle, customclass, messageinc, customdiv, withicon, iconvalid, iconclass, disabled } = this.props
+        const { customstyle, customclass, messageinc, customdiv, withicon, iconvalid, iconclass, disabled, noValidar } = this.props
         let validado = false;
         if (requirevalidation) {
             if (onChange === null || onChange.value === null) {
@@ -19,6 +19,8 @@ class SelectSearchGray extends Component {
         } else {
             validado = true
         }
+
+        validado = noValidar ? true : validado
         return (
             <>
                 <div className={`form-group ${customdiv}`}>

@@ -72,9 +72,28 @@ export default class EgresosCard extends Component {
         }
         return ''
     }
+
+    namePartida = () => { 
+        const { egreso, areas } = this.props
+        let partidaAux = ''
+        if (egreso.area_id) {
+            
+            if (areas.find((area) => area.id_area == egreso.area_id)) {
+                areas.find((area) => area.id_area == egreso.area_id).partidas.map((partida) => {
+                    partida.subpartidas.map((subpartida) => {
+                        if (subpartida.id == egreso.subarea.id) {
+                            partidaAux = partida.nombre
+                        }
+                    })
+                })
+                
+            }
+        }
+        return partidaAux
+    }
     
     render() {
-        const { egreso } = this.props
+        const { egreso, areas } = this.props
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey="first">
@@ -146,7 +165,18 @@ export default class EgresosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">SUBÁREA:</label>
+                                                    <label className="col-3 font-weight-bolder text-primary">Partida:</label>
+                                                    <div className="col-9">
+                                                        {
+                                                            egreso.area_id && egreso.subarea ?
+                                                                <span>{this.namePartida()}</span>
+                                                                : ''
+                                                            
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-3 font-weight-bolder text-primary">Sub partida:</label>
                                                     <div className="col-9">
                                                         {
                                                             egreso.subarea ?

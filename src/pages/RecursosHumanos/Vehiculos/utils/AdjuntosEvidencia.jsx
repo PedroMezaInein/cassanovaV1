@@ -11,6 +11,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
 
 import { apiGet, apiPutForm, apiPostForm } from '../../../../functions/api'
 import { URL_DEV } from '../../../../constants'
@@ -55,13 +56,20 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
         display: 'flex',
-        height: 550,
+        maxHeight: 800,
+        height: 650,
         width: '100%',
     },
     tabs: {
         borderRight: `1px solid ${theme.palette.divider}`,
 
     },
+    comentario: {
+        '& .MuiTextField-root': {
+          margin: theme.spacing(1),
+          width: '25ch',
+        },
+      },
 }));
 
 export default function Adjuntos(props) {
@@ -72,6 +80,7 @@ export default function Adjuntos(props) {
     const [value, setValue] = useState(0);
     const [form, setForm] = useState({
         Evidencia: [],
+        descripcion: '',
         file: [],
     })
     const [activeTab, setActiveTab] = useState('Evidencia')
@@ -95,6 +104,13 @@ export default function Adjuntos(props) {
         })
     };
 
+    const handleChangeComentarios = (e) => { 
+        setForm({
+            ...form,
+            descripcion: e.target.value
+        })
+    }
+
     const getAdjuntos = () => {
         try {
 
@@ -105,11 +121,15 @@ export default function Adjuntos(props) {
                     Swal.close()
                     let aux = {
                         Evidencia: [],
+                        descripcion: adjunAux.descripcion
                     }
                     adjunAux.forEach((element) => {
                         switch (element.pivot.tipo) {
                             case 'Evidencia':
                                 aux.Evidencia = [...aux.Evidencia, element]
+                                break;
+                            case 'descripcion':
+                                aux.descripcion = [...aux.descripcion, element]
                                 break;
                             default:
                                 break;
@@ -167,12 +187,15 @@ export default function Adjuntos(props) {
                     Swal.showLoading()
                 }
             })
+            console.log(form)
+
             let datas = new FormData()
 
             datas.append('files_name_vehiculos[]', form.file[0].name)
             datas.append(`files_vehiculos[]`, form.file[0])
             datas.append('asjuntos[]', "vehiculos")
             datas.append('tipo', activeTab)
+            datas.append('descripcion', form.descripcion)
 
             try {
                 apiPostForm(`servicios/${data.id}/adjuntos/s3`, datas,  authUser)
@@ -218,33 +241,90 @@ export default function Adjuntos(props) {
     const uploadButtons = () => {
         return (
             <div>
-                <div className='upload_buttons'>
-                    <div className="file">
+                <div className='adjust_buttons'>
+                    <div className="file_buttons file">
 
                         <label htmlFor="file">Seleccionar archivo(s)</label>
                         <input type="file" id="file" name="file" onChange={handleFile} />
-                        <div>
+                        {/* <div>
                             {form.file.length > 0 ?
                                 form.file.length < 3 ?
-                                    <div className="selected_file">
+                                    <>
+                                        <div className="selected_file">
                                         {
                                             form.file.map((file, index) => {
                                                 return <div><span className="delete_file" onClick={e => resetForm()}>X</span><span key={index}>{file.name}</span></div>
                                             })
                                         }
-                                    </div>
+                                        
+                                        </div>
+                                        <div className="comentarios">
+                                            <label htmlFor="comentarios">Comentarios</label>
+                                            <input type="text" placeholder="Comentarios" name="comentarios" onChange={handleChangeComentarios} />
+                                        </div>
+                                    </>
+                                    
                                     :
                                     <div className="selected_file">
                                         <span>{`${form.file.length} archivos seleccionados`}</span>
+                                        
+                                    </div>
+                                : <span className="not_file">No hay archivo seleccionado</span>}
+                        </div>  */}
+
+                        <div>
+                            {form.file.length > 0 ?
+                                form.file.length < 3 ?
+                                    <>
+                                        <div className="selected_file">
+                                        {
+                                            form.file.map((file, index) => {
+                                                return <div><span className="delete_file" onClick={e => resetForm()}>X</span><span key={index}>{file.name}</span></div>
+                                            })
+                                        }
+                                        
+                                        </div>
+                                    </>
+                                    
+                                    :
+                                    <div className="selected_file">
+                                        <span>{`${form.file.length} archivos seleccionados`}</span>
+                                        
                                     </div>
                                 : <span className="not_file">No hay archivo seleccionado</span>}
                         </div>
-
                     </div>
-                    <div >
-                        <button className="btn-subir" onClick={handleSubmit} >Subir</button>
+
+                    <div>
+                        {form.file.length > 0 ?
+                            form.file.length < 3 ?
+                                <>
+                                    <div className={classes.comentario}>
+                                        <TextField
+                                        id="standard-multiline-static"
+                                        label="Comentarios"
+                                        name="descripcion"
+                                        multiline
+                                        rows={4}
+                                        onChange={handleChangeComentarios}
+                                        defaultValue={form.descripcion}
+                                    />
+                                    </div>
+                                </>
+                                
+                                :
+                                <div className="selected_file">
+                                    <span>{`${form.file.length} archivos seleccionados`}</span>
+                                    
+                                </div>
+                            : null}
                     </div>
                 </div>
+
+                <div className='adjuntos-subir'>
+                    <button className="btn-subir" onClick={handleSubmit} >Subir</button>
+                </div>
+
             </div>
         )
     }
@@ -254,7 +334,13 @@ export default function Adjuntos(props) {
             <>
                 {
                     adjuntos && adjuntos[tab] && adjuntos[tab].length > 0 ?
+                    <>
                         <CarruselAdjuntos data={adjuntos[tab]} id={data.id} getAdjuntos={getAdjuntos} />
+                        <div className='adjuntos-comentarios'>
+                            {/* <span>{data.descripcion}</span> */}
+                        </div>
+                        {console.log(form)}
+                    </>
                         :
                         <div className="not_adjuntos">
                             <span>No hay archivos adjuntos</span>

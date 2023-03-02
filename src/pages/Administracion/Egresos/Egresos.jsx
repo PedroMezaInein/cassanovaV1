@@ -801,6 +801,7 @@ class Egresos extends Component {
     render() {
         const { form, options, egreso, modal, filters, key } = this.state
         const { access_token } = this.props.authUser
+        const { areas } = this.props
         return (
             <Layout active='administracion'  {...this.props}>
                 <NewTable
@@ -827,20 +828,20 @@ class Egresos extends Component {
                         clearFiles={this.clearFiles} deleteFile={this.openModalDeleteAdjuntos} />
                 </Modal>
                 <Modal size="lg" title="Egreso" show={modal.see} handleClose={this.handleClose} >
-                    <EgresosCard egreso={egreso} />
+                    <EgresosCard egreso={egreso} areas={areas} />
                 </Modal>
                 <Modal size="lg" title="Factura extranjera" show={modal.facturaExtranjera} handleClose={this.handleClose} >
                     <FacturaExtranjera form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
                 </Modal>
                 <Modal size='xl' show={modal.filters} handleClose={this.handleClose} title='Filtros'>
-                    <EngresosFilters at={access_token} sendFilters={this.sendFilters} filters={filters} options={options} setOptions={this.setOptionsArray} />
+                    <EngresosFilters at={access_token} sendFilters={this.sendFilters} filters={filters} options={options} setOptions={this.setOptionsArray} areas={areas} />
                 </Modal>
             </Layout>
         )
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapStateToProps = state => { return { authUser: state.authUser, areas: state.opciones.areas } }
 const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Egresos);

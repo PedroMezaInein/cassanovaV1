@@ -19,7 +19,7 @@ class EmpleadosForm extends Component {
 
     handleChangeDate = date => {
         const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fecha_alta_imss' } })
+        ({ target: { value: date, name: 'fecha_alta_imss' } })
     }
 
     updateEmpresa = value => {
@@ -117,7 +117,8 @@ class EmpleadosForm extends Component {
 
     render() {
 
-        const { options, onChange, form, onSubmit, formeditado  } = this.props
+        const { options, onChange, form, onSubmit, formeditado } = this.props
+        console.log(form)
 
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -395,8 +396,9 @@ class EmpleadosForm extends Component {
                                     </div> */}
 
                                     <div className="col-md-2">
-                                        <SelectSearchGray withtaglabel={1} withtextlabel={1}  formeditado={formeditado} options={options.registro_patronal} onChange={this.updateRepse}
+                                        <SelectSearchGray withtaglabel={1} withtextlabel={1} formeditado={formeditado} options={options.registro_patronal ? options.registro_patronal: ''} onChange={this.updateRepse}
                                             name="id_patronal" value={form.id_patronal} placeholder="Registro Patronal" iconclass={"fas fa-hospital-user"} 
+                                            noValidar={true}
                                         />
                                     </div>
 
