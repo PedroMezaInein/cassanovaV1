@@ -141,7 +141,7 @@ export default function SoporteTecnicoTable() {
                 <Adjuntos />
             </Modal>
 
-            <Modal size="lg" show={modal.crear.show} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} title='Nuevo ticket'>
+            <Modal size="lg" show={modal.crear.show} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} title='Nuevo mantenimiento'>
                 <Nuevo />
             </Modal>
         </>
