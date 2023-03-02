@@ -1240,11 +1240,13 @@ class Empleados extends Component {
 
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato, formeditado } = this.state
-        const { access_token } = this.props.authUser
+        const { access_token, departamento } = this.props.authUser
         return (
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey={localStorage.getItem('activeKeyTabColaboradores')} activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
-                    <Tab eventKey="administrativo" title="Administrativo">
+                    {
+                        departamento.departamentos[0].nombre !== "COMPRAS" &&
+                        <Tab eventKey="administrativo" title="Administrativo">
                     {/* <NewTable
                     columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
                             subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
@@ -1279,6 +1281,8 @@ class Empleados extends Component {
                             cardTable = 'cardTable_admin' cardTableHeader = 'cardTableHeader_admin'
                             cardBody = 'cardBody_admin' isTab = { true } />
                     </Tab>
+                    }
+                    
                     <Tab eventKey="obra" title="Obra">
                         <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores de obra' subtitle = 'Listado de colaboradores' 
                             mostrar_boton = { true } abrir_modal = { false } url = '/rh/colaboradores/add' mostrar_acciones = { true } exportar_boton = { true }
