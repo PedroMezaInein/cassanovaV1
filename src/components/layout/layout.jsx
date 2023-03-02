@@ -17,6 +17,8 @@ import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
 import { Bye, Hi } from '../../assets/animate'
 
+import LayoutHooks from './LayoutHooks'
+
 /* function openUserProfile() {
     if (document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")) {
         document.getElementsByClassName("offcanvas")[0].classList.remove("offcanvas-on");
@@ -231,6 +233,7 @@ class Layout extends Component {
 
         return (
             <div>
+                <LayoutHooks />
                 <Helmet> <title> {title} </title> </Helmet>
                 <ToastContainer position = "top-right" autoClose = { false } hideProgressBar = { false } newestOnTop = { false } closeButton = { null }
                     closeOnClick = { true } rtl = { false } draggable = { false } pauseOnHover limit = { 5 } transition = { Zoom } />
