@@ -17,7 +17,7 @@ import { apiGet, apiPutForm, apiPostForm } from '../../../../functions/api'
 import { URL_DEV } from '../../../../constants'
 import { setSingleHeader } from '../../../../functions/routers'
 
-import CarruselAdjuntos from './CarruselAdjuntosEvidencias'
+import CarruselAdjuntos from './CarruselAdjuntos'
 import './../../../../styles/_adjuntosVehiculos.scss'
 
 function TabPanel(props) {
@@ -80,13 +80,12 @@ export default function Adjuntos(props) {
     const [value, setValue] = useState(0);
     const [form, setForm] = useState({
         Evidencia: [],
-        descripcion: '',
         file: [],
     })
     const [activeTab, setActiveTab] = useState('Evidencia')
     const [adjuntos, setAdjuntos] = useState(false)
     useEffect(() => {
-        
+
         Swal.fire({
             title: 'Cargando...',
             allowOutsideClick: false,
@@ -128,9 +127,6 @@ export default function Adjuntos(props) {
                         switch (element.pivot.tipo) {
                             case 'Evidencia':
                                 aux.Evidencia = [...aux.Evidencia, element]
-                                break;
-                            case 'descripcion':
-                                aux.descripcion = [...aux.descripcion, element]
                                 break;
                             default:
                                 break;
@@ -296,7 +292,7 @@ export default function Adjuntos(props) {
                         </div>
                     </div>
 
-                    <div>
+                    {/* <div>
                         {form.file.length > 0 ?
                             form.file.length < 3 ?
                                 <>
@@ -319,7 +315,7 @@ export default function Adjuntos(props) {
 
                                 </div>
                             : null}
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className='adjuntos-subir'>

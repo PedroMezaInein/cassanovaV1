@@ -93,7 +93,7 @@ export default function Adjuntos(props) {
                 Swal.showLoading()
             }
         }) 
-        getAdjuntos()
+        /* getAdjuntos() */
     }, [])
 
     const handleChange = (event, newValue) => {

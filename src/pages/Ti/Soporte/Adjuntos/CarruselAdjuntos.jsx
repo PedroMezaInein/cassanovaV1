@@ -10,7 +10,7 @@ import { autoPlay } from 'react-swipeable-views-utils';
 import Swal from 'sweetalert2'
 
 import { apiDelete } from '../../../../functions/api'
-import styles from './CarruselAdjuntos.module.css'
+/* import styles from './CarruselAdjuntos.module.css' */
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 

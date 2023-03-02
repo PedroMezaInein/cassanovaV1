@@ -9,6 +9,8 @@ import { setOptions } from '../../../functions/setters'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
 
+import Adjuntos from './Adjuntos/Adjuntos'
+
 export default function SoporteTecnicoTable() {
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState(false)
@@ -21,6 +23,11 @@ export default function SoporteTecnicoTable() {
             show: false,
             data: false
         },
+        adjuntos: {
+            show: false,
+            data: false
+        }
+
     })
 
     let prop = {
@@ -29,8 +36,8 @@ export default function SoporteTecnicoTable() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
-        { nombre: 'F. anterios', identificador: 'fecha' },
-        { nombre: 'F. proximo', identificador: 'fecha' },
+        { nombre: 'F. creacion', identificador: 'fecha' },
+        { nombre: 'F. servicio', identificador: 'fecha_servicio' },
         { nombre: 'Tipo', identificador: 'tipo' },
         { nombre: 'Estatus', identificador: 'estatus' },
         { nombre: 'Autorización', identificador: 'autorizacion' },
@@ -38,6 +45,14 @@ export default function SoporteTecnicoTable() {
 
     const ProccessData = (data) => {
         let aux = [
+            { fecha: "02/10/2020", fecha_servicio: "02/10/2020", tipo: "Mantenimiento", estatus: "Pendiente", autorizacion: "Pendiente" },
+            { fecha: "02/10/2020", fecha_servicio: "02/10/2020", tipo: "Mantenimiento", estatus: "Pendiente", autorizacion: "Pendiente" },
+            { fecha: "02/10/2020", fecha_servicio: "02/10/2020", tipo: "Mantenimiento", estatus: "Pendiente", autorizacion: "Pendiente" },
+            { fecha: "02/10/2020", fecha_servicio: "02/10/2020", tipo: "Mantenimiento", estatus: "Pendiente", autorizacion: "Pendiente" },
+            { fecha: "02/10/2020", fecha_servicio: "02/10/2020", tipo: "Mantenimiento", estatus: "Pendiente", autorizacion: "Pendiente" },
+            { fecha: "02/10/2020", fecha_servicio: "02/10/2020", tipo: "Mantenimiento", estatus: "Pendiente", autorizacion: "Pendiente" },
+            { fecha: "02/10/2020", fecha_servicio: "02/10/2020", tipo: "Mantenimiento", estatus: "Pendiente", autorizacion: "Pendiente" },
+            { fecha: "02/10/2020", fecha_servicio: "02/10/2020", tipo: "Mantenimiento", estatus: "Pendiente", autorizacion: "Pendiente" },
         ]
         return aux
     }
@@ -65,6 +80,14 @@ export default function SoporteTecnicoTable() {
                     handleOpenModal('ver', item)
                 }
             },
+            {
+                nombre: 'Adjuntos',
+                icono: 'fas fa-paperclip',
+                color: 'blueButton',
+                funcion: (item) => {
+                    handleOpenModal('adjuntos', item)
+                }
+            },
         ]
     }
 
@@ -86,13 +109,17 @@ export default function SoporteTecnicoTable() {
                 </>
             </Layout>
 
-            {/* <Modal size="md" show={modal.editar.show} handleClose={() => setModal({ ...modal, editar: { show: false, data: false } })} title='Editar ticket'>
-                <EditarTicketTi data={modal.editar.data} />
+            <Modal size="md" show={modal.editar.show} handleClose={() => setModal({ ...modal, editar: { show: false, data: false } })} title='Editar ticket'>
+                
             </Modal>
 
             <Modal show={modal.ver.show} handleClose={() => setModal({ ...modal, ver: { show: false, data: false } })} title='Ver ticket'>
-                <VerTicketTi data={modal.ver.data} />
-            </Modal> */}
+                
+            </Modal>
+
+            <Modal size="lg" show={modal.adjuntos.show} handleClose={() => setModal({ ...modal, adjuntos: { show: false, data: false } })} title='Adjuntos'>
+                <Adjuntos />
+            </Modal>
         </>
     );
 }
