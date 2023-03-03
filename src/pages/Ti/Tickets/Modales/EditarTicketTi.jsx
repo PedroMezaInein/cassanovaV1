@@ -35,7 +35,8 @@ export default function EditarTicketTi(props) {
         descripcion: data.descripcion,
         autorizacion: data.autorizacion,
         funcionalidades: data.funcionalidades ? data.funcionalidades : [],
-        funcionalidad: ''
+        funcionalidad: '',
+        id: data.id,
     })
     const [errores, setErrores] = useState({})
 
@@ -82,7 +83,99 @@ export default function EditarTicketTi(props) {
         })
     }
 
-    console.log(form)
+    const validateForm = () => {
+        let errores = {}
+        let formOk = true
+        if (form.fecha_entrega === '') {
+            if (form.fecha_entrega < form.fecha) {
+                errores.fecha_entrega = true
+                formOk = false
+            }
+        }
+        if (form.tipo === '') {
+            errores.tipo = true
+            formOk = false
+        }
+        if (form.descripcion === '') {
+            errores.descripcion = true
+            formOk = false
+        }
+        if (form.funcionalidades.length === 0) {
+            errores.funcionalidades = true
+            formOk = false
+        }
+        setErrores(errores)
+        return formOk
+    }
+
+
+    const enviar = () => {
+        if (validateForm()) {
+            Swal.fire({
+                title: 'Cargando...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            try {
+
+                let newForm = {
+                    tipo: form.tipo,
+                    estatus: form.estatus,
+                    fecha_entrega: form.fecha_entrega,
+                    descripcion: form.descripcion,
+                    autorizacion: form.autorizacion,
+                    funcionalidades: form.funcionalidades
+                }
+
+
+                apiPutForm(`ti/${form.id}`, newForm, authUser.access_token)
+                    .then((data) => {
+                        Swal.fire({
+                            title: 'Requisicion enviada',
+                            text: 'La requisicion se ha enviado correctamente',
+                            icon: 'success',
+                            showConfirmButton: true,
+                            timer: 2000,
+                        }).then(() => {
+                            if (reload) {
+                                reload.reload()
+                            }
+                            handleClose()
+                        })
+
+                    })
+                    .catch((error) => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error 1',
+                        })
+                        console.log(error)
+                    })
+            } catch (error) {
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error 2',
+                })
+                console.log(error)
+            }
+        } else {
+            Swal.fire({
+                title: 'Faltan campos',
+                text: 'Favor de llenar todos los campos',
+                icon: 'info',
+                showConfirmButton: false,
+                timer: 2000,
+            })
+        }
+    }
+
+    console.log(errores)
 
     return (
         <>
@@ -208,7 +301,7 @@ export default function EditarTicketTi(props) {
 
             <div className="row justify-content-end">
                 <div className="col-md-4">
-                    <button className={Style.sendButton} type="submit" >Editar</button>
+                    <button className={Style.sendButton} type="submit" onClick={enviar}>Editar</button>
                 </div>
             </div>
            

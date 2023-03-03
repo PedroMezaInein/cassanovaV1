@@ -11,6 +11,7 @@ import Layout from '../../../components/layout/layout'
 
 import EditarTicketTi from './Modales/EditarTicketTi'
 import VerTicketTi from './Modales/VerTicketTi'
+import Nuevo from './NuevoTicket.jsx'
 
 export default function TicketsUserTable() {
     const userAuth = useSelector((state) => state.authUser);
@@ -24,6 +25,10 @@ export default function TicketsUserTable() {
             show: false,
             data: false
         },
+        crear: {
+            show: false,
+            data: false
+        },
     })
 
     let prop = {
@@ -32,22 +37,34 @@ export default function TicketsUserTable() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
-        { nombre: 'Fecha', identificador: 'fecha' },
-        { nombre: 'Tipo', identificador: 'tipo' },
-        { nombre: 'Estatus', identificador: 'estatus' },
-        { nombre: 'F. de entrega', identificador: 'fecha_entrega' },
-        { nombre: 'Autorización', identificador: 'autorizacion' },
+        { nombre: 'Fecha', identificador: 'fecha_view' },
+        { nombre: 'Tipo', identificador: 'tipo_view' },
+        { nombre: 'Estatus', identificador: 'estatus_view' },
+        { nombre: 'F. de entrega', identificador: 'gecha_entrega_view' },
+        { nombre: 'Autorización', identificador: 'auto_view' },
     ];
 
     const ProccessData = (data) => {
-        let aux = [
-            { fecha: '01/01/2021', tipo: 'Módulo', estatus: 'Solicitada', fecha_entrega: '05/10/2021', autorizacion: false },
-            { fecha: '01/01/2021', tipo: 'Funcionalidad', estatus: 'En desarrollo', fecha_entrega: '05/10/2021', autorizacion: true },
-            { fecha: '01/01/2021', tipo: 'Módulo', estatus: 'Solicitada', fecha_entrega: '05/10/2021', autorizacion: false },
-            { fecha: '01/01/2021', tipo: 'Funcionalidad', estatus: 'En desarrollo', fecha_entrega: '05/10/2021', autorizacion: false },
-            { fecha: '01/01/2021', tipo: 'Módulo', estatus: 'Solicitada', fecha_entrega: '05/10/2021', autorizacion: false },
-            { fecha: '01/01/2021', tipo: 'Funcionalidad', estatus: 'En desarrollo', fecha_entrega: '05/10/2021', autorizacion: false },
-        ]
+        let aux = []
+
+        data.ti.map((item) => {
+            aux.push({
+                id: item.id,
+                fecha: item.fecha,
+                fecha_view: reformatDate(item.fecha),
+                fecha_entrega: item.fecha_entrega,
+                gecha_entrega_view: item.fecha_entrega ? reformatDate(item.fecha_entrega) : 'pendiente',
+                tipo: item.tipo,
+                tipo_view: item.tipo ? item.tipo : 'Requerimiento',
+                estatus: item.estatus,
+                estatus_view: item.estatus ? item.estatus : 'Pendiente',
+                fecha_entrega: item.fecha_entrega,
+                autorizacion: item.autorizacion,
+                auto_view: item.autorizacion ? item.autorizacion : 'Pendiente',
+                descripcion: item.descripcion,
+                funcionalidades: item.funcionalidades,
+            })
+        })
         return aux
     }
 
@@ -87,11 +104,26 @@ export default function TicketsUserTable() {
         })
     }
 
+    const opciones = [
+        {
+            nombre: 'Nuevo soporte',
+            funcion: (item) => {
+                setModal({
+                    ...modal,
+                    crear: {
+                        show: true,
+                        data: item
+                    }
+                })
+            }
+        },
+    ]
+
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='ti'>
                 <>
-                    <TablaGeneral titulo='Tickets TI' columnas={columnas} url='vehiculos' ProccessData={ProccessData} numItemsPagina={8} acciones={createAcciones()} reload={setReloadTable} />
+                    <TablaGeneral titulo='Tickets TI' columnas={columnas} url='ti' ProccessData={ProccessData} numItemsPagina={8} acciones={createAcciones()} reload={setReloadTable} opciones={opciones} />
                 </>
             </Layout>
 
@@ -101,6 +133,10 @@ export default function TicketsUserTable() {
 
             <Modal show={modal.ver.show} handleClose={() => setModal({ ...modal, ver: { show: false, data: false } })} title='Ver ticket'>
                 <VerTicketTi data={modal.ver.data} />
+            </Modal>
+
+            <Modal size="lg" show={modal.crear.show} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} title='Nuevo mantenimiento'>
+                <Nuevo reload={reloadTable} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } }) } />
             </Modal>
         </>
     );
