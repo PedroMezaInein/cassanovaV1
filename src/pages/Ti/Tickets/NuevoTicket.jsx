@@ -89,7 +89,7 @@ export default function NuevoTicket (props) {
                     .then((data) => {
                         Swal.fire({
                             title: 'Requisicion enviada',
-                            text: 'La requisicion se ha enviado correctamente',
+                            text: 'El ticket ha sido creado correctamente',
                             icon: 'success',
                             showConfirmButton: true,
                             timer: 2000,

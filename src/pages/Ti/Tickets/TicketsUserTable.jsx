@@ -51,92 +51,13 @@ export default function TicketsUserTable() {
         { nombre: 'Tipo', identificador: 'tipo' },
         { nombre: 'Estatus', identificador: 'estatus' },
         { nombre: 'Aprobación', identificador: 'aprobacion' },
-        { nombre: 'Funcionalidad', identificador: 'funcionalidad' },
+        // { nombre: 'Funcionalidad', identificador: 'funcionalidad' },
         { nombre: 'F. de entrega', identificador: 'fecha_entrega' },
     ];
 
-    const ProccessData = (data) => {
-        let aux = []
-        data.ti.map((item) => {
-            aux.push({
-                departamento: item.departamento,
-                descripcion: item.descripcion,
-                estatus: item.estatus,
-                fecha: item.fecha,
-                fecha_entrega: item.fecha_entrega,
-                id: item.id
-            })
-        })
-        return aux
-    }
+   
 
-    const postAprobacion = (body,id) => {
-        axios.put(`${URL_DEV}permiso/solicitudes/autorizar/${id}`, body, { headers: { Authorization: `Bearer ${userAuth}` } })
-    }
-
-    const aprobarTicket = (e, data)=>{
-        console.log(data)
-
-        Swal.fire({
-            title: '¿Estás seguro de aprobar las funcionalidades?',
-            icon: 'question',
-            // input: 'textarea',
-            showDenyButton: false,
-            showCancelButton: true,
-            confirmButtonText: 'Aceptar',
-            // denyButtonText: `Don't save`,
-            // preConfirm: (value) => {
-            //     if (!value) {
-            //       Swal.showValidationMessage(
-            //         'Por favor deja un comentario'
-            //       )
-            //     }
-            // }
-            
-          }).then((result) => {
-            console.log(result)
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                // let form = {
-                //     estatus: 'aprobado',
-                //     id_ticket: data.id,
-                // }
-                // postAprobacion(form,data.id)
-                Swal.fire('Se aprobó con éxito', '', 'success') 
-            }
-            else if (result.isDenied) {
-              Swal.fire('Changes are not saved', '', 'info')
-            }
-        })
-    }
-
-    const calcelarTicket = (e, data)=>{
-        console.log(data)
-
-        Swal.fire({
-            title: '¿Estás seguro de cancelar el ticket?',
-            icon: 'question',
-            showDenyButton: false,
-            showCancelButton: true,
-            confirmButtonText: 'Aceptar',
-            
-          }).then((result) => {
-            console.log(result)
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                // let form = {
-                //     estatus: 'aprobado',
-                //     id_ticket: data.id,
-                // }
-                // postAprobacion(form,data.id)
-                Swal.fire('Ticket cancelado', '', 'success') 
-            }
-            else if (result.isDenied) {
-              Swal.fire('Changes are not saved', '', 'info')
-            }
-        })
-    }
-
+    
     const createAcciones = () => {
         return [
             {
@@ -207,6 +128,86 @@ export default function TicketsUserTable() {
         })
     }
 
+    const postAprobacion = (body,id) => {
+        axios.put(`${URL_DEV}permiso/solicitudes/autorizar/${id}`, body, { headers: { Authorization: `Bearer ${userAuth}` } })
+    }
+
+    const aprobarTicket = (e, data)=>{
+        console.log(data)
+
+        Swal.fire({
+            title: '¿Estás seguro de aprobar las funcionalidades?',
+            icon: 'question',
+            // input: 'textarea',
+            showDenyButton: false,
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            // denyButtonText: `Don't save`,
+            // preConfirm: (value) => {
+            //     if (!value) {
+            //       Swal.showValidationMessage(
+            //         'Por favor deja un comentario'
+            //       )
+            //     }
+            // }
+            
+          }).then((result) => {
+            console.log(result)
+            if (result.isConfirmed) {
+                // let form = {
+                //     estatus: 'aprobado',
+                //     id_ticket: data.id,
+                // }
+                // postAprobacion(form,data.id)
+                Swal.fire('Se aprobó con éxito', '', 'success') 
+            }
+            else if (result.isDenied) {
+              Swal.fire('Changes are not saved', '', 'info')
+            }
+        })
+    }
+
+    const calcelarTicket = (e, data)=>{
+        console.log(data)
+
+        Swal.fire({
+            title: '¿Estás seguro de cancelar el ticket?',
+            icon: 'question',
+            showDenyButton: false,
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            
+          }).then((result) => {
+            console.log(result)
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                // let form = {
+                //     estatus: 'aprobado',
+                //     id_ticket: data.id,
+                // }
+                // postAprobacion(form,data.id)
+                Swal.fire('Ticket cancelado', '', 'success') 
+            }
+            else if (result.isDenied) {
+              Swal.fire('Changes are not saved', '', 'info')
+            }
+        })
+    }
+
+    const ProccessData = (data) => {
+        let aux = []
+        data.ti.map((item) => {
+            aux.push({
+                departamento: item.departamento,
+                descripcion: item.descripcion,
+                estatus: item.estatus,
+                fecha: item.fecha,
+                fecha_entrega: item.fecha_entrega,
+                id: item.id
+            })
+        })
+        return aux
+    }
 
     return (
         <>
