@@ -38,9 +38,10 @@ export default function TicketsUserTable() {
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Fecha', identificador: 'fecha_view' },
+        { nombre: 'Departamento', identificador: 'depto_show' },
         { nombre: 'Tipo', identificador: 'tipo_view' },
         { nombre: 'Estatus', identificador: 'estatus_view' },
-        { nombre: 'F. de entrega', identificador: 'gecha_entrega_view' },
+        { nombre: 'F. de entrega', identificador: 'fecha_entrega_view' },
         { nombre: 'Autorización', identificador: 'auto_view' },
     ];
 
@@ -53,7 +54,7 @@ export default function TicketsUserTable() {
                 fecha: item.fecha,
                 fecha_view: reformatDate(item.fecha),
                 fecha_entrega: item.fecha_entrega,
-                gecha_entrega_view: item.fecha_entrega ? reformatDate(item.fecha_entrega) : 'pendiente',
+                fecha_entrega_view: item.fecha_entrega ? reformatDate(item.fecha_entrega) : 'pendiente',
                 tipo: item.tipo,
                 tipo_view: item.tipo ? item.tipo : 'Requerimiento',
                 estatus: item.estatus,
@@ -63,6 +64,9 @@ export default function TicketsUserTable() {
                 auto_view: item.autorizacion ? item.autorizacion : 'Pendiente',
                 descripcion: item.descripcion,
                 funcionalidades: item.funcionalidades,
+                departamento: item.departamento,
+                id_departamento: item.departamento ? item.departamento.id : null,
+                depto_show: item.departamento ? item.departamento.nombre : 'Sin departamento',
             })
         })
         return aux
@@ -127,9 +131,14 @@ export default function TicketsUserTable() {
                 </>
             </Layout>
 
-            <Modal size="md" show={modal.editar.show} handleClose={() => setModal({ ...modal, editar: { show: false, data: false } })} title='Editar ticket'>
-                <EditarTicketTi data={modal.editar.data} />
-            </Modal>
+            {
+                modal.editar.data &&
+                <Modal size="md" show={modal.editar.show} handleClose={() => setModal({ ...modal, editar: { show: false, data: false } })} title='Editar ticket'>
+                    <EditarTicketTi data={modal.editar.data} reload={reloadTable} handleClose={() => setModal({ ...modal, editar: { show: false, data: false } })} />
+                </Modal>
+            }
+
+            
 
             <Modal show={modal.ver.show} handleClose={() => setModal({ ...modal, ver: { show: false, data: false } })} title='Ver ticket'>
                 <VerTicketTi data={modal.ver.data} />

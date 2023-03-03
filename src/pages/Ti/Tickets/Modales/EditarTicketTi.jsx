@@ -28,17 +28,26 @@ export default function EditarTicketTi(props) {
     const { data, reload, handleClose } = props
     const authUser = useSelector(state => state.authUser)
     const [form, setForm] = useState({
-        fecha: new Date(data.fecha),
+        fecha: reformatDate(data.fecha),
         tipo: data.tipo,
         estatus: data.estatus,
-        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
+        fecha_entrega: data.fecha_entrega ? reformatDate(data.fecha_entrega) : '',
         descripcion: data.descripcion,
         autorizacion: data.autorizacion,
         funcionalidades: data.funcionalidades ? data.funcionalidades : [],
         funcionalidad: '',
         id: data.id,
+        id_departamento: data.id_departamento, 
     })
     const [errores, setErrores] = useState({})
+
+    function reformatDate(input) {
+        var datePart = input.match(/\d+/g),
+            year = datePart[0].substring(2), // get only two digits
+            month = datePart[1], day = datePart[2];
+
+        return month + '/' + day + '/' + year;
+    }
 
     const handleChange = e => {
         setForm({
@@ -108,6 +117,20 @@ export default function EditarTicketTi(props) {
         return formOk
     }
 
+    
+
+    function formatDate(date) {
+        var year = date.getFullYear();
+
+        var month = (1 + date.getMonth()).toString();
+        month = month.length > 1 ? month : '0' + month;
+
+        var day = date.getDate().toString();
+        day = day.length > 1 ? day : '0' + day;
+
+        return year + '/' + month + '/' + day;
+    }
+
 
     const enviar = () => {
         if (validateForm()) {
@@ -123,13 +146,12 @@ export default function EditarTicketTi(props) {
                 let newForm = {
                     tipo: form.tipo,
                     estatus: form.estatus,
-                    fecha_entrega: form.fecha_entrega,
+                    fecha_entrega: formatDate(form.fecha_entrega),
                     descripcion: form.descripcion,
                     autorizacion: form.autorizacion,
-                    funcionalidades: form.funcionalidades
+                    funcionalidades: form.funcionalidades,
+                    id_departamento: form.id_departamento,
                 }
-
-
                 apiPutForm(`ti/${form.id}`, newForm, authUser.access_token)
                     .then((data) => {
                         Swal.fire({
@@ -175,7 +197,8 @@ export default function EditarTicketTi(props) {
         }
     }
 
-    console.log(errores)
+    console.log(form)
+    console.log(data)
 
     return (
         <>
@@ -189,7 +212,7 @@ export default function EditarTicketTi(props) {
 
                                     format="dd/MM/yyyy"
                                     name="fecha"
-                                    value={form.fecha !== '' ? form.fecha : null}
+                                    value={form.fecha}
                                     placeholder="dd/mm/yyyy"
                                     onChange={e => handleChangeFecha(e, 'fecha')}
                                     KeyboardButtonProps={{
@@ -208,7 +231,7 @@ export default function EditarTicketTi(props) {
 
                                     format="dd/MM/yyyy"
                                     name="fecha_entrega"
-                                    value={form.fecha_entrega !== '' ? form.fecha_entrega : null}
+                                    value={form.fecha_entrega}
                                     placeholder="dd/mm/yyyy"
                                     onChange={e => handleChangeFecha(e, 'fecha_entrega')}
                                     KeyboardButtonProps={{
