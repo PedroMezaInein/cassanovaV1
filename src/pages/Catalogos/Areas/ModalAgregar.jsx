@@ -126,8 +126,6 @@ export default function ModalAgregar (props) {
         return validar
     }
 
-    console.log(form)
-
     const submit = () =>{
         if(Object.keys(validateForm()).length ===0){
         //if(validateForm()){
@@ -153,7 +151,6 @@ export default function ModalAgregar (props) {
                 }),
                 tipo: 'egresos'
             }
-            console.log(newForm)
  
             apiPostForm('areas', newForm, user.access_token)
             .then((data)=>{
