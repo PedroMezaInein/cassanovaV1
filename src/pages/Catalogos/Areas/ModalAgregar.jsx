@@ -22,10 +22,10 @@ export default function ModalAgregar (props) {
     const [form, setForm] = useState ({
         area:'',
         partida: '',
+        createPartida: '',
         subPartida: '',
         arraySubPartidas: [],
         i_select: '',
-        i_text:''
     })
 
     const [errores, setErrores] = useState()
@@ -46,7 +46,7 @@ export default function ModalAgregar (props) {
         setForm({
             ...form,
             partida:e.target.value,
-            i_text:'',
+            createPartida:'',
             i_select:'',
             subPartida: null,
             arraySubPartidas: []
@@ -86,7 +86,7 @@ export default function ModalAgregar (props) {
         if(e.key==='Enter' ){
             setForm({
                 ...form,
-                i_text:'',
+                createPartida:'',
                 i_select: '',
                 subPartida: null,
                 arraySubPartidas: [],
@@ -126,6 +126,8 @@ export default function ModalAgregar (props) {
         return validar
     }
 
+    console.log(form)
+
     const submit = () =>{
         if(Object.keys(validateForm()).length ===0){
         //if(validateForm()){
@@ -140,7 +142,10 @@ export default function ModalAgregar (props) {
 
             let newForm = {
                 nombre: departamentos.find(item => item.id_area == form.area).nombreArea,
-                partida: form.partida.nombre,
+                id_departamento: form.area,
+                partida: form.partida.nombre? form.partida.nombre : form.partida,
+                id_partida: form.partida.id ? form.partida.id : '',
+                createPartida: form.createPartida,
                 subarea: '',
                 subareasEditable: [],
                 subareas: form.arraySubPartidas.map((item, index) => {
@@ -165,25 +170,7 @@ export default function ModalAgregar (props) {
                 //     reload.reload()
                 // }
                
-                if (data.isConfirmed) {
-                    
-                    let form = {
-                        solicitante: user.user.id,
-                        fecha: '',
-                        departamento: '',
-                        tipo_gasto: '',
-                        descripcion: '',
-                        solicitud:''
-                    }
-                    
-                    console.log('form')
-                    console.log(form)
-
-                }
-
-                else if (data.isDenied) {
-                    Swal.fire('Faltan campos', '', 'info')
-                }
+                
             })
             .catch((error)=>{  
                 Swal.close()
@@ -268,9 +255,8 @@ export default function ModalAgregar (props) {
                                     onChange={handleChangePrueba}
                                     onKeyPress={handleChangePrueba}
                                     // margin="normal"
-                                    name='i_text'
-                                    /* defaultValue={form.i_text} */
-                                    value={form.i_text}
+                                    name='createPartida'
+                                    value={form.createPartida}
                                     InputLabelProps={{
                                     shrink: true,
                                     }}
