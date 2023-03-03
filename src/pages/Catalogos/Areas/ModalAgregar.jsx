@@ -23,10 +23,14 @@ export default function ModalAgregar (props) {
         area:'',
         partida: '',
         createPartida: '',
+        createArea: '',
         subPartida: '',
         arraySubPartidas: [],
         i_select: '',
+        i_selectArea: '',
     })
+
+    console.log(form)
 
     const [errores, setErrores] = useState()
 
@@ -34,6 +38,7 @@ export default function ModalAgregar (props) {
         setForm({
             ...form,
             [event.target.name]: event.target.value,
+            i_selectArea: '',
             partida: '',
             subPartida: null,
             arraySubPartidas: []
@@ -41,6 +46,25 @@ export default function ModalAgregar (props) {
     }
     
      //de aqui son nuevas funciones handlechange
+
+    const handleChangeCreateArea=(e)=>{
+        if(e.key==='Enter' ){
+            setForm({
+                ...form,
+                createArea:'',
+                i_selectArea: '',
+                createPartida: null,
+                subPartida: null,
+                arraySubPartidas: [],
+                area: e.target.value
+            })
+        } else {
+            setForm({
+                ...form,
+                [e.target.name]:e.target.value,
+            })   
+        }
+    }
 
     const handleChangePartida=(e)=>{
         setForm({
@@ -51,7 +75,6 @@ export default function ModalAgregar (props) {
             subPartida: null,
             arraySubPartidas: []
         })
-        
     }
 
     const handleChange=(e)=>{
@@ -200,7 +223,8 @@ export default function ModalAgregar (props) {
                         <>
                             <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
                             <Select
-                                value={form.area}
+                                // value={form.area}
+                                value={form.i_selectArea}
                                 name="area"
                                 onChange={handleChangeArea}
                             >
@@ -214,9 +238,56 @@ export default function ModalAgregar (props) {
                     }
                 </div>
 
+                {/* CREAR AREA */}
+                <div>
+                    {departamentos.length > 0 ?
+
+                        <>
+                            <div>
+                                <TextField 
+                                    label="Crea un área"
+                                    // style={{ margin: 8 }}
+                                    placeholder="Enter para crear área"
+                                    onChange={handleChangeCreateArea}
+                                    onKeyPress={handleChangeCreateArea}
+                                    // margin="normal"
+                                    name='createArea'
+                                    value={form.createArea}
+                                    InputLabelProps={{
+                                    shrink: true,
+                                    }}
+                                /> 
+                            </div>
+                        </>
+                        :
+                        null
+                    }   
+                    {/* <div className='etiqueta_partida'>
+
+                        {
+                            form.partida !== '' && form.partida.nombre ?
+                            <>
+                                <div>
+                                    <span className='nombre_partida'>
+                                        <span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida.nombre}
+                                    </span>
+                                </div>
+                            </> 
+                            : form.partida !== '' ?
+                                <div>
+                                    <span className='nombre_partida'>
+                                        <span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida}
+                                    </span>
+                                </div>
+                            : null
+                        }
+
+                    </div>   */}
+                </div>
+
                 {/* PARTIDAS */}
                 <div>
-                    {departamentos.length > 0 && form.area !== ''?
+                    {departamentos.length > 0 && form.area !== '' && departamentos.find(item => item.id_area == form.area)?
                         <>
                             <div className='subtitulo'>Selecciona o crea una nueva partida </div>
                             <div className='partidas'>
