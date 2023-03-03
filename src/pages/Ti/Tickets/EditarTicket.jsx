@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import { useSelector } from "react-redux";
+import { apiPutForm } from './../../../functions/api'
 
 import Swal from 'sweetalert2'
 
@@ -17,11 +18,62 @@ export default function EditarTicket (props) {
     console.log(data)
 
     const [state, setState] = useState({
-        tipo: data.id_tipo,
-        descripcion: data.descripcion,
-        fecha: data.fecha,
+        tipo: data.id_tipo ? data.id_tipo : 'sin definir',
+        descripcion: data.descripcion ? data.descripcion : 'sin definir',
+        // fecha: data.fecha ? data.fecha : 'sin definir',
         id: data.id
     })
+
+    const handleSave = () => {
+        // if(validateForm()){
+        if(true){
+
+            Swal.fire({
+                title: 'Cargando...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            }) 
+    
+            let newForm = {
+                tipo: state.id_tipo,
+                descripcion: state.descripcion,
+                // fecha: state.fecha,
+            }
+
+            apiPutForm(`ti/${data.id}`, newForm, user.access_token)
+            .then((response)=>{
+                Swal.close()
+                Swal.fire({
+                    icon: 'success',
+                    tittle: 'Editar requisición',
+                    text: 'Se ha editado correctamente',
+                    timer: 2000,
+                    timerProgressBar: true,
+                })
+                handleClose()
+                if(reload){
+                    reload.reload()
+                }
+            }) .catch((error)=>{  
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error',
+                })
+            })
+  
+        }   else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Todos los campos son obligatorios',
+                })
+            }
+    }
+
 
     return (
         <>
@@ -71,7 +123,7 @@ export default function EditarTicket (props) {
             </div>
 
             <div className="nuevo_ticket_boton">
-                <button className='sendButton'>Agregar</button>
+                <button className='sendButton' onClick={handleSave}>Agregar</button>
             </div>
         </>
     )
