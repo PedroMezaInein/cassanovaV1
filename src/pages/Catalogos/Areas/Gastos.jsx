@@ -189,3 +189,13 @@ export default function Gastos (){
         </>
     )
 }
+
+
+
+ {/* <div>
+                {
+                    data.partida.subpartidas.map((item, index)=>{
+                        return <div key={index}>{item.nombre}</div>
+                    })
+                } 
+            </div> */}
