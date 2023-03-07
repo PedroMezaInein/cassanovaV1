@@ -114,27 +114,37 @@ export default function Adjuntos(props) {
     const getAdjuntos = () => {
         try {
 
-            apiGet(`servicios/adjuntos/${data.id}`, authUser)
+            apiGet(`computo/adjuntos/${data.id}`, authUser)
                 .then(res => {
 
-                    let adjunAux = res.data.vehiculos.adjuntos
+                    let adjunAux = res.data.data.adjuntos
                     Swal.close()
                     let aux = {
                         Evidencia: [],
-                        descripcion: adjunAux.descripcion
                     }
-                    adjunAux.forEach((element) => {
-                        switch (element.pivot.tipo) {
-                            case 'Evidencia':
-                                aux.Evidencia = [...aux.Evidencia, element]
-                                break;
-                            default:
-                                break;
+                    if (adjunAux.length > 0) {
+                        adjunAux.forEach((element) => {
+                            switch (element.pivot.tipo) {
+                                case 'Evidencia':
+                                    aux.Evidencia = [...aux.Evidencia, element]
+                                    break;
+                                default:
+                                    break;
 
-                        }
-                    });
+                            }
+                        });
+                    }
                     setAdjuntos(aux)
                 })
+                .catch(err => {
+                    Swal.close()
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Algo salio mal al cargar los adjuntos!',
+                    })
+                })
+
 
         } catch (error) {
             Swal.close()
@@ -184,18 +194,15 @@ export default function Adjuntos(props) {
                     Swal.showLoading()
                 }
             })
-            console.log(form)
 
             let datas = new FormData()
 
-            datas.append('files_name_vehiculos[]', form.file[0].name)
-            datas.append(`files_vehiculos[]`, form.file[0])
-            datas.append('asjuntos[]', "vehiculos")
+            datas.append(`files_computo[]`, form.file[0])
+            datas.append('adjuntos[]', "vehiculos")
             datas.append('tipo', activeTab)
-            datas.append('descripcion', form.descripcion)
 
             try {
-                apiPostForm(`servicios/${data.id}/adjuntos/s3`, datas, authUser)
+                apiPostForm(`computo/${data.id}/add/s3`, datas, authUser)
                     .then(res => {
                         Swal.close()
                         getAdjuntos()
@@ -336,7 +343,6 @@ export default function Adjuntos(props) {
                             <div className='adjuntos-comentarios'>
                                 {/* <span>{data.descripcion}</span> */}
                             </div>
-                            {console.log(form)}
                         </>
                         :
                         <div className="not_adjuntos">

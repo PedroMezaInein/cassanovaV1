@@ -50,20 +50,13 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
-        display: 'flex',
-        height: 550,
-        width: '100%',
-    },
-    tabs: {
-        borderRight: `1px solid ${theme.palette.divider}`,
-
+        width: '500',
+        height: '750',
     },
 }));
 
 export default function Adjuntos(props) {
-
     const { vehiculo } = props
-    console.log(vehiculo)
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
     const [value, setValue] = useState(0);
@@ -165,11 +158,8 @@ export default function Adjuntos(props) {
         <>
             <div className={classes.root}>
                 <Tabs
-                    orientation="vertical"
-                    variant="scrollable"
                     value={value}
                     onChange={handleChange}
-                    className={classes.tabs}
                 >
                     <Tab label="Seguro" {...a11yProps(0)} name="seguro" onClick={() => handleTab('Seguro')} />
                     <Tab label="Tarjeta de circulación" {...a11yProps(1)} name="tarjeta" onClick={() => handleTab('Tarjeta_circulacion')} />

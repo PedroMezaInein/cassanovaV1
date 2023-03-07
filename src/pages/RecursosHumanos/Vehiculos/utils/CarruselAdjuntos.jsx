@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         maxWidth: 550,
         flexGrow: 1,
-        height: 300,
+        height: 370,
     },
     adjuntos: {
         width: 477,

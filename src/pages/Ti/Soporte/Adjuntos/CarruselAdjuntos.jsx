@@ -51,8 +51,6 @@ export default function CarruselAdjuntos(props) {
         setActiveStep(step);
     };
     const handleDelete = (index) => {
-        console.log('idadjunto', index)
-        console.log('idRequisicion', id)
         Swal.fire({
             title: '¿Estas seguro de eliminar este adjunto?',
             text: "No podras revertir esta accion!",
@@ -71,30 +69,30 @@ export default function CarruselAdjuntos(props) {
                         Swal.showLoading();
                     }
                 })
-                apiDelete(`requisicion/${id}/adjuntos/${index}`, auth)
-                    .then(res => {
-                        getAdjuntos()
-                        Swal.close()
-                        Swal.fire({
-                            title: 'Eliminado!',
-                            text: 'El adjunto ha sido eliminado',
-                            icon: 'success',
-                            timer: 1500,
-                            timerProgressBar: true,
-                            showConfirmButton: false
-                        })
+                apiDelete(`computo/${id}/adjuntos/${index}`, auth)
+                .then(res => {
+                    getAdjuntos()
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Eliminado!',
+                        text: 'El adjunto ha sido eliminado',
+                        icon: 'success',
+                        timer: 1500,
+                        timerProgressBar: true,
+                        showConfirmButton: false
                     })
-                    .catch(err => {
-                        Swal.close()
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Ha ocurrido un error al eliminar el adjunto',
-                            icon: 'error',
-                            timer: 1500,
-                            timerProgressBar: true,
-                            showConfirmButton: false
-                        })
+                })
+                .catch(err => {
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Ha ocurrido un error al eliminar el adjunto',
+                        icon: 'error',
+                        timer: 1500,
+                        timerProgressBar: true,
+                        showConfirmButton: false
                     })
+                })
             }
         })
     }

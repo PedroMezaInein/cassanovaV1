@@ -206,14 +206,14 @@ export default function SoporteTecnicoTable() {
                     handleOpenModal('editar', item)
                 }
             },
-            {
+            /* {
                 nombre: 'Ver',
                 icono: 'fas fa-eye',
                 color: 'blueButton',
                 funcion: (item) => {
                     handleOpenModal('ver', item)
                 }
-            },
+            }, */
             {
                 nombre: 'Adjuntos',
                 icono: 'fas fa-paperclip',
@@ -289,7 +289,7 @@ export default function SoporteTecnicoTable() {
             </Modal>
 
             <Modal size="lg" show={modal.adjuntos.show} handleClose={() => setModal({ ...modal, adjuntos: { show: false, data: false } })} title='Adjuntos'>
-                <Adjuntos />
+                <Adjuntos data={modal.adjuntos.data} reload={reloadTable} handleClose={() => setModal({ ...modal, adjuntos: { show: false, data: false } })} />
             </Modal>
 
             <Modal size="lg" show={modal.crear.show} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} title='Nuevo mantenimiento'>
