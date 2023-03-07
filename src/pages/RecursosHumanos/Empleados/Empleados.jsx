@@ -140,6 +140,11 @@ class Empleados extends Component {
                     placeholder: 'Responsiva',
                     files: []
                 },
+                cv: {
+                    value: '',
+                    placeholder: 'Curriculum Vitae',
+                    files: []
+                },
             }
         },
         options: {
@@ -445,6 +450,11 @@ class Empleados extends Component {
                         responsiva: {
                             value: '',
                             placeholder: 'Responsiva',
+                            files: []
+                        },
+                        cv: {
+                            value: '',
+                            placeholder: 'Curriculum Vitae',
                             files: []
                         },
                     }
@@ -784,9 +794,7 @@ class Empleados extends Component {
             
             return false
         })
-        data.append('id', empleado.id)
-        await console.log(form)
-        await console.log(data.append)      
+        data.append('id', empleado.id)    
         await axios.post(URL_DEV + 'rh/empleado/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 //console.log(response)               
@@ -1072,7 +1080,6 @@ class Empleados extends Component {
         let data = new FormData();
         if(file){
             data.append(`file`, file)
-            console.log(valor)
             await axios.post(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${name}/adjuntar?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
                 (response) => {
                     const { empleado } = response.data
@@ -1305,7 +1312,7 @@ class Empleados extends Component {
                 <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
                     <AdjuntosForm form = { form } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles }
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoEmpleadoAxios() }}
-                        adjuntos={['acta', 'curp', 'rfc','nss', 'identificacion', 'domicilio','estudios', 'bancaria','retencion', 'firma', 'foto', 'imss', 'bajaimss', 'responsiva']} />
+                        adjuntos={['acta', 'curp', 'rfc','nss', 'identificacion', 'domicilio','estudios', 'bancaria','retencion', 'firma', 'foto', 'imss', 'bajaimss', 'responsiva', 'cv']} />
                     <div className="separator separator-dashed separator-border-2 mb-6 mt-7"></div>
                     <TableForModals columns = { ADJUNTOS_COLUMNS } data = { adjuntos } hideSelector = { true } mostrar_acciones = { true }
                         actions = { { 'deleteAdjunto': { function: this.openModalDeleteAdjuntos } }} dataID = 'adjuntos'
