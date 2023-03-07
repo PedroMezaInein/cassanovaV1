@@ -5,7 +5,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
 
 import Swal from 'sweetalert2'
-import { apiGet, apiPutForm } from '../../../../functions/api'
+import { apiGet, apiPostForm } from '../../../../functions/api'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
@@ -13,29 +13,32 @@ import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import Checkbox from '@material-ui/core/Checkbox';
-
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
 
 import Style from './TicketsTi.module.css'
 
-export default function Editar(props) {
+export default function Nuevo(props) {
     const { data, reload, handleClose } = props
     const authUser = useSelector(state => state.authUser)
+    const usuarios = useSelector(state => state.opciones.vehiculos.colaboradores.sort((a, b) => a.nombre > b.nombre ? 1 : -1))
     const [form, setForm] = useState({
         fecha: new Date(),
-        fecha_servicio: '',
-        tipo: '',
-        estatus: '',
+        fecha_mantenimiento: '',
         descripcion: '',
-        autorizacion:'',
+        autorizacion: '',
+        id_equipo: '',
+        costo: 0,
+        id_usuario: '',
     })
+
     const [errores, setErrores] = useState({})
+
+    const [equipos, setEquipos] = useState([])
+
+    useEffect(() => { 
+        if (form.id_usuario !== '') {
+            getEquipos()
+        }
+    }, [form.id_usuario])
 
     const handleChange = e => {
         setForm({
@@ -44,25 +47,36 @@ export default function Editar(props) {
         })
     }
 
-    const handleEnter = e => {
-        if (e.key === 'Enter') {
-            if (form.funcionalidad !== '') {
-                setForm({
-                    ...form,
-                    funcionalidades: [...form.funcionalidades, {
-                        funcionalidad: form.funcionalidad,
-                        estatus: 0,
-                        user: []
-                    }],
-                    funcionalidad: ''
+    const handleSubmit = e => {
+        e.preventDefault()
+        try {
+            apiPostForm('computo', form, authUser.access_token)
+                .then(response => {
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: 'Se ha creado el ticket',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    })
+                    if (reload) {
+                        reload.reload()
+                    }
+                    handleClose()
                 })
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'No puedes agregar una funcionalidad vacía',
+            
+        } catch (error) { 
+
+        }
+    }
+
+    const getEquipos = () => { 
+        try {
+            apiGet(`v2/rh/empleados/equipos/${form.id_usuario}`, authUser.access_token)
+                .then(response => { 
+                    setEquipos(response.data.equipos)
                 })
-            }
+        } catch (error) {
+            
         }
     }
 
@@ -72,15 +86,6 @@ export default function Editar(props) {
             [tipo]: new Date(date)
         })
     };
-
-    const handleDelete = (index) => {
-        setForm({
-            ...form,
-            funcionalidades: form.funcionalidades.filter((item, i) => i !== index)
-        })
-    }
-
-    console.log(form)
 
     return (
         <>
@@ -112,10 +117,10 @@ export default function Editar(props) {
                                 <KeyboardDatePicker
 
                                     format="dd/MM/yyyy"
-                                    name="fecha_servicio"
-                                    value={form.fecha_servicio !== '' ? form.fecha_servicio : null}
+                                    name="fecha_mantenimiento"
+                                    value={form.fecha_mantenimiento !== '' ? form.fecha_mantenimiento : null}
                                     placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha_servicio')}
+                                    onChange={e => handleChangeFecha(e, 'fecha_mantenimiento')}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
@@ -127,42 +132,73 @@ export default function Editar(props) {
 
 
                 </div>
+                
                 <div>
                     <div>
-                        <InputLabel>Tipo</InputLabel>
-                        <Select
-                            name="tipo"
-                            value={form.tipo}
-                            onChange={handleChange}
-                            error={errores.estatus ? true : false}
-                        >
-                            <MenuItem value={0}>cambio</MenuItem>
-                            <MenuItem value={1}>soporte</MenuItem>
-                            <MenuItem value={2}>mejora</MenuItem>
-                            <MenuItem value={3}>reporte</MenuItem>
-                            <MenuItem value={4}>información</MenuItem>
-                            <MenuItem value={5}>capacitación</MenuItem>
-                            <MenuItem value={6}>servicio</MenuItem>
-                            <MenuItem value={7}>proyecto</MenuItem>
-
-                        </Select>
+                        {
+                            usuarios.length > 0 ?
+                                <div>
+                                    <InputLabel>Usuario</InputLabel>
+                                    <Select
+                                        name="id_usuario"
+                                        value={form.id_usuario}
+                                        onChange={handleChange}
+                                        error={errores.id_usuario ? true : false}
+                                    >
+                                        {
+                                            usuarios.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre} {item.apellido_paterno ? item.apellido_paterno : ''} {item.apellido_materno ? item.apellido_materno : ''}</MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </div>
+                                :
+                                <div>
+                                    <InputLabel>Usuario</InputLabel>
+                                    <Select
+                                        name="id_usuario"
+                                        value={form.id_usuario}
+                                        onChange={handleChange}
+                                        error={errores.id_usuario ? true : false}
+                                    >
+                                        <MenuItem value={0}>No hay usuarios</MenuItem>
+                                    </Select>
+                                </div>
+                        }
                     </div>
-                    <div>
-                        <InputLabel>Estatus</InputLabel>
-                        <Select
-                            name="estatus"
-                            value={form.estatus}
-                            onChange={handleChange}
-                            error={errores.estatus ? true : false}
-                        >
-                            <MenuItem value={0}>Solicitado</MenuItem>
-                            <MenuItem value={1}>Autorizado</MenuItem>
-                            <MenuItem value={2}>En desarrollo</MenuItem>
-                            <MenuItem value={3}>Terminado</MenuItem>
-                            <MenuItem value={4}>Cancelado</MenuItem>
-                            <MenuItem value={5}>Rechazado</MenuItem>
-                        </Select>
-                    </div>
+                    {
+                        equipos.length > 0 ?
+                            <div>
+                                <InputLabel>Equipo</InputLabel>
+                                <Select
+                                    name="id_equipo"
+                                    value={form.id_equipo}
+                                    onChange={handleChange}
+                                    error={errores.id_equipo ? true : false}
+                                    style={{ maxWidth: '15rem' }}
+                                >
+                                    {
+                                        equipos.map((item, index) => (
+                                            <MenuItem key={index}
+                                                value={item.id}>{item.equipo.length > 15 ? item.equipo.slice(0, 20) + '...': item.equipo} || marca: {item.marca}
+                                            </MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </div>
+                            :
+                            <div>
+                                <InputLabel>Equipo</InputLabel>
+                                <Select
+                                    name="id_equipo"
+                                    value={form.id_equipo}
+                                    onChange={handleChange}
+                                    error={errores.id_equipo ? true : false}
+                                >
+                                    <MenuItem value={0}>No hay equipos</MenuItem>
+                                </Select>
+                            </div>
+                    }
 
                     <div>
                         <InputLabel>descripción</InputLabel>
@@ -181,7 +217,7 @@ export default function Editar(props) {
 
             <div className="row justify-content-end">
                 <div className="col-md-4">
-                    <button className={Style.sendButton} type="submit" >Crear</button>
+                    <button className={Style.sendButton} type="submit" onClick={handleSubmit}>Crear</button>
                 </div>
             </div>
 

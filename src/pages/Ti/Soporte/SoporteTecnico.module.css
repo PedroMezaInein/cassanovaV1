@@ -1,0 +1,15 @@
+.pendiente {
+    padding: 2px;
+    background: rgba(255, 213, 73, 0.75);
+    border: none;
+    width: 60%;
+    border-radius: 8px;
+}
+
+.autorizado {
+    padding: 2px;
+    background: rgba(22, 147, 165, 0.75);
+    border: none;
+    width: 60%;
+    border-radius: 8px;
+}
