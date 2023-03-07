@@ -25,8 +25,8 @@ export default function ModalAgregar (props) {
         createArea: '',
         subPartida: '',
         arraySubPartidas: [],
-        i_select: '',
-        i_selectArea: '',
+        // i_select: '',
+        // i_selectArea: '',
     })
 
     console.log(form)
@@ -40,7 +40,7 @@ export default function ModalAgregar (props) {
             setForm({
                 ...form,
                 createArea:'',
-                i_selectArea: '',
+                // i_selectArea: '',
                 createPartida: null,
                 subPartida: null,
                 arraySubPartidas: [],
@@ -167,10 +167,10 @@ export default function ModalAgregar (props) {
                     timer: 5000,
                     timerProgressBar: true,
                 })
-                // handleClose()
-                // if(reload){
-                //     reload.reload()
-                // }
+                handleClose()
+                if(reload){
+                    reload.reload()
+                }
                
                 
             })
@@ -283,7 +283,7 @@ export default function ModalAgregar (props) {
 
             </div>
 
-            <div className='subpartida_gasto'>
+            <div className='gasto_subpartida'>
                 { form.partida && form.partida !== ''?
                     <>
                         {/* <TextField 
@@ -313,24 +313,26 @@ export default function ModalAgregar (props) {
                     </>
                     : null
                 } 
+
+                <div className='subpartidas'>
+                    {
+                        form.arraySubPartidas.length > 0 && form.partida && form.partida !== '' ?
+                            <>
+                                {form.arraySubPartidas.map(subpartida=>{
+                                    return <>
+                                        <span className='sub_partida'>
+                                            <span className='sub_eliminar' onClick={(e)=>handleDeleteSub(subpartida.nombre)}>X</span>
+                                            <span className=''>{subpartida.nombre}</span>
+                                        </span>
+                                    </>
+                                })}
+                            </>
+                        :null
+                    }
+                </div>
             </div>
 
-            <div className='subpartidas'>
-                {
-                    form.arraySubPartidas.length > 0 && form.partida && form.partida !== '' ?
-                        <>
-                            {form.arraySubPartidas.map(subpartida=>{
-                                return <>
-                                    <span className='sub_partida'>
-                                        <span className='sub_eliminar' onClick={(e)=>handleDeleteSub(subpartida.nombre)}>X</span>
-                                        <span className=''>{subpartida.nombre}</span>
-                                    </span>
-                                </>
-                            })}
-                        </>
-                    :null
-                }
-            </div>
+            
             {/* {errores && errores.subPartida && form.subPartida === '' &&<span className='error_departamento'>{errores.subPartida}</span>} */}
             
             {/* {errores && errores.subPartida && form.partida !== '' && form.partida !== null && (form.subPartida === '' || form.subPartida === null) &&<span>{errores.subPartida}</span>} */}

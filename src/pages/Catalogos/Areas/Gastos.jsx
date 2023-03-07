@@ -13,6 +13,7 @@ import useOptionsArea from '../../../hooks/useOptionsArea'
 export default function Gastos (){
 
     const userAuth = useSelector((state) => state.authUser);
+    const [reloadTable, setReloadTable] = useState()
     const [modal, setModal] = useState({
         crear: {
             show:false,
@@ -152,12 +153,14 @@ export default function Gastos (){
                     nombreArea:item.nombreArea,
                     partidas:item.partidas[index].nombre,
                     subpartidas:<div >{estesi}</div>, //este es el contenedor de las subpartidas
+                    id:item.id_area
                 } 
                 dataTable.push(newdataaux) 
 
             })
 
         })
+        console.log(dataTable)
         return dataTable
     }
 
@@ -171,16 +174,16 @@ export default function Gastos (){
                 opciones={handleOpen}
                 acciones={actionsGastos()}
                 ProccessData={proccessData}
-                // reload={setReloadTable}
+                reload={setReloadTable}
                 >
             </TablaGeneral>
 
             <Modal size="lg" title={"Nuevos gastos"} show={modal.crear.show} handleClose={()=>handleCloseGastos ('crear')}>
-                <ModalAgregar />
+                <ModalAgregar handleClose={()=>handleCloseGastos ('crear')} reload={reloadTable}/>
             </Modal>    
 
             <Modal size="lg" title={"Editar gastos"} show={modal.editarGastos.show} handleClose={()=>handleCloseGastos ('editarGastos')}>
-                <ModalEditarGastos data={modal.editarGastos.data} />
+                <ModalEditarGastos data={modal.editarGastos.data} handleClose={()=>handleCloseGastos ('editarGastos')} reload={reloadTable}/>
             </Modal>
 
             <Modal size="lg" title={"Editar Sub partida"} show={modal.editarSubPartida.show} handleClose={()=>handleCloseGastos ('editarSubPartida')}>
@@ -189,13 +192,3 @@ export default function Gastos (){
         </>
     )
 }
-
-
-
- {/* <div>
-                {
-                    data.partida.subpartidas.map((item, index)=>{
-                        return <div key={index}>{item.nombre}</div>
-                    })
-                } 
-            </div> */}
