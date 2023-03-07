@@ -80,8 +80,6 @@ export default function Nuevo(props) {
                         confirmButtonText: 'Aceptar'
                     })
                 })
-            
-            
         } catch (error) { 
             Swal.close()
             Swal.fire({
