@@ -26,13 +26,13 @@ export default function ModalEditarGastos (props) {
         arraySubPartidas: [...data.partida.subpartidas], // este me sirve para mostrar todas las subpartidas, tanto las que ya existen como las nuevas
     })
 
-    console.log(data)
+    const [errores, setErrores] = useState({})
 
     const handleChange=(e)=>{
         if(e.target.value.replace(/\s/g, '').length > 0){
             setForm({
                 ...form,
-                [e.target.name]:e.target.value,
+                [e.target.name]:e.target.value.toUpperCase(),
             })    
         } else if(e.target.value.replace(/\s/g, '').length === 0){
             setForm({
@@ -52,6 +52,20 @@ export default function ModalEditarGastos (props) {
                 auxSubPartida: [...form.auxSubPartida, e.target.value ]
             })
         }
+    }
+
+    const handleDeletePartida = ()=>{
+        setForm({
+            ...form,
+            partida:''
+        })
+    }
+
+    const handleDeleteArea = ()=>{
+        setForm({
+            ...form,
+            area:''
+        })
     }
 
     const handleDeleteSub= (e) =>{
@@ -87,9 +101,29 @@ export default function ModalEditarGastos (props) {
         })
     }
 
+    const validateForm = () => {
+        let validar = true
+        let error = {}
+
+        if(form.area === ''){
+            error.area = 'Crea un área'
+            validar = false
+        }
+        if(form.partida === '' || form.partida === null){
+            error.partida = 'Crea una partida'
+            validar = false
+        }
+        if(form.arraySubPartidas.length === 0){
+            error.subPartidas = 'Crea una o varias sub partidas'
+            validar = false
+        }
+        setErrores (error)
+        return validar
+    }
+
     const submit = () =>{
-        // if(validateForm()){
-        if(true){
+        if(validateForm()){
+        // if(true){
 
             Swal.fire({
                 title: 'Cargando...',
@@ -181,6 +215,8 @@ export default function ModalEditarGastos (props) {
                             InputLabelProps={{
                             shrink: true,
                             }}
+                            error={errores.area ? true : false}
+
                         />
                     </FormControl> 
 
@@ -189,7 +225,7 @@ export default function ModalEditarGastos (props) {
                             form.area !== '' ?
                                 <div>
                                     <span className='nombre_partida'>
-                                        <span >X</span>{form.area}
+                                        <span onClick={e=>{handleDeleteArea(e)}}>X</span>{form.area}
                                     </span>
                                 </div>
                             : null
@@ -214,6 +250,7 @@ export default function ModalEditarGastos (props) {
                             InputLabelProps={{
                             shrink: true,
                             }}
+                            error={errores.partida ? true : false}
                         />
                     </FormControl> 
 
@@ -222,7 +259,7 @@ export default function ModalEditarGastos (props) {
                             form.partida !== '' ?
                                 <div>
                                     <span className='nombre_partida'>
-                                        <span >X</span>{form.partida}
+                                        <span onClick={e=>{handleDeletePartida(e)}}>X</span>{form.partida}
                                     </span>
                                 </div>
                             : null
@@ -243,7 +280,9 @@ export default function ModalEditarGastos (props) {
                     placeholder="Enter para crear subpartida"
                     value={form.subPartida} 
                     onKeyPress={handleEnterSub}  
-                    onChange={handleChange}>
+                    onChange={handleChange}
+                    error={errores.subPartidas ? true : false}
+                    >
                 </input>
 
                 <div className='gasto_etiqueta'>

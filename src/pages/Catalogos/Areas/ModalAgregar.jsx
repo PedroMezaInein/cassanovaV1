@@ -31,7 +31,7 @@ export default function ModalAgregar (props) {
 
     console.log(form)
 
-    const [errores, setErrores] = useState()
+    const [errores, setErrores] = useState({})
 
     //de aqui son nuevas funciones handlechange
 
@@ -126,8 +126,8 @@ export default function ModalAgregar (props) {
             error.partida = 'Crea una partida'
             validar = false
         }
-        if(form.arraySubPartidas === '' || form.arraySubPartidas === null){
-            error.arraySubPartidas = 'Crea una o varias sub partidas'
+        if(form.arraySubPartidas.length === 0){
+            error.subareas = 'Crea una o varias sub partidas'
             validar = false
         }
         setErrores (error)
@@ -137,7 +137,6 @@ export default function ModalAgregar (props) {
     const submit = () =>{
         // if(Object.keys(validateForm()).length ===0){
         if(validateForm()){
-        // if(true){
 
             Swal.fire({
                 title: 'Cargando...',
@@ -210,7 +209,7 @@ export default function ModalAgregar (props) {
                 
                     <div>
                         <TextField 
-                            label="Crea un área"
+                            label="área"
                             // style={{ margin: 8 }}
                             placeholder="Enter para crear área"
                             onChange={handleChangeCreateArea}
@@ -221,10 +220,9 @@ export default function ModalAgregar (props) {
                             InputLabelProps={{
                             shrink: true,
                             }}
+                            error={errores.area ? true : false}
                         /> 
                     </div>
-                    {/* {errores && errores.area && form.area === '' &&<span className='error_departamento'>{errores.area}</span>} */}
-
                 
                     <div className='etiqueta_gasto'>
                         {
@@ -246,7 +244,7 @@ export default function ModalAgregar (props) {
                     { form.area !== '' ? 
                         <div>
                             <TextField 
-                                label="Crea una partida"
+                                label="partida"
                                 // style={{ margin: 8 }}
                                 placeholder="Enter para crear partida"
                                 onChange={handleChangePrueba}
@@ -257,6 +255,7 @@ export default function ModalAgregar (props) {
                                 InputLabelProps={{
                                 shrink: true,
                                 }}
+                                error={errores.partida ? true : false}
                             /> 
                         </div> 
                     :
@@ -301,7 +300,7 @@ export default function ModalAgregar (props) {
                             shrink: true,
                             }}
                         />  */}
-                        <label>Subpartida</label>
+                        <label className={errores.subareas ? 'error' : ''}>Subpartida</label>
                         <input 
                             className=''
                             name='subPartida' 
@@ -309,7 +308,9 @@ export default function ModalAgregar (props) {
                             placeholder="Enter para crear subpartida"
                             value={form.subPartida ? form.subPartida : ''} 
                             onKeyPress={handleEnterSub}  
-                            onChange={handleChange}>
+                            onChange={handleChange}
+                            // error={errores.subareas ? true : false}
+                            >
                         </input>
                     </>
                     : null
