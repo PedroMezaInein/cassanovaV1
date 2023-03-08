@@ -194,7 +194,7 @@ export default function ModalEditarGastos (props) {
 
     return (
         <>
-            {/* <div className='titulo_gasto'>al escribir una nueva área o partida presiona enter para que esta sea creada</div> */}
+            <div className='titulo_gasto'>al escribir una nueva área o partida presiona enter para que esta sea creada</div>
 
             <div className='gasto_area'>
 
