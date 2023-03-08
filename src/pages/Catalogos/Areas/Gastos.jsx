@@ -160,8 +160,8 @@ export default function Gastos (){
             })
 
         })
-        console.log(dataTable)
-        return dataTable
+        let auxdataTable = dataTable.reverse()
+        return auxdataTable
     }
 
     return(

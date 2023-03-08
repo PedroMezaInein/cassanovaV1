@@ -117,6 +117,7 @@ export default function ModalAgregar (props) {
     const validateForm = () => {
         let validar = true
         let error = {}
+
         if(form.area === ''){
             error.area = 'Crea un área'
             validar = false
@@ -125,8 +126,8 @@ export default function ModalAgregar (props) {
             error.partida = 'Crea una partida'
             validar = false
         }
-        if(form.subPartida === '' || form.subPartida === null){
-            error.subPartida = 'Crea una o varias sub partidas'
+        if(form.arraySubPartidas === '' || form.arraySubPartidas === null){
+            error.arraySubPartidas = 'Crea una o varias sub partidas'
             validar = false
         }
         setErrores (error)
@@ -135,8 +136,8 @@ export default function ModalAgregar (props) {
 
     const submit = () =>{
         // if(Object.keys(validateForm()).length ===0){
-        // if(validateForm()){
-        if(true){
+        if(validateForm()){
+        // if(true){
 
             Swal.fire({
                 title: 'Cargando...',
