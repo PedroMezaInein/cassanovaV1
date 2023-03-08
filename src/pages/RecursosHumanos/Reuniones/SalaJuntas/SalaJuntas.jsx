@@ -224,7 +224,7 @@ export default function SalaJuntas() {
                                     <td>{reserva.sala}</td>
                                     <td>{reserva.asunto}</td>
                                     <td>{ reserva.duracion === "0.5"? "30 minutos": `${reserva.duracion} horas`}</td>
-                                    <td>{reserva.usersalas.name}</td>
+                                    <td>{reserva.usersalas ? reserva.usersalas.name : ''}</td>
                                 </tr>
                             ))}
                             </tbody>
