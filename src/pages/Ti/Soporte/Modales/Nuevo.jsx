@@ -48,10 +48,18 @@ export default function Nuevo(props) {
     }
 
     const handleSubmit = e => {
-        e.preventDefault()
         try {
+            Swal.fire({
+                title: 'Creando ticket',
+                text: 'Espere un momento',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            })
             apiPostForm('computo', form, authUser.access_token)
                 .then(response => {
+                    Swal.close()
                     Swal.fire({
                         title: '¡Éxito!',
                         text: 'Se ha creado el ticket',
@@ -63,9 +71,23 @@ export default function Nuevo(props) {
                     }
                     handleClose()
                 })
-            
+                .catch(error => {
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ha ocurrido un error al crear el ticket',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    })
+                })
         } catch (error) { 
-
+            Swal.close()
+            Swal.fire({
+                title: 'Error',
+                text: 'Ha ocurrido un error al crear el ticket',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         }
     }
 

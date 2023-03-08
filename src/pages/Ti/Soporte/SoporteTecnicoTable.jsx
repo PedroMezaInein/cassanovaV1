@@ -77,6 +77,7 @@ export default function SoporteTecnicoTable() {
         console.log(data)
         data.computo.forEach((item) => { 
             aux.push({
+                aprobacion: item.aprobacion,
                 fecha: reformatDate(item.fecha),
                 acciones: createAcciones(),
                 fecha_servicio: reformatDate(item.fecha_mantenimiento),
@@ -212,16 +213,9 @@ export default function SoporteTecnicoTable() {
                     } else {
                         handleOpenModal('editar', item)  
                     }
+                    
                 }
             },
-            /* {
-                nombre: 'Ver',
-                icono: 'fas fa-eye',
-                color: 'blueButton',
-                funcion: (item) => {
-                    handleOpenModal('ver', item)
-                }
-            }, */
             {
                 nombre: 'Adjuntos',
                 icono: 'fas fa-paperclip',
