@@ -104,7 +104,8 @@ export default function ModalEditarGastos (props) {
                 id_area: data.id,
                 partida: form.partida,
                 id_partida: data.partida.id,
-                arraySubPartidas: form.arraySubPartidas
+                subareas: form.auxSubPartida,
+                tipo: 'gastos',
                 // subareasEditable: [],
                 // subareas: form.arraySubPartidas.map((item, index) => {
                 //     return item.nombre
