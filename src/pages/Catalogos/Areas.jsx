@@ -537,8 +537,10 @@ class Areas extends Component {
         const { form, modal, title, formeditado, key, modalSee, area, options, subArea, selectedSubArea } = this.state
         const { access_token } = this.props.authUser
         const tabs = [ 'ventas', 'ingresos']
+      
+        console.log(this.props)
         return (
-            <Layout active = 'compras'  {...this.props}>
+            <Layout active = 'catalogos'  {...this.props} >
 
                 <Tabs id = "tabsAreas" defaultActiveKey = "compras" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
                     <Tab eventKey = { 'compras' } title = { 'compras' }>

@@ -470,6 +470,7 @@ class Partidas extends Component {
 
     render() {
         const { form, modal, title, formeditado, partida, subpartida} = this.state
+        console.log(this.props)
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <NewTableServerRender 
