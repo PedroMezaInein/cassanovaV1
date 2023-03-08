@@ -12,7 +12,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 
 import Style from './NuevoInsumo.module.css'
 import './../../../../styles/_nuevaRequisicion.scss'
@@ -22,16 +22,16 @@ export default function NuevoInsumo(props) {
     const {handleClose, reload} = props
     const user = useSelector(state => state.authUser)
     const departamento = useSelector(state => state.authUser.departamento)
-    const departamentos = useSelector(state => state.opciones.areas)
-    const presupuestos = useSelector(state => state.opciones.presupuestos)
     const [state, setState] = useState({
-        solicitante: user.user.id,
-        fecha:'',
-        departamento: departamento.departamentos[0].id,
-        tipo_gasto: '', //partida
+        nombre: '',
+        cantidad: '',
+        costo: '',
+        tipo_unidad: '',
+        frecuencia: '',
+        stock: '',
+        maximo: '',
+        minimo: '',
         descripcion: '',
-        solicitud: '',
-        presupuesto: '',
     });
     const [opcionesUnidades, setOpcionesUniadades] = useState(false)
     useEffect(() => {
@@ -91,14 +91,12 @@ export default function NuevoInsumo(props) {
     const validateForm = () => {
         let validar = true
         let error = {}
+
         if(state.nombre === ''){
             error.nombre = "Escriba un nombre"
             validar = false
-        }
-        if(state.descripcion === ''){
-            error.descripcion = "Escriba una descripcion"
-            validar = false
-        }
+        } 
+        
         if(state.cantidad === ''){
             error.cantidad = "Escriba una cantidad"
             validar = false
@@ -107,19 +105,18 @@ export default function NuevoInsumo(props) {
         if(state.costo === ''){
             error.costo = "Escriba un costo"
             validar = false
-        }
-        if (state.id_unidades === '') {
-            error.id_unidades = "Seleccione una unidad"
-            validar = false
-        }
-        // if (state.fecha === '' || state.fecha === null) {
-        //     error.fecha = "Seleccione una fecha"
+        } 
+        
+        // if (state.tipo_unidad === '') {
+        //     error.id_unidades = "Seleccione una unidad"
         //     validar = false
         // }
+        
         if(state.frecuencia === ''){
             error.frecuencia = "Escriba una frecuencia"
             validar = false
         }
+        
         if(state.stock === ''){
             error.stock = "Escriba stock"
             validar = false
@@ -130,6 +127,11 @@ export default function NuevoInsumo(props) {
         }
         if(state.minimo === ''){
             error.minimo = "Escriba un minimo"
+            validar = false
+        }
+
+        if(state.descripcion === ''){
+            error.descripcion = "Escriba una descripcion"
             validar = false
         }
         
@@ -175,7 +177,7 @@ export default function NuevoInsumo(props) {
                     cantidad: state.cantidad,
                     costo: state.costo,
                     id_unidades: state.id_unidades,
-                    // fecha: formatDate(state.fecha),
+                    tipo_unidad:state.tipo_unidad,
                     frecuencia: state.frecuencia,
                     estatus: state.estatus,
                     stock: state.stock,

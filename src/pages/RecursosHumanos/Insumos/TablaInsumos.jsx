@@ -9,12 +9,8 @@ import { setOptions } from '../../../functions/setters'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
 
-// import AdjuntosVehiculos from './utils/AdjuntosVehiculo'
-// import ControlGastos from './modales/ControlGastos'
 import NuevoInsumo from './modales/NuevoInsumo'
-// import EditarVehiculo from './modales/EditarVehiculo'
-// import Operador from './modales/Operador'
-// import VerVehiculo from './modales/VerVehiculo'
+import EditarInsumos from './modales/EditarInsumos'
 
 export default function TablaInsumos() {
 
@@ -223,30 +219,27 @@ export default function TablaInsumos() {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='rh'>
                 <>
-                    <TablaGeneral titulo='Insumos' columnas={columnas} url='insumos' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
+                    <TablaGeneral 
+                    titulo='Insumos' 
+                    columnas={columnas} 
+                    url='insumos' 
+                    ProccessData={ProccessData} 
+                    numItemsPagina={12} 
+                    acciones={createAcciones()} 
+                    opciones={opciones} 
+                    reload={setReloadTable} />
                 </>
             </Layout>
 
-            {/* <Modal show={modal.editar.show} setShow={setModal} title='Editar Vehículo' size='lg' handleClose={handleClose('editar')}>
-                <EditarVehiculo reload={reloadTable} handleClose={handleClose('editar')} vehiculo={ modal.editar.data} />
-            </Modal>
-            <Modal show={modal.eliminar.show} setShow={setModal} title='Eliminar Vehículo' size='lg' handleClose={handleClose('eliminar')}>
-                <h1>Eliminar</h1>
-            </Modal>
-            <Modal show={modal.adjuntos.show} setShow={setModal} title='Adjuntos Vehículo' size='lg' handleClose={handleClose('adjuntos')}>
-                <AdjuntosVehiculos vehiculo={modal.adjuntos.data} />
-            </Modal>
-            <Modal show={modal.ver.show} setShow={setModal} title='Información del Vehículo' size='lg' handleClose={handleClose('ver')}>
-                <VerVehiculo vehiculo={modal.ver.data} />
-            </Modal> */}
             <Modal show={modal.crear.show} setShow={setModal} title='Crear Insumo' size='lg' handleClose={handleClose('crear')}>
                 <NuevoInsumo reload={reloadTable} handleClose={handleClose('crear')} />
             </Modal>
-            {/* <Modal show={modal.control_gastos.show} setShow={setModal} title='Control de gastos' size='xl' handleClose={handleClose('control_gastos')}>
-                <ControlGastos vehiculo={modal.control_gastos.data }/>
+
+             <Modal show={modal.editar.show} setShow={setModal} title='Editar insumo' size='lg' handleClose={handleClose('editar')}>
+                <EditarInsumos data={modal.editar.data} reload={reloadTable} handleClose={handleClose('editar')} vehiculo={ modal.editar.data} />
             </Modal>
-            <Modal show={modal.usuarios_autorizados.show} setShow={setModal} title='Usuarios autorizados' size='lg' handleClose={handleClose('usuarios_autorizados')}>
-                <Operador reload={reloadTable} vehiculo={modal.usuarios_autorizados.data} />
+            {/*<Modal show={modal.eliminar.show} setShow={setModal} title='Eliminar Vehículo' size='lg' handleClose={handleClose('eliminar')}>
+                <h1>Eliminar</h1>
             </Modal> */}
         </>
     );
