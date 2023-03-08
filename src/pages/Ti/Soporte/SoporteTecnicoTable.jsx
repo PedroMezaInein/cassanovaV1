@@ -203,7 +203,15 @@ export default function SoporteTecnicoTable() {
                 icono: 'fas fa-edit',
                 color: 'blueButton',
                 funcion: (item) => {
-                    handleOpenModal('editar', item)
+                    if (item.aprobacion) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'No puedes editar un ticket de soporte aprobado',
+                        })
+                    } else {
+                        handleOpenModal('editar', item)  
+                    }
                 }
             },
             /* {
