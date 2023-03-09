@@ -121,6 +121,7 @@ export default function NativeSelects(props) {
                     solicitud: state.solicitud,
                     presupuesto: state.presupuesto
                 }
+
                 let aux = Object.keys(newForm)
 
                 aux.forEach((element) => {
@@ -165,8 +166,6 @@ export default function NativeSelects(props) {
                             console.log('form')
                             console.log(form)
                         } */
-
-                }
 
                         /* else if (data.isDenied) {
                             Swal.fire('Faltan campos', '', 'info')
