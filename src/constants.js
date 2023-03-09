@@ -250,7 +250,7 @@ export const AREAS_COMPRAS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Área', accessor: 'area', customRender: true },
     { Header: 'Sub áreas', accessor: 'subareas', customRender: true },
-    { Header: 'Partida', accessor: 'partida' }
+    // { Header: 'Partida', accessor: 'partida' }
 ]
 export const PERMISOS_COLUMNS = [
     // { Header: 'Empleado', accessor: 'empleado' , customRender: false },
