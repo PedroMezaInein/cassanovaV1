@@ -13,9 +13,10 @@ import Pagada from '@material-ui/icons/CreditCardOutlined';
 import EnCamino from '@material-ui/icons/LocalShippingOutlined';
 import Completada from '@material-ui/icons/AssignmentTurnedInOutlined';
 import Cancelada from '@material-ui/icons/BlockOutlined';
+import Eliminada from '@material-ui/icons/DeleteOutline';
 
 export default function StatusIndicator(props) { 
-    const { estatus_compra, estatus_conta, auto1, auto2 } = props.data
+    const { estatus_compra, estatus_conta, auto1, auto2, estatus } = props.data
     const [modal, setModal] = useState({
         status: {
             data: false,
@@ -39,65 +40,81 @@ export default function StatusIndicator(props) {
     return (
         <>
             <div className={Style.container} onClick={openModal}>
-                <div
-                    className={estatus_compra && (estatus_compra.estatus === "Completada" || estatus_compra.estatus === "COMPLETADA") ? Style.greenBox : estatus_compra && (estatus_compra.estatus === "CANCELADA" || estatus_compra.estatus === "Cancelada") ? Style.redBox : estatus_compra ? Style.yellowBox: Style.grayBox}
-                    title={`Estatus compra: ${estatus_compra ? estatus_compra.estatus : 'Pendiente'}`}
-                >
-                    {
-                        estatus_compra && estatus_compra.estatus === 'EN PROCESO' ?
-                        <EnProceso/>
-                        :
-                        estatus_compra && estatus_compra.estatus === 'PAGADA' ?
-                        <Pagada/>
-                        :
-                        estatus_compra && estatus_compra.estatus === 'EN CAMINO' ?
-                        <EnCamino/>
-                        :
-                        estatus_compra && estatus_compra.estatus === 'COMPLETADA' ?
-                        <Completada/>
-                        :
-                        estatus_compra && estatus_compra.estatus === 'CANCELADA' ?
-                        <Cancelada/>
-                        :
-                        <span><AccessTimeIcon/></span>
-                    }
-                </div>
-                <div
-                    className={estatus_conta && (estatus_conta.estatus === "Pagado" || estatus_conta.estatus === "PAGADO") ? Style.greenBox : estatus_conta && (estatus_conta.estatus === "Rechazado" || estatus_conta.estatus === "RECHAZADO") ? Style.redBox : estatus_conta ? Style.yellowBox : Style.grayBox}
-                    title={`Estatus contabilidad: ${estatus_conta ? estatus_conta.estatus : 'Pendiente'}`}
-                >
-                    {
-                        estatus_conta && estatus_conta.estatus === 'PAGADO' ?
-                        <Pagada/>
-                        :
-                        estatus_conta && estatus_conta.estatus === 'RECHAZADO' ?
-                        <Cancelada/>
-                        :
-                        <span><AccessTimeIcon/></span>
-                    }
-                </div>
-                <div
-                    className={auto1 ? Style.greenBox : Style.grayBox}
-                    title={`Estatus autorización compras: ${auto1 ? 'Autorizado' : 'Pendiente'}`}
-                >
-                    {
-                        auto1 ? 
-                        <span><DoneIcon/></span>
+                {
+                    estatus && estatus.id === 15 && estatus_compra && estatus_compra.id === 15 && estatus_conta && estatus_conta.id === 15?
+                        <>
+                            <span
+                                className={Style.containerEliminado}
+                                title={`Gasto Eliminado`}
+                            >
+                                <Eliminada/> Gasto Eliminado
+                        
+                            </span>
+                        </>
                         : 
-                        <span><AccessTimeIcon/></span>
-                    }
-                </div>
-                <div
-                    className={auto2 ? Style.greenBox : Style.grayBox}
-                    title={`Estatus autorización contabilidad: ${auto2 ? 'Autorizado' : 'Pendiente'}`}
-                >
-                    {
-                        auto2 ? 
-                        <span><DoneAllIcon/></span>
-                        : 
-                        <span><AccessTimeIcon/></span>
-                    }
-                </div>
+                        <>
+                            <div
+                                className={estatus_compra && (estatus_compra.estatus === "Completada" || estatus_compra.estatus === "COMPLETADA") ? Style.greenBox : estatus_compra && (estatus_compra.estatus === "CANCELADA" || estatus_compra.estatus === "Cancelada") ? Style.redBox : estatus_compra ? Style.yellowBox: Style.grayBox}
+                                title={`Estatus compra: ${estatus_compra ? estatus_compra.estatus : 'Pendiente'}`}
+                            >
+                                {
+                                    estatus_compra && estatus_compra.estatus === 'EN PROCESO' ?
+                                    <EnProceso/>
+                                    :
+                                    estatus_compra && estatus_compra.estatus === 'PAGADA' ?
+                                    <Pagada/>
+                                    :
+                                    estatus_compra && estatus_compra.estatus === 'EN CAMINO' ?
+                                    <EnCamino/>
+                                    :
+                                    estatus_compra && estatus_compra.estatus === 'COMPLETADA' ?
+                                    <Completada/>
+                                    :
+                                    estatus_compra && estatus_compra.estatus === 'CANCELADA' ?
+                                    <Cancelada/>
+                                    :
+                                    <span><AccessTimeIcon/></span>
+                                }
+                            </div>
+                            <div
+                                className={auto1 ? Style.greenBox : Style.grayBox}
+                                title={`Estatus autorización compras: ${auto1 ? 'Autorizado' : 'Pendiente'}`}
+                            >
+                                {
+                                    auto1 ? 
+                                    <span><DoneIcon/></span>
+                                    : 
+                                    <span><AccessTimeIcon/></span>
+                                }
+                            </div>
+                            <div
+                                className={estatus_conta && (estatus_conta.estatus === "Pagado" || estatus_conta.estatus === "PAGADO") ? Style.greenBox : estatus_conta && (estatus_conta.estatus === "Rechazado" || estatus_conta.estatus === "RECHAZADO") ? Style.redBox : estatus_conta ? Style.yellowBox : Style.grayBox}
+                                title={`Estatus contabilidad: ${estatus_conta ? estatus_conta.estatus : 'Pendiente'}`}
+                            >
+                                {
+                                    estatus_conta && estatus_conta.estatus === 'PAGADO' ?
+                                        <Pagada />
+                                        :
+                                        estatus_conta && estatus_conta.estatus === 'RECHAZADO' ?
+                                            <Cancelada />
+                                            :
+                                            <span><AccessTimeIcon /></span>
+                                }
+                            </div>
+                            <div
+                                className={auto2 ? Style.greenBox : Style.grayBox}
+                                title={`Estatus autorización contabilidad: ${auto2 ? 'Autorizado' : 'Pendiente'}`}
+                            >
+                                {
+                                    auto2 ? 
+                                    <span><DoneAllIcon/></span>
+                                    : 
+                                    <span><AccessTimeIcon/></span>
+                                }
+                            </div>    
+                        </>
+                }
+                
             </div>
             <Modal size="md" title={"Estatus"} show={modal.status.show} handleClose={handleClose}>
                 <div>

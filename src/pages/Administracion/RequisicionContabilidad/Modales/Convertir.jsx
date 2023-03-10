@@ -65,6 +65,7 @@ export default function Convertir(props) {
         factura: data.factura,
         empresa: "",
         labelCuenta: data.cuenta ? data.cuenta.nombre : 'cuenta',
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
     })
 
     const [file, setFile] = useState({
@@ -142,6 +143,7 @@ export default function Convertir(props) {
                                     afectar_cuentas: form.afectarCuentas,
                                     empresa: form.empresa,
                                     autorizacion_conta: true,
+                                    fecha_entrega: form.fecha_entrega,
                                 }
                                 apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                                     (response) => {

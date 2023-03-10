@@ -132,6 +132,7 @@ export default function RequisicionContabilidad() {
                 factura: item.estatus_factura ? item.estatus_factura.id : null,
                 afectacion_cuentas: item.auto2 ? "Cuentas afectadas" : "sin afectación",
                 semaforo: createStatusIndicator(item),
+                fecha_entrega: item.fecha_entrega ? item.fecha_entrega : null,
             })
         })
         aux = aux.reverse()
