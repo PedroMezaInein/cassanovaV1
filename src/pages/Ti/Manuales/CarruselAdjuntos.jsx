@@ -16,12 +16,14 @@ const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: '100vh',
+        maxWidth: '100%',
         flexGrow: 1,
         height: '50vh',
     },
     adjuntos: {
-        width: '100vh',
+        width: '110vh',
+        padding:'10vh',
+        marginLeft: '10vh',
         height: '50vh',
         display: 'flex',
         justifyContent: 'center',
