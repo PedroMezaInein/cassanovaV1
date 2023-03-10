@@ -16,14 +16,12 @@ const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: '100%',
+        maxWidth: '100vh',
         flexGrow: 1,
         height: '50vh',
     },
     adjuntos: {
-        width: '110vh',
-        padding:'10vh',
-        marginLeft: '10vh',
+        width: '100vh',
         height: '50vh',
         display: 'flex',
         justifyContent: 'center',
@@ -149,7 +147,6 @@ export default function CarruselAdjuntos(props) {
                             <button className="btn btn-danger" onClick={() => handleDelete(item.id)}>Eliminar</button>
                         </div> */}
                         <div className={classes.description}>
-
                             <span>{item.descripcion}</span>
                         </div>
 
