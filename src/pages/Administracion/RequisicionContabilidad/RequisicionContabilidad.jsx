@@ -62,8 +62,8 @@ export default function RequisicionContabilidad() {
         { nombre: 'Departamento', identificador: 'departamento', sort: false, stringSearch: false },
         { nombre: 'Tipo de Egreso', identificador: 'tipoEgreso', sort: false, stringSearch: false },
         /* { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false }, */
-        { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
-        { nombre: 'Monto pagado', identificador: 'monto_view', sort: false, stringSearch: false },
+        { nombre: 'Tipo de pago  (*)', identificador: 'tipoPago', sort: false, stringSearch: false },
+        { nombre: 'Monto pagado  (*)', identificador: 'monto_view', sort: false, stringSearch: false },
         /* { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
         { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false }, */
         /* { nombre: 'Facturación', identificador: 'estatus_factura', sort: false, stringSearch: false },
