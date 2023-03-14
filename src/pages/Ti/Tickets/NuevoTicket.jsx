@@ -37,18 +37,6 @@ export default function NuevoTicket (props) {
         });
     };
 
-    // function formatDate(date) {
-    //     var year = date.getFullYear();
-        
-    //     var month = (1 + date.getMonth()).toString();
-    //     month = month.length > 1 ? month : '0' + month;
-        
-    //     var day = date.getDate().toString();
-    //     day = day.length > 1 ? day : '0' + day;
-        
-    //     return day+ '/' + month + '/' + year;
-    // }
-
     function formatDate(date) {
         var year = date.getFullYear();
       
@@ -187,9 +175,9 @@ export default function NuevoTicket (props) {
                         onChange={handleChange}
                         disabled={user.user.tipo.id ==1 ? false : true}
                     >
-                        <MenuItem value={0}>Mantenimiento</MenuItem>
-                        <MenuItem value={1}>Nuevo módulo</MenuItem>
-                        <MenuItem value={2}>Error en plataforma</MenuItem>
+                        <MenuItem value={"Mantenimiento"}>Mantenimiento</MenuItem>
+                        <MenuItem value={"Nuevo módulo"}>Nuevo módulo</MenuItem>
+                        <MenuItem value={"Error en plataforma"}>Error en plataforma</MenuItem>
                     </Select>          
                 </div>
 

@@ -55,7 +55,7 @@ export default function TicketsUserTable() {
         { nombre: 'F. de entrega', identificador: 'fecha_entrega' },
     ];
 
-    
+
     const createAcciones = () => {
         return [
             {
@@ -199,6 +199,7 @@ export default function TicketsUserTable() {
                 departamento: item.departamento,
                 descripcion: item.descripcion,
                 estatus: item.estatus,
+                tipo: item.tipo,
                 fecha: item.fecha,
                 fecha_entrega: item.fecha_entrega,
                 id: item.id
