@@ -51,11 +51,9 @@ export default function TicketsUserTable() {
         { nombre: 'Tipo', identificador: 'tipo' },
         { nombre: 'Estatus', identificador: 'estatus' },
         { nombre: 'Aprobación', identificador: 'aprobacion' },
-        // { nombre: 'Funcionalidad', identificador: 'funcionalidad' },
+        { nombre: 'Funcionalidad', identificador: 'funcionalidad' },
         { nombre: 'F. de entrega', identificador: 'fecha_entrega' },
     ];
-
-   
 
     
     const createAcciones = () => {
@@ -98,7 +96,7 @@ export default function TicketsUserTable() {
                 nombre: 'cancelar',
                 icono: 'fas fa-edit',
                 color: 'redButton',
-                funcion: (calcelarTicket)
+                funcion: (cancelarTicket)
             },
         ]
     }
@@ -167,7 +165,7 @@ export default function TicketsUserTable() {
         })
     }
 
-    const calcelarTicket = (e, data)=>{
+    const cancelarTicket = (e, data)=>{
         console.log(data)
 
         Swal.fire({
