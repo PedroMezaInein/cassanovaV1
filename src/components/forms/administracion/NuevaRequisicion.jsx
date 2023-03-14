@@ -155,7 +155,6 @@ export default function NativeSelects(props) {
                         })
 
                         /* if (data.isConfirmed) {
-
                             let form = {
                                 solicitante: user.user.id,
                                 fecha: '',
@@ -164,10 +163,8 @@ export default function NativeSelects(props) {
                                 descripcion: '',
                                 solicitud: ''
                             }
-
                             console.log('form')
                             console.log(form)
-
                         } */
 
                         /* else if (data.isDenied) {

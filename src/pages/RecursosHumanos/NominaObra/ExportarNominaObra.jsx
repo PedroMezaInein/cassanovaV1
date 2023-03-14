@@ -36,10 +36,10 @@ export default function ExportarNominaObra(props) {
             formOk = false
             errores.fechaFin = 'Debe seleccionar una fecha de fin'
         }
-        if (form.proyecto === '') {
-            formOk = false
-            errores.proyecto = 'Debe seleccionar un proyecto'
-        }
+        // if (form.proyecto === '') {
+        //     formOk = false
+        //     errores.proyecto = 'Debe seleccionar un proyecto'
+        // }
         setErrores(errores)
         return formOk
     }
@@ -173,7 +173,7 @@ export default function ExportarNominaObra(props) {
                             style={{ width: 350 }}
                             onChange={(event, value) => handleChangeProyecto(event, value)}
                             renderInput={(params) => <TextField {...params} label='proyecto' variant="outlined" />}
-                            error={errores.proyecto ? true : false}
+                            // error={errores.proyecto ? true : false}
                         />
                     </div>
                 </div>

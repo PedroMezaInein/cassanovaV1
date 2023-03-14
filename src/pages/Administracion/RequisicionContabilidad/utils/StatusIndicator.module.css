@@ -16,6 +16,15 @@
     margin-left: 1px;
 }
 
+.containerEliminado {
+    width: 12rem;
+    height: 1.8rem;
+    cursor: pointer;
+    color: white;
+    border-radius: 5px;
+    background-color: rgba(242, 108, 79, 0.85);
+}
+
 .container > div > span {
     margin-top: 5px;
     cursor: pointer;
