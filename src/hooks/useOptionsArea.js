@@ -12,10 +12,8 @@ const useOptionsArea = () => {
         apiGet('areas', user.access_token)
             .then((response) => {
                 setOpciones(response.data)
-                console.log(response.data)
             })
             .catch((error) => {
-                console.log(error)
             })
     }, [])
 
@@ -41,10 +39,29 @@ const useOptionsArea = () => {
                                     nombre: elemento.nombre,
                                 })
                             })
+
+                            auxSubpartida.sort((a, b) => {
+                                if (a.nombre < b.nombre) {
+                                    return -1;
+                                }
+                                if (a.nombre > b.nombre) {
+                                    return 1;
+                                }
+                                return 0;
+                            })
                             auxPartidas.push({
                                 id:idpartida,
                                 nombre:partida,
                                 subpartidas:auxSubpartida
+                            })
+                            auxPartidas.sort((a, b) => {
+                                if (a.nombre < b.nombre) {
+                                    return -1;
+                                }
+                                if (a.nombre > b.nombre) {
+                                    return 1;
+                                }
+                                return 0;
                             })
                         }
                     }
@@ -55,6 +72,15 @@ const useOptionsArea = () => {
                 }
                 aux.push(areas)
             }
+            aux.sort((a, b) => {
+                if (a.nombreArea < b.nombreArea) {
+                    return -1;
+                }
+                if (a.nombreArea > b.nombreArea) {
+                    return 1;
+                }
+                return 0;
+            })
         }
         dispatch(SaveOptionsAreas(aux))
         dispatch(SaveOptionsPresupuestos(e.presupuesto))

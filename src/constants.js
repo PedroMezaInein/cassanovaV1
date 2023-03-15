@@ -250,7 +250,7 @@ export const AREAS_COMPRAS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Área', accessor: 'area', customRender: true },
     { Header: 'Sub áreas', accessor: 'subareas', customRender: true },
-    { Header: 'Partida', accessor: 'partida' }
+    // { Header: 'Partida', accessor: 'partida' }
 ]
 export const PERMISOS_COLUMNS = [
     // { Header: 'Empleado', accessor: 'empleado' , customRender: false },
@@ -1007,8 +1007,8 @@ export const REQUISICIONES = [
     { nombre: 'Solicitante', identificador: 'solicitante', sort: true, stringSearch: false},
     { nombre: 'Departamento', identificador: 'departamento', sort: true, stringSearch: false},
     { nombre: 'Gasto', identificador: 'tipo_gasto', sort: true, stringSearch: false},
-    { nombre: 'Fecha', identificador: 'fecha', sort: true, stringSearch: false},
-    { nombre: 'Descripcion', identificador: 'descripcion', sort: true, stringSearch: false},
+    { nombre: 'Fecha', identificador: 'fecha_view', sort: true, stringSearch: false},
+    // { nombre: 'Descripcion', identificador: 'descripcion', sort: true, stringSearch: false},
     { nombre: 'Estatus', identificador: 'estatus', sort: true, stringSearch: false},
     { nombre: 'Tiempo estimado', identificador: 'tiempo_estimado', sort: true, stringSearch: false},
 ]

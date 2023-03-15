@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
@@ -52,6 +53,7 @@ export default function Convertir(props) {
         conta: data.conta,
         factura: data.factura,
         orden_compra: data.orden_compra,
+        labelPorveedor: data.proveedor ? opciones.proveedores.find(proveedor => proveedor.value == data.proveedor).name : 'Proveedor',
     })
     const [errores, setErrores] = useState({})
 
@@ -229,6 +231,16 @@ export default function Convertir(props) {
             ...form,
             monto: e
         })
+    }
+
+    const handleChangeProveedor = (e, value) => {
+        if (value && value.name) {
+            setForm({
+                ...form,
+                proveedor: value.value,
+                labelPorveedor: opciones.proveedores.find(proveedor => proveedor.value == value.value).name
+            })
+        }
     }
 
     return (
@@ -417,7 +429,7 @@ export default function Convertir(props) {
                     {
                         opciones ?
                             <>
-                                <InputLabel id="demo-simple-select-label">Proveedor</InputLabel>
+                                {/* <InputLabel id="demo-simple-select-label">Proveedor</InputLabel>
                                 <Select
                                     name="proveedor"
                                     value={form.proveedor}
@@ -429,7 +441,15 @@ export default function Convertir(props) {
                                         <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
                                     ))}
 
-                                </Select>
+                                </Select> */}
+                                <Autocomplete
+                                    name="proveedor"
+                                    options={opciones.proveedores}
+                                    getOptionLabel={(option) => option.name}
+                                    style={{ width: 230, paddingRight: '1rem' }}
+                                    onChange={(event, value) => handleChangeProveedor(event, value)}
+                                    renderInput={(params) => <TextField {...params} label={form.labelPorveedor} variant="outlined" />}
+                                />
                             </>
                             : null
                     }

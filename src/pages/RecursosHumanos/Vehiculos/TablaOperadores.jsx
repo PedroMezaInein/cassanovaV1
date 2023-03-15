@@ -10,6 +10,7 @@ import Layout from '../../../components/layout/layout'
 import NuevoOperador from './modales/NuevoOperador'
 import EditarOperador from './modales/EditarOperador'
 import VerOperador from './modales/VerOperador'
+import AdjuntosOperador from './utils/AdjuntosOperador'
 
 export default function TablaOperadores(props) {
     const {id} = props
@@ -236,8 +237,9 @@ export default function TablaOperadores(props) {
             <Modal show={modal.eliminar.show} setShow={setModal} title='Eliminar operador' size='lg' handleClose={handleClose('eliminar')}>
                 <h1>Eliminar</h1>
             </Modal>
+
             <Modal show={modal.adjuntos.show} setShow={setModal} title='Adjuntos operador' size='lg' handleClose={handleClose('adjuntos')}>
-                
+                <AdjuntosOperador vehiculos={vehicles} operador={modal.adjuntos.data} />
             </Modal>
             {
                 modal.ver.data &&

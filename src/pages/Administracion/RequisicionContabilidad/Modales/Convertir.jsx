@@ -8,6 +8,7 @@ import { es } from 'date-fns/locale'
 import Grid from '@material-ui/core/Grid';
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
@@ -63,6 +64,8 @@ export default function Convertir(props) {
         conta: data.conta,
         factura: data.factura,
         empresa: "",
+        labelCuenta: data.cuenta ? data.cuenta.nombre : 'cuenta',
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
     })
 
     const [file, setFile] = useState({
@@ -140,6 +143,7 @@ export default function Convertir(props) {
                                     afectar_cuentas: form.afectarCuentas,
                                     empresa: form.empresa,
                                     autorizacion_conta: true,
+                                    fecha_entrega: form.fecha_entrega,
                                 }
                                 apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                                     (response) => {
@@ -316,7 +320,6 @@ export default function Convertir(props) {
         setErrores(aux) 
         return valid
     }
-    console.log(errores)
 
     const handleAprueba = (e) => {
         if (e.target.name === 'auto2') {
@@ -487,6 +490,16 @@ export default function Convertir(props) {
             ...file,
             [tipo]: ''
         })
+    }
+
+    const handleChangeCuenta = (e, value) => {
+        if (value && value.nombre) {
+            setForm({
+                ...form,
+                id_cuenta: value.id,
+                labelCuenta: value.nombre
+            })
+        }
     }
 
     return (
@@ -713,7 +726,7 @@ export default function Convertir(props) {
                         {
                             opciones && form.empresa !== "" ?
                                 <>
-                                    <InputLabel>Cuenta de salida</InputLabel>
+                                    {/* <InputLabel>Cuenta de salida</InputLabel>
                                     <Select
                                         name="id_cuenta"
                                         value={form.id_cuenta}
@@ -724,7 +737,16 @@ export default function Convertir(props) {
                                         {opciones.empresas.find(item => item.value == form.empresa).cuentas.map((item, index) => (
                                             <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                         ))}
-                                    </Select>
+                                    </Select> */}
+                                    <InputLabel>Cuenta de salida</InputLabel>
+                                    <Autocomplete
+                                        name="cuenta"
+                                        options={opciones.empresas.find(item => item.value == form.empresa).cuentas}
+                                        getOptionLabel={(option) => option.nombre}
+                                        style={{ width: 230, paddingRight: '1rem' }}
+                                        onChange={(event, value) => handleChangeCuenta(event, value)}
+                                        renderInput={(params) => <TextField {...params} label={form.labelCuenta} variant="outlined" />}
+                                    />
                                 </>
                                 : opciones ?
                                     <>

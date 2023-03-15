@@ -11,8 +11,10 @@ import SortIcon from '@material-ui/icons/Sort';
 import SettingsSharpIcon from '@material-ui/icons/SettingsSharp';
 import '../../../styles/_TablaGeneral.scss'
 
+import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
+
 export default function TablaGeneral(props) {
-    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, customFilter } = props;
     //para implementar la tabla puedes utilizar los siguientes props
 
     //titulo: titulo de la tabla
@@ -86,14 +88,7 @@ export default function TablaGeneral(props) {
 
     const getData = () => {
 
-        Swal.fire({
-            title: 'Cargando datos',
-            html: 'Espere un momento por favor',
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading()
-            },
-        })
+        waitAlert()
 
         try {
             axios(`${URL_DEV}${url}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
@@ -326,8 +321,8 @@ export default function TablaGeneral(props) {
                                                                             {acciones.map((accion, index) => {
                                                                                 return (
                                                                                     <div className={`${accion.color} Button-action`}  onClick={() => accion.funcion(item)} key={index} >
-                                                                                        <i className={` ${accion.icono} `}>
-                                                                                            <span className="ml-2">{accion.nombre}</span>
+                                                                                        <i className={` ${accion.icono} generalButtonColor`}>
+                                                                                            <span className="ml-2 ">{accion.nombre}</span>
                                                                                         </i>    
                                                                                     </div>
                                                                                     

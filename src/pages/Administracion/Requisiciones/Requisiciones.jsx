@@ -8,6 +8,7 @@ import { REQUISICIONES } from '../../../constants'
 import { Modal } from '../../../components/singles'
 import Adjuntos from '../../Administracion/RequisicionCompras/Modales/Adjuntos'
 import NuevaRequisicion from '../../../components/forms/administracion/NuevaRequisicion'
+import VerRequisicion from '../../../components/forms/administracion/VerRequisicion'
 import {EditarRequisicion} from '../../../components/forms/administracion/EditarRequisicion'
 
 import useOptionsArea from '../../../hooks/useOptionsArea'
@@ -32,6 +33,10 @@ function Requisiciones () {
             show: false,
             data: false
         },
+        ver: {
+            show: false,
+            data: false
+        },
 
     })
 
@@ -53,6 +58,7 @@ function Requisiciones () {
                         orden_compra: result.orden_compra,
                         solicitante: result.solicitante.name,
                         fecha: result.fecha,
+                        fecha_view: reformatDate(result.fecha),
                         departamento: result.departamento ?  result.departamento.nombre : '',
                         tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
                         descripcion: result.descripcion,
@@ -65,28 +71,11 @@ function Requisiciones () {
             })
             aux=aux.reverse()
             return aux
-    // }
-        
-        // let aux = []
-        // datos.Requisiciones.map((result) => {
-        //     aux.push(
-        //         {
-        //             acciones: acciones(),
-        //             orden_compra: result.orden_compra,
-        //             solicitante: result.solicitante.name,
-        //             fecha: result.fecha,
-        //             departamento: result.departamento ?  result.departamento.nombre : '',
-        //             tipo_gasto: result.gasto ? result.gasto.nombre: 'no definido',
-        //             descripcion: result.descripcion,
-        //             estatus: result.estatus ? result.estatus.estatus : 'pendiente' ,
-        //             tiempo_estimado: result.fecha_entrega ? result.fecha_entrega : 'no especificado',
-        //             id:result.id,
-        //             data:result
-        //         }
-        //     )
-        // })
-        // aux=aux.reverse()
-        // return aux
+    }
+
+    function reformatDate(dateStr) {
+        var dArr = dateStr.split("-");  // ex input: "2010-01-18"
+        return dArr[2] + "/" + dArr[1] + "/" + dArr[0]/* .substring(2) */; //ex output: "18/01/10"
     }
     
     const handleOpen = [
@@ -147,6 +136,20 @@ function Requisiciones () {
                     })
                 }
             }, 
+            {
+                nombre: 'ver',
+                icono: 'fas fa-paperclip',
+                color: 'perryButton',
+                funcion: (item) => {
+                    setModal({
+                        ...modal,
+                        ver: {
+                            show: true,
+                            data: item
+                        }
+                    })
+                }
+            }, 
         ]
         return aux
     }
@@ -177,6 +180,10 @@ function Requisiciones () {
 
             <Modal size="lg" title={"Adjuntos"} show={modal.adjuntos.show} handleClose={handleClose('adjuntos')}>
                 <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={true}/>
+            </Modal>
+
+            <Modal size="md" title={"ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
+                <VerRequisicion data={modal.ver.data} verRequisicion={true}/>
             </Modal>
             
         </>

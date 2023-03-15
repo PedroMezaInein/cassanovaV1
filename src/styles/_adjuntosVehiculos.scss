@@ -10,7 +10,10 @@
 
 .file {
     margin-right: 15rem;
+}
 
+.file_buttons{
+    margin-right: 10rem;
 }
 
 .file input {
@@ -78,8 +81,6 @@
 }
 
 .upload_buttons {
-    display: flex;
-    justify-content: space-between;
 }
 
 .container_btns{
@@ -176,9 +177,7 @@
 
 .selected_file div span{
     padding: 0.5rem;
-    border-radius: 5px;
-    
-    
+    border-radius: 5px; 
 }
 
 .delete_file{
@@ -186,4 +185,24 @@
     font-weight: bold; 
     cursor: pointer;
     color: red;
+}
+
+.adjuntos-subir{
+    display: flex;
+    justify-content: end;
+    margin-bottom: 1rem;
+}
+
+.adjust_buttons {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: -1.5rem;
+}
+
+.adjuntos-comentarios{
+    margin-top: 1rem;
+}
+
+.container_botones{
+    // margin-top: 3rem;
 }

@@ -54,13 +54,8 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
-        display: 'flex',
-        height: 550,
-        width: '100%',
-    },
-    tabs: {
-        borderRight: `1px solid ${theme.palette.divider}`,
-
+        width: '500',
+        height: '750',
     },
 }));
 
@@ -77,6 +72,7 @@ export default function Adjuntos(props) {
         Tarjeta_circulacion: [],
         Verificacion: [],
         Factura: [],
+        Multas: [],
         file: [],
     })
     const [activeTab, setActiveTab] = useState('Tenencia')
@@ -113,6 +109,7 @@ export default function Adjuntos(props) {
                         Tarjeta_circulacion: [],
                         Verificacion: [],
                         Factura: [],
+                        Multas: [],
 
                     }
                     adjunAux.forEach((element) => {
@@ -134,6 +131,9 @@ export default function Adjuntos(props) {
                                 break;
                             case 'Factura':
                                 aux.Factura = [...aux.Factura, element]
+                                break;
+                            case 'Multas':
+                                aux.Multas = [...aux.Multas, element]
                                 break;
                             default:
                                 break;
@@ -293,11 +293,9 @@ export default function Adjuntos(props) {
         <>
             <div className={classes.root}>
                 <Tabs
-                    orientation="vertical"
                     variant="scrollable"
                     value={value}
                     onChange={handleChange}
-                    className={classes.tabs}
                 >
                     <Tab label="Tenencia " {...a11yProps(0)} name="tenencia" onClick={() => handleTab('Tenencia')} />
                     <Tab label="Foto de placas" {...a11yProps(1)} name="placas" onClick={() => handleTab('Foto_placas')} />
@@ -305,6 +303,7 @@ export default function Adjuntos(props) {
                     <Tab label="Tarjeta de circulación" {...a11yProps(3)} name="tarjeta" onClick={() => handleTab('Tarjeta_circulacion')} />
                     <Tab label="Verificación" {...a11yProps(4)} name="verificacion" onClick={() => handleTab('Verificacion')} />
                     <Tab label="Factura" {...a11yProps(5)} name="factura" onClick={() => handleTab('Factura')} />
+                    <Tab label="Multas" {...a11yProps(6)} name="multas" onClick={() => handleTab('Multas')} />
                 </Tabs>
 
                 <TabPanel value={value} index={0}>
@@ -341,6 +340,12 @@ export default function Adjuntos(props) {
                     <div>
                         {uploadButtons('Factura')}
                         {viewAdjuntos('Factura')}
+                    </div>
+                </TabPanel>
+                <TabPanel value={value} index={6}>
+                    <div>
+                        {uploadButtons('Multas')}
+                        {viewAdjuntos('Multas')}
                     </div>
                 </TabPanel>
             </div>

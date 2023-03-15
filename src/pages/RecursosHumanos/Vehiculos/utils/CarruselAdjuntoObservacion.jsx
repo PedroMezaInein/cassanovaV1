@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         maxWidth: 480,
         flexGrow: 1,
-        height: 350,
+        height: 380,
     },
     adjuntos: {
         width: 477,

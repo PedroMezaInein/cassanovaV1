@@ -1,0 +1,31 @@
+.nuevo_ticket{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 1rem;
+}
+
+.nuevo_ticket_departamento{
+    width: 130px;
+    margin-top: .2rem;
+}
+
+.nuevo_ticket_fecha{
+    width: 130px;
+}
+
+.nuevo_ticket_boton{
+    margin-top: 1rem;
+}
+
+.sendButton {
+    // margin-top: 1rem;
+    width: 7rem;
+    height: 2.5rem;
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    margin-left: 75%;
+}
+

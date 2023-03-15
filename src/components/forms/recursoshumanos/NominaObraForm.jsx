@@ -58,6 +58,27 @@ class NominaObraForm extends Component {
         return suma
     }
 
+    /* setOptions = key => {
+        const { options, form, usuarios } = this.props
+        let array = []
+        let newAux = []
+        options.usuarios.forEach((element) => {
+            element.nombre = `${element.nombre}  ${element.apellido_paterno ? element.apellido_paterno : ''} ${element.apellido_materno ? element.apellido_materno : ''}`
+            newAux.push(element)
+        })
+        if (form.nominasObra[key].usuario === '')
+            return newAux
+        let aux = usuarios.find((element) => {
+            return element.id.toString() === form.nominasObra[key].usuario
+        })
+        options.usuarios.forEach((element) => {
+            array.push(element)
+        })
+        if (aux)
+            array.push({ 'label': `${aux.nombre}  ${aux.apellido_paterno ? aux.apellido_paterno : ''} ${aux.apellido_materno ? aux.apellido_materno : ''}`, 'name': `${aux.nombre}  ${aux.apellido_paterno ? aux.apellido_paterno : ''} ${aux.apellido_materno ? aux.apellido_materno : ''}`, 'value': aux.id.toString() })
+        return array
+    } */
+
     setOptions = key => {
         const { options, form, usuarios } = this.props
         let array = []
@@ -73,6 +94,7 @@ class NominaObraForm extends Component {
             array.push({ 'label': aux.nombre, 'name': aux.nombre, 'value': aux.id.toString() })
         return array
     }
+   
 
     render() {
         const { options, addRowNominaObra, deleteRowNominaObra, onChangeNominasObra, onChange, form, onSubmit, formeditado, title, handleChange, onChangeRange,
@@ -158,7 +180,7 @@ class NominaObraForm extends Component {
                                     classbtn='btn btn-default btn-hover-icon-primary font-weight-bolder btn-hover-bg-light text-hover-primary text-dark-50 mb-0 font-size-13px' />
                             </div>
                         </div>
-                        <div className="table-responsive mb-5">
+                        <div className="table-responsive mb-5 pb-25">
                             <table className="table table-separate pt-5">
                                 <thead>
                                     <tr>

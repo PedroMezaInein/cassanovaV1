@@ -16,6 +16,7 @@ import { apiOptions } from '../../../functions/api'
 import { setOptions } from '../../../functions/setters'
 
 import useOptionsArea from '../../../hooks/useOptionsArea'
+import StatusIndicator from './utils/StatusIndicator'
 
 import Layout from '../../../components/layout/layout'
 
@@ -57,17 +58,18 @@ export default function RequisicionContabilidad() {
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Orden no.', identificador: 'orden_compra' },
         { nombre: 'Solicitante', identificador: 'solicitante', sort: false, stringSearch: false },
-        { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
+        { nombre: 'Fecha', identificador: 'fecha_view', sort: false, stringSearch: false },
         { nombre: 'Departamento', identificador: 'departamento', sort: false, stringSearch: false },
         { nombre: 'Tipo de Egreso', identificador: 'tipoEgreso', sort: false, stringSearch: false },
-        { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false },
-        { nombre: 'Tipo de pago', identificador: 'tipoPago', sort: false, stringSearch: false },
-        { nombre: 'Monto pagado', identificador: 'monto_view', sort: false, stringSearch: false },
-        { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
-        { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false },
-        { nombre: 'Facturación', identificador: 'estatus_factura', sort: false, stringSearch: false },
-        { nombre: 'Cuentas', identificador: 'afectacion_cuentas', sort: false, stringSearch: false },
-        { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false },
+        /* { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false }, */
+        { nombre: 'Tipo de pago  (*)', identificador: 'tipoPago', sort: false, stringSearch: false },
+        { nombre: 'Monto pagado  (*)', identificador: 'monto_view', sort: false, stringSearch: false },
+        /* { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
+        { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false }, */
+        /* { nombre: 'Facturación', identificador: 'estatus_factura', sort: false, stringSearch: false },
+        { nombre: 'Cuentas', identificador: 'afectacion_cuentas', sort: false, stringSearch: false }, */
+        { nombre: 'Estatus', identificador: 'semaforo', sort: false, stringSearch: false },
+        /* { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false }, */
     ]
 
     const opciones = [
@@ -99,6 +101,7 @@ export default function RequisicionContabilidad() {
                 solicitante: item.solicitante.name,
                 solicitante_id: item.solicitante.id,
                 fecha: item.fecha,
+                fecha_view: reformatDate(item.fecha),
                 departamento: item.departamento.nombre,
                 departamento_id: item.departamento.id,
                 tipoEgreso: item.gasto ? item.gasto.nombre : 'no definido',
@@ -128,11 +131,24 @@ export default function RequisicionContabilidad() {
                 conta: item.estatus_conta ? item.estatus_conta.id : null,
                 factura: item.estatus_factura ? item.estatus_factura.id : null,
                 afectacion_cuentas: item.auto2 ? "Cuentas afectadas" : "sin afectación",
+                semaforo: createStatusIndicator(item),
+                fecha_entrega: item.fecha_entrega ? item.fecha_entrega : null,
             })
         })
         aux = aux.reverse()
         return aux
 
+    }
+
+    function reformatDate(dateStr) {
+        var dArr = dateStr.split("-");  // ex input: "2010-01-18"
+        return dArr[2] + "/" + dArr[1] + "/" + dArr[0]/* .substring(2) */; //ex output: "18/01/10"
+    }
+
+    const createStatusIndicator = (item) => {
+        return (
+            <StatusIndicator data={item} />
+        )
     }
 
     let createtagaprobaciones = (item) => {

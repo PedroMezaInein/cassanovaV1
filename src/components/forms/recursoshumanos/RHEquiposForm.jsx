@@ -48,7 +48,6 @@ class RHLicenciasForm extends Component {
             empleado_id: this.props.adminView === "rh"? this.props.empleado.id:form.equipo.data.empleado_id
 
         }
-        console.log(form.equipo)
     }
 
     

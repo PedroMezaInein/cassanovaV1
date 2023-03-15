@@ -155,7 +155,6 @@ export default function NativeSelects(props) {
                         })
 
                         /* if (data.isConfirmed) {
-
                             let form = {
                                 solicitante: user.user.id,
                                 fecha: '',
@@ -164,10 +163,8 @@ export default function NativeSelects(props) {
                                 descripcion: '',
                                 solicitud: ''
                             }
-
                             console.log('form')
                             console.log(form)
-
                         } */
 
                         /* else if (data.isDenied) {
@@ -236,7 +233,7 @@ export default function NativeSelects(props) {
                                     value={state.departamento}
                                     name="departamento"
                                     onChange={handleChangeDepartamento}
-                                    disabled
+                                    disabled={user.user.tipo.id ==1 ? false : true}
                                 >
                                     {departamentos.map((item, index) => (
                                         <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>

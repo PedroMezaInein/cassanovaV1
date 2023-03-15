@@ -8,6 +8,7 @@ import { es } from 'date-fns/locale'
 import Grid from '@material-ui/core/Grid';
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
@@ -31,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Editar(props) {
     const { data, handleClose, reload, opciones, estatusCompras } = props
     const departamentos = useSelector(state => state.opciones.areas)
-    
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
         fecha: new Date(data.fecha),
@@ -57,6 +57,8 @@ export default function Editar(props) {
         conta: data.conta,
         factura: data.factura,
         empresa: "",
+        labelCuenta: data.cuenta ? data.cuenta.nombre : 'cuenta',
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
     })
 
     const [errores, setErrores] = useState({})
@@ -126,6 +128,7 @@ export default function Editar(props) {
                                 id_estatus_compra: form.compra,
                                 id_estatus_factura: form.factura,
                                 id_estatus_conta: form.conta,
+                                fecha_entrega: form.fecha_entrega,
                             }
 
                             apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
@@ -183,6 +186,7 @@ export default function Editar(props) {
                         id_estatus_compra: form.compra,
                         id_estatus_factura: form.factura,
                         id_estatus_conta: form.conta,
+                        fecha_entrega: form.fecha_entrega,
                     }
 
                     apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
@@ -320,6 +324,16 @@ export default function Editar(props) {
             ...form,
             monto: e
         })
+    }
+
+    const handleChangeCuenta = (e, value) => {
+        if (value && value.nombre) {
+            setForm({
+                ...form,
+                id_cuenta: value.id,
+                labelCuenta: value.nombre
+            })
+        }
     }
 
     return (
@@ -519,7 +533,7 @@ export default function Editar(props) {
                     {
                         opciones && form.empresa !== "" ?
                             <>
-                                <InputLabel id="demo-simple-select-label">Cuenta de salida</InputLabel>
+                                {/* <InputLabel id="demo-simple-select-label">Cuenta de salida</InputLabel>
                                 <Select
                                     name="id_cuenta"
                                     value={form.id_cuenta}
@@ -530,7 +544,17 @@ export default function Editar(props) {
                                     {opciones.empresas.find(item => item.value == form.empresa).cuentas.map((item, index) => (
                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                     ))}
-                                </Select>
+                                    
+                                </Select> */}
+                                <InputLabel>Cuenta de salida</InputLabel>
+                                <Autocomplete
+                                    name="cuenta"
+                                    options={opciones.empresas.find(item => item.value == form.empresa).cuentas}
+                                    getOptionLabel={(option) => option.nombre}
+                                    style={{ width: 230, paddingRight: '1rem' }}
+                                    onChange={(event, value) => handleChangeCuenta(event, value)}
+                                    renderInput={(params) => <TextField {...params} label={form.labelCuenta} variant="outlined" />}
+                                />
                             </>
                             : opciones ?
                                 <>

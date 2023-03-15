@@ -58,6 +58,7 @@ class AdjuntosForm extends Component {
                                                 multiple
                                                 classbtn='btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50 mb-0'
                                                 iconclass='flaticon2-clip-symbol text-primary'
+                                                classinput='hidden'
                                             />
                                         </div>
                                     )

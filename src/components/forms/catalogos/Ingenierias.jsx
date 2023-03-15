@@ -35,6 +35,7 @@ export default class IngenieriaForm extends Component {
 
     render() {
         const { form, addRow, onSubmit, formeditado, onChange, ...props } = this.props
+        console.log(form)
         return (
             <Form 
                 id="form-ingenierias"
@@ -88,6 +89,11 @@ export default class IngenieriaForm extends Component {
                                         Monto
                                     </b>
                                 </td>
+                                <td>
+                                    <b>
+                                        Base
+                                    </b>
+                                </td>
                                 <td >
                                     <b>
                                         Total
@@ -121,6 +127,20 @@ export default class IngenieriaForm extends Component {
                                                         name = 'monto'
                                                         requireValidation = { 1 }
                                                         value = { tipo.monto }
+                                                        onChange = { (e) => { this.onChange(e, tipo) }}
+                                                        thousandseparator={true}
+                                                        prefix={'$'}
+                                                        // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
+                                                    />
+                                                </div>
+                                            </td>
+                                            <td className="px-1 py-3 border-0">
+                                                <div className="d-flex justify-content-center">
+                                                    <InputMoneySinText
+                                                        name = 'base'
+                                                        requireValidation = { 1 }
+                                                        value = { tipo.base }
                                                         onChange = { (e) => { this.onChange(e, tipo) }}
                                                         thousandseparator={true}
                                                         prefix={'$'}

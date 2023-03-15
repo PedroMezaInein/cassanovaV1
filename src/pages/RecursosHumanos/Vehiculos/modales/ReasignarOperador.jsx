@@ -12,21 +12,17 @@ import Style from './NuevoVehiculo.module.css'
 
 export default function ReasignarOperador(props) {
     const { vehiculos, data, reload, handleClose } = props
-    console.log(data)
     const authUser = useSelector(state => state.authUser)
     const usuarios = useSelector(state => state.opciones.vehiculos.asignacion)
     const [form, setForm] = useState({
         ...data.data,
     })
     const [vehiculo, setVehiculo] = useState({
-        /* id_vehiculo: data.data.vehiculo ? usuarios.find(item => item.id_vehiculo === data.data.vehiculo.id).id : null, */
         id_vehiculo: null,
     })
-    console.log(usuarios)
 
     const handleChange = (e) => {
         let aux = usuarios.find(item => item.id === e.target.value)
-        console.log(aux)
         setForm({
             ...form,
             id_vehiculo: aux.id_vehiculo,
@@ -70,7 +66,6 @@ export default function ReasignarOperador(props) {
                             handleClose()
                         })
                         .catch((err) => {
-                            console.log(err)
                             Swal.fire({
                                 title: 'Error',
                                 text: err,
@@ -105,9 +100,11 @@ export default function ReasignarOperador(props) {
                         name="id_vehiculo"
                         onChange={handleChange}
                     >
-                        {usuarios.map((item) => (
-                            <MenuItem key={item.id} value={item.id}>{item.vehiculos.marca} {item.vehiculos.modelo} - {item.user.name} </MenuItem>
-                        ))}
+                        {usuarios.map((item) => {
+                            if (item.vehiculos) {
+                                return <MenuItem key={item.id} value={item.id}>{item.vehiculos.marca} {item.vehiculos.modelo} - {item.user.name} </MenuItem>
+                            } 
+                        })}
                     </Select>
                 </div>
             </div>

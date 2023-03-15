@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
 import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import Modal from '../../../components/singles/Modal'
-import Adjuntos from './Adjuntos'
+import Evidencias from './utils/AdjuntosEvidencia'
 import AdjuntosObservaciones from './utils/AdjuntosObservacion'
 
 export default function ObservacionesVehiculo({ closeModal, rh, }) {
@@ -83,7 +83,7 @@ export default function ObservacionesVehiculo({ closeModal, rh, }) {
                 modelo: item.vehiculos.modelo,
                 placas: item.vehiculos.placas,
                 observaciones: item.observaciones ? item.observaciones : 'sin asignar',
-                id: item.id
+                id: item.id_vehiculo
             })
         })
 
@@ -108,9 +108,9 @@ export default function ObservacionesVehiculo({ closeModal, rh, }) {
                 <AdjuntosObservaciones vehiculo={modal.adjuntos.data} />
             </Modal>
 
-            {/* <Modal size="sm" title={"comentario"} show={modal.comentario.show} handleClose={handleClose('comentario')}>
-                <AgregarComentario data={modal.comentario.data} />
-            </Modal> */}
+            <Modal size="lg" title={"evidencias"} show={modal.evidencias.show} handleClose={handleClose('evidencias')}>
+                <Evidencias data={modal.evidencias.data} />
+            </Modal> 
         </>
     )     
 }
