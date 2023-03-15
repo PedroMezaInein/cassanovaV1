@@ -181,8 +181,6 @@ export default function EditarTicketTi(props) {
         return year + '/' + month + '/' + day;
     }
 
-    console.log(form)
-
 
     const enviar = () => {
         if (validateForm()) {
@@ -194,7 +192,6 @@ export default function EditarTicketTi(props) {
                 }
             })
             try {
-                console.log(form)
 
                 let newForm = {
                     tipo: form.tipo,
