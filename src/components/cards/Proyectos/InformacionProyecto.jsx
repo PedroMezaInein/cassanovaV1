@@ -39,6 +39,9 @@ export default function InformacionProyecto({ proyecto, form, addComentario, onC
 
     const handleChangeAdd = (e) => { //handleChangeSub
         const { value } = e.target
+        let aux
+        console.log(value)
+        
         usuarios.empleados.map((usuario) => {
             if (usuario.id == parseInt(value)) {
                 setState({
@@ -49,6 +52,10 @@ export default function InformacionProyecto({ proyecto, form, addComentario, onC
                         id_proyecto: proyecto.id,
                     }
                 })
+                aux = {
+                    id_usuario: usuario.id,
+                    id_proyecto: proyecto.id,
+                }
             }
         })
         
@@ -62,7 +69,7 @@ export default function InformacionProyecto({ proyecto, form, addComentario, onC
                 },
                 timer: 2000
             })
-            apiPostForm('v2/proyectos/calendario-proyectos/users/create', state.formulario, at).then((response) => {
+            apiPostForm('v2/proyectos/calendario-proyectos/users/create', aux, at).then((response) => {
                 handleGetUsers()
             })
                 .catch((error) => {
@@ -215,12 +222,21 @@ export default function InformacionProyecto({ proyecto, form, addComentario, onC
                                 <div className='agregar-colaborador'>
                                     <label className="font-weight-bolder">Agregar Colaborador</label>
                                     <select className="form-control" name="colaborador" onChange={e => handleChangeAdd(e)}>
-                                        <option hidden value="">Seleccionar</option>
-                                        {
-                                            usuarios.empleados.map((empleado, index) => {
-                                                return <option key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</option>
-                                            })
-                                        }
+                                                <option hidden value="">Seleccionar</option>
+                                                {
+                                                    usuarios.empleados.sort((a, b) => {
+                                                        if (a.nombre > b.nombre) {
+                                                            return 1
+                                                        }
+                                                        if (a.nombre < b.nombre) {
+                                                            return -1
+                                                        }
+                                                        return 0
+                                                    }
+                                                    ).map((empleado, index) => {
+                                                        return <option key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</option>
+                                                    })
+                                                }
                                     </select>
                                                 
                                 </div>
