@@ -37,7 +37,6 @@ export default function EditProyect(props) {
     const {proyecto, reload} = props;
     const user = useSelector(state => state.authUser);
     const colaboradores = useSelector(state => state.opciones.vehiculos.colaboradores)
-    console.log(colaboradores)
     const [form, setForm] = useState({
         nombre:proyecto.nombre,
         fechaInicio: proyecto.fecha_inicio,
@@ -58,7 +57,8 @@ export default function EditProyect(props) {
         correos: proyecto.contactos.map(contacto => contacto.correo),
         clientes: proyecto.clientes,
         cliente_id: proyecto.cliente_id,
-        fases:[]
+        fases: [],
+        responsable: proyecto.responsable,
     })
     const [state, setState] = useState([])
 
@@ -157,7 +157,6 @@ export default function EditProyect(props) {
     }
 
     const handleChangeFase = (e) => {
-        console.log(e.target.name)
         form.fase1 = 0
         form.fase2 = 0
         form.fase3 = 0
@@ -187,7 +186,6 @@ export default function EditProyect(props) {
         e.preventDefault()
         
         let nuevaEmpresa = opciones.empresas.filter(empresa => empresa.value == e.target.value)
-        console.log(nuevaEmpresa)
         
         setForm({
             ...form,
@@ -231,7 +229,6 @@ export default function EditProyect(props) {
         })
 
         let cliente = opciones.clientes.filter(cliente => cliente.value == form.cliente_id)
-        console.log(cliente)
             
         let newForm = {
             nombre: proyecto.nombre,
@@ -267,12 +264,10 @@ export default function EditProyect(props) {
         try {
             axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}`, newForm, { headers: setSingleHeader(user.access_token) })
                 .then((response) => {
-                    console.log(response)
                     Swal.close()
                     reload()
                 })
                 .catch((error) => {
-                    console.log(error)
                     Swal.close()
                     Swal.fire({
                         icon: 'warning',
@@ -374,8 +369,6 @@ export default function EditProyect(props) {
                 })
             })
     }
-
-    console.log(state)
 
     return (
         <>
@@ -506,11 +499,18 @@ export default function EditProyect(props) {
                     </AccordionSummary>
                     <AccordionDetails>
                         <div className='container-Cliente'>
-                            <div>
-                                {
-                                    state.length > 0 ?
-                                        <div className='colaboradores'>
-                                            {state.sort((a, b) => {
+                            
+                            {
+                                colaboradores.length > 0 &&
+                                <div>
+                                    <InputLabel>Seleccionar Responsable</InputLabel>
+                                    <Select
+                                        name='responsable'
+                                        onChange={handleChange}
+                                    >
+                                        <MenuItem value={0}></MenuItem>
+                                        {
+                                            colaboradores.sort((a, b) => {
                                                 if (a.nombre > b.nombre) {
                                                     return 1
                                                 }
@@ -520,43 +520,19 @@ export default function EditProyect(props) {
                                                 return 0
                                             }
                                             ).map((empleado, index) => {
-                                                return <div key={index}><span onClick={e => handleDeleteUser(e, empleado.id_delete)}>X</span>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</div>
-                                            })}
-                                        </div>
-                                        : <></>
-                                }
-                                {
-                                    colaboradores.length > 0 &&
-                                    <div>
-                                        <InputLabel>Seleccionar Responsable</InputLabel>
-                                        <Select
-                                            onChange={handleChangeAdd}
-                                        >
-                                            <MenuItem value={0}></MenuItem>
-                                            {
-                                                colaboradores.sort((a, b) => {
-                                                    if (a.nombre > b.nombre) {
-                                                        return 1
-                                                    }
-                                                    if (a.nombre < b.nombre) {
-                                                        return -1
-                                                    }
-                                                    return 0
-                                                }
-                                                ).map((empleado, index) => {
-                                                    return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
-                                                })
-                                            }
+                                                return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                            })
+                                        }
 
-                                        </Select>
-                                    </div>
-                                }    
-                            </div>
+                                    </Select>
+                                </div>
+                            }    
+                            
                             
                             {
                                 colaboradores.length > 0 &&
                                 <div>
-                                    <InputLabel>Seleccionar colaborador</InputLabel>
+                                    <InputLabel>Agregar colaborador</InputLabel>
                                     <Select
                                         onChange={handleChangeAdd}
                                     >
@@ -578,6 +554,24 @@ export default function EditProyect(props) {
 
                                     </Select>
                                 </div>
+                            }
+                            {
+                                state.length > 0 ?
+                                    <div className='colaboradores'>
+                                        {state.sort((a, b) => {
+                                            if (a.nombre > b.nombre) {
+                                                return 1
+                                            }
+                                            if (a.nombre < b.nombre) {
+                                                return -1
+                                            }
+                                            return 0
+                                        }
+                                        ).map((empleado, index) => {
+                                            return <div key={index}><span onClick={e => handleDeleteUser(e, empleado.id_delete)}>X</span>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</div>
+                                        })}
+                                    </div>
+                                    : <></>
                             }
 
                             

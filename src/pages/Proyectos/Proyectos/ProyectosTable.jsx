@@ -56,7 +56,6 @@ export default function ProyectosTable() {
                         cancelButtonText: 'No',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            console.log(item);
                         }
                     });
                 }
@@ -77,7 +76,6 @@ export default function ProyectosTable() {
         axios.get(`${URL_DEV}proyectos/opciones`, { headers: { Authorization: `Bearer ${userAuth.access_token}` } }).then(
             (response) => {
                 const { clientes, empresas, estatus, proveedores } = response.data
-                console.log(response.data);
                 let aux = [];
                 let options = {
                     empresas: [],
@@ -127,7 +125,6 @@ export default function ProyectosTable() {
     
     const ProccessData = (data) => {
         let aux = []
-        console.log(data);
         data.data.forEach((item) => {
             if (item.proyectos.length > 0) {
                 let tipoAux = opciones.tipos.find(tipo => parseInt(tipo.value) === item.proyectos[0].tipo_proyecto_id)
@@ -144,7 +141,6 @@ export default function ProyectosTable() {
                 })
             }
         })
-        console.log(aux);
         return aux
     }
 
@@ -161,7 +157,6 @@ export default function ProyectosTable() {
                     cancelButtonText: 'No',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        console.log('Nuevo');
                     }
                 });
             }
@@ -178,7 +173,6 @@ export default function ProyectosTable() {
                     cancelButtonText: 'No',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        console.log('Exportar');
                     }
                 });
             }

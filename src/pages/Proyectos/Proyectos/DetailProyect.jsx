@@ -138,8 +138,6 @@ export default function DetailProyect() {
         return aux
     }
 
-    console.log(opciones)
-
     const getOpciones = () => {
         Swal.fire({
             title: 'Cargando...',
@@ -219,7 +217,6 @@ export default function DetailProyect() {
         waitAlert()
         axios.get(`${URL_DEV}proyectos/project/${id}`, { headers: setSingleHeader(userAuth.access_token) })
         .then((response) => { 
-            console.log(response.data)
             setDataFases(response.data.data[0].proyectos)
             setProyecto(response.data.data[0].proyectos[response.data.data[0].proyectos.length - 1])
             Swal.close()
@@ -233,7 +230,6 @@ export default function DetailProyect() {
     }
 
     const handleChange = (event, newValue) => {
-        console.log(newValue)
         setValue(newValue);
     };
 
