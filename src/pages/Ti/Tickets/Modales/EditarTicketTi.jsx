@@ -5,7 +5,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
 
 import Swal from 'sweetalert2'
-import { apiGet, apiPutForm, apiPostForm } from '../../../../functions/api'
+import { apiGet, apiPutForm, apiPostForm, apiDelete } from '../../../../functions/api'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
@@ -45,6 +45,7 @@ export default function EditarTicketTi(props) {
         descripcion: '',
         fecha: new Date(),
     })
+
     const [errores, setErrores] = useState({})
 
     useEffect(() => {
@@ -167,8 +168,6 @@ export default function EditarTicketTi(props) {
         return formOk
     }
 
-    
-
     function formatDate(date) {
         var year = date.getFullYear();
 
@@ -180,7 +179,6 @@ export default function EditarTicketTi(props) {
 
         return year + '/' + month + '/' + day;
     }
-
 
     const enviar = () => {
         if (validateForm()) {
@@ -246,10 +244,18 @@ export default function EditarTicketTi(props) {
             })
         }
     }
+
     const handleChangeFuncionalidad = e => {
         setFuncionalidad({
             ...funcionalidad,
             [e.target.name]: e.target.value
+        })
+    }
+
+    const handleEnterFuncionalidad = item => {
+        apiDelete(`ti/funcionalidad/${item.id}`, authUser.access_token)
+        .then((data) => {
+            getFuncionalidades()
         })
     }
 
@@ -367,7 +373,7 @@ export default function EditarTicketTi(props) {
                         {
                             form.funcionalidades.length > 0 ?
                                 form.funcionalidades.map((item, index) => (
-                                    <div key={index} className={Style.containerFuncionalidad}><span onClick={e => handleDelete(index)} className={Style.deleteFuncionalidad}>X</span><span className={Style.textFuncionalidad}>{item.descripcion}</span></div>
+                                    <div key={index} className={Style.containerFuncionalidad}><span onClick={e => handleEnterFuncionalidad(item)} className={Style.deleteFuncionalidad}>X</span><span className={Style.textFuncionalidad}>{item.descripcion}</span></div>
                                 ))
                                 : <div>No hay funcionalidades</div>
                         }
