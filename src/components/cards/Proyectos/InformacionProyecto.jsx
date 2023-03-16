@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
+import {useSelector} from 'react-redux'
 import { Tab, Nav } from 'react-bootstrap'
 import { printDates } from '../../../functions/printers'
 import ComentarioForm from '../../forms/ComentarioForm'
@@ -12,8 +12,9 @@ import $ from 'jquery'
 
 import '../../../styles/_proyectos.scss'
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-export default function InformacionProyecto({ proyecto, form, addComentario, onChange, handleChange, tipo, urls, at, usuarios, color, close, reload }) {
 
+export default function InformacionProyecto(props) {
+    const { proyecto, form, addComentario, onChange, handleChange, tipo, urls, at, usuarios, color, close, reload } = props
     const [state, setState] = useState({
         colaboradores: [],
         formulario: {
@@ -24,6 +25,7 @@ export default function InformacionProyecto({ proyecto, form, addComentario, onC
         fase: 'todas',
         mes: meses[new Date().getMonth()],
     })
+    
 
     useEffect(() => {
         handleGetUsers()
@@ -40,14 +42,9 @@ export default function InformacionProyecto({ proyecto, form, addComentario, onC
     const handleChangeAdd = (e) => { //handleChangeSub
         const { value } = e.target
         let aux
-        console.log(value)
         
         usuarios.empleados.map((usuario) => {
             if (usuario.id == parseInt(value)) {
-                newForm = {
-                    id_usuario: usuario.id,
-                    id_proyecto: proyecto.id,
-                }
                 setState({
                     ...state,
                     formulario: {

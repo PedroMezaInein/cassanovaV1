@@ -29,12 +29,15 @@ import { URL_DEV } from '../../../constants'
 import { ordenamiento, setOptions } from '../../../functions/setters'
 import { setSingleHeader } from "../../../functions/routers"
 
+import { apiPostForm, apiGet, apiDelete } from '../../../functions/api'
+
 import '../../../styles/_editProyect.scss'
 
 export default function EditProyect(props) { 
     const {proyecto, reload} = props;
     const user = useSelector(state => state.authUser);
-    console.log(proyecto)
+    const colaboradores = useSelector(state => state.opciones.vehiculos.colaboradores)
+    console.log(colaboradores)
     const [form, setForm] = useState({
         nombre:proyecto.nombre,
         fechaInicio: proyecto.fecha_inicio,
@@ -57,6 +60,7 @@ export default function EditProyect(props) {
         cliente_id: proyecto.cliente_id,
         fases:[]
     })
+    const [state, setState] = useState([])
 
     const arrayFases = [
         { value: 'fase1', name: 'Fase 1', label: 'Fase 1' },
@@ -68,6 +72,7 @@ export default function EditProyect(props) {
 
     useEffect(() => {
         getOptionsEmpresas();
+        handleGetUsers();
     }, [])
 
     const handleChange = (e) => {
@@ -282,6 +287,96 @@ export default function EditProyect(props) {
         }
     }
 
+    const handleChangeAdd = (e) => { 
+        const { value } = e.target
+        let aux
+
+        colaboradores.map((usuario) => {
+            if (usuario.id == parseInt(value)) {
+                aux = {
+                    id_usuario: usuario.id,
+                    id_proyecto: proyecto.id,
+                }
+            }
+        })
+
+        try {
+            Swal.fire({
+                title: 'Agregando colaborador',
+                text: 'Espere un momento...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                },
+                timer: 2000
+            })
+            apiPostForm('v2/proyectos/calendario-proyectos/users/create', aux, user.access_token).then((response) => {
+                handleGetUsers()
+            })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ocurrió un error al agregar el colaborador',
+                    })
+                })
+        } catch (error) {
+
+        }
+
+    }
+
+    const handleGetUsers = () => {
+        apiGet(`v2/proyectos/calendario-proyectos/users/${proyecto.id}`, user.access_token).then((response) => {
+            let aux = []
+            response.data.User.map((user) => {
+                colaboradores.find((usuario) => {
+                    if (usuario.id == user.id_usuario) {
+                        usuario.id_delete = user.id
+                        aux.push(usuario)
+                    }
+                })
+            })
+            setState([
+                ...aux,
+            ])
+        })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocurrió un error al obtener los colaboradores',
+                })
+            })
+    }
+
+    const handleDeleteUser = (e, id) => {
+        e.preventDefault()
+        Swal.fire({
+            title: 'Eliminando colaborador',
+            text: "Espera un momento...",
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+            timer: 2000,
+        })
+
+        apiDelete(`v2/proyectos/calendario-proyectos/users/${id}`, user.access_token)
+            .then((response) => {
+                handleGetUsers()
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ocurrió un error al eliminar el colaborador',
+                })
+            })
+    }
+
+    console.log(state)
+
     return (
         <>
             <div className='proyect-Titulo'>
@@ -396,6 +491,98 @@ export default function EditProyect(props) {
                                 type='number'
                             />
                         </div>    
+                    </AccordionDetails>
+                </Accordion>
+
+                <Accordion
+                    className='proyect-accordion'
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                        <Typography className='proyect-Subtitulo'>Colaboradores Designados</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <div className='container-Cliente'>
+                            <div>
+                                {
+                                    state.length > 0 ?
+                                        <div className='colaboradores'>
+                                            {state.sort((a, b) => {
+                                                if (a.nombre > b.nombre) {
+                                                    return 1
+                                                }
+                                                if (a.nombre < b.nombre) {
+                                                    return -1
+                                                }
+                                                return 0
+                                            }
+                                            ).map((empleado, index) => {
+                                                return <div key={index}><span onClick={e => handleDeleteUser(e, empleado.id_delete)}>X</span>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</div>
+                                            })}
+                                        </div>
+                                        : <></>
+                                }
+                                {
+                                    colaboradores.length > 0 &&
+                                    <div>
+                                        <InputLabel>Seleccionar Responsable</InputLabel>
+                                        <Select
+                                            onChange={handleChangeAdd}
+                                        >
+                                            <MenuItem value={0}></MenuItem>
+                                            {
+                                                colaboradores.sort((a, b) => {
+                                                    if (a.nombre > b.nombre) {
+                                                        return 1
+                                                    }
+                                                    if (a.nombre < b.nombre) {
+                                                        return -1
+                                                    }
+                                                    return 0
+                                                }
+                                                ).map((empleado, index) => {
+                                                    return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                                })
+                                            }
+
+                                        </Select>
+                                    </div>
+                                }    
+                            </div>
+                            
+                            {
+                                colaboradores.length > 0 &&
+                                <div>
+                                    <InputLabel>Seleccionar colaborador</InputLabel>
+                                    <Select
+                                        onChange={handleChangeAdd}
+                                    >
+                                        <MenuItem value={0}></MenuItem>
+                                        {
+                                            colaboradores.sort((a, b) => {
+                                                if (a.nombre > b.nombre) {
+                                                    return 1
+                                                }
+                                                if (a.nombre < b.nombre) {
+                                                    return -1
+                                                }
+                                                return 0
+                                            }
+                                            ).map((empleado, index) => {
+                                                return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                            })
+                                        }
+
+                                    </Select>
+                                </div>
+                            }
+
+                            
+                        </div>
+                        
                     </AccordionDetails>
                 </Accordion>
                 

@@ -79,3 +79,29 @@
     background-color: #f5f5f5;
 
 }
+
+.colaboradores {
+    display: flex;
+    flex-wrap: wrap;
+    color: #2171c1;
+    justify-content: space-evenly;
+    padding: 1rem;
+    font-weight: 650;
+    margin-top: 1rem;
+    border-radius: 4px;
+    flex-direction: column;
+}
+
+.colaboradores div {
+    margin-left: 1rem;
+}
+
+.colaboradores div span {
+    color: red;
+    font-weight: 500;
+}
+
+.colaboradores div span:hover {
+    font-weight: 650;
+    cursor: pointer;
+}
