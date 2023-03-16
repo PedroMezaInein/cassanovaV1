@@ -4,10 +4,6 @@ import Swal from 'sweetalert2'
 
 import { apiGet, apiPostForm } from '../../../../functions/api'
 
-import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-import { es } from 'date-fns/locale'
-import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
@@ -21,8 +17,7 @@ export default function NuevoInsumo(props) {
 
     const {handleClose, reload} = props
     const user = useSelector(state => state.authUser)
-    const departamento = useSelector(state => state.authUser.departamento)
-    const [state, setState] = useState({
+     const [state, setState] = useState({
         nombre: '',
         cantidad: '',
         costo: '',
@@ -33,6 +28,7 @@ export default function NuevoInsumo(props) {
         minimo: '',
         descripcion: '',
     });
+
     const [opcionesUnidades, setOpcionesUniadades] = useState(false)
     useEffect(() => {
         getOptions()
@@ -65,13 +61,6 @@ export default function NuevoInsumo(props) {
     
     const [errores, setErrores] = useState({})
 
-    const handleFile = (e) => {
-        setState({
-            ...state,
-            solicitud: e.target.files[0]
-        })
-    }
-
     const handleChange = (event) => {
         // name son los diferentes tipos de atributos (departamento, fecha...)
         let name = event.target.name;
@@ -79,13 +68,6 @@ export default function NuevoInsumo(props) {
             ...state,
             [name]: event.target.value,
         });
-    };
-
-    const handleChangeFecha = (date, tipo) => {
-        setState({
-            ...state,
-            [tipo]: new Date(date)
-        })
     };
 
     const validateForm = () => {
@@ -102,15 +84,15 @@ export default function NuevoInsumo(props) {
             validar = false
         }
         
-        if(state.costo === ''){
+        if(state.costo === '' || state.costo === null || state.costo === 0){
             error.costo = "Escriba un costo"
             validar = false
         } 
         
-        // if (state.tipo_unidad === '') {
-        //     error.id_unidades = "Seleccione una unidad"
-        //     validar = false
-        // }
+        if (state.tipo_unidad === '') {
+            error.id_unidades = "Seleccione una unidad"
+            validar = false
+        }
         
         if(state.frecuencia === ''){
             error.frecuencia = "Escriba una frecuencia"
@@ -146,18 +128,6 @@ export default function NuevoInsumo(props) {
         })
     }
 
-    function formatDate(date) {
-        var year = date.getFullYear();
-      
-        var month = (1 + date.getMonth()).toString();
-        month = month.length > 1 ? month : '0' + month;
-      
-        var day = date.getDate().toString();
-        day = day.length > 1 ? day : '0' + day;
-        
-        return year + '/' + month + '/' + day;
-      }
-
     const enviar = () =>{
         if(validateForm()){
 
@@ -169,7 +139,6 @@ export default function NuevoInsumo(props) {
                 }
             }) 
             try {
-                let dataForm = new FormData()
 
                 let newForm = {
                     nombre: state.nombre,
@@ -188,8 +157,8 @@ export default function NuevoInsumo(props) {
                 apiPostForm('insumos', newForm, user.access_token)
                     .then((data) => {
                         Swal.fire({
-                            title: 'Requisicion enviada',
-                            text: 'La requisicion se ha enviado correctamente',
+                            title: 'Insumo',
+                            text: 'se ha creado correctamente',
                             icon: 'success',
                             showConfirmButton: true,
                             timer: 2000,
@@ -199,26 +168,6 @@ export default function NuevoInsumo(props) {
                             }
                             handleClose()
                         })
-
-                        /* if (data.isConfirmed) {
-
-                            let form = {
-                                solicitante: user.user.id,
-                                fecha: '',
-                                departamento: '',
-                                tipo_gasto: '',
-                                descripcion: '',
-                                solicitud: ''
-                            }
-
-                            console.log('form')
-                            console.log(form)
-
-                        } */
-
-                        /* else if (data.isDenied) {
-                            Swal.fire('Faltan campos', '', 'info')
-                        } */
                     })
                     .catch((error) => {
                         Swal.close()
@@ -248,14 +197,6 @@ export default function NuevoInsumo(props) {
                 timer: 2000,
             })
         }
-    }
-
-    const handleChangeDepartamento = (e) => {
-        setState({
-            ...state,
-            [e.target.name]: e.target.value,
-            tipo_gasto: null,
-        })
     }
 
     return (
@@ -290,7 +231,7 @@ export default function NuevoInsumo(props) {
                             currencySymbol="$"
                             outputFormat="number"
                             onChange={(event, value) => handleMoney(value)}
-                            
+                            error={errores.costo ? true : false}
                         />
                 </div>
                 

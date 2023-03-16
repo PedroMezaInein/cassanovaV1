@@ -5,12 +5,13 @@ import Swal from 'sweetalert2'
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { apiDelete } from '../../../functions/api'
-import { setOptions } from '../../../functions/setters'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
 
 import NuevoInsumo from './modales/NuevoInsumo'
 import EditarInsumos from './modales/EditarInsumos'
+import ControlGastos from './modales/ControlGastos'
+import VerInsumo from './modales/VerInsumo'
 
 export default function TablaInsumos() {
 
@@ -18,10 +19,6 @@ export default function TablaInsumos() {
     const [reloadTable, setReloadTable] = useState(false)
     const [modal, setModal] = useState({
         editar: {
-            show: false,
-            data: false
-        },
-        eliminar: {
             show: false,
             data: false
         },
@@ -50,22 +47,29 @@ export default function TablaInsumos() {
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Nombre', identificador: 'nombre', sort: false, stringSearch: false },
         { nombre: 'Cantidad', identificador: 'cantidad', sort: false, stringSearch: false },
-        { nombre: 'Costo', identificador: 'costo', sort: false, stringSearch: false },
+        { nombre: 'Costo', identificador: 'costo_view', sort: false, stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
-        { nombre: 'Frecuencia', identificador: 'frecuencia', sort: false, stringSearch: false },
+        { nombre: 'Frecuencia', identificador: 'frecuencia_view', sort: false, stringSearch: false },
         { nombre: 'Stock', identificador: 'stock', sort: false, stringSearch: false },
         { nombre: 'Maximo', identificador: 'maximo', sort: false, stringSearch: false },
         { nombre: 'Minimo', identificador: 'minimo', sort: false, stringSearch: false },
-
     ];
+
+    //funcion para dar formato a los numeros con comas y dos decimales sin redondear
+    const formatNumber = (num) => {
+        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+    }
 
     const ProccessData = (data) => { 
         let aux = []
         data.insumos.map((item) => {
             aux.push({
                 ...item,
-                costo: item.costo ? '$'+item.costo : '',
-                frecuencia: item.frecuencia ? item.frecuencia+' Mes' : '',
+                id: item.id,
+                costo_view: item.costo ? '$ '+ formatNumber (item.costo): '',
+                costo: item.costo ? item.costo : '',
+                frecuencia_view: item.frecuencia ? `${item.frecuencia} Mes` : '',
+                frecuencia: item.frecuencia ? item.frecuencia : '',
                 estatus: item.estatus === '1' ? 'Activo' : 'Inactivo',
             })
         }
@@ -144,7 +148,7 @@ export default function TablaInsumos() {
                                             Swal.showLoading()
                                         }
                                     })
-                                    apiDelete(`vehiculos/${item.id}`, userAuth.access_token)
+                                    apiDelete(`insumos/${item.id}`, userAuth.access_token)
                                         .then((res) => {
                                             if (res.status === 200) {
                                                 Swal.close()
@@ -236,11 +240,16 @@ export default function TablaInsumos() {
             </Modal>
 
              <Modal show={modal.editar.show} setShow={setModal} title='Editar insumo' size='lg' handleClose={handleClose('editar')}>
-                <EditarInsumos data={modal.editar.data} reload={reloadTable} handleClose={handleClose('editar')} vehiculo={ modal.editar.data} />
+                <EditarInsumos data={modal.editar.data} reload={reloadTable} handleClose={handleClose('editar')} insumo={ modal.editar.data} />
             </Modal>
-            {/*<Modal show={modal.eliminar.show} setShow={setModal} title='Eliminar Vehículo' size='lg' handleClose={handleClose('eliminar')}>
-                <h1>Eliminar</h1>
-            </Modal> */}
+
+            <Modal show={modal.control_gastos.show} setShow={setModal} title='Control de insumo' size='md' handleClose={handleClose('control_gastos')}>
+                <ControlGastos data={modal.control_gastos.data} reload={reloadTable} handleClose={handleClose('control_gastos')} insumo={ modal.control_gastos.data} />
+            </Modal>
+
+            <Modal show={modal.ver.show} setShow={setModal} title='Ver insumo' size='lg' handleClose={handleClose('ver')}>
+                <VerInsumo data={modal.ver.data} reload={reloadTable} handleClose={handleClose('ver')} insumo={ modal.ver.data} />
+            </Modal>
         </>
     );
 }
