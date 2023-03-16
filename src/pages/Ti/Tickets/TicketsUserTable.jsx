@@ -13,8 +13,10 @@ import Layout from '../../../components/layout/layout'
 import NuevoTicket from './NuevoTicket'
 import EditarTicket from './EditarTicket'
 import VerTicket from './VerTicket'
+import AprobarTicket from './Modales/AprobarTicket'
 
 export default function TicketsUserTable() {
+
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState(false)
 
@@ -54,6 +56,15 @@ export default function TicketsUserTable() {
         { nombre: 'F. de entrega', identificador: 'fecha_entrega' },
     ];
 
+    const handleOpenModal = (tipo, data) => {
+        setModal({
+            ...modal,
+            [tipo]: {
+                show: true,
+                data: data
+            }
+        })
+    }
 
     const createAcciones = () => {
         return [
@@ -75,7 +86,9 @@ export default function TicketsUserTable() {
                 nombre: 'aprobar',
                 icono: 'fas fa-edit',
                 color: 'blueButton',
-                funcion: (aprobarTicket)
+                funcion: (item) => {
+                    handleOpenModal('aprobar', item)
+                }
             },
             {
                 nombre: 'ver',
@@ -213,6 +226,10 @@ export default function TicketsUserTable() {
 
                 <Modal size="lg" title={"ver ticket"} show={modal.ver.show} handleClose={handleClose('ver')}>
                     <VerTicket data={modal.ver.data} handleClose={handleClose('ver')} reload={reloadTable}/>
+                </Modal> 
+
+                <Modal size="md" title={"aprobar ticket"} show={modal.aprobar.show} handleClose={handleClose('aprobar')}>
+                    <AprobarTicket data={modal.aprobar.data} handleClose={handleClose('aprobar')} reload={reloadTable}/>
                 </Modal>
             </Layout>  
         </>
