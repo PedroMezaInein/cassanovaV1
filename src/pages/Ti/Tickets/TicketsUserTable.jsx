@@ -5,7 +5,7 @@ import axios from 'axios'
 
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
-import { apiDelete } from '../../../functions/api'
+import { apiGet } from '../../../functions/api'
 import { URL_DEV } from './../../../constants'
 import { setOptions } from '../../../functions/setters'
 import useOptionsArea from '../../../hooks/useOptionsArea'
@@ -51,7 +51,6 @@ export default function TicketsUserTable() {
         { nombre: 'Tipo', identificador: 'tipo' },
         { nombre: 'Estatus', identificador: 'estatus' },
         { nombre: 'Aprobación', identificador: 'aprobacion' },
-        { nombre: 'Funcionalidad', identificador: 'funcionalidad' },
         { nombre: 'F. de entrega', identificador: 'fecha_entrega' },
     ];
 
@@ -126,12 +125,7 @@ export default function TicketsUserTable() {
         })
     }
 
-    const postAprobacion = (body,id) => {
-        axios.put(`${URL_DEV}permiso/solicitudes/autorizar/${id}`, body, { headers: { Authorization: `Bearer ${userAuth}` } })
-    }
-
     const aprobarTicket = (e, data)=>{
-        console.log(data)
 
         Swal.fire({
             title: '¿Estás seguro de aprobar las funcionalidades?',
@@ -140,23 +134,10 @@ export default function TicketsUserTable() {
             showDenyButton: false,
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
-            // denyButtonText: `Don't save`,
-            // preConfirm: (value) => {
-            //     if (!value) {
-            //       Swal.showValidationMessage(
-            //         'Por favor deja un comentario'
-            //       )
-            //     }
-            // }
             
           }).then((result) => {
             console.log(result)
             if (result.isConfirmed) {
-                // let form = {
-                //     estatus: 'aprobado',
-                //     id_ticket: data.id,
-                // }
-                // postAprobacion(form,data.id)
                 Swal.fire('Se aprobó con éxito', '', 'success') 
             }
             else if (result.isDenied) {

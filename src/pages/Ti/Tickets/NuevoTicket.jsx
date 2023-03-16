@@ -110,15 +110,14 @@ export default function NuevoTicket (props) {
                         })
                         console.log(error)
                     })
-            } catch (error) { 
-                Swal.close()
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Ha ocurrido un error 2',
-                })
-                console.log(error)
-            }
+            }   catch (error) { 
+                    Swal.close()
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ha ocurrido un error 2',
+                    })
+                }
         } else{
             Swal.fire({
                 title: 'Faltan campos',
