@@ -12,6 +12,7 @@ import Layout from '../../../components/layout/layout'
 import EditarTicketTi from './Modales/EditarTicketTi'
 import VerTicketTi from './Modales/VerTicketTi'
 import Nuevo from './NuevoTicket.jsx'
+import Funcionalidades from './Modales/Funcionalidades'
 
 export default function TicketsUserTable() {
     const userAuth = useSelector((state) => state.authUser);
@@ -26,6 +27,10 @@ export default function TicketsUserTable() {
             data: false
         },
         crear: {
+            show: false,
+            data: false
+        },
+        funcionalidades: {
             show: false,
             data: false
         },
@@ -67,8 +72,10 @@ export default function TicketsUserTable() {
                 departamento: item.departamento,
                 id_departamento: item.departamento ? item.departamento.id : null,
                 depto_show: item.departamento ? item.departamento.nombre : 'Sin departamento',
+                id_solicitante: item.id_solicitante,
             })
         })
+        aux =  aux.reverse()
         return aux
     }
 
@@ -146,6 +153,10 @@ export default function TicketsUserTable() {
 
             <Modal size="lg" show={modal.crear.show} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} title='Nuevo mantenimiento'>
                 <Nuevo reload={reloadTable} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } }) } />
+            </Modal>
+
+            <Modal size="lg" show={modal.funcionalidades.show} handleClose={() => setModal({ ...modal, funcionalidades: { show: false, data: false } })} title='Funcionalidades'>
+                <Funcionalidades data={modal.funcionalidades.data}  reload={reloadTable} handleClose={() => setModal({ ...modal, funcionalidades: { show: false, data: false } })} />
             </Modal>
         </>
     );

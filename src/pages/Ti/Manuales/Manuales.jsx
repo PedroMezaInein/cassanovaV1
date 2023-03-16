@@ -63,6 +63,13 @@ const useStyles = makeStyles((theme) => ({
     tabs: {
         borderRight: `1px solid ${theme.palette.divider}`,
     },
+    adjuntos: {
+        width: '100vh',
+        height: '50vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 }));
 
 export default function Manuales(props) {
@@ -408,10 +415,13 @@ export default function Manuales(props) {
                 {
                     adjuntos && adjuntos[tab] && adjuntos[tab].length > 0 ?
                         <>
-                            <CarruselAdjuntos data={adjuntos[tab]} getAdjuntos={getAdjuntos} />
-                            <div className='adjuntos-comentarios'>
-                                {/* <span>{data.descripcion}</span> */}
-                            </div>
+                            {adjuntos[tab].map((item, index) => {
+                            <object
+                                data={item.url}
+                                className={classes.adjuntos}
+                            >
+                                </object>
+                            })}
                         </>
                         :
                         <div className="not_adjuntos">
@@ -456,22 +466,27 @@ export default function Manuales(props) {
                     
                     <TabPanel value={value} index={0}>
                         {uploadButtons('MiProyecto')}
+                        {viewAdjuntos('MiProyecto')}
                     </TabPanel>
 
                     <TabPanel value={value} index={1}>
                         {uploadButtons('Usuarios')}
+                        {viewAdjuntos('Usuarios')}
                     </TabPanel>
 
                     <TabPanel value={value} index={2}>
                         {uploadButtons('Presupuesto')}
+                        {viewAdjuntos('Presupuesto')}
                     </TabPanel>
 
                     <TabPanel value={value} index={3}>
                         {uploadButtons('Proyectos')}
+                        {viewAdjuntos('Proyectos')}
                     </TabPanel>
 
                     <TabPanel value={value} index={4}>
                         {uploadButtons('Administracion')}
+                        {viewAdjuntos('Administracion')}
                     </TabPanel>
 
                     <TabPanel value={value} index={5}>
@@ -481,38 +496,47 @@ export default function Manuales(props) {
 
                     <TabPanel value={value} index={6}>
                         {uploadButtons('Bancos')}
+                        {viewAdjuntos('Bancos')}
                     </TabPanel>
 
                     <TabPanel value={value} index={7}>
                         {uploadButtons('RecursosHumanos')}
+                        {viewAdjuntos('RecursosHumanos')}
                     </TabPanel>
 
                     <TabPanel value={value} index={8}>
                         {uploadButtons('TeEscuchamos')}
+                        {viewAdjuntos('TeEscuchamos')}
                     </TabPanel>
 
                     <TabPanel value={value} index={9}>
                         {uploadButtons('Leads')}
+                        {viewAdjuntos('Leads')}
                     </TabPanel>
 
                     <TabPanel value={value} index={10}>
                         {uploadButtons('Mercadotecnia')}
+                        {viewAdjuntos('Mercadotecnia')}
                     </TabPanel>
 
                     <TabPanel value={value} index={11}>
                         {uploadButtons('Reportes')}
+                        {viewAdjuntos('Reportes')}
                     </TabPanel>
 
                     <TabPanel value={value} index={12}>
                         {uploadButtons('Calidad')}
+                        {viewAdjuntos('Calidad')}
                     </TabPanel>
 
                     <TabPanel value={value} index={13}>
                         {uploadButtons('Catalogos')}
+                        {viewAdjuntos('Catalogos')}
                     </TabPanel>
 
                     <TabPanel value={value} index={14}>
                         {uploadButtons('Plataforma')}
+                        {viewAdjuntos('Plataforma')}
                     </TabPanel>
                     
                 </div>

@@ -58,6 +58,7 @@ export default function Editar(props) {
         factura: data.factura,
         empresa: "",
         labelCuenta: data.cuenta ? data.cuenta.nombre : 'cuenta',
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
     })
 
     const [errores, setErrores] = useState({})
@@ -127,6 +128,7 @@ export default function Editar(props) {
                                 id_estatus_compra: form.compra,
                                 id_estatus_factura: form.factura,
                                 id_estatus_conta: form.conta,
+                                fecha_entrega: form.fecha_entrega,
                             }
 
                             apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
@@ -184,6 +186,7 @@ export default function Editar(props) {
                         id_estatus_compra: form.compra,
                         id_estatus_factura: form.factura,
                         id_estatus_conta: form.conta,
+                        fecha_entrega: form.fecha_entrega,
                     }
 
                     apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {

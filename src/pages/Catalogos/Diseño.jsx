@@ -654,7 +654,7 @@ class Diseño extends Component {
             form.esquema_4.forEach(function (element) {
                     // ra = Math.sqrt(element.monto * form.inge_m2) * element.monto
                     // element.porcentaje = ra.toFixed(3)
-                    element.porcentaje = element.monto * form.inge_m2
+                element.porcentaje = (element.base * element.monto) + (element.monto * form.inge_m2)
                 })
 
         }
@@ -813,7 +813,10 @@ class Diseño extends Component {
                 let limite = (limiteInf + (i * (limiteSup - limiteInf) / 20))
                 limite = parseInt(parseFloat(limite).toFixed(2))
                 labels.push(limite)
-                data.push(this.getPrecioEsquemas(form, limite).toFixed(2))
+                if (this.getPrecioEsquemas(form, limite)) {
+                   data.push(this.getPrecioEsquemas(form, limite).toFixed(2)) 
+                }
+                
             }
             labels.push(limiteSup)
             data.push(this.getPrecioEsquemas(form, limiteSup))
