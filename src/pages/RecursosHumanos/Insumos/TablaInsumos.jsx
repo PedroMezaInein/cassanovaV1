@@ -247,7 +247,7 @@ export default function TablaInsumos() {
                 <ControlGastos data={modal.control_gastos.data} reload={reloadTable} handleClose={handleClose('control_gastos')} insumo={ modal.control_gastos.data} />
             </Modal>
 
-            <Modal show={modal.ver.show} setShow={setModal} title='Ver insumo' size='lg' handleClose={handleClose('ver')}>
+            <Modal show={modal.ver.show} setShow={setModal} title='Ver insumo' size='md' handleClose={handleClose('ver')}>
                 <VerInsumo data={modal.ver.data} reload={reloadTable} handleClose={handleClose('ver')} insumo={ modal.ver.data} />
             </Modal>
         </>
