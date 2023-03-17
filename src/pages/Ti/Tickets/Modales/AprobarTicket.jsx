@@ -85,10 +85,18 @@ export default function AprobarTicket (props) {
                         
                     })
                 }
+                {
+                    form.funcionalidades.length == 0 && 
+                    <span>Sin funcionalidades</span>
+                }
             </div>
 
         <div className="nuevo_ticket_boton">
-            <button className='sendButton' onClick={aprobarTicket}>Aprobar</button>
+            {
+               form.funcionalidades.length > 0 &&
+                <button className='sendButton' onClick={aprobarTicket}>Aprobar</button>
+            }
+            
         </div>
 
         </>

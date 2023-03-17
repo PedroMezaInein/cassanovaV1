@@ -202,7 +202,7 @@ export default function TicketsUserTable() {
                 tipo_view: setTipo(item.tipo),
                 tipo: item.tipo,
                 fecha: item.fecha,
-                fecha_entrega: item.fecha_entrega,
+                fecha_entrega: item.fecha_entrega ? item.fecha_entrega : 'por definir',
                 id: item.id,
                 aprobacion: item.autorizacion ? <span className={Style.autorizado}>Aprobado</span> : <span className={Style.pendiente}>pendiente</span>,
             })
