@@ -87,7 +87,15 @@ export default function TicketsUserTable() {
                 icono: 'fas fa-edit',
                 color: 'blueButton',
                 funcion: (item) => {
-                    handleOpenModal('aprobar', item)
+                    if(item.estatus === "0") {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ya fue autorizado',
+                        })
+                    } else {
+                        handleOpenModal('aprobar', item)
+                    }
                 }
             },
             {

@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import { useSelector } from 'react-redux';
 
-import { apiGet } from './../../../../functions/api'
+import { apiGet, apiPostForm } from './../../../../functions/api'
 
 import Swal from 'sweetalert2'
 
 export default function AprobarTicket (props) {
 
-    const { data } = props
+    const { data, reload } = props
 
     const userAuth = useSelector((state) => state.authUser.access_token);
 
@@ -40,6 +40,39 @@ export default function AprobarTicket (props) {
             })
     }
 
+    const aprobarTicket = ()=>{
+
+        Swal.fire({
+            title: '¿Estás seguro de aprobar las funcionalidades?',
+            icon: 'question',
+            // input: 'textarea',
+            showDenyButton: false,
+            showCancelButton: true,
+            confirmButtonText: 'Aceptar',
+            
+          }).then((result) => {
+            console.log(result)
+            if (result.isConfirmed) {
+                apiPostForm(`ti/autorizar/${data.id}`, {estatus: "0"}, userAuth).then((response) => {
+                    if(reload) {
+                        reload.reload()
+                    }
+                })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ocurrió un error al agregar el colaborador',
+                        })
+                    })
+                Swal.fire('Se aprobó con éxito', '', 'success') 
+            }
+            else if (result.isDenied) {
+              Swal.fire('Changes are not saved', '', 'info')
+            }
+        })
+    }
+
     return(
         <>
         <div>
@@ -50,6 +83,11 @@ export default function AprobarTicket (props) {
                 })
             }
         </div>
+
+        <div className="nuevo_ticket_boton">
+            <button className='sendButton' onClick={aprobarTicket}>Aprobar</button>
+        </div>
+
         </>
     )
     
