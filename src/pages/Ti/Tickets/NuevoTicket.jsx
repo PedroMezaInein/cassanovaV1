@@ -174,9 +174,14 @@ export default function NuevoTicket (props) {
                         onChange={handleChange}
                         disabled={user.user.tipo.id ==1 ? false : true}
                     >
-                        <MenuItem value={"Mantenimiento"}>Mantenimiento</MenuItem>
-                        <MenuItem value={"Nuevo módulo"}>Nuevo módulo</MenuItem>
-                        <MenuItem value={"Error en plataforma"}>Error en plataforma</MenuItem>
+                        <MenuItem value={0}>cambio</MenuItem>
+                        <MenuItem value={1}>soporte</MenuItem>
+                        <MenuItem value={2}>mejora</MenuItem>
+                        <MenuItem value={3}>reporte</MenuItem>
+                        <MenuItem value={4}>información</MenuItem>
+                        <MenuItem value={5}>capacitación</MenuItem>
+                        <MenuItem value={6}>servicio</MenuItem>
+                        <MenuItem value={7}>proyecto</MenuItem>
                     </Select>          
                 </div>
 

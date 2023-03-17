@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
     width: 100%;
     height: 100%;
     margin-top: 1rem;
@@ -59,4 +59,36 @@
 
 .containerFuncionalidad{
     margin-top: 1rem;
+}
+
+.containerList{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-top: 1rem;
+}
+
+.pendiente {
+    padding: 3px;
+    background: rgba(255, 213, 73, 0.75);
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
+
+.autorizado {
+    padding: 3px;
+    background: rgba(22, 147, 165, 0.75);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 2px;
+}
+
+.rechazado {
+    padding: 2px;
+    background: rgba(242, 108, 79, 0.75);
+    border: none;
+    width: 100%;
+    border-radius: 8px;
 }

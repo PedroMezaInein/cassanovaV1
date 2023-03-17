@@ -15,6 +15,9 @@ import EditarTicket from './EditarTicket'
 import VerTicket from './VerTicket'
 import AprobarTicket from './Modales/AprobarTicket'
 
+
+import Style from './Modales/TicketsTi.module.css'
+
 export default function TicketsUserTable() {
 
     const userAuth = useSelector((state) => state.authUser);
@@ -50,9 +53,9 @@ export default function TicketsUserTable() {
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Fecha', identificador: 'fecha' },
-        { nombre: 'Tipo', identificador: 'tipo' },
-        { nombre: 'Estatus', identificador: 'estatus' },
-        { nombre: 'Aprobación', identificador: 'aprobacion' },
+        { nombre: 'Tipo', identificador: 'tipo_view' },
+        { nombre: 'Estatus', identificador: 'estatus_view' },
+        { nombre: 'Autorización', identificador: 'aprobacion' },
         { nombre: 'F. de entrega', identificador: 'fecha_entrega' },
     ];
 
@@ -84,7 +87,7 @@ export default function TicketsUserTable() {
             },
             {
                 nombre: 'aprobar',
-                icono: 'fas fa-edit',
+                icono: 'fas fa-check',
                 color: 'blueButton',
                 funcion: (item) => {
                     if(item.estatus === "0") {
@@ -100,7 +103,7 @@ export default function TicketsUserTable() {
             },
             {
                 nombre: 'ver',
-                icono: 'fas fa-edit',
+                icono: 'fas fa-eye',
                 color: 'blueButton',
                 funcion: (item) => {
                     setModal({
@@ -111,12 +114,6 @@ export default function TicketsUserTable() {
                         }
                     })
                 }
-            },
-            {
-                nombre: 'cancelar',
-                icono: 'fas fa-edit',
-                color: 'redButton',
-                funcion: (cancelarTicket)
             },
         ]
     }
@@ -151,7 +148,7 @@ export default function TicketsUserTable() {
         Swal.fire({
             title: '¿Estás seguro de aprobar las funcionalidades?',
             icon: 'question',
-            // input: 'textarea',
+            text: 'Una vez aprobado no se podrá modificar',
             showDenyButton: false,
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
@@ -200,14 +197,54 @@ export default function TicketsUserTable() {
             aux.push({
                 departamento: item.departamento,
                 descripcion: item.descripcion,
+                estatus_view: setEstatus(item.estatus),
                 estatus: item.estatus,
+                tipo_view: setTipo(item.tipo),
                 tipo: item.tipo,
                 fecha: item.fecha,
                 fecha_entrega: item.fecha_entrega,
-                id: item.id
+                id: item.id,
+                aprobacion: item.autorizacion ? <span className={Style.autorizado}>Aprobado</span> : <span className={Style.pendiente}>pendiente</span>,
             })
         })
+        aux = aux.reverse()
         return aux
+    }
+
+    const setTipo = (data) => { 
+        if(data === '0') {
+            return 'cambio'
+        } else if(data === '1') {
+            return 'soporte'
+        } else if(data === '2') {
+            return 'mejora'
+        } else if (data === '3') {
+            return 'reporte'
+        } else  if (data === '4') {
+            return 'información'
+        } else if (data === '5') {
+            return 'capacitación'
+        } else if (data === '6') {
+            return 'servicio'
+        } else if (data === '7') {
+            return 'proyecto'
+        }
+    }
+
+    const setEstatus = (data) => { 
+        if(data === '0') {
+            return 'Solicitado'
+        } else if(data === '1') {
+            return 'Autorizado'
+        } else if(data === '2') {
+            return 'En desarrollo'
+        } else if (data === '3') {
+            return 'Terminado'
+        } else  if (data === '4') {
+            return 'Cancelado'
+        } else if (data === '5') {
+            return 'Rechazado'
+        }
     }
 
     return (
@@ -236,7 +273,7 @@ export default function TicketsUserTable() {
                     <VerTicket data={modal.ver.data} handleClose={handleClose('ver')} reload={reloadTable}/>
                 </Modal> 
 
-                <Modal size="md" title={"aprobar ticket"} show={modal.aprobar.show} handleClose={handleClose('aprobar')}>
+                <Modal size="md" title={"aprobar Funcionalidades"} show={modal.aprobar.show} handleClose={handleClose('aprobar')}>
                     <AprobarTicket data={modal.aprobar.data} handleClose={handleClose('aprobar')} reload={reloadTable}/>
                 </Modal>
             </Layout>  

@@ -5,6 +5,9 @@ import { apiGet, apiPostForm } from './../../../../functions/api'
 
 import Swal from 'sweetalert2'
 
+import Style from './TicketsTi.module.css'
+
+
 export default function AprobarTicket (props) {
 
     const { data, reload } = props
@@ -44,11 +47,11 @@ export default function AprobarTicket (props) {
 
         Swal.fire({
             title: '¿Estás seguro de aprobar las funcionalidades?',
-            icon: 'question',
-            // input: 'textarea',
+            icon: 'warning',
+            text: 'Una vez aprobado no se podrá modificar',
             showDenyButton: false,
             showCancelButton: true,
-            confirmButtonText: 'Aceptar',
+            confirmButtonText: 'Aprobar',
             
           }).then((result) => {
             console.log(result)
@@ -75,14 +78,14 @@ export default function AprobarTicket (props) {
 
     return(
         <>
-        <div>
-            {
-                form.funcionalidades.length > 0 && form.funcionalidades.map(item=>{
-                    return <span>{item}</span>
-                    
-                })
-            }
-        </div>
+            <div className={Style.containerList}>
+                {
+                    form.funcionalidades.length > 0 && form.funcionalidades.map((item, index )=>{
+                        return <span className={Style.autorizado}>{`${index+1}.- `}{item}</span>
+                        
+                    })
+                }
+            </div>
 
         <div className="nuevo_ticket_boton">
             <button className='sendButton' onClick={aprobarTicket}>Aprobar</button>

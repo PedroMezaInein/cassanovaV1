@@ -353,27 +353,30 @@ export default function EditarTicketTi(props) {
                         />
                     </div>
                 </div>
-                <div>
+                {
+                    !data.autorizacion &&
                     <div>
-                        <InputLabel>Funcionalidades</InputLabel>
-                        <TextField
-                            name="descripcion"
-                            value={funcionalidad.descripcion}
-                            onChange={handleChangeFuncionalidad}
-                            onKeyPress={handleEnter}
-                            error={errores.funcionalidades ? true : false}
-                            maxRows={4}
-                            multiline
-                        />
-                        
+                        <div>
+                            <InputLabel>Funcionalidades</InputLabel>
+                            <TextField
+                                name="descripcion"
+                                value={funcionalidad.descripcion}
+                                onChange={handleChangeFuncionalidad}
+                                onKeyPress={handleEnter}
+                                error={errores.funcionalidades ? true : false}
+                                maxRows={4}
+                                multiline
+                            />
+                            
+                        </div>
                     </div>
-                </div>
+                }
                 <div>
                     <div>
                         {
                             form.funcionalidades.length > 0 ?
                                 form.funcionalidades.map((item, index) => (
-                                    <div key={index} className={Style.containerFuncionalidad}><span onClick={e => handleEnterFuncionalidad(item)} className={Style.deleteFuncionalidad}>X</span><span className={Style.textFuncionalidad}>{item.descripcion}</span></div>
+                                    <div key={index} className={Style.containerFuncionalidad}>{ !data.autorizacion && <span onClick={e => handleEnterFuncionalidad(item)} className={Style.deleteFuncionalidad}>X</span>}<span className={Style.textFuncionalidad}>{item.descripcion}</span></div>
                                 ))
                                 : <div>No hay funcionalidades</div>
                         }

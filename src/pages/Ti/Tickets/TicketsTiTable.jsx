@@ -14,6 +14,8 @@ import VerTicketTi from './Modales/VerTicketTi'
 import Nuevo from './NuevoTicket.jsx'
 import Funcionalidades from './Modales/Funcionalidades'
 
+import Style from './Modales/TicketsTi.module.css'
+
 export default function TicketsUserTable() {
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState(false)
@@ -61,12 +63,12 @@ export default function TicketsUserTable() {
                 fecha_entrega: item.fecha_entrega,
                 fecha_entrega_view: item.fecha_entrega ? reformatDate(item.fecha_entrega) : 'pendiente',
                 tipo: item.tipo,
-                tipo_view: item.tipo ? item.tipo : 'Requerimiento',
+                tipo_view: setTipo(item.tipo) ,
                 estatus: item.estatus,
-                estatus_view: item.estatus ? item.estatus : 'Pendiente',
+                estatus_view: setEstatus(item.estatus) ,
                 fecha_entrega: item.fecha_entrega,
                 autorizacion: item.autorizacion,
-                auto_view: item.autorizacion ? item.autorizacion : 'Pendiente',
+                auto_view: item.autorizacion ? <span className={Style.autorizado}>Aprobado</span> : <span className={Style.pendiente}>pendiente</span>,
                 descripcion: item.descripcion,
                 funcionalidades: item.funcionalidades,
                 departamento: item.departamento,
@@ -75,8 +77,45 @@ export default function TicketsUserTable() {
                 id_solicitante: item.id_solicitante,
             })
         })
-        aux =  aux.reverse()
+        aux = aux.reverse()
         return aux
+    }
+
+
+    const setTipo = (data) => {
+        if (data === '0') {
+            return 'cambio'
+        } else if (data === '1') {
+            return 'soporte'
+        } else if (data === '2') {
+            return 'mejora'
+        } else if (data === '3') {
+            return 'reporte'
+        } else if (data === '4') {
+            return 'información'
+        } else if (data === '5') {
+            return 'capacitación'
+        } else if (data === '6') {
+            return 'servicio'
+        } else if (data === '7') {
+            return 'proyecto'
+        }
+    }
+
+    const setEstatus = (data) => {
+        if (data === '0') {
+            return 'Solicitado'
+        } else if (data === '1') {
+            return 'Autorizado'
+        } else if (data === '2') {
+            return 'En desarrollo'
+        } else if (data === '3') {
+            return 'Terminado'
+        } else if (data === '4') {
+            return 'Cancelado'
+        } else if (data === '5') {
+            return 'Rechazado'
+        }
     }
 
     function reformatDate(dateStr) {
@@ -91,7 +130,9 @@ export default function TicketsUserTable() {
                 icono: 'fas fa-edit',
                 color: 'blueButton',
                 funcion: (item) => {
+                    
                     handleOpenModal('editar', item)
+                    
                 }
             },
             {
@@ -105,7 +146,7 @@ export default function TicketsUserTable() {
         ]
     }
 
-    const handleOpenModal = (tipo, data) => { 
+    const handleOpenModal = (tipo, data) => {
         setModal({
             ...modal,
             [tipo]: {
@@ -145,18 +186,18 @@ export default function TicketsUserTable() {
                 </Modal>
             }
 
-            
+
 
             <Modal show={modal.ver.show} handleClose={() => setModal({ ...modal, ver: { show: false, data: false } })} title='Ver ticket'>
                 <VerTicketTi data={modal.ver.data} />
             </Modal>
 
             <Modal size="lg" show={modal.crear.show} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} title='Nuevo mantenimiento'>
-                <Nuevo reload={reloadTable} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } }) } />
+                <Nuevo reload={reloadTable} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} />
             </Modal>
 
             <Modal size="lg" show={modal.funcionalidades.show} handleClose={() => setModal({ ...modal, funcionalidades: { show: false, data: false } })} title='Funcionalidades'>
-                <Funcionalidades data={modal.funcionalidades.data}  reload={reloadTable} handleClose={() => setModal({ ...modal, funcionalidades: { show: false, data: false } })} />
+                <Funcionalidades data={modal.funcionalidades.data} reload={reloadTable} handleClose={() => setModal({ ...modal, funcionalidades: { show: false, data: false } })} />
             </Modal>
         </>
     );
