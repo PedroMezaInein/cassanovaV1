@@ -112,8 +112,8 @@ export default function SoporteTecnicoTable() {
 
     const autorizar = (data) => { 
         Swal.fire({
-            title: 'Autorizando ticket de sopote',
-            text: "¿Estas seguro de autorizar este ticket de soporte?",
+            title: 'Autorizando ticket de soporte',
+            text: `¿Estas seguro de autorizar este ticket de soporte por un monto de $${data.costo}?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -230,7 +230,15 @@ export default function SoporteTecnicoTable() {
                 color: 'greenButton',
                 funcion: (item) => {
                     if (userAuth.user.tipo.id === 1) {
-                        autorizar(item)
+                        if (item.aprobar) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Este ticket de soporte ya ha sido aprobado',
+                            })
+                        } else {
+                            autorizar(item)
+                        }
                     } else {
                         Swal.fire({
                             icon: 'error',

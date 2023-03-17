@@ -5,7 +5,7 @@ import axios from 'axios'
 
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
-import { apiDelete } from '../../../functions/api'
+import { apiGet } from '../../../functions/api'
 import { URL_DEV } from './../../../constants'
 import { setOptions } from '../../../functions/setters'
 import useOptionsArea from '../../../hooks/useOptionsArea'
@@ -13,8 +13,13 @@ import Layout from '../../../components/layout/layout'
 import NuevoTicket from './NuevoTicket'
 import EditarTicket from './EditarTicket'
 import VerTicket from './VerTicket'
+import AprobarTicket from './Modales/AprobarTicket'
+
+
+import Style from './Modales/TicketsTi.module.css'
 
 export default function TicketsUserTable() {
+
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState(false)
 
@@ -48,16 +53,22 @@ export default function TicketsUserTable() {
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Fecha', identificador: 'fecha' },
-        { nombre: 'Tipo', identificador: 'tipo' },
-        { nombre: 'Estatus', identificador: 'estatus' },
-        { nombre: 'Aprobación', identificador: 'aprobacion' },
-        // { nombre: 'Funcionalidad', identificador: 'funcionalidad' },
+        { nombre: 'Tipo', identificador: 'tipo_view' },
+        { nombre: 'Estatus', identificador: 'estatus_view' },
+        { nombre: 'Autorización', identificador: 'aprobacion' },
         { nombre: 'F. de entrega', identificador: 'fecha_entrega' },
     ];
 
-   
+    const handleOpenModal = (tipo, data) => {
+        setModal({
+            ...modal,
+            [tipo]: {
+                show: true,
+                data: data
+            }
+        })
+    }
 
-    
     const createAcciones = () => {
         return [
             {
@@ -76,13 +87,23 @@ export default function TicketsUserTable() {
             },
             {
                 nombre: 'aprobar',
-                icono: 'fas fa-edit',
+                icono: 'fas fa-check',
                 color: 'blueButton',
-                funcion: (aprobarTicket)
+                funcion: (item) => {
+                    if(item.estatus === "0") {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ya fue autorizado',
+                        })
+                    } else {
+                        handleOpenModal('aprobar', item)
+                    }
+                }
             },
             {
                 nombre: 'ver',
-                icono: 'fas fa-edit',
+                icono: 'fas fa-eye',
                 color: 'blueButton',
                 funcion: (item) => {
                     setModal({
@@ -93,12 +114,6 @@ export default function TicketsUserTable() {
                         }
                     })
                 }
-            },
-            {
-                nombre: 'cancelar',
-                icono: 'fas fa-edit',
-                color: 'redButton',
-                funcion: (calcelarTicket)
             },
         ]
     }
@@ -128,37 +143,19 @@ export default function TicketsUserTable() {
         })
     }
 
-    const postAprobacion = (body,id) => {
-        axios.put(`${URL_DEV}permiso/solicitudes/autorizar/${id}`, body, { headers: { Authorization: `Bearer ${userAuth}` } })
-    }
-
     const aprobarTicket = (e, data)=>{
-        console.log(data)
 
         Swal.fire({
             title: '¿Estás seguro de aprobar las funcionalidades?',
             icon: 'question',
-            // input: 'textarea',
+            text: 'Una vez aprobado no se podrá modificar',
             showDenyButton: false,
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
-            // denyButtonText: `Don't save`,
-            // preConfirm: (value) => {
-            //     if (!value) {
-            //       Swal.showValidationMessage(
-            //         'Por favor deja un comentario'
-            //       )
-            //     }
-            // }
             
           }).then((result) => {
             console.log(result)
             if (result.isConfirmed) {
-                // let form = {
-                //     estatus: 'aprobado',
-                //     id_ticket: data.id,
-                // }
-                // postAprobacion(form,data.id)
                 Swal.fire('Se aprobó con éxito', '', 'success') 
             }
             else if (result.isDenied) {
@@ -167,7 +164,7 @@ export default function TicketsUserTable() {
         })
     }
 
-    const calcelarTicket = (e, data)=>{
+    const cancelarTicket = (e, data)=>{
         console.log(data)
 
         Swal.fire({
@@ -200,13 +197,54 @@ export default function TicketsUserTable() {
             aux.push({
                 departamento: item.departamento,
                 descripcion: item.descripcion,
+                estatus_view: setEstatus(item.estatus),
                 estatus: item.estatus,
+                tipo_view: setTipo(item.tipo),
+                tipo: item.tipo,
                 fecha: item.fecha,
-                fecha_entrega: item.fecha_entrega,
-                id: item.id
+                fecha_entrega: item.fecha_entrega ? item.fecha_entrega : 'por definir',
+                id: item.id,
+                aprobacion: item.autorizacion ? <span className={Style.autorizado}>Aprobado</span> : <span className={Style.pendiente}>pendiente</span>,
             })
         })
+        aux = aux.reverse()
         return aux
+    }
+
+    const setTipo = (data) => { 
+        if(data === '0') {
+            return 'cambio'
+        } else if(data === '1') {
+            return 'soporte'
+        } else if(data === '2') {
+            return 'mejora'
+        } else if (data === '3') {
+            return 'reporte'
+        } else  if (data === '4') {
+            return 'información'
+        } else if (data === '5') {
+            return 'capacitación'
+        } else if (data === '6') {
+            return 'servicio'
+        } else if (data === '7') {
+            return 'proyecto'
+        }
+    }
+
+    const setEstatus = (data) => { 
+        if(data === '0') {
+            return 'Solicitado'
+        } else if(data === '1') {
+            return 'Autorizado'
+        } else if(data === '2') {
+            return 'En desarrollo'
+        } else if (data === '3') {
+            return 'Terminado'
+        } else  if (data === '4') {
+            return 'Cancelado'
+        } else if (data === '5') {
+            return 'Rechazado'
+        }
     }
 
     return (
@@ -233,6 +271,10 @@ export default function TicketsUserTable() {
 
                 <Modal size="lg" title={"ver ticket"} show={modal.ver.show} handleClose={handleClose('ver')}>
                     <VerTicket data={modal.ver.data} handleClose={handleClose('ver')} reload={reloadTable}/>
+                </Modal> 
+
+                <Modal size="md" title={"aprobar Funcionalidades"} show={modal.aprobar.show} handleClose={handleClose('aprobar')}>
+                    <AprobarTicket data={modal.aprobar.data} handleClose={handleClose('aprobar')} reload={reloadTable}/>
                 </Modal>
             </Layout>  
         </>

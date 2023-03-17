@@ -5,7 +5,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
 
 import Swal from 'sweetalert2'
-import { apiGet, apiPutForm } from '../../../../functions/api'
+import { apiGet, apiPutForm, apiPostForm, apiDelete } from '../../../../functions/api'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
@@ -34,12 +34,71 @@ export default function EditarTicketTi(props) {
         fecha_entrega: data.fecha_entrega ? reformatDate(data.fecha_entrega) : '',
         descripcion: data.descripcion,
         autorizacion: data.autorizacion,
-        funcionalidades: data.funcionalidades ? data.funcionalidades : [],
+        funcionalidades: [],
         funcionalidad: '',
         id: data.id,
         id_departamento: data.id_departamento, 
     })
+
+    const [funcionalidad, setFuncionalidad] = useState({
+        id: data.id,
+        descripcion: '',
+        fecha: new Date(),
+    })
+
     const [errores, setErrores] = useState({})
+
+    useEffect(() => {
+        getFuncionalidades()
+    }, [])
+
+    const getFuncionalidades = () => { 
+        apiGet(`ti/funcionalidad/${data.id}`, authUser.access_token)
+            .then((data) => {
+                Swal.close()
+                setForm({
+                    ...form,
+                    funcionalidades: data.data.funcionalidades,
+                })
+            })
+            .catch((error) => {
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Algo salió mal',
+                })
+            })
+    }
+
+    const postFuncionalidad = () => {
+        Swal.fire({
+            title: 'Agregando funcionalidad',
+            text: 'Espere un momento por favor',
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            }
+        })
+        apiPostForm(`ti/add`, funcionalidad, authUser.access_token)
+            .then((data) => {
+                getFuncionalidades()
+                setFuncionalidad({
+                    id: data.id,
+                    descripcion: '',
+                    fecha: new Date(),
+                })
+                    
+            })
+            .catch((error) => {
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Algo salió mal',
+                })
+            })
+    }
 
     function reformatDate(input) {
         var datePart = input.match(/\d+/g),
@@ -58,16 +117,8 @@ export default function EditarTicketTi(props) {
 
     const handleEnter = e => {
         if (e.key === 'Enter') {
-            if (form.funcionalidad !== '') {
-                setForm({
-                    ...form,
-                    funcionalidades: [...form.funcionalidades, {
-                        funcionalidad: form.funcionalidad,
-                        estatus: 0,
-                        user: []
-                    }],
-                    funcionalidad: ''
-                })
+            if (funcionalidad.descripcion !== '') {
+                postFuncionalidad()
             } else {
                 Swal.fire({
                     icon: 'warning',
@@ -117,8 +168,6 @@ export default function EditarTicketTi(props) {
         return formOk
     }
 
-    
-
     function formatDate(date) {
         var year = date.getFullYear();
 
@@ -130,7 +179,6 @@ export default function EditarTicketTi(props) {
 
         return year + '/' + month + '/' + day;
     }
-
 
     const enviar = () => {
         if (validateForm()) {
@@ -146,7 +194,7 @@ export default function EditarTicketTi(props) {
                 let newForm = {
                     tipo: form.tipo,
                     estatus: form.estatus,
-                    fecha_entrega: formatDate(form.fecha_entrega),
+                    fecha_entrega: form.fecha_entrega,
                     descripcion: form.descripcion,
                     autorizacion: form.autorizacion,
                     funcionalidades: form.funcionalidades,
@@ -197,8 +245,19 @@ export default function EditarTicketTi(props) {
         }
     }
 
-    console.log(form)
-    console.log(data)
+    const handleChangeFuncionalidad = e => {
+        setFuncionalidad({
+            ...funcionalidad,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const handleEnterFuncionalidad = item => {
+        apiDelete(`ti/funcionalidad/${item.id}`, authUser.access_token)
+        .then((data) => {
+            getFuncionalidades()
+        })
+    }
 
     return (
         <>
@@ -294,27 +353,30 @@ export default function EditarTicketTi(props) {
                         />
                     </div>
                 </div>
-                <div>
+                {
+                    !data.autorizacion &&
                     <div>
-                        <InputLabel>Funcionalidades</InputLabel>
-                        <TextField
-                            name="funcionalidad"
-                            value={form.funcionalidad}
-                            onChange={handleChange}
-                            onKeyPress={handleEnter}
-                            error={errores.funcionalidades ? true : false}
-                            maxRows={4}
-                            multiline
-                        />
-                        
+                        <div>
+                            <InputLabel>Funcionalidades</InputLabel>
+                            <TextField
+                                name="descripcion"
+                                value={funcionalidad.descripcion}
+                                onChange={handleChangeFuncionalidad}
+                                onKeyPress={handleEnter}
+                                error={errores.funcionalidades ? true : false}
+                                maxRows={4}
+                                multiline
+                            />
+                            
+                        </div>
                     </div>
-                </div>
+                }
                 <div>
                     <div>
                         {
                             form.funcionalidades.length > 0 ?
                                 form.funcionalidades.map((item, index) => (
-                                    <div key={index} className={Style.containerFuncionalidad}><span onClick={e => handleDelete(index)} className={Style.deleteFuncionalidad}>X</span><span className={Style.textFuncionalidad}>{item.funcionalidad}</span></div>
+                                    <div key={index} className={Style.containerFuncionalidad}>{ !data.autorizacion && <span onClick={e => handleEnterFuncionalidad(item)} className={Style.deleteFuncionalidad}>X</span>}<span className={Style.textFuncionalidad}>{item.descripcion}</span></div>
                                 ))
                                 : <div>No hay funcionalidades</div>
                         }
