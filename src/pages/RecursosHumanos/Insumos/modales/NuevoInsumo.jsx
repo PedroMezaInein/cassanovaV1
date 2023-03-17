@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react"
 import { useSelector } from "react-redux";
 import Swal from 'sweetalert2'
 
-import { apiGet, apiPostForm } from '../../../../functions/api'
+import { apiGet, apiPostForm  } from '../../../../functions/api'
 
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';

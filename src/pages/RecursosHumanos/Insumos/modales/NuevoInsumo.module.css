@@ -64,3 +64,26 @@
     border-radius: 40% 5%;
     transform: translateY(4px);
 }
+
+.container_insumos{
+    height: 8rem;
+    margin-top: 1rem;
+}
+
+.control_insumos{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    height: 5rem;
+}
+
+.control_input{
+    width: 10rem;
+    margin-right: 1rem;
+}
+
+.control_boton{
+    margin-top: -.2rem;
+    display: flex;
+    justify-content: end;
+}
