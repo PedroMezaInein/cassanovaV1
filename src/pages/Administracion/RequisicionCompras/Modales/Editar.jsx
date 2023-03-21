@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiPutForm } from '../../../../functions/api'
+import { apiPutForm, apiPostForm } from '../../../../functions/api'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
@@ -20,6 +20,8 @@ import Swal from 'sweetalert2'
 
 import Style from './AprobarSolicitud.module.css'
 import Checkbox from '@material-ui/core/Checkbox';
+
+import './../../../../styles/_adjuntosRequisicion.scss'
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -56,7 +58,9 @@ export default function Editar(props) {
         labelPorveedor: data.proveedor ? opciones.proveedores.find(proveedor => proveedor.value == data.proveedor).name: 'Proveedor',
 
     })
-    console.log(form)
+
+    const [file, setFile] = useState(null)
+
     const [errores, setErrores] = useState({})
     const classes = useStyles();
 
@@ -128,6 +132,9 @@ export default function Editar(props) {
 
                             apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                                 (response) => {
+                                    if (file) {
+                                        handleSubmit()
+                                    }
                                     Swal.close()
                                     handleClose('editar')
                                     if (reload) {
@@ -169,14 +176,6 @@ export default function Editar(props) {
                 }
             })
         } else {
-            Swal.close()
-            Swal.fire({
-                title: 'Guardando...',
-                allowOutsideClick: false,
-                onBeforeOpen: () => {
-                    Swal.showLoading()
-                }
-            })
             if (validateForm()) {
                 try {
                     Swal.fire({
@@ -209,6 +208,9 @@ export default function Editar(props) {
 
                     apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                         (response) => {
+                            if (file) {
+                                handleSubmit()
+                            }
                             Swal.close()
                             handleClose('editar')
                             if (reload) {
@@ -247,6 +249,8 @@ export default function Editar(props) {
                 })
             }
         }
+
+        
        
     }
 
@@ -317,6 +321,85 @@ export default function Editar(props) {
                 labelPorveedor: opciones.proveedores.find(proveedor => proveedor.value == value.value).name
             })
         }
+    }
+
+    const handleSubmit = () => {
+
+        if (true) {
+            Swal.fire({
+                title: 'Subiendo archivo...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            let data = new FormData();
+            let aux = Object.keys(form)
+
+            /* aux.forEach((element) => {
+                switch (element) {
+                    case 'adjuntos':
+                        break;
+                    default:
+                        data.append(element, form[element])
+                        break
+                }
+            }) */
+
+            data.append(`files_name_requisicion[]`, file.name)
+            data.append(`files_requisicion[]`, file)
+            data.append('adjuntos[]', "requisicion")
+            data.append('tipo', 'Cotizaciones')
+
+
+            try {
+                apiPostForm(`requisicion/${props.data.id}/archivos/s3`, data, auth.access_token)
+                    .then(res => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Adjunto guardado',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+
+                        if (res.status === 200) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Adjunto guardado',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Algo salio mal!',
+                        })
+                    })
+            } catch (error) {
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Algo salio mal!',
+                })
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Debe seleccionar un archivo',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    }
+
+    const handleFile = (e) => { 
+        setFile(e.target.files[0])
     }
 
     return (
@@ -556,15 +639,32 @@ export default function Editar(props) {
                     />
                 </div> */}
 
+                <div className='adjuntos_send'>
+                    <div className="file">
+
+                        <label htmlFor="file">Adjuntar cotización</label>
+                        <input type="file" id="file" name="file" onChange={handleFile} />
+                        <div>
+                            {file ? <p>{file.name}</p> : ''}
+                        </div>
+
+                    </div>
+                </div>
+
                 
 
             </div>
+            <div>
+               
 
-            <div className="row justify-content-end">
-                <div className="col-md-4">
-                    <button className={Style.sendButton} onClick={handleSave}>Guardar</button>
-                </div>
+                <div className="row justify-content-end">
+                    <div className="col-md-4">
+                        <button className={Style.sendButton} onClick={handleSave}>Guardar</button>
+                    </div>
+                </div>   
             </div>
+
+            
         </>
         )
         
