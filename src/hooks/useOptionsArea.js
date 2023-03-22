@@ -10,14 +10,12 @@ const useOptionsArea = () => {
     const user = useSelector(state => state.authUser)
     const opcionesState = useSelector(state => state.opciones);
     useEffect(() => {
-        if (opcionesState.areas.length === 0) { 
-            apiGet('areas', user.access_token)
-                .then((response) => {
-                    setOpciones(response.data)
-                })
-                .catch((error) => {
-                })    
-        }
+        apiGet('areas', user.access_token)
+            .then((response) => {
+                setOpciones(response.data)
+            })
+            .catch((error) => {
+            }) 
         
     }, [])
 
