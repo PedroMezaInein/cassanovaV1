@@ -20,11 +20,9 @@ const useOptionsArea = () => {
     }, [])
 
     useEffect(() => {
-        if (opcionesState.areas.length === 0) { 
-            if (opciones) {
-                proccessData()
-            }    
-        }
+        if (opciones) {
+            proccessData()
+        } 
         
     }, [opciones])
 
