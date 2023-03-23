@@ -8,19 +8,22 @@ const useOptionsArea = () => {
     const dispatch = useDispatch()
     const [data, setData] = useState()
     const user = useSelector(state => state.authUser)
+    const opcionesState = useSelector(state => state.opciones);
     useEffect(() => {
         apiGet('areas', user.access_token)
             .then((response) => {
                 setOpciones(response.data)
             })
             .catch((error) => {
-            })
+            }) 
+        
     }, [])
 
     useEffect(() => {
         if (opciones) {
             proccessData()
-        }
+        } 
+        
     }, [opciones])
 
     const proccessData = () => {

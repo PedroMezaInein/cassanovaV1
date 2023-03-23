@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiPutForm } from '../../../../functions/api'
+import { apiPutForm, apiPostForm } from '../../../../functions/api'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
@@ -20,6 +20,8 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import Swal from 'sweetalert2'
 
 import Style from './AprobarSolicitud.module.css'
+
+import './../../../../styles/_adjuntosRequisicion.scss'
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -56,6 +58,8 @@ export default function Convertir(props) {
         labelPorveedor: data.proveedor ? opciones.proveedores.find(proveedor => proveedor.value == data.proveedor).name : 'Proveedor',
     })
     const [errores, setErrores] = useState({})
+
+    const [file, setFile] = useState(null)
 
     const classes = useStyles();
 
@@ -128,6 +132,7 @@ export default function Convertir(props) {
     const aprobar = () => {
         if (validateForm()) {
             if (form.auto1) {
+                
                 Swal.fire({
                     title: '¿Estas seguro de aprobar esta solicitud?',
                     text: "Confirma los datos antes de continuar",
@@ -139,8 +144,6 @@ export default function Convertir(props) {
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        
-
                         Swal.fire({
                             title: 'Aprobando...',
                             allowOutsideClick: false,
@@ -172,6 +175,9 @@ export default function Convertir(props) {
                         }
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                             (response) => {
+                                if (file) {
+                                    handleSubmit()
+                                }
                                 Swal.close()
                                 handleClose('convertir')
                                 if (reload) {
@@ -213,6 +219,8 @@ export default function Convertir(props) {
                 'error'
             )
         }
+
+        
         
     }
 
@@ -241,6 +249,85 @@ export default function Convertir(props) {
                 labelPorveedor: opciones.proveedores.find(proveedor => proveedor.value == value.value).name
             })
         }
+    }
+
+    const handleSubmit = () => {
+
+        if (true) {
+            Swal.fire({
+                title: 'Subiendo archivo...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
+            let data = new FormData();
+            let aux = Object.keys(form)
+
+            /* aux.forEach((element) => {
+                switch (element) {
+                    case 'adjuntos':
+                        break;
+                    default:
+                        data.append(element, form[element])
+                        break
+                }
+            }) */
+
+            data.append(`files_name_requisicion[]`, file.name)
+            data.append(`files_requisicion[]`, file)
+            data.append('adjuntos[]', "requisicion")
+            data.append('tipo', 'Cotizaciones')
+
+
+            try {
+                apiPostForm(`requisicion/${props.data.id}/archivos/s3`, data, auth.access_token)
+                    .then(res => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Adjunto guardado',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+
+                        if (res.status === 200) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Adjunto guardado',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Algo salio mal!',
+                        })
+                    })
+            } catch (error) {
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Algo salio mal!',
+                })
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Debe seleccionar un archivo',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    }
+
+    const handleFile = (e) => {
+        setFile(e.target.files[0])
     }
 
     return (
@@ -537,6 +624,18 @@ export default function Convertir(props) {
                         color="primary"
                         style={{marginLeft: '20%'}}
                     />
+                </div>
+
+                <div className='adjuntos_send'>
+                    <div className="file">
+
+                        <label htmlFor="file">Adjuntar cotización</label>
+                        <input type="file" id="file" name="file" onChange={handleFile} />
+                        <div>
+                            {file ? <p>{file.name}</p> : ''}
+                        </div>
+
+                    </div>
                 </div>
 
                 {/* <div className={Style.btnAprobar}>

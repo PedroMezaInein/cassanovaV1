@@ -22,6 +22,9 @@ import SoporteTecnicoTable from './pages/Ti/Soporte/SoporteTecnicoTable';
 
 import TicketsUser from './pages/Ti/Tickets/TicketsUserTable';
 import TicketsTi from './pages/Ti/Tickets/TicketsTiTable';
+import Manuales from './pages/Ti/Manuales/Manuales';
+
+import TablaInsumos from './pages/RecursosHumanos/Insumos/TablaInsumos';
 
 const Login = React.lazy(() => import('./pages/Login') )
 const Home = React.lazy(() => import('./pages/Home') )
@@ -549,6 +552,8 @@ class App extends Component{
                     <Route path="/rh/operadores" exact component={TablaOperadores} />
                     <Route path="/rh/solicitudes-vehiculo" exact component={TablaSolicitudes} />
 
+                    <Route path="/rh/insumos" exact component={TablaInsumos} />
+
                     {/* ANCHOR Routes for calidad */}
 
                     <Route path = "/calidad/tickets" exact component ={ TicketTable } />
@@ -587,6 +592,7 @@ class App extends Component{
                     <Route path="/ti/tickets-usuario" exact component={TicketsUser } />
                     <Route path="/ti/tickets-ti" exact component={TicketsTi } />
                     <Route path="/ti/soporte" exact component={SoporteTecnicoTable } />
+                    <Route path="/ti/manuales" exact component={Manuales } />
 
                     {/* ANCHOR NOT FOUND ROUTE */}
 

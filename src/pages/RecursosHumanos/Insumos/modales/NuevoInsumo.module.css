@@ -1,8 +1,12 @@
+.error {
+    color: red;
+}
+
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: left;
+    justify-content: center;
     width: 100%;
     height: 100%;
     margin-top: 1rem;
@@ -13,6 +17,24 @@
     justify-content: space-around;
     width: 100%;
     margin-bottom: 2rem;
+}
+
+.containerFile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.maxWidthInput {
+    min-width: 10rem;
+    max-width: 20rem;
+}
+
+.maxWidthInputText {
+    width: 17rem;
 }
 
 .sendButton {
@@ -43,52 +65,25 @@
     transform: translateY(4px);
 }
 
-.deleteFuncionalidad{
-    color: red;
-    margin-right: 10px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.textFuncionalidad{
-    padding: 0.4rem;
-    background-color: #3A89C9;
-    color: white;
-    border-radius: 10px;
-}
-
-.containerFuncionalidad{
+.container_insumos{
+    height: 8rem;
     margin-top: 1rem;
 }
 
-.containerList{
+.control_insumos{
     display: flex;
-    flex-direction: column;
-    align-items: start;
-    margin-top: 1rem;
+    flex-direction: row;
+    justify-content: space-evenly;
+    height: 5rem;
 }
 
-.pendiente {
-    padding: 3px;
-    background: rgba(255, 213, 73, 0.75);
-    color: white;
-    border: none;
-    border-radius: 8px;
+.control_input{
+    width: 10rem;
+    margin-right: 1rem;
 }
 
-.autorizado {
-    padding: 3px;
-    background: rgba(22, 147, 165, 0.75);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    margin-top: 2px;
-}
-
-.rechazado {
-    padding: 2px;
-    background: rgba(242, 108, 79, 0.75);
-    border: none;
-    width: 100%;
-    border-radius: 8px;
+.control_boton{
+    margin-top: -.2rem;
+    display: flex;
+    justify-content: end;
 }

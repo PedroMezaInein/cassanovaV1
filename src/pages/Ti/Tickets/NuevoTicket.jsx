@@ -39,15 +39,15 @@ export default function NuevoTicket (props) {
 
     function formatDate(date) {
         var year = date.getFullYear();
-        
+      
         var month = (1 + date.getMonth()).toString();
         month = month.length > 1 ? month : '0' + month;
-        
+      
         var day = date.getDate().toString();
         day = day.length > 1 ? day : '0' + day;
         
-        return day+ '/' + month + '/' + year;
-    }
+        return year + '/' + month + '/' + day;
+      }
 
     const validateForm = () => {
         let validar = true
@@ -78,12 +78,12 @@ export default function NuevoTicket (props) {
             try {
 
                 let newForm = {
+                    id_departamento: state.departamento,
                     tipo: state.tipo,
                     descripcion: state.descripcion,
                     fecha: formatDate(state.fecha),
                     solicitud: state.solicitud,
                 }
-
 
                 apiPostForm('ti', newForm, user.access_token)
                     .then((data) => {
@@ -110,15 +110,14 @@ export default function NuevoTicket (props) {
                         })
                         console.log(error)
                     })
-            } catch (error) { 
-                Swal.close()
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Ha ocurrido un error 2',
-                })
-                console.log(error)
-            }
+            }   catch (error) { 
+                    Swal.close()
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Ha ocurrido un error 2',
+                    })
+                }
         } else{
             Swal.fire({
                 title: 'Faltan campos',
@@ -175,9 +174,14 @@ export default function NuevoTicket (props) {
                         onChange={handleChange}
                         disabled={user.user.tipo.id ==1 ? false : true}
                     >
-                        <MenuItem value={0}>Mantenimiento</MenuItem>
-                        <MenuItem value={1}>Nuevo módulo</MenuItem>
-                        <MenuItem value={2}>Error en plataforma</MenuItem>
+                        <MenuItem value={0}>cambio</MenuItem>
+                        <MenuItem value={1}>soporte</MenuItem>
+                        <MenuItem value={2}>mejora</MenuItem>
+                        <MenuItem value={3}>reporte</MenuItem>
+                        <MenuItem value={4}>información</MenuItem>
+                        <MenuItem value={5}>capacitación</MenuItem>
+                        <MenuItem value={6}>servicio</MenuItem>
+                        <MenuItem value={7}>proyecto</MenuItem>
                     </Select>          
                 </div>
 

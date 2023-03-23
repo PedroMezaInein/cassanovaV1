@@ -339,7 +339,6 @@ export default function Adjuntos(props) {
                         <div className='adjuntos-comentarios'>
                             {/* <span>{data.descripcion}</span> */}
                         </div>
-                        {console.log(form)}
                     </>
                         :
                         <div className="not_adjuntos">
