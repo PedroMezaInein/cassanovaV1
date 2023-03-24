@@ -69,6 +69,8 @@ export default function DetailProyect() {
     const [fases, setFases] = useState(false)
     const [opciones, setOpciones] = useState(false)
 
+    console.log(proyecto)
+
     let navs = [
         { eventKey: 'fase1', name: 'Fase 1' },
         { eventKey: 'fase2', name: 'Fase 2' },
@@ -221,7 +223,6 @@ export default function DetailProyect() {
             setProyecto(response.data.data[0].proyectos[response.data.data[0].proyectos.length - 1])
             Swal.close()
             getOpciones()
-            
         })
         .catch((error) => {
             console.log(error)

@@ -21,11 +21,13 @@ export default function ProyectosTable() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
+        /* { nombre: 'T. Proyecto', identificador: 'tipoProyecto', sort: true, stringSearch: true }, */
+        { nombre: 'F. incio', identificador: 'FInicio', sort: true, stringSearch: false },
+        { nombre: 'F. fin', identificador: 'FFin', sort: true, stringSearch: false },
         { nombre: 'Nombre', identificador: 'nombre', sort: true, stringSearch: true },
-        { nombre: 'T. Proyecto', identificador: 'tipoProyecto', sort: true, stringSearch: true },
         /* { nombre: 'Cliente', identificador: 'cliente', sort: true, stringSearch: true }, */
         { nombre: 'Dirección', identificador: 'direccion', sort: true, stringSearch: true },
-        { nombre: 'Contacto', identificador: 'contacto', sort: false, stringSearch: true },
+        /* { nombre: 'Contacto', identificador: 'contacto', sort: false, stringSearch: true }, */
         { nombre: 'Empresa', identificador: 'empresa', sort: true, stringSearch: true },
         /* { nombre: 'F. Inicio', identificador: 'fechaInicio', sort: true, stringSearch: true },
         { nombre: 'F. Fin', identificador: 'fechaFin', sort: true, stringSearch: true }, */

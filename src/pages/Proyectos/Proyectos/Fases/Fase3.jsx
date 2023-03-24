@@ -135,10 +135,10 @@ export default function Fase3(props) {
                 <div>
                     {/* <BotonAdjuntos modal={modal} setModal={setModal} /> */}
                     <BotonAcciones modal={modal} setModal={setModal} />
-                    <div>
+                    {/* <div>
                         <span>Avance de la fase {fase.simpleName}</span>
                         <ProgressBar avance={54} />
-                    </div>
+                    </div> */}
 
                 </div>
                 <div>
@@ -154,7 +154,7 @@ export default function Fase3(props) {
                     </div>
 
 
-                    <div>
+                    {/* <div>
                         Presupuesto inicial
                     </div>
                     <div>
@@ -164,7 +164,7 @@ export default function Fase3(props) {
                         <TablaGeneral
                             titulo="Historial de minutas" columnas={columnas} url="proyectos/project" opciones={opcionesbtn} acciones={createAcciones()} numItemsPagina={20} ProccessData={ProccessData}
                         />
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
