@@ -26,6 +26,8 @@ import Manuales from './pages/Ti/Manuales/Manuales';
 
 import TablaInsumos from './pages/RecursosHumanos/Insumos/TablaInsumos';
 
+import PresupuestoAnual from './pages/Administracion/Presupuesto/Presupuesto'
+
 const Login = React.lazy(() => import('./pages/Login') )
 const Home = React.lazy(() => import('./pages/Home') )
 
@@ -433,6 +435,7 @@ class App extends Component{
                     <Route path="/administracion/gasto" exact component={Requisiciones} />
                     <Route path="/administracion/gasto-compras" exact component={RequisicionCompras} />
                     <Route path="/administracion/gastos" exact component={RequisicionContabilidad} />
+                    <Route path="/administracion/presupuesto" exact component={PresupuestoAnual} />
 
                     {/*  ANCHOR Routes for bancos */}
 
