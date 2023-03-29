@@ -104,7 +104,6 @@
       "mdbreact": "^4.6.1",
       "modernizr": "^3.11.3",
       "moment": "^2.29.1",
-      "node-sass": "^4.14.1",
       "object-path": "^0.11.5",
       "offcanvas": "^3.2.2",
       "pdfjs-dist": "^2.6.347",
@@ -204,13 +203,14 @@
    "devDependencies": {
       "axios-mock-adapter": "^1.18.2",
       "copyfiles": "2.1.1",
+      "node-sass": "^8.0.0",
       "prettier": "1.19.1",
       "serve": "^11.3.2"
    },
    "scripts": {
       "serve": "cp-cli build _site/react/preview/react/react-new/demo1 && serve",
       "dev": "NODE_OPTIONS=--max-old-space- size=8192",
-      "start": "react-scripts --max_old_space_size=8096 start -o ",
+      "start": "react-scripts start --browser=chrome react-scripts start",
       "build": "react-scripts --max_old_space_size=8192  build",
       "test": "react-scripts test",
       "eject": "react-scripts eject",
