@@ -15,6 +15,7 @@ export default function ProyectosTable() {
     let prop = {
         pathname: '/proyectos/proyectos/',
     }
+    
     useEffect(() => {
         getOptionsEmpresas()
     }, []);
@@ -22,8 +23,8 @@ export default function ProyectosTable() {
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         /* { nombre: 'T. Proyecto', identificador: 'tipoProyecto', sort: true, stringSearch: true }, */
-        { nombre: 'F. incio', identificador: 'FInicio', sort: true, stringSearch: false },
-        { nombre: 'F. fin', identificador: 'FFin', sort: true, stringSearch: false },
+        /* { nombre: 'F. incio', identificador: 'FInicio', sort: true, stringSearch: false },
+        { nombre: 'F. fin', identificador: 'FFin', sort: true, stringSearch: false }, */
         { nombre: 'Nombre', identificador: 'nombre', sort: true, stringSearch: true },
         /* { nombre: 'Cliente', identificador: 'cliente', sort: true, stringSearch: true }, */
         { nombre: 'Dirección', identificador: 'direccion', sort: true, stringSearch: true },
@@ -31,7 +32,7 @@ export default function ProyectosTable() {
         { nombre: 'Empresa', identificador: 'empresa', sort: true, stringSearch: true },
         /* { nombre: 'F. Inicio', identificador: 'fechaInicio', sort: true, stringSearch: true },
         { nombre: 'F. Fin', identificador: 'fechaFin', sort: true, stringSearch: true }, */
-        { nombre: 'Descripción', identificador: 'descripcion', sort: true, stringSearch: true },
+        { nombre: 'Descripción', identificador: 'descripcion_view', sort: true, stringSearch: true },
     ]
 
     const createAcciones = () => {
@@ -140,6 +141,11 @@ export default function ProyectosTable() {
                     direccion: item.proyectos[0].sucursal ? item.proyectos[0].sucursal : 'Sin dirección',
                     contacto: item.nombre ? item.nombre : 'Sin contacto',
                     descripcion: item.proyectos[0].descripcion ? item.proyectos[0].descripcion : 'Sin descripción',
+                    descripcion_view: item.proyectos[0].descripcion ? item.proyectos[0].descripcion.length > 100 ?
+                        <div title={item.proyectos[0].descripcion}>
+                            `${item.proyectos[0].descripcion.slice(0, 100) + '...'}`
+                            </div>
+                         : item.proyectos[0].descripcion : 'Sin descripción',
                 })
             }
         })

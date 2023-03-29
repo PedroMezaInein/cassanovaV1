@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import {useSelector} from 'react-redux';
 
@@ -58,7 +59,7 @@ export default function EditProyect(props) {
         clientes: proyecto.clientes,
         cliente_id: proyecto.cliente_id,
         fases: [],
-        responsable: proyecto.responsable,
+        responsable: proyecto.responsable ? proyecto.responsable.empleado_id : '',
     })
     const [state, setState] = useState([])
 
@@ -370,6 +371,21 @@ export default function EditProyect(props) {
             })
     }
 
+    const handleSaveResponsable = (id) => {
+        try {
+            apiPostForm(`v2/proyectos/calendario-proyectos/users/responsable/${proyecto.id}`, { id_user:id}, user.access_token)
+                .then((response) => { 
+                    console.log(response)
+                    reload()
+                })
+                .catch((error) => { 
+                    console.log(error)
+                })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <>
             <div className='proyect-Titulo'>
@@ -504,9 +520,11 @@ export default function EditProyect(props) {
                                 colaboradores.length > 0 &&
                                 <div>
                                     <InputLabel>Seleccionar Responsable</InputLabel>
+                                    
                                     <Select
                                         name='responsable'
-                                        onChange={handleChange}
+                                        onChange={e => handleSaveResponsable(e.target.value)}
+                                        value={form.responsable}
                                     >
                                         <MenuItem value={0}></MenuItem>
                                         {
@@ -826,3 +844,5 @@ export default function EditProyect(props) {
         </>
     )
 }
+
+/* eslint-enable */

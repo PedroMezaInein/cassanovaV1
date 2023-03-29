@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -69,7 +70,6 @@ export default function DetailProyect() {
     const [fases, setFases] = useState(false)
     const [opciones, setOpciones] = useState(false)
 
-    console.log(proyecto)
 
     let navs = [
         { eventKey: 'fase1', name: 'Fase 1' },
@@ -294,3 +294,5 @@ export default function DetailProyect() {
         </>
     )
 }
+
+/* eslint-enable */
