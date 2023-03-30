@@ -416,6 +416,7 @@ class EditProyectoForm extends Component {
     async editProyectoAxios() {
         const { at, proyecto, refresh } = this.props
         const { form } = this.state
+        console.log(form)
         await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}`, form, { headers: { Authorization: `Bearer ${at}` } }).then(
             (response) => {
                 const { proyecto } = response.data
@@ -519,6 +520,7 @@ class EditProyectoForm extends Component {
     render() {
         const { /*showModal,*/ form, formeditado, modal, navInfo, formContratar, stateOptions } = this.state
         const { proyecto, options } = this.props
+        console.log(options)
         return (
             <>
                 {
