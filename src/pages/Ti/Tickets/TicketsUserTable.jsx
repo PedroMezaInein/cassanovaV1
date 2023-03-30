@@ -71,7 +71,7 @@ export default function TicketsUserTable() {
 
     const createAcciones = () => {
         return [
-            {
+            /* {
                 nombre: 'editar',
                 icono: 'fas fa-edit',
                 color: 'yellowButton',
@@ -84,7 +84,7 @@ export default function TicketsUserTable() {
                         }
                     })
                 }
-            },
+            }, */
             {
                 nombre: 'aprobar',
                 icono: 'fas fa-check',
@@ -225,7 +225,7 @@ export default function TicketsUserTable() {
         } else if (data === '5') {
             return 'capacitación'
         } else if (data === '6') {
-            return 'servicio'
+            return 'funcionalidad'
         } else if (data === '7') {
             return 'proyecto'
         }
@@ -235,7 +235,7 @@ export default function TicketsUserTable() {
         if(data === '0') {
             return 'Solicitado'
         } else if(data === '1') {
-            return 'Autorizado'
+            return 'Solicitado'
         } else if(data === '2') {
             return 'En desarrollo'
         } else if (data === '3') {

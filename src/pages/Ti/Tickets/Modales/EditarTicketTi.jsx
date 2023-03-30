@@ -13,14 +13,6 @@ import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import Checkbox from '@material-ui/core/Checkbox';
-
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
 
 import Style from './TicketsTi.module.css'
 
@@ -81,14 +73,13 @@ export default function EditarTicketTi(props) {
             }
         })
         apiPostForm(`ti/add`, funcionalidad, authUser.access_token)
-            .then((data) => {
+            .then((response) => {
                 getFuncionalidades()
                 setFuncionalidad({
                     id: data.id,
                     descripcion: '',
                     fecha: new Date(),
-                })
-                    
+                })   
             })
             .catch((error) => {
                 Swal.close()
@@ -203,8 +194,8 @@ export default function EditarTicketTi(props) {
                 apiPutForm(`ti/${form.id}`, newForm, authUser.access_token)
                     .then((data) => {
                         Swal.fire({
-                            title: 'Requisicion enviada',
-                            text: 'La requisicion se ha enviado correctamente',
+                            title: 'Ticket editado',
+                            text: 'si ticket se ha editado correctamente',
                             icon: 'success',
                             showConfirmButton: true,
                             timer: 2000,
@@ -319,7 +310,7 @@ export default function EditarTicketTi(props) {
                             <MenuItem value={3}>reporte</MenuItem>
                             <MenuItem value={4}>información</MenuItem>
                             <MenuItem value={5}>capacitación</MenuItem>
-                            <MenuItem value={6}>servicio</MenuItem>
+                            <MenuItem value={6}>funcionalidad</MenuItem>
                             <MenuItem value={7}>proyecto</MenuItem>
 
                         </Select>
@@ -332,8 +323,8 @@ export default function EditarTicketTi(props) {
                             onChange={handleChange}
                             error={errores.estatus ? true : false}
                         >
-                            <MenuItem value={0}>Solicitado</MenuItem>
-                            <MenuItem value={1}>Autorizado</MenuItem>
+                            {/* <MenuItem disabled value={0}>Solicitado</MenuItem> */}
+                            <MenuItem value={1}>Solicitado</MenuItem>
                             <MenuItem value={2}>En desarrollo</MenuItem>
                             <MenuItem value={3}>Terminado</MenuItem>
                             <MenuItem value={4}>Cancelado</MenuItem>
