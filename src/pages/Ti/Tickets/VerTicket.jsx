@@ -52,7 +52,7 @@ export default function VerTicket({ data }) {
         } else if (data === '5') {
             return 'capacitación'
         } else if (data === '6') {
-            return 'servicio'
+            return 'funcionalidad'
         } else if (data === '7') {
             return 'proyecto'
         }
@@ -62,7 +62,7 @@ export default function VerTicket({ data }) {
         if (data === '0') {
             return 'Solicitado'
         } else if (data === '1') {
-            return 'Autorizado'
+            return 'Solicitado'
         } else if (data === '2') {
             return 'En desarrollo'
         } else if (data === '3') {
@@ -103,25 +103,12 @@ export default function VerTicket({ data }) {
                             <p>{setEstatus(data.estatus)}</p>
                         </div>
 
-                        <div>
-                            <span>
-                                Funcionalidades:
-                            </span>
-                            <div>
-                                {
-                                    form.funcionalidades.length > 0 ?
-                                        form.funcionalidades.map((item, index) => (
-                                            <div key={index} className={Style.containerFuncionalidad}><span className={Style.textFuncionalidad}>{item.descripcion}</span></div>
-                                        ))
-                                        : <div>No hay funcionalidades</div>
-                                }
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
 
-                <div>
-                    <div ClassName={style.div9}> 
+                <div ClassName='mt-10'>
+                    <div> 
                         <span>
                             Descripción:
                         </span>
@@ -145,6 +132,21 @@ export default function VerTicket({ data }) {
                         <p>{`${data.fecha_entrega}`}</p>
                     </div>
 
+                </div>
+
+                <div>
+                    <span>
+                        Funcionalidades:
+                    </span>
+                    <div>
+                        {
+                            form.funcionalidades.length > 0 ?
+                                form.funcionalidades.map((item, index) => (
+                                    <div key={index} className={Style.containerFuncionalidad}><span className={Style.textFuncionalidad}>{item.descripcion}</span></div>
+                                ))
+                                : <div>No hay funcionalidades</div>
+                        }
+                    </div>
                 </div>
             </div>
         </>

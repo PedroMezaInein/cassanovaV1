@@ -21,6 +21,7 @@ export default function NuevoInsumo(props) {
         nombre: '',
         cantidad: '',
         costo: '',
+        id_unidades: '',
         tipo_unidad: '',
         frecuencia: '',
         stock: '',
@@ -70,6 +71,14 @@ export default function NuevoInsumo(props) {
         });
     };
 
+    const handleChangeUnidad = (event) => {
+        // name son los diferentes tipos de atributos (departamento, fecha...)
+        setState({
+            ...state,
+            id_unidades: event.target.value,
+        });
+    };
+
     const validateForm = () => {
         let validar = true
         let error = {}
@@ -89,7 +98,7 @@ export default function NuevoInsumo(props) {
             validar = false
         } 
         
-        if (state.tipo_unidad === '') {
+        if (state.id_unidades === '') {
             error.id_unidades = "Seleccione una unidad"
             validar = false
         }
@@ -242,7 +251,7 @@ export default function NuevoInsumo(props) {
                                 <Select
                                     value={state.id_unidades}
                                     name="id_unidades"
-                                    onChange={handleChange}
+                                    onChange={handleChangeUnidad}
                                     error={errores.id_unidades ? true : false}
                                 >
                                      {

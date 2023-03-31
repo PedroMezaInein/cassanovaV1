@@ -17,6 +17,9 @@ import EdithEquipoForm from '../../../components/forms/administracion/Licencias/
 import LicenciasForm from '../../../components/forms/administracion/Licencias/LicenciasForm'
 import { DropdownButton, Dropdown } from 'react-bootstrap'
 import { getWeekYearWithOptions } from 'date-fns/fp'
+
+import Mantenimiento from './../../Ti/Soporte/SoporteTecnicoTable'
+
 class Licencias extends Component {
 
     state = {
@@ -381,6 +384,9 @@ class Licencias extends Component {
                             agregar_equipo = {true} 
                             addClick={this.openModalEquipo}
                         />
+                    </Tab>
+                    <Tab eventKey="mantenimiento" title="Mantenimiento">
+                        <Mantenimiento />
                     </Tab>
                 </Tabs>
 
