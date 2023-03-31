@@ -558,9 +558,9 @@ class Areas extends Component {
                     </Tab>
 
                     {
-                        tabs.map((elemento) => {
+                        tabs.map((elemento,index) => {
                             return(
-                                <Tab eventKey = { elemento } title = { elemento }>
+                                <Tab key={index} eventKey = { elemento } title = { elemento }>
                                     <NewTableServerRender columns = { AREAS_COLUMNS } title = 'ÁREAS' 
                                         subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
                                         onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } accessToken = { access_token } 

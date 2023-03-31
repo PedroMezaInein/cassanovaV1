@@ -1,29 +1,35 @@
 import React, {useState, useEffect} from 'react'
 import { useSelector } from 'react-redux'
 
-import axios from 'axios'
 import Swal from 'sweetalert2'
 
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 
+import { Modal } from '../../../components/singles'
 import { apiPutForm } from '../../../functions/api'
+import ModalModificarSubGasto from './ModalModificarSubGasto'
 
 import './AreaStyle/_agregarGasto.scss'
-import { forEach } from 'lodash';
 
 export default function ModalEditarGastos (props) {
     const {data, handleClose, reload} = props
+    console.log(data)
     const user = useSelector(state => state.authUser)
+
     const [form, setForm] = useState({
         area: data.nombreArea,
         partida: data.partida.nombre,
         subPartida: '',// en este se guarda la informacion que se esta escribiendo
         auxSubPartida: [], // aqui se guardan cuando doy enter
         arraySubPartidas: [...data.partida.subpartidas], // este me sirve para mostrar todas las subpartidas, tanto las que ya existen como las nuevas
+    })
+
+    const [modal, setModal] = useState({
+        modificarSubGasto: {
+            show: false,
+            data: false
+        }
     })
 
     const [errores, setErrores] = useState({})
@@ -52,6 +58,16 @@ export default function ModalEditarGastos (props) {
                 auxSubPartida: [...form.auxSubPartida, e.target.value ]
             })
         }
+    }
+
+    const handleOpenPartida = (info) =>{
+        setModal({
+            ...modal,
+            modificarSubGasto:{
+                show:true,
+                data: info
+            }
+        })
     }
 
     const handleDeletePartida = ()=>{
@@ -121,9 +137,18 @@ export default function ModalEditarGastos (props) {
         return validar
     }
 
+    const handleCloseGastos = (tipo) => {
+        setModal({
+            ...modal,
+            [tipo]:{
+                ...modal[tipo],
+                show: false,
+            }
+        })
+    }
+
     const submit = () =>{
         if(validateForm()){
-        // if(true){
 
             Swal.fire({
                 title: 'Cargando...',
@@ -183,6 +208,7 @@ export default function ModalEditarGastos (props) {
             })
         }
     }
+
 
 /*     const handleChangeSubpartidas = (e) => {
         setForm({
@@ -281,26 +307,26 @@ export default function ModalEditarGastos (props) {
                     value={form.subPartida} 
                     onKeyPress={handleEnterSub}  
                     onChange={handleChange}
-                    error={errores.subPartidas ? true : false}
+                    // error={errores.subPartidas ? true : false}
                     >
                 </input>
 
                 <div className='gasto_etiqueta'>
                     {
                         form.arraySubPartidas.length > 0 ? 
-                        form.arraySubPartidas.map((item) => {
-                            if(item.nombre){
-                                return <span className='sub_partida'>
-                                            <span className='sub_eliminar'>X</span>
-                                            <span className=''>{item.nombre}</span>
-                                        </span>
-                            } else{
-                                return <span className='sub_partida'>
-                                            <span className='sub_eliminar' onClick={(e)=>handleDeleteSub(item)}>X</span>
-                                            <span className=''>{item}</span>
-                                        </span>
-                            }
-                        })
+                            form.arraySubPartidas.map((item,index) => {
+                                if(item.nombre){
+                                    return <span key={index} className='sub_partida'>
+                                                <span className='sub_eliminar' onClick={()=>{handleOpenPartida(item.nombre)}}>X</span>
+                                                <span className=''>{item.nombre}</span>
+                                            </span>
+                                } else{
+                                    return <span key={index} className='sub_partida'>
+                                                <span className='sub_eliminar' onClick={(e)=>handleDeleteSub(item)}>X</span>
+                                                <span className=''>{item}</span>
+                                            </span>
+                                }
+                            })
                         : <div>No hay su partidas</div>
                     }  
                 </div> 
@@ -312,6 +338,10 @@ export default function ModalEditarGastos (props) {
                     Agregar
                 </button> 
             </div>
+
+            <Modal size="md" title={"Modificar Sub gasto"} show={modal.modificarSubGasto.show} handleClose={()=>handleCloseGastos('modificarSubGasto')}>
+                <ModalModificarSubGasto data={data}/>
+            </Modal> 
         </>
 
     )

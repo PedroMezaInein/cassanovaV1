@@ -1,25 +1,25 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiPutForm, apiPostForm} from '../../../functions/api'
+import { apiPutForm } from '../../../functions/api'
 
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import Swal from 'sweetalert2'
 
-export default function ModalEditarSubPartida (props){
+export default function ModalModificarSubGasto (props){
 
     const { data, handleClose, reload } = props
     const user = useSelector(state => state.authUser)
 
     const [form, setForm] = useState({
-        subpartida: data.nombre
+        // subGasto: data.subpartida.map((item,index) => (item.nombre))
     })
 
     const [errores, setErrores] = useState()
 
-    console.log(form)
     console.log(data)
 
     const handleChange = (event) => {
@@ -31,20 +31,10 @@ export default function ModalEditarSubPartida (props){
         console.log(name)
     };
 
-    const validateForm = () => {
-        let validar = true
-        let error = {}
-       
-        if(form.subpartida === ''){
-            error.subpartida = "Escriba una sub partida"
-            validar = false
-        }
-        setErrores(error)
-        return validar
-    }
 
     const handleSave = () => {
-        if(validateForm()){
+        // if(validateForm()){
+        if(true){
 
             Swal.fire({
                 title: 'Cargando...',
@@ -97,40 +87,27 @@ export default function ModalEditarSubPartida (props){
         <>
             <div> 
                 {/* {data.nombre} */}
+                {/* <h4>Eliminarás el sub gasto "{data.subpartida.map((item,index) => (<span>{item.nombre}</span>) )}"</h4> */}
+                <h4>Eliminarás el sub gasto "{data.subpartida.map(item => item.nombre )}"</h4>
+                <br></br>
+                <div>y tiene **** compras asignadas</div>
+                <br></br>
 
-                <div className=''>
-                    <FormControl className=''>
-                        <TextField 
-                            label="Sub partida"
-                            style={{ margin: 8 }}
-                            margin="normal"
-                            name='subpartida'
-                            defaultValue={form.subpartida}
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                            disabled
-                        />
-                    </FormControl> 
-                </div>
+                <div>
+                    <InputLabel id="demo-simple-select-label">Selecciona el sub gasto que lo reemplazará</InputLabel>
+                    <Select
+                        value={form.subGasto}
+                        name="subGasto"
+                        // onChange={handleChangeArea}
+                    >
+                        {
+                            data.subpartida.map((item,index) => (
+                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                            ))
+                        }
 
-                <div className=''>
-                    <FormControl className=''>
-                        <TextField 
-                            label="Nueva sub partida"
-                            style={{ margin: 8 }}
-                            placeholder="Escribe una sub partida"
-                            onChange={handleChange}
-                            margin="normal"
-                            name='subpartida'
-                            defaultValue={''}
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                        />
-                    </FormControl> 
+                    </Select>
                 </div>
-                {errores && errores.subpartida && <span className='error_subpartida'>{errores.subpartida}</span>}
 
                 <div>
                     <button onClick={handleSave}>Aceptar</button>
