@@ -57,7 +57,7 @@ export default function TablaInsumos() {
 
     //funcion para dar formato a los numeros con comas y dos decimales sin redondear
     const formatNumber = (num) => {
-        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+        return `${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
     }
 
     const ProccessData = (data) => { 
