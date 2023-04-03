@@ -317,7 +317,7 @@ export default function ModalEditarGastos (props) {
                             form.arraySubPartidas.map((item,index) => {
                                 if(item.nombre){
                                     return <span key={index} className='sub_partida'>
-                                                <span className='sub_eliminar' onClick={()=>{handleOpenPartida(item.nombre)}}>X</span>
+                                                <span className='sub_eliminar' onClick={()=>{handleOpenPartida(item)}}>X</span>
                                                 <span className=''>{item.nombre}</span>
                                             </span>
                                 } else{
@@ -340,7 +340,7 @@ export default function ModalEditarGastos (props) {
             </div>
 
             <Modal size="md" title={"Modificar Sub gasto"} show={modal.modificarSubGasto.show} handleClose={()=>handleCloseGastos('modificarSubGasto')}>
-                <ModalModificarSubGasto data={data}/>
+                <ModalModificarSubGasto data={modal.modificarSubGasto.data}  selectOptions={data}/>
             </Modal> 
         </>
 

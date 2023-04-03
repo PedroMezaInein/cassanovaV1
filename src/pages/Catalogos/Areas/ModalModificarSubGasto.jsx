@@ -11,7 +11,7 @@ import Swal from 'sweetalert2'
 
 export default function ModalModificarSubGasto (props){
 
-    const { data, handleClose, reload } = props
+    const { data, handleClose, reload , selectOptions} = props
     const user = useSelector(state => state.authUser)
 
     const [form, setForm] = useState({
@@ -21,6 +21,12 @@ export default function ModalModificarSubGasto (props){
     const [errores, setErrores] = useState()
 
     console.log(data)
+
+    /* 
+    {
+        nombre:"otros",
+        id: 54
+    } */
 
     const handleChange = (event) => {
         let name = event.target.name;
@@ -87,8 +93,8 @@ export default function ModalModificarSubGasto (props){
         <>
             <div> 
                 {/* {data.nombre} */}
-                {/* <h4>Eliminarás el sub gasto "{data.subpartida.map((item,index) => (<span>{item.nombre}</span>) )}"</h4> */}
-                <h4>Eliminarás el sub gasto "{data.subpartida.map(item => item.nombre )}"</h4>
+                <h4>Eliminarás el sub gasto "{data.nombre}"</h4>
+                {/* <h4>Eliminarás el sub gasto "{data.subpartida.map(item => item.nombre )}"</h4> */}
                 <br></br>
                 <div>y tiene **** compras asignadas</div>
                 <br></br>
@@ -101,7 +107,7 @@ export default function ModalModificarSubGasto (props){
                         // onChange={handleChangeArea}
                     >
                         {
-                            data.subpartida.map((item,index) => (
+                            selectOptions.subpartida.map((item,index) => (
                                 <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                             ))
                         }
