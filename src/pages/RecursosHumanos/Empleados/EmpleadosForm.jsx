@@ -278,19 +278,23 @@ class EmpleadosForm extends Component {
         const { form } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
+        
         aux.map((element) => {
             switch (element) {
-                case 'fechaInicio':
+                /* case 'fechaInicio':
+                    data.append(form[element])
+                    debugger
                 case 'fecha_nacimiento':
-                    data.append(element, (new Date(form[element])).toDateString())
+                    data.append(form[element])
+                    debugger
                     break;
                 case 'fechaFin':
                 case 'fecha_alta_imss':
                     if (form[element])
-                        data.append(element, (new Date(form[element])).toDateString())
+                        data.append(form[element])
                     else
                         data.append(element, '')
-                    break;
+                    break; */
                 case 'adjuntos':
                     break;
                 case 'departamentos':
@@ -304,6 +308,7 @@ class EmpleadosForm extends Component {
             }
             return false
         })
+        debugger
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
             if (form.adjuntos[element].value !== '') {
