@@ -202,7 +202,7 @@ export default function Nuevo(props) {
                                     {
                                         equipos.map((item, index) => (
                                             <MenuItem key={index}
-                                                value={item.id}>{item.equipo.length > 15 ? item.equipo.slice(0, 20) + '...': item.equipo} || marca: {item.marca}
+                                                value={item.id}>{item.equipo.length > 15 ? item.equipo.slice(0, 20) + '...' : item.equipo} || marca: {item.marca} || serie: {item.serie}
                                             </MenuItem>
                                         ))
                                     }

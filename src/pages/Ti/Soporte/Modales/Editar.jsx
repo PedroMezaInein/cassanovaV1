@@ -100,6 +100,8 @@ export default function Editar(props) {
         })
     };
 
+    console.log(equipos)
+
     return (
         <>
             <div className={Style.container}>
@@ -172,6 +174,7 @@ export default function Editar(props) {
                                     >
                                         {
                                             usuarios.map((item, index) => (
+                                                
                                                 <MenuItem key={index} value={item.id}>{item.nombre} {item.apellido_paterno ? item.apellido_paterno : ''} {item.apellido_materno ? item.apellido_materno : ''}</MenuItem>
                                             ))
                                         }
@@ -205,7 +208,7 @@ export default function Editar(props) {
                                     {
                                         equipos.map((item, index) => (
                                             <MenuItem key={index}
-                                                value={item.id}>{item.equipo.length > 15 ? item.equipo.slice(0, 20) + '...' : item.equipo} || marca: {item.marca}
+                                                value={item.id}>{item.equipo.length > 15 ? item.equipo.slice(0, 20) + '...' : item.equipo} || marca: {item.marca} || serie: {item.serie}
                                             </MenuItem>
                                         ))
                                     }
