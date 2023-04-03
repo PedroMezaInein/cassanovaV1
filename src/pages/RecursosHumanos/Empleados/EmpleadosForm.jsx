@@ -308,7 +308,6 @@ class EmpleadosForm extends Component {
             }
             return false
         })
-        debugger
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
             if (form.adjuntos[element].value !== '') {
