@@ -88,8 +88,8 @@ export default function NuevoTicket (props) {
                 apiPostForm('ti', newForm, user.access_token)
                     .then((data) => {
                         Swal.fire({
-                            title: 'Requisicion enviada',
-                            text: 'La requisicion se ha enviado correctamente',
+                            title: 'Nuevo ticket',
+                            text: 'Ticket creado correctamente',
                             icon: 'success',
                             showConfirmButton: true,
                             timer: 2000,
@@ -172,7 +172,7 @@ export default function NuevoTicket (props) {
                         value={state.tipo}
                         name="tipo"
                         onChange={handleChange}
-                        disabled={user.user.tipo.id ==1 ? false : true}
+                        /* disabled={user.user.tipo.id ==1 ? false : true} */
                     >
                         <MenuItem value={0}>cambio</MenuItem>
                         <MenuItem value={1}>soporte</MenuItem>
@@ -180,7 +180,7 @@ export default function NuevoTicket (props) {
                         <MenuItem value={3}>reporte</MenuItem>
                         <MenuItem value={4}>información</MenuItem>
                         <MenuItem value={5}>capacitación</MenuItem>
-                        <MenuItem value={6}>servicio</MenuItem>
+                        <MenuItem value={6}>funcionalidad</MenuItem>
                         <MenuItem value={7}>proyecto</MenuItem>
                     </Select>          
                 </div>

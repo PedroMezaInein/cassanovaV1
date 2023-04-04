@@ -113,10 +113,18 @@ const CalendarioPagos = React.lazy( () => import('./pages/Administracion/Calenda
 const Proveedores = React.lazy(() => import('./pages/Leads/Proveedor/Proveedor') )
 const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/ProveedorForm') )
 
-const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos') )
+
+/** */
+const ProyectosNuevo = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosTable')) //nuevo
+const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos')) //anterior
+
+
 const ProyectosForm = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
 
-const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/SingleProyecto') )
+//** */
+const SingleProyectoNuevo = React.lazy(() => import('./pages/Proyectos/Proyectos/DetailProyect')) //nuevo
+const SingleProyecto = React.lazy(() => import('./pages/Proyectos/Proyectos/SingleProyecto')) //anterior
+//** */
 
 const Compras = React.lazy(() => import('./pages/Proyectos/Compras/Compras') )
 const ComprasForm = React.lazy(() => import('./pages/Proyectos/Compras/ComprasForm') )
@@ -365,9 +373,11 @@ class App extends Component{
                     {/*  ANCHOR Routes for proyectos */}
 
                     <Route path = "/proyectos/proyectos" exact component = { Proyectos } />
+                    <Route path="/proyectos/proyectos/nuevo" exact component={ProyectosNuevo } />
                     
                     <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
                     <Route path = "/proyectos/proyectos/single/:id" exact component ={ SingleProyecto } />
+                        <Route path="/proyectos/proyectos/nuevo/:id" exact component={SingleProyectoNuevo } />
                     
                     {/* <Route path = "/proyectos/ventas" exact component ={ Ventas } /> */}
                     {/* <Route path = "/proyectos/compras" exact component ={ Compras } /> */}
@@ -510,7 +520,7 @@ class App extends Component{
                     <Route path = "/rh/nomina-admin" exact component ={ NominaAdmin } />
                     <Route path = "/rh/nomina-admin/:action" exact component ={ NominaAdminForm } />
                     <Route path="/rh/nomina-admin/single/:id" exact component={NominaAdminSingle} />
-                    {/* <Route path="/rh/nomina-prestaciones" exact component={NominaPrestaciones} /> */}
+                    <Route path="/rh/nomina-prestaciones" exact component={NominaPrestaciones} />
                         
                     <Route path = "/rh/checador" exact component ={ Checador } />
                     <Route path = "/rh/prestaciones" exact component ={ Prestaciones } />

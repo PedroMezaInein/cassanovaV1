@@ -280,11 +280,11 @@ export default function SoporteTecnicoTable() {
 
     return (
         <>
-            <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='ti'>
+            {/* <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='ti'> */}
                 <>
                     <TablaGeneral titulo='Soporte ' columnas={columnas} url='computo' ProccessData={ProccessData} numItemsPagina={10} acciones={createAcciones()} reload={setReloadTable} opciones={opciones} />
                 </>
-            </Layout>
+            {/* </Layout> */}
             
             {
                 modal.editar.data &&
