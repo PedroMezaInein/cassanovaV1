@@ -340,7 +340,7 @@ export default function ModalEditarGastos (props) {
             </div>
 
             <Modal size="md" title={"Modificar Sub gasto"} show={modal.modificarSubGasto.show} handleClose={()=>handleCloseGastos('modificarSubGasto')}>
-                <ModalModificarSubGasto data={modal.modificarSubGasto.data}  selectOptions={data}/>
+                <ModalModificarSubGasto data={modal.modificarSubGasto.data}  dataGeneral={data}/>
             </Modal> 
         </>
 

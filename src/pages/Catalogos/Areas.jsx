@@ -298,6 +298,7 @@ class Areas extends Component {
         await axios.options(`${URL_DEV}v2/catalogos/areas?id=${data.id}&tipo=${key}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { subareas } = response.data
+                // debugger
                 let conteo = 0;
                 let busqueda = subareas.find((elemento) => {
                     return elemento.id === element.id

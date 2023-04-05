@@ -1,7 +1,10 @@
 import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiPutForm } from '../../../functions/api'
+import { apiPutForm, apiOptions } from '../../../functions/api'
+import axios from 'axios'
+import { URL_DEV } from './../../../constants'
+import { setSingleHeader } from './../../../functions/routers'
 
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
@@ -11,22 +14,16 @@ import Swal from 'sweetalert2'
 
 export default function ModalModificarSubGasto (props){
 
-    const { data, handleClose, reload , selectOptions} = props
+    const { data, handleClose, reload , dataGeneral} = props
     const user = useSelector(state => state.authUser)
 
     const [form, setForm] = useState({
         // subGasto: data.subpartida.map((item,index) => (item.nombre))
     })
 
-    const [errores, setErrores] = useState()
-
+    // console.log(dataGeneral)
     console.log(data)
-
-    /* 
-    {
-        nombre:"otros",
-        id: 54
-    } */
+    // console.log(user)
 
     const handleChange = (event) => {
         let name = event.target.name;
@@ -36,6 +33,16 @@ export default function ModalModificarSubGasto (props){
         });
         console.log(name)
     };
+
+    const contador = () => {
+        axios.options(`${URL_DEV}v2/catalogos/areas?id=${dataGeneral.partida.id}&tipo=${'gastos'}`, { headers: setSingleHeader(user.access_token) })
+        .then((response) => {
+            console.log(response.data)
+            if(response.data.subareas.length > 0) {
+
+            }
+        })
+    }
 
 
     const handleSave = () => {
@@ -96,7 +103,7 @@ export default function ModalModificarSubGasto (props){
                 <h4>Eliminarás el sub gasto "{data.nombre}"</h4>
                 {/* <h4>Eliminarás el sub gasto "{data.subpartida.map(item => item.nombre )}"</h4> */}
                 <br></br>
-                <div>y tiene **** compras asignadas</div>
+                <div>y tiene {contador()} compras asignadas</div>
                 <br></br>
 
                 <div>
@@ -107,7 +114,7 @@ export default function ModalModificarSubGasto (props){
                         // onChange={handleChangeArea}
                     >
                         {
-                            selectOptions.subpartida.map((item,index) => (
+                            dataGeneral.subpartida.map((item,index) => (
                                 <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                             ))
                         }
