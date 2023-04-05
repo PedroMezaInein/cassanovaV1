@@ -46,18 +46,18 @@ export default function TablaInsumos() {
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Nombre', identificador: 'nombre', sort: false, stringSearch: false },
-        { nombre: 'Cantidad', identificador: 'cantidad', sort: false, stringSearch: false },
+        // { nombre: 'Cantidad', identificador: 'cantidad', sort: false, stringSearch: false },
         { nombre: 'Costo', identificador: 'costo_view', sort: false, stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
         { nombre: 'Frecuencia', identificador: 'frecuencia_view', sort: false, stringSearch: false },
         { nombre: 'Stock', identificador: 'stock', sort: false, stringSearch: false },
-        { nombre: 'Maximo', identificador: 'maximo', sort: false, stringSearch: false },
-        { nombre: 'Minimo', identificador: 'minimo', sort: false, stringSearch: false },
+        // { nombre: 'Maximo', identificador: 'maximo', sort: false, stringSearch: false },
+        // { nombre: 'Minimo', identificador: 'minimo', sort: false, stringSearch: false },
     ];
 
     //funcion para dar formato a los numeros con comas y dos decimales sin redondear
     const formatNumber = (num) => {
-        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+        return `${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
     }
 
     const ProccessData = (data) => { 
