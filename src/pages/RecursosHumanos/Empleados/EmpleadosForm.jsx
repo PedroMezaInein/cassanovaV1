@@ -46,7 +46,7 @@ class EmpleadosForm extends Component {
             cuenta: '',
             clabe: '',
             fechaInicio: '',
-            fechaFin: new Date(),
+            fechaFin: '',
             fecha_alta_imss: '',
             numero_alta_imss: '',
             id_patronal: '',
