@@ -9,13 +9,14 @@ import { doneAlert, errorAlert, printResponseErrorAlert } from '../../../functio
 import { SelectSearchGray } from '../../../components/form-components'
 import Echo from 'laravel-echo';
 import { setSingleHeader } from '../../../functions/routers'
+import { countBy } from 'lodash'
 /* import Pusher from 'pusher-js'; */
 // import moment from 'moment'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 // const day = moment().format('YYYY-MM-DD')
 // const validador = moment("2021-07-01").isSameOrAfter(day);
-const horasPorTrabajar = 9
+const horasPorTrabajar = 8
 class Checador extends Component {
     state = {
         mes: meses[new Date().getMonth()],
@@ -135,10 +136,13 @@ class Checador extends Component {
     getHours(user, day) {
         let timeFechaStart=''
         let timeFechaEnd=''
+        let Permiso=''
+        let Vacaciones=''
         let noCumplioHorario = false
         user.checadores.forEach(element=>{
             var fechaStart = new Date(element.fecha_inicio)
             var fechaEnd = new Date(element.fecha_fin)
+    
             if(fechaStart.getDate() === day){
                 timeFechaStart = this.setTimer(fechaStart.getHours()) + ":" + this.setTimer(fechaStart.getMinutes())
                 if(element.fecha_fin=== null){
@@ -148,17 +152,77 @@ class Checador extends Component {
                 }
                 var fecha3 =fechaEnd-fechaStart
                 var minutosTrabajados = Math.floor((fecha3/1000)/60)
+
                 if(minutosTrabajados<(horasPorTrabajar * 60)){
                     noCumplioHorario = true
                 }
             }
         })
-        return(
-            <div>
-                <div className={timeFechaStart >= '10:00'?'text-red font-weight-boldest':''}>{timeFechaStart}</div>
-                <div className={noCumplioHorario===true?'text-red font-weight-boldest':''}>{timeFechaEnd}</div>
-            </div>
-        )
+        if (user.empleado.permiso.length > 0){
+            user.empleado.permiso.forEach(element=>{
+                var fechaStart = new Date(element.fecha_inicio)
+                var fechaEnd = new Date(element.fecha_fin)
+                // debugger
+                if(fechaStart.getDate() === day){
+                    Permiso = 'Permiso'
+                }
+                if(fechaEnd.getDate() === day){
+                    Permiso = 'Permiso'
+                }
+
+                if(day < fechaEnd.getDate() && day > fechaStart.getDate() ){
+                    Permiso = 'Permiso'
+                }
+            })
+        }
+
+        user.empleado.vacaciones.forEach(element=>{
+            var fechaStart = new Date(element.fecha_inicio)
+            var fechaEnd = new Date(element.fecha_fin)
+            if(fechaStart.getDate() === day){
+                Vacaciones = 'Vacaciones'
+            }
+            if(fechaEnd.getDate() === day){
+                Vacaciones = 'Vacaciones'
+            }
+            if(day < fechaEnd.getDate() && day > fechaStart.getDate() ){
+                Vacaciones = 'Vacaciones'
+            }
+        })
+
+        if(Permiso != '' && Vacaciones != ''){
+            return(
+                <div>
+                    <div className='text-red font-weight-boldest' style={{color:'green'}}>Permiso</div>
+                    <div className='text-red font-weight-boldest' style={{color:'green'}}>Vacaciones</div>
+
+                </div>
+              
+            )
+
+        }else if(Permiso != ''){
+            return(
+                <div>
+                    <div className='text-red font-weight-boldest' style={{color:'green'}}>Permiso</div>
+                </div>
+              
+            )
+        } else if(Vacaciones != ''){
+            return(
+                <div>
+                    <div className='text-red font-weight-boldest' style={{color:'green'}}>Vacaciones</div>
+                </div>
+            )
+
+        }else{
+            return(
+                <div>
+                    <div className={timeFechaStart >= '09:30'?'text-red font-weight-boldest':''}>{timeFechaStart}</div>
+                    <div className={noCumplioHorario===true?'text-red font-weight-boldest':''}>{timeFechaEnd}</div>
+                </div>
+            )
+        }
+       
     }
     getDifHours = (user, day) => {
         let diference = 0
@@ -188,7 +252,7 @@ class Checador extends Component {
                 : diference === (horasPorTrabajar * 60) ? "text-info font-weight-boldest"
                     : "text-success font-weight-boldest"
             }>
-                { this.setTimer((diference - (diference % 60))/60) }
+                { this.setTimer((diference - 60 - (diference % 60))/60) }
                 :
                 { this.setTimer(diference % 60) }
             </div>
