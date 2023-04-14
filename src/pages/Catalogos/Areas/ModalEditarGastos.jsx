@@ -2,10 +2,12 @@ import React, {useState, useEffect} from 'react'
 import { useSelector } from 'react-redux'
 
 import Swal from 'sweetalert2'
+import axios from 'axios'
 
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 
+import { URL_DEV } from './../../../constants'
 import { Modal } from '../../../components/singles'
 import { apiPutForm } from '../../../functions/api'
 import ModalModificarSubGasto from './ModalModificarSubGasto'
@@ -61,6 +63,7 @@ export default function ModalEditarGastos (props) {
     }
 
     const handleOpenPartida = (info) =>{
+        console.log(info)
         setModal({
             ...modal,
             modificarSubGasto:{
@@ -209,6 +212,19 @@ export default function ModalEditarGastos (props) {
         }
     }
 
+    // const contador = () => {
+    //     axios.options(`${URL_DEV}v2/catalogos/areas/gastos?id=${data.id}&tipo=${'gastos'}`, { headers: setSingleHeader(user.access_token) })
+    //     .then((response) => {
+    //         console.log(response.data)
+    //         // if(response.data.subareas.length === 0) {
+    //         if(response.data.areas > 0) {
+    //             console.log(response.data.areas)
+    //         }else{
+    //             console.log('adios')
+    //         }
+    //     })
+    // }
+
 
 /*     const handleChangeSubpartidas = (e) => {
         setForm({
@@ -340,7 +356,7 @@ export default function ModalEditarGastos (props) {
             </div>
 
             <Modal size="md" title={"Modificar Sub gasto"} show={modal.modificarSubGasto.show} handleClose={()=>handleCloseGastos('modificarSubGasto')}>
-                <ModalModificarSubGasto data={modal.modificarSubGasto.data}  dataGeneral={data}/>
+                <ModalModificarSubGasto data={modal.modificarSubGasto.data} dataGeneral={data}/>
             </Modal> 
         </>
 
