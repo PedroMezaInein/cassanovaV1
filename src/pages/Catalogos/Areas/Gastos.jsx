@@ -9,7 +9,6 @@ import ModalEditarGastos from '../../../pages/Catalogos/Areas/ModalEditarGastos'
 import ModalEditarSubPartida from '../../../pages/Catalogos/Areas/ModalEditarSubPartida'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 
-
 export default function Gastos (){
 
     const userAuth = useSelector((state) => state.authUser);
@@ -85,7 +84,7 @@ export default function Gastos (){
             editarSubPartida:{
                 show:true,
                 data: info
-            }
+            },
         })
     }
 
@@ -189,6 +188,7 @@ export default function Gastos (){
             <Modal size="lg" title={"Editar Sub partida"} show={modal.editarSubPartida.show} handleClose={()=>handleCloseGastos ('editarSubPartida')}>
                 <ModalEditarSubPartida data={modal.editarSubPartida.data}/>
             </Modal>
+
         </>
     )
 }

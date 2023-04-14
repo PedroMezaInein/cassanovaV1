@@ -3,11 +3,7 @@ import { useSelector } from 'react-redux'
 
 import { apiPutForm, apiPostForm} from '../../../functions/api'
 
-
-import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 
 import Swal from 'sweetalert2'

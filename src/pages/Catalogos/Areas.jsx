@@ -298,6 +298,7 @@ class Areas extends Component {
         await axios.options(`${URL_DEV}v2/catalogos/areas?id=${data.id}&tipo=${key}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { subareas } = response.data
+                // debugger
                 let conteo = 0;
                 let busqueda = subareas.find((elemento) => {
                     return elemento.id === element.id
@@ -558,9 +559,9 @@ class Areas extends Component {
                     </Tab>
 
                     {
-                        tabs.map((elemento) => {
+                        tabs.map((elemento,index) => {
                             return(
-                                <Tab eventKey = { elemento } title = { elemento }>
+                                <Tab key={index} eventKey = { elemento } title = { elemento }>
                                     <NewTableServerRender columns = { AREAS_COLUMNS } title = 'ÁREAS' 
                                         subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
                                         onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } accessToken = { access_token } 
