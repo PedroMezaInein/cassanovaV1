@@ -1,12 +1,12 @@
 import React from 'react'
 
-const range = len => {
+/* const range = len => {
     const arr = []
     for (let i = 0; i < len; i++) {
         arr.push(i)
     }
     return arr
-}
+} */
 
 const createSelectInput = () => {
     const options = [
@@ -30,8 +30,8 @@ const createSelectInput = () => {
 const newPerson = () => {
     const statusChance = Math.random()
     return {
-        firstName: createSelectInput(),
-        lastName: 'Miguel',
+        partida: createSelectInput(),
+        subpartida: createSelectInput(),
         age: Math.floor(Math.random() * 30),
         visits: Math.floor(Math.random() * 100),
         progress: Math.floor(Math.random() * 100),
@@ -44,16 +44,20 @@ const newPerson = () => {
     }
 }
 
-export default function makeData(...lens) {
-    const makeDataLevel = (depth = 0) => {
-        const len = lens[depth]
-        return range(len).map(d => {
-            return {
-                ...newPerson(),
-                subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
-            }
-        })
+export default function makeData() {
+    const statusChance = Math.random()
+    return {
+        partida: createSelectInput(),
+        subpartida: createSelectInput(),
+        age: Math.floor(Math.random() * 30),
+        visits: Math.floor(Math.random() * 100),
+        progress: Math.floor(Math.random() * 100),
+        status:
+            statusChance > 0.66
+                ? 'relationship'
+                : statusChance > 0.33
+                    ? 'complicated'
+                    : 'single',
     }
 
-    return makeDataLevel()
 }

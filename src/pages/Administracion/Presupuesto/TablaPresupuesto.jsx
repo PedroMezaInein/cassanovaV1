@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux';
 import { useTable } from 'react-table'
 import styled from 'styled-components'
 
-import makeData from './makeData'
+import Bloque from './Modales/Bloque'
 
 const Styles = styled.div`
-  padding: 1rem;
-
+ 
   table {
     border-spacing: 0;
     border: 1px solid black;
+    background-color: white;
 
     tr {
       :last-child {
@@ -77,55 +77,146 @@ function Table({ columns, data }) {
 }
 
 export default function Presupuesto() { 
-    const [filas, setFilas] = useState(2)
+    const partidas = useSelector(state => state.opciones.areas)
 
-    const columns = React.useMemo(
-        () => [
-            {
-                Header: 'Name',
-                columns: [
-                    {
-                        Header: 'First Name',
-                        accessor: 'firstName',
-                    },
-                    {
-                        Header: 'Last Name',
-                        accessor: 'lastName',
-                    },
-                ],
-            },
-            {
-                Header: 'Info',
-                columns: [
-                    {
-                        Header: 'Age',
-                        accessor: 'age',
-                    },
-                    {
-                        Header: 'Visits',
-                        accessor: 'visits',
-                    },
-                    {
-                        Header: 'Status',
-                        accessor: 'status',
-                    },
-                    {
-                        Header: 'Profile Progress',
-                        accessor: 'progress',
-                    },
-                ],
-            },
-        ],
-        []
+    const [dataTable, setDataTable] = useState([])
+
+    const createSelectInput = () => {
+        return (
+            <select>
+                {partidas.map((option, index) => (
+                    <option key={index} value={option.id_area}>
+                        {option.nombreArea}
+                    </option>
+                ))}
+            </select>
+        )
+    }
+
+    const createMoneyInput = () => {
+        return (
+            <input type="number"style={{width: '8.2rem'}}/>
+        )
+    }
+
+    const buttonAdd = () => {
+        return (
+            <button onClick={() => {
+                setData([...data, {
+                    partida: createSelectInput(),
+                    subpartida: createSelectInput(),
+                }])
+            }}>+</button>
+        )
+    }
+
+    const [data, setData] = useState([
+        {
+            partida: createSelectInput(),
+            subpartida: createSelectInput(),
+            1: createMoneyInput(),
+            2: createMoneyInput(),
+            3: createMoneyInput(),
+            4: createMoneyInput(),
+            5: createMoneyInput(),
+            6: createMoneyInput(),
+            7: createMoneyInput(),
+            8: createMoneyInput(),
+            9: createMoneyInput(),
+            10: createMoneyInput(),
+            11: createMoneyInput(),
+            12: createMoneyInput(),
+        }]
     )
 
-    const data = React.useMemo(() => makeData(2), [])
+    console.log(data)
+
+    const handleAdd = () => {
+        setData([...data, {
+            partida: createSelectInput(),
+            subpartida: createSelectInput(),
+        }])
+    }
+
+    const columns =
+    [
+        {
+            Header: ' ' ,
+            columns: [
+                {
+                    Header: 'Partida',
+                    accessor: 'partida',
+                },
+                {
+                    Header: 'Subpartida',
+                    accessor: 'subpartida',
+                },
+            ],
+        },
+        {
+            Header: ' ',
+            columns: [
+
+                {
+                    Header: 'Enero',
+                    accessor: '1',
+                },
+                {
+                    Header: 'Febrero',
+                    accessor: '2',
+                },
+                {
+                    Header: 'Marzo',
+                    accessor: '3',
+                },
+                {
+                    Header: 'Abril',
+                    accessor: '4',
+                },
+                {
+                    Header: 'Mayo',
+                    accessor: '5',
+                },
+                {
+                    Header: 'Junio',
+                    accessor: '6',
+                },
+                {
+                    Header: 'Julio',
+                    accessor: '7',
+                },
+                {
+                    Header: 'Agosto',
+                    accessor: '8',
+                },
+                {
+                    Header: 'Septiembre',
+                    accessor: '9',
+                },
+                {
+                    Header: 'Octubre',
+                    accessor: '10',
+                },
+                {
+                    Header: 'Noviembre',
+                    accessor: '11',
+                },
+                {
+                    Header: 'Diciembre',
+                    accessor: '12',
+                },
+            ],
+        },
+    ]
+
 
     return (
         <>
-            <Styles>
+            {/* <Styles>
                 <Table columns={columns} data={data} />
-            </Styles>
+                {buttonAdd()}
+            </Styles> */}
+            <Bloque />
         </>
     )
 }
