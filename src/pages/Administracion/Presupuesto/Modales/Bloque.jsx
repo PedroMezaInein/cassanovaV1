@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 
 import { useTable } from 'react-table'
@@ -119,15 +119,17 @@ export default function Bloque(props) {
         Diciembre: '',
     }]
 
-    const createData = () => {
-        let aux = []
-        for (let i = 0; i < areas.length; i++) {
-            aux.push(data)
-        }
-        return aux
-    }
+    useEffect(() => { 
 
-    const [form, setForm] = useState(createData())
+        if (areas.length >= 13) {
+            setForm(createData())
+        }
+
+    }, [areas])
+
+    
+
+    
 
     const getColumnas = (index) => {
         let columnas = [
@@ -237,18 +239,16 @@ export default function Bloque(props) {
         )
     }
 
-
     const handleMoney = (partida, index, mes, e) => {
-        setForm({
+        let indexPartida = form[index].findIndex(partida => partida.partida_id === partida.partida_id)
+        let aux = form[index].find(partida => partida.area_id === partida.area_id)
+        setForm([
             ...form,
-            [index]: {
+            form[index] = [
                 ...form[index],
-                [0]: {
-                    ...form[index][0],
-                    [mes]: e
-                }
-            }
-        })
+
+            ]
+        ])
     }
 
     const createCurrencyInput = (partida, index, mes) => {
@@ -256,7 +256,7 @@ export default function Bloque(props) {
             <CurrencyTextField
                 
                 variant="standard"
-                value={form[index][0][mes] ? form[index][0][mes] : ''}
+                value={form ? form[index][mes] : ''}
                 currencySymbol="$"
                 outputFormat="number"
                 onChange={(event, value) => handleMoney(partida, index, mes,value)}
@@ -265,9 +265,36 @@ export default function Bloque(props) {
         )
     }
 
+    const createData = () => {
+        let aux = []
+        areas.map((area, index) => {
+            aux.push([{
+                area: area.nombreArea,
+                area_id: area.id_area,
+                partida: createSelectInput(area.id_area),
+                partida_id: '',
+                subpartida: createSelectInput(area.id_area),
+                subpartida_id: '',
+                eliminar: createDeleteButton(),
+                1: createCurrencyInput(area, index, 1),
+                2: createCurrencyInput(area, index, 2),
+                3: createCurrencyInput(area, index, 3),
+                4: createCurrencyInput(area, index, 4),
+                5: createCurrencyInput(area, index, 5),
+                6: createCurrencyInput(area, index, 6),
+                7: createCurrencyInput(area, index, 7),
+                8: createCurrencyInput(area, index, 8),
+                9: createCurrencyInput(area, index, 9),
+                10: createCurrencyInput(area, index, 10),
+                11: createCurrencyInput(area, index, 11),
+                12: createCurrencyInput(area, index, 12),
+            }])
+        })
 
+        return aux
+    }
 
-    
+    const [form, setForm] = useState(createData())
 
     const createTables = (partida, index) => {
         let aux = [{
@@ -296,7 +323,7 @@ export default function Bloque(props) {
             <>
                 <div>
                     <Styles>
-                        <Table columns={getColumnas(index)} data={aux} />
+                        <Table columns={getColumnas(index)} data={form[index]} />
                     </Styles>
                     
                 </div>
@@ -310,11 +337,10 @@ export default function Bloque(props) {
     return (
         <>
             <div>
-                {
+                { form.length >= 13 &&
                     partidas.map((partida, index) => {
                         return createTables(partida, index)
-                    }
-                    )
+                    })
                 }
                 {/* <button onClick={handleAddBloque}>Agregar bloque</button> */}
             </div>
