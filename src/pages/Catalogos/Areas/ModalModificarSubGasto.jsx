@@ -22,6 +22,7 @@ export default function ModalModificarSubGasto (props){
     const [form, setForm] = useState({
         idsubGasto: '',
         idsubGastoViejo: data.id,
+        arraySubGastos: ''
     })
     console.log(form)
 
@@ -29,7 +30,7 @@ export default function ModalModificarSubGasto (props){
         contador()
     }, [])
 
-    // console.log(dataGeneral)
+    console.log(dataGeneral)
     // console.log(data)
     // console.log(data.nombre)
 
@@ -148,13 +149,11 @@ export default function ModalModificarSubGasto (props){
                         onChange={handleChange}
                     >
                         {
-                           
                             dataGeneral.subpartida.map((item,index) => {
                                 if(item.id !== data.id){
                                     return <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                }
-                                
-                        })
+                                }   
+                            })
                         }
 
                     </Select>
