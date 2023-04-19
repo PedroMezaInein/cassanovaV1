@@ -89,6 +89,7 @@ class PresupuestoForm extends Component {
                 return false
             })
             return false
+            
         })
         return aux
     }
