@@ -18,7 +18,7 @@ import { setOptions } from '../../../functions/setters'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import StatusIndicator from './utils/StatusIndicator'
 
-import Layout from '../../../components/layout/layout'
+// import Layout from '../../../components/layout/layout'
 
 export default function RequisicionCompras() { 
     const userAuth = useSelector((state) => state.authUser);
@@ -277,11 +277,20 @@ export default function RequisicionCompras() {
 
     return (
         <>
-            <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
-                <>
-                    <TablaGeneral titulo='Solicitudes de Gasto' columnas={columnas} url='requisicion/admin' ProccessData={ProccessData} numItemsPagina={12} acciones={createAcciones()} opciones={opciones} reload={setReloadTable} />
-                </>
-            </Layout>
+            {/* <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'> */}
+            <>
+                <TablaGeneral 
+                    titulo='Solicitudes de Gasto' 
+                    columnas={columnas} 
+                    url='requisicion/admin' 
+                    ProccessData={ProccessData} 
+                    numItemsPagina={12} 
+                    acciones={createAcciones()} 
+                    opciones={opciones} 
+                    reload={setReloadTable} 
+                />
+            </>
+            {/* </Layout> */}
             {
                 estatusCompras && opcionesApi ?
                     <>
