@@ -89,7 +89,7 @@ class PresupuestoForm extends Component {
                 return false
             })
             return false
-            
+
         })
         return aux
     }
@@ -125,6 +125,7 @@ class PresupuestoForm extends Component {
     render() {
         const { options, form, onChange, onSubmit, formeditado, data, checkButton, showFormCalidad, showFormProyecto } = this.props
         const { showForm, partidas } = this.state
+        console.log(options)
         let options_conceptos  = {}
         data.partidas.forEach((partida) => {
             partida.subpartidas.forEach((subpartida) => {
