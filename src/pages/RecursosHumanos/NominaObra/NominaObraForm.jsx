@@ -416,20 +416,21 @@ class NominaObraForm extends Component {
                 rows.forEach( (row, index) => {
                     if(index > 1){
                         if(row[0] !== null && ((row[28] + row[27] + row[26] + row[25]) > 0)){
+                            // console.log(row)
                             let usuario = data.usuarios.find((element) => { return element.nombre === row[1] })
                             aux.push(
                                 {
                                     usuario: usuario ? usuario.id.toString() : '',
                                     costo_hr_regular: row[10] ? row[10] : 0.0,
                                     costo_hr_nocturna: row[19] ? row[19] : 0.0,
-                                    costo_hr_extra: row[22] ? row[22] : 0.0,
+                                    costo_hr_extra: row[28] ? row[28] : 0.0,
                                     total_hrs_regular: row[9] ? row[9] : 0,
                                     total_hrs_nocturna: row[18] ? row[18] : 0,
-                                    total_hrs_extra: row[21] ? row[21] : 0,
-                                    viaticos: row[23] ? row[23] : 0.0,
-                                    nominImss: row[25] ? row[25] : 0.0,
-                                    restanteNomina: ((row[10] * row[9]) + (row[19] * row[18])) - row[25],
-                                    extras: (row[22] * row[21]) + row[23]
+                                    total_hrs_extra: row[27] ? row[27] : 0,
+                                    viaticos: row[29] ? row[29] : 0.0,
+                                    nominImss: row[31] ? row[31] : 0.0,
+                                    restanteNomina: ((row[10] * row[9]) + (row[19] * row[18])) - row[31],
+                                    extras: (row[28] * row[27]) + row[30]
                                 }
                             )
                         }
