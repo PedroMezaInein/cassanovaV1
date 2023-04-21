@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiPutForm, apiOptions } from '../../../functions/api'
+import { apiDelete } from '../../../functions/api'
 import axios from 'axios'
 import { URL_DEV } from './../../../constants'
 import { setSingleHeader } from './../../../functions/routers'
@@ -11,13 +11,14 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import Swal from 'sweetalert2'
+import './AreaStyle/_agregarGasto.scss'
 
 export default function ModalModificarSubGasto (props){
 
     const { data, handleClose, reload , dataGeneral} = props
     const user = useSelector(state => state.authUser)
     const [contadorRelaciones, setContadorRelaciones] = useState(0)
-    console.log(contadorRelaciones)
+    // console.log(contadorRelaciones)
 
     const [form, setForm] = useState({
         idsubGasto: '',
@@ -31,7 +32,7 @@ export default function ModalModificarSubGasto (props){
     }, [])
 
     console.log(dataGeneral)
-    // console.log(data)
+    console.log(data)
     // console.log(data.nombre)
 
     const handleChange = (event) => {
@@ -81,12 +82,12 @@ export default function ModalModificarSubGasto (props){
             }) 
             try {
 
-                let newForm = {
-                    id_subGasto: form.idsubGasto,
-                }
-                console.log(newForm.id_subGasto)
+                // let newForm = {
+                //     id_subGasto: form.idsubGasto,
+                // }
+                // console.log(newForm.id_subGasto)
 
-                apiPutForm(`insumos/${data.id}`, newForm, user.access_token)
+                apiDelete(`v2/catalogos/areas/${form.idsubGastoViejo}/subareagasto/${form.idsubGasto}`, user.access_token)
                     .then((data) => {
                         Swal.fire({
                             title: 'insumo',
@@ -111,7 +112,7 @@ export default function ModalModificarSubGasto (props){
                         console.log(error)
                     })
             } catch (error) { 
-                console.log(error)
+                // console.log(error)
                 Swal.close()
                 Swal.fire({
                     icon: 'error',
@@ -135,10 +136,9 @@ export default function ModalModificarSubGasto (props){
         <> 
         {
             contadorRelaciones !== 0  ?
-            <div> 
+            <div className='modalModificarSubGasto'> 
                 <h4>Eliminarás el sub gasto "{data.nombre}"</h4>
-                <br></br>
-                <div>y tiene compras {contadorRelaciones} asignadas</div>
+                <div className='modalModificarSubGasto_contador'>y tiene {contadorRelaciones} gastos asignados, reemplázalo por otro existente</div>
                 <br></br>
 
                 <div>
@@ -158,18 +158,26 @@ export default function ModalModificarSubGasto (props){
 
                     </Select>
                 </div>
-                <div>
-                    <button onClick={handleChangeSubGasto}>Aceptaaaar</button>
+
+                <div className='modalModificarSubGasto_leyenda'>Al terminar de modificar todos los sub gastos requeridos, da clic en el boton amarillo "Agregar" para notar los cambios en la tabla</div>
+                
+                <div className='modalModificarSubGasto_boton'>
+                    <button className='modalModificarSubGasto_aceptar' onClick={handleChangeSubGasto}>Aceptar</button>
                 </div>
             </div>
             
-            :<div>
-                <h5>estás seguro de eliminar este sub gasto?</h5>
-                <div>
-                    <button>Aceptar</button>
-                    <button>Cancelar</button>
+            :
+            <center>
+                <div className='modalModificarSubGasto_eliminar'>
+                    <h5>estás seguro de eliminar este sub gasto?</h5>
+                    <h6>Una vez eliminado, no podrás recuperarlo</h6>
+                    <div className='modalModificarSubGasto_eliminar_botones'>
+                        <button className='modalModificarSubGasto_eliminar_botones_aceptar'>Aceptar</button>
+                        <button className='modalModificarSubGasto_eliminar_botones_cancelar' onClick={handleClose}>Cancelar</button>
+                    </div>
                 </div>
-            </div>
+            </center>
+            
             
         }
         </>

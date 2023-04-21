@@ -1,13 +1,12 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
 import Swal from 'sweetalert2'
-import axios from 'axios'
 
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
 
-import { URL_DEV } from './../../../constants'
 import { Modal } from '../../../components/singles'
 import { apiPutForm } from '../../../functions/api'
 import ModalModificarSubGasto from './ModalModificarSubGasto'
@@ -34,7 +33,20 @@ export default function ModalEditarGastos (props) {
         }
     })
 
+    const [reloadTable, setReloadTable] = useState()
+
     const [errores, setErrores] = useState({})
+
+    const useStyles = makeStyles((theme) => ({
+        root: {
+            '& .MuiTextField-root': {
+                margin: theme.spacing(1),
+                width: '25ch',
+            },
+        },
+    }));
+
+    const classes = useStyles();
 
     const handleChange=(e)=>{
         if(e.target.value.replace(/\s/g, '').length > 0){
@@ -188,8 +200,7 @@ export default function ModalEditarGastos (props) {
                 handleClose()
                 if(reload){
                     reload.reload()
-                }
-               
+                }  
                 
             })
             .catch((error)=>{  
@@ -212,43 +223,17 @@ export default function ModalEditarGastos (props) {
         }
     }
 
-    // const contador = () => {
-    //     axios.options(`${URL_DEV}v2/catalogos/areas/gastos?id=${data.id}&tipo=${'gastos'}`, { headers: setSingleHeader(user.access_token) })
-    //     .then((response) => {
-    //         console.log(response.data)
-    //         // if(response.data.subareas.length === 0) {
-    //         if(response.data.areas > 0) {
-    //             console.log(response.data.areas)
-    //         }else{
-    //             console.log('adios')
-    //         }
-    //     })
-    // }
-
-
-/*     const handleChangeSubpartidas = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]:e.target.value,
-        })
-
-    } */
-
     return (
         <>
-            <div className='titulo_gasto'>al escribir una nueva área o partida presiona enter para que esta sea creada</div>
+            <div className='titulo_gasto'>al escribir una nueva área o partida, presiona enter para que esta sea creada</div>
 
             <div className='gasto_area'>
 
                 <div>
                     <FormControl className='editar_comentario'>
                         <TextField 
-                            // id="standard-full-width"
                             label="área"
                             style={{ margin: 8 }}
-                            // placeholder="Deja un comentario"
-                            // helperText="Full width!"
-                            // fullWidth
                             onChange={handleChange}
                             onKeyPress={handleChange}
                             margin="normal"
@@ -278,12 +263,8 @@ export default function ModalEditarGastos (props) {
                 <div>
                     <FormControl className='editar_comentario'>
                         <TextField 
-                            // id="standard-full-width"
                             label="partida"
                             style={{ margin: 8 }}
-                            // placeholder="Deja un comentario"
-                            // helperText="Full width!"
-                            // fullWidth
                             onChange={handleChange}
                             onKeyPress={handleChange}
                             margin="normal"
@@ -312,7 +293,7 @@ export default function ModalEditarGastos (props) {
             </div>
 
             {/* SUBPARTIDA */}
-
+                  
             <div className='subpartida_gasto'>
                 <label>Subpartida</label>
                 <input 
@@ -355,9 +336,9 @@ export default function ModalEditarGastos (props) {
                 </button> 
             </div>
 
-            <Modal size="md" title={"Modificar Sub gasto"} show={modal.modificarSubGasto.show} handleClose={()=>handleCloseGastos('modificarSubGasto')}>
-                <ModalModificarSubGasto data={modal.modificarSubGasto.data} dataGeneral={data}/>
-            </Modal> 
+            <Modal size="lg" title={"Editar Sub gasto"} show={modal.modificarSubGasto.show} handleClose={()=>handleCloseGastos ('modificarSubGasto')}>
+                <ModalModificarSubGasto data={modal.modificarSubGasto.data} dataGeneral={data} handleClose={()=>handleCloseGastos ('modificarSubGasto')} reload={reloadTable}/>
+            </Modal>
         </>
 
     )

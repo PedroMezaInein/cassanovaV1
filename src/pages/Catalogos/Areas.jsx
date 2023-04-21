@@ -185,6 +185,7 @@ class Areas extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
+        // await axios.delete(`${URL_DEV}v2/catalogos/areas/${data.id}/subarea/${element.id}?sub=${form.subarea}`, 
         await axios.delete(`${URL_DEV}v2/catalogos/areas/${data.id}/subarea/${element.id}?sub=${form.subarea}`, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
