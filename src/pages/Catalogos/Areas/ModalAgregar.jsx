@@ -10,6 +10,7 @@ import { apiPostForm } from '../../../functions/api'
 import './AreaStyle/_agregarGasto.scss'
 
 export default function ModalAgregar (props) {
+
     const {handleClose, reload} = props
     const user = useSelector(state=> state.authUser)
 
@@ -165,8 +166,7 @@ export default function ModalAgregar (props) {
                 handleClose()
                 if(reload){
                     reload.reload()
-                }
-               
+                } 
                 
             })
             .catch((error)=>{  

@@ -132,6 +132,68 @@ export default function ModalModificarSubGasto (props){
         }
     }
 
+    const deleteSubGasto = () => {
+        if(true){
+
+            Swal.fire({
+                title: 'Cargando...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            }) 
+            try {
+
+                // let newForm = {
+                //     id_subGasto: form.idsubGasto,
+                // }
+                // console.log(newForm.id_subGasto)
+
+                apiDelete(`v2/catalogos/areas/${dataGeneral.id}/subarea/${form.idsubGastoViejo}?sub=`, user.access_token)
+                    .then((data) => {
+                        Swal.fire({
+                            title: 'insumo',
+                            text: 'se ha eliminado correctamente',
+                            icon: 'success',
+                            showConfirmButton: true,
+                            timer: 2000,
+                        }).then(() => {
+                            if (reload) {
+                                reload.reload()
+                            }
+                            handleClose()
+                        })
+                    })
+                    .catch((error) => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error 1',
+                        })
+                        console.log(error)
+                    })
+            } catch (error) { 
+                // console.log(error)
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error 2',
+                })
+                console.log(error)
+            }
+        } else{
+            Swal.fire({
+                title: 'Faltan campos',
+                text: 'Favor de llenar todos los campos',
+                icon: 'info',
+                showConfirmButton: false,
+                timer: 2000,
+            })
+        }
+    }
+
     return(
         <> 
         {
@@ -158,8 +220,6 @@ export default function ModalModificarSubGasto (props){
 
                     </Select>
                 </div>
-
-                <div className='modalModificarSubGasto_leyenda'>Al terminar de modificar todos los sub gastos requeridos, da clic en el boton amarillo "Agregar" para notar los cambios en la tabla</div>
                 
                 <div className='modalModificarSubGasto_boton'>
                     <button className='modalModificarSubGasto_aceptar' onClick={handleChangeSubGasto}>Aceptar</button>
@@ -172,7 +232,7 @@ export default function ModalModificarSubGasto (props){
                     <h5>estás seguro de eliminar este sub gasto?</h5>
                     <h6>Una vez eliminado, no podrás recuperarlo</h6>
                     <div className='modalModificarSubGasto_eliminar_botones'>
-                        <button className='modalModificarSubGasto_eliminar_botones_aceptar'>Aceptar</button>
+                        <button className='modalModificarSubGasto_eliminar_botones_aceptar' onClick={deleteSubGasto}>Aceptar</button>
                         <button className='modalModificarSubGasto_eliminar_botones_cancelar' onClick={handleClose}>Cancelar</button>
                     </div>
                 </div>

@@ -13,7 +13,18 @@ import ModalModificarSubGasto from './ModalModificarSubGasto'
 
 import './AreaStyle/_agregarGasto.scss'
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: '25ch',
+        },
+    },
+}));
+
 export default function ModalEditarGastos (props) {
+    const classes = useStyles();
+
     const {data, handleClose, reload} = props
     console.log(data)
     const user = useSelector(state => state.authUser)
@@ -37,17 +48,6 @@ export default function ModalEditarGastos (props) {
 
     const [errores, setErrores] = useState({})
 
-    const useStyles = makeStyles((theme) => ({
-        root: {
-            '& .MuiTextField-root': {
-                margin: theme.spacing(1),
-                width: '25ch',
-            },
-        },
-    }));
-
-    const classes = useStyles();
-
     const handleChange=(e)=>{
         if(e.target.value.replace(/\s/g, '').length > 0){
             setForm({
@@ -60,7 +60,6 @@ export default function ModalEditarGastos (props) {
                 [e.target.name]:'',
             })    
         }
-        
     }
 
     const handleEnterSub=(e)=>{
@@ -293,7 +292,24 @@ export default function ModalEditarGastos (props) {
             </div>
 
             {/* SUBPARTIDA */}
-                  
+
+            {/* <form className={classes.root} noValidate autoComplete="off">
+          
+                <TextField 
+                    // id="outlined-helperText"
+                    label="Helper text"
+                    // defaultValue="Default Value"
+                    helperText="Some important text"
+                    variant="outlined"
+                    name='subPartida' 
+                    type='text' 
+                    placeholder="Enter para crear subpartida"
+                    value={form.subPartida} 
+                    onKeyPress={handleEnterSub}  
+                    onChange={handleChange}
+                />
+            </form> */}
+
             <div className='subpartida_gasto'>
                 <label>Subpartida</label>
                 <input 
@@ -328,6 +344,8 @@ export default function ModalEditarGastos (props) {
                     }  
                 </div> 
             </div>
+
+            <div className='gasto_leyenda'>Al terminar de modificar todos los cambios deseados, da clic en el boton amarillo "Agregar" para mostrar la nueva información en la tabla</div>
 
             {/* ENVIAR */}
             <div className='boton'>

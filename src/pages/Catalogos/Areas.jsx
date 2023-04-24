@@ -44,6 +44,7 @@ class Areas extends Component {
         key: 'gastos',
         options: { areas: [], subareas: [], partidas: []}
     }
+
     
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
