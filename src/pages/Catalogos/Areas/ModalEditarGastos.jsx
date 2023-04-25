@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { useSelector } from 'react-redux'
 
 import Swal from 'sweetalert2'
 
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { Modal } from '../../../components/singles'
 import { apiPutForm } from '../../../functions/api'
@@ -12,7 +13,18 @@ import ModalModificarSubGasto from './ModalModificarSubGasto'
 
 import './AreaStyle/_agregarGasto.scss'
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: '25ch',
+        },
+    },
+}));
+
 export default function ModalEditarGastos (props) {
+    const classes = useStyles();
+
     const {data, handleClose, reload} = props
     console.log(data)
     const user = useSelector(state => state.authUser)
@@ -32,6 +44,8 @@ export default function ModalEditarGastos (props) {
         }
     })
 
+    const [reloadTable, setReloadTable] = useState()
+
     const [errores, setErrores] = useState({})
 
     const handleChange=(e)=>{
@@ -46,7 +60,6 @@ export default function ModalEditarGastos (props) {
                 [e.target.name]:'',
             })    
         }
-        
     }
 
     const handleEnterSub=(e)=>{
@@ -61,6 +74,7 @@ export default function ModalEditarGastos (props) {
     }
 
     const handleOpenPartida = (info) =>{
+        console.log(info)
         setModal({
             ...modal,
             modificarSubGasto:{
@@ -185,8 +199,7 @@ export default function ModalEditarGastos (props) {
                 handleClose()
                 if(reload){
                     reload.reload()
-                }
-               
+                }  
                 
             })
             .catch((error)=>{  
@@ -209,30 +222,17 @@ export default function ModalEditarGastos (props) {
         }
     }
 
-
-/*     const handleChangeSubpartidas = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]:e.target.value,
-        })
-
-    } */
-
     return (
         <>
-            <div className='titulo_gasto'>al escribir una nueva área o partida presiona enter para que esta sea creada</div>
+            <div className='titulo_gasto'>al escribir una nueva área o partida, presiona enter para que esta sea creada</div>
 
             <div className='gasto_area'>
 
                 <div>
                     <FormControl className='editar_comentario'>
                         <TextField 
-                            // id="standard-full-width"
                             label="área"
                             style={{ margin: 8 }}
-                            // placeholder="Deja un comentario"
-                            // helperText="Full width!"
-                            // fullWidth
                             onChange={handleChange}
                             onKeyPress={handleChange}
                             margin="normal"
@@ -262,12 +262,8 @@ export default function ModalEditarGastos (props) {
                 <div>
                     <FormControl className='editar_comentario'>
                         <TextField 
-                            // id="standard-full-width"
                             label="partida"
                             style={{ margin: 8 }}
-                            // placeholder="Deja un comentario"
-                            // helperText="Full width!"
-                            // fullWidth
                             onChange={handleChange}
                             onKeyPress={handleChange}
                             margin="normal"
@@ -296,6 +292,23 @@ export default function ModalEditarGastos (props) {
             </div>
 
             {/* SUBPARTIDA */}
+
+            {/* <form className={classes.root} noValidate autoComplete="off">
+          
+                <TextField 
+                    // id="outlined-helperText"
+                    label="Helper text"
+                    // defaultValue="Default Value"
+                    helperText="Some important text"
+                    variant="outlined"
+                    name='subPartida' 
+                    type='text' 
+                    placeholder="Enter para crear subpartida"
+                    value={form.subPartida} 
+                    onKeyPress={handleEnterSub}  
+                    onChange={handleChange}
+                />
+            </form> */}
 
             <div className='subpartida_gasto'>
                 <label>Subpartida</label>
@@ -332,6 +345,8 @@ export default function ModalEditarGastos (props) {
                 </div> 
             </div>
 
+            <div className='gasto_leyenda'>Al terminar de modificar todos los cambios deseados, da clic en el boton amarillo "Agregar" para mostrar la nueva información en la tabla</div>
+
             {/* ENVIAR */}
             <div className='boton'>
                 <button onClick={submit}>
@@ -339,9 +354,9 @@ export default function ModalEditarGastos (props) {
                 </button> 
             </div>
 
-            <Modal size="md" title={"Modificar Sub gasto"} show={modal.modificarSubGasto.show} handleClose={()=>handleCloseGastos('modificarSubGasto')}>
-                <ModalModificarSubGasto data={modal.modificarSubGasto.data}  dataGeneral={data}/>
-            </Modal> 
+            <Modal size="lg" title={"Editar Sub gasto"} show={modal.modificarSubGasto.show} handleClose={()=>handleCloseGastos ('modificarSubGasto')}>
+                <ModalModificarSubGasto data={modal.modificarSubGasto.data} dataGeneral={data} handleClose={()=>handleCloseGastos ('modificarSubGasto')} reload={reloadTable}/>
+            </Modal>
         </>
 
     )
