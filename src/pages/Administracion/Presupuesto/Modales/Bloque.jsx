@@ -10,6 +10,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TrashIcon from '@material-ui/icons/DeleteOutline';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
+import { apiOptions } from '../../../../functions/api'
+
 const Styles = styled.div`
  
   table {
@@ -125,6 +127,7 @@ export default function Bloque(props) {
     const areas = useSelector(state => state.opciones.areas)
     const departamento = useSelector(state => state.authUser.departamento.departamentos[0])
     const nombreUsuario = useSelector(state => state.authUser.user)
+    const auth = useSelector(state => state.authUser.access_token)
     const [form, setForm] = useState([])
     const [general, setGeneral] = useState({
         departamento: departamento.nombre,
@@ -134,40 +137,29 @@ export default function Bloque(props) {
         colaboradores: '',
         colaboradores_id: '',
         granTotal: '',
+        nomina: 0,
+        colaboradores: '',
     })
 
-    const handleChangePartida = (e, index, subindex, datos) => {
-        let nuevoForm = [...datos]
+    const [nominas, setNominas] = useState([])
+
+    useEffect(() => {
+        getNominas()
+    }, [])
+
+    const handleChangePartida = (e, index, subindex) => {
+        let nuevoForm = [...form]
         nuevoForm[index][subindex].partida_id = e.target.value
+        nuevoForm[index][subindex].subpartida_id = ''
         setForm(nuevoForm)
     }
+        
 
     const handleChangeSubpartida = (e, index, subindex) => {
         const nuevoForm = [...form]
         nuevoForm[index][subindex].subpartida_id = e.target.value
         setForm(nuevoForm)
     }
-
-    let data = [{
-        area: '',
-        area_id: '',
-        partida: '',
-        partida_id: '',
-        subpartida: '',
-        subpartida_id: '',
-        Enero: 145.25,
-        Febrero: '',
-        Marzo: '',
-        Abril: '',
-        Mayo: '',
-        Junio: '',
-        Julio: '',
-        Agosto: '',
-        Septiembre: '',
-        Octubre: '',
-        Noviembre: '',
-        Diciembre: '',
-    }]
 
     useEffect(() => {
         if (areas.length >= 13) {
@@ -199,6 +191,7 @@ export default function Bloque(props) {
                 suma += form[index][subindex][mes]
             })
         })
+        suma = suma + general.nomina
         suma = formatNumberCurrency(suma)
         return suma
     }
@@ -285,57 +278,164 @@ export default function Bloque(props) {
         return columnas
     }
 
-    const getColumnsHeader = () => {
+    const nuevaTablaNativa = (index) => {
         let columnas = [
             {
-                Header: 'Enero',
+                name: '',
+                accessor: 'eliminar',
+            },
+            {
+                name: 'Partida',
+                accessor: 'partida',
+            },
+            {
+                name: 'Subpartida',
+                accessor: 'subpartida',
+            },
+            {
+                name: `${sumaMes(index, 'Enero')}`,
                 accessor: '1',
             },
             {
-                Header: 'Febrero',
+                name: `${sumaMes(index, 'Febrero')}`,
                 accessor: '2',
             },
             {
-                Header: 'Marzo',
+                name: `${sumaMes(index, 'Marzo')}`,
                 accessor: '3',
             },
             {
-                Header: 'Abril',
+                name: `${sumaMes(index, 'Abril')}`,
                 accessor: '4',
             },
             {
-                Header: 'Mayo',
+                name: `${sumaMes(index, 'Mayo')}`,
                 accessor: '5',
             },
             {
-                Header: 'Junio',
+                name: `${sumaMes(index, 'Junio')}`,
                 accessor: '6',
             },
             {
-                Header: 'Julio',
+                name: `${sumaMes(index, 'Julio')}`,
                 accessor: '7',
             },
             {
-                Header: 'Agosto',
+                name: `${sumaMes(index, 'Agosto')}`,
                 accessor: '8',
             },
             {
-                Header: 'Septiembre',
+                name: `${sumaMes(index, 'Septiembre')}`,
                 accessor: '9',
             },
             {
-                Header: 'Octubre',
+                name: `${sumaMes(index, 'Octubre')}`,
                 accessor: '10',
             },
             {
-                Header: 'Noviembre',
+                name: `${sumaMes(index, 'Noviembre')}`,
                 accessor: '11',
             },
             {
-                Header: 'Diciembre',
+                name: `${sumaMes(index, 'Diciembre')}`,
                 accessor: '12',
             },
         ]
+
+        return (
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            {columnas.map((columna, index) => {
+                                return (
+                                    <th key={index}>{columna.name}</th>
+                                )
+                            })}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            form && form[index].length > 0 ?
+                                form[index].map((fila, subindex) => {
+                                    return (
+                                        <tr key={subindex}>
+                                            {
+                                                columnas.map((columna, subindex) => {
+                                                    return (
+                                                        <td key={subindex}>{fila[columna.accessor]}</td>
+                                                    )
+                                                })
+                                            }
+                                        </tr>
+                                    )
+                                })
+                                : null
+                            
+                        }
+                    </tbody>
+                </table>
+                <button onClick={() => addNewRow(index)}>Agregar</button>
+            </div>       
+        
+        )
+    }
+
+    const getColumnsHeader = () => {
+        let columnas = [{
+            Header: 'Total mensual',
+            columns: [
+                {
+                    Header: 'Enero',
+                    accessor: '1',
+                },
+                {
+                    Header: 'Febrero',
+                    accessor: '2',
+                },
+                {
+                    Header: 'Marzo',
+                    accessor: '3',
+                },
+                {
+                    Header: 'Abril',
+                    accessor: '4',
+                },
+                {
+                    Header: 'Mayo',
+                    accessor: '5',
+                },
+                {
+                    Header: 'Junio',
+                    accessor: '6',
+                },
+                {
+                    Header: 'Julio',
+                    accessor: '7',
+                },
+                {
+                    Header: 'Agosto',
+                    accessor: '8',
+                },
+                {
+                    Header: 'Septiembre',
+                    accessor: '9',
+                },
+                {
+                    Header: 'Octubre',
+                    accessor: '10',
+                },
+                {
+                    Header: 'Noviembre',
+                    accessor: '11',
+                },
+                {
+                    Header: 'Diciembre',
+                    accessor: '12',
+                },
+            ]
+        }]
+
         return columnas
     }
 
@@ -348,15 +448,13 @@ export default function Bloque(props) {
     const createDeleteButton = (index, subindex) => {
         return (
             <div onClick={() => deleteRow(index, subindex)} style={{ cursor: 'pointer' }}>
-                <TrashIcon />    
+                <TrashIcon />
             </div>
-            
+
         )
     }
 
     const handleMoney = (partida, index, mes, e, subindex) => {
-        console.log(partida, index, mes, e, subindex)
-        console.log(form)
         const nuevoForm = [...form]
         nuevoForm[index][subindex][mes] = e
         /* console.log(form) */
@@ -367,15 +465,22 @@ export default function Bloque(props) {
 
     const createCurrencyInput = (partida, index, mes, subindex) => {
         return (
-            <CurrencyTextField
+            <div>
+                {
+                    form &&
+                    
+                        <CurrencyTextField
 
-                variant="standard"
-                value={form[index]?.[subindex]?.[mes] ? form[index][subindex][mes] : ''}
-                currencySymbol="$"
-                outputFormat="number"
-                onChange={(event, value) => handleMoney(partida, index, mes, value, subindex)}
-            /* error={errores.monto ? true : false} */
-            />
+                            variant="standard"
+                            value={form[index]?.[subindex]?.[mes] ? form[index][subindex][mes] : ''}
+                            currencySymbol="$"
+                            outputFormat="number"
+                            onChange={(event, value) => handleMoney(partida, index, mes, value, subindex)}
+                        /* error={errores.monto ? true : false} */
+                        />
+                }
+            </div>
+            
         )
     }
 
@@ -394,69 +499,61 @@ export default function Bloque(props) {
     }
 
     const createSelectInputPartida = (data, index, subindex) => {
-        console.log(form[index][subindex])
-        console.log(data, index, subindex)
-
-        try {
-            console.log(form[index][subindex].partida_id)
-
-        }
-        catch (error) {
-            console.log(error)
-        }
-
+        let id_partida 
+        let id_subpartida
         return (
-                    <Select
-                        value={form[index]?.[subindex]?.partida_id ? form[index][subindex].partida_id : '0'}
-                        onChange={e => handleChangePartida(e, index, subindex, getForm())}
-                    /* className={classes.textField} */
-                    >
-                        {areas?.find(partida => partida.id_area === data) ? areas.find(partida => partida.id_area === data).partidas.map(partida => (
-                            <MenuItem key={partida.id} value={partida.id}>{partida.nombre}</MenuItem>
-                        )) :
-                            <MenuItem value={0}>Seleccione una partida</MenuItem>
-                        }
-                    </Select>    
-                
-            
+            <div>
+                <select onChange={e => handleChangePartida(e, index, subindex)} value={form[index][subindex]?.partida_id} style={{ width: '100%' }}>
+                    <option value='' hidden>Seleccione una partida</option>
+                    {areas?.find(partida => partida.id_area === data) && areas.find(partida => partida.id_area === data).partidas.map(partida => (
+                        <option key={partida.id} value={partida.id}>{partida.nombre}</option>
+                    )) }
+                </select>
+            </div>
         )
     }
-    
-    const createSelectInputSubpartida = (data, index, subindex) => {
+
+    const createSelectInputSubpartida = (id_area, index, subindex) => {
 
         return (
             <div>
                 {
-                    form[index].length > 0 && form[index][subindex] && form[index][subindex].partida_id && form[index][subindex].partida_id !== '' &&
-                    <Select
-                        value={form.length > 0 ? form[index][subindex].subpartida_id : ''}
-                        onChange={e => handleChangeSubpartida(e, index, subindex)}
-                        /* className={classes.textField} */
-                    >
-                            {areas?.find(partida => partida.id_area === data) ? areas.find(partida => partida.id_area === data).partidas.find(partida => partida.id === form[index][subindex].partida_id).subpartidas.map(subpartida => (   
-                                <MenuItem key={subpartida.id} value={subpartida.id}>{subpartida.nombre}</MenuItem>
-                            )) :
-                                <MenuItem value={0}>Seleccione una partida</MenuItem>
-
-                            }
-                    </Select>
+                    form && form[index][subindex] &&
+                        <select onChange={e => handleChangeSubpartida(e, index, subindex)} value={form[index][subindex]?.subpartida_id} style={{ width: '100%' }}>
+                        {form[index][subindex]?.partida_id !== '' ?
+                            <>
+                                <option value='' hidden>habilitado</option>
+                                {console.log(form[index][subindex])}
+                                {
+                                    areas?.find(partida => partida.id_area === id_area).partidas.find(partida => partida.id === form[index][subindex].partida_id).subpartidas.map(subpartida => (
+                                        <option key={subpartida.id} value={subpartida.id}>{subpartida.nombre}</option>
+                                    ))
+                                }
+                            </>
+                            :
+                            <option value='' hidden>disabled</option>
+                        }    
+                    </select>
                 }
-            </div> 
+                
+            </div>
         )
     }
-
-   /*  console.log(form) */
 
     const createTables = (partida, index) => {
         return (
             <>
-                <div key={index}>
-                    <Styles>
-                        <Table columns={getColumnas(index)} data={form[index]} />
-                        <button onClick={() => addNewRow(index)}>Agregar</button>
-                    </Styles>
+                {
+                    form &&
+                    <div key={index}>
+                        <Styles>
+                            <Table columns={getColumnas(index)} data={form[index]} />
+                            <button onClick={() => addNewRow(index)}>Agregar</button>
+                        </Styles>
 
-                </div>
+                    </div>
+                }
+                
             </>
         )
     }
@@ -494,7 +591,7 @@ export default function Bloque(props) {
     const addNewRow = (index) => {
         let aux = form[index]
         let id = aux.length > 0 ? aux[aux.length - 1].id + 1 : 0
-        
+
         aux.push({
             id: id,
             area: areas[index].nombreArea,
@@ -542,7 +639,7 @@ export default function Bloque(props) {
         return (
             <div>
                 <StylesGeneral>
-                    <Table columns={columnas} data={[{ nombre: general.departamento}]} />
+                    <Table columns={columnas} data={[{ nombre: general.departamento }]} />
                 </StylesGeneral>
             </div>
         )
@@ -561,6 +658,22 @@ export default function Bloque(props) {
             <div>
                 <StylesGeneral>
                     <Table columns={columnas} data={[{ nombre: general.gerente }]} />
+                </StylesGeneral>
+            </div>
+        )
+    }
+
+    const createTableColaboradores = () => {
+        const columnas = [
+            {
+                Header: 'Colaboradores',
+                accessor: 'nombre',
+            }
+        ]
+        return (
+            <div>
+                <StylesGeneral>
+                    <Table columns={columnas} data={[{ nombre: general.colaboradores }]} />
                 </StylesGeneral>
             </div>
         )
@@ -589,6 +702,7 @@ export default function Bloque(props) {
                 }
             }
         }
+        total = total + (general.nomina * 12)
         total = formatNumberCurrency(total)
         return total
     }
@@ -610,42 +724,158 @@ export default function Bloque(props) {
 
         return (
             <div>
-                <StylesGeneral>
+                <Styles>
                     <Table columns={columnas} data={getDataGranTotal()} />
-                </StylesGeneral>
+                </Styles>
             </div>
         )
     }
 
+    const getNominas = () => {
+        try {
+            apiOptions(`presupuestosdep?departamento_id=${general.departamento_id}`, auth)
+                .then(res => {
+                    let suma = 0
+                    setNominas([...res.data.empleados])
+                    for (let i = 0; i < res.data.empleados.length; i++) {
+                        suma += res.data.empleados[i].nomina_imss + res.data.empleados[i].nomina_extras
+                    }
+                    suma = suma * 2
+                    setGeneral({
+                        ...general,
+                        nomina: suma,
+                        colaboradores: res.data.empleados.length
+                    })
+                })
 
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getDataNominas = () => {
+        let suma = 0
+        for (let i = 0; i < nominas.length; i++) {
+            suma += nominas[i].nomina_imss + nominas[i].nomina_extras
+        }
+        suma = suma * 2
+        let aux = [{
+            nombre: 'Nóminas',
+            1: formatNumberCurrency(suma),
+            2: formatNumberCurrency(suma),
+            3: formatNumberCurrency(suma),
+            4: formatNumberCurrency(suma),
+            5: formatNumberCurrency(suma),
+            6: formatNumberCurrency(suma),
+            7: formatNumberCurrency(suma),
+            8: formatNumberCurrency(suma),
+            9: formatNumberCurrency(suma),
+            10: formatNumberCurrency(suma),
+            11: formatNumberCurrency(suma),
+            12: formatNumberCurrency(suma),
+        }]
+        return aux
+    }
+
+    const createTableNominas = () => {
+        const aux = [{
+            Header: 'Nóminas',
+            columns: [
+                {
+                    Header: ' ',
+                    accessor: '1',
+                },
+                {
+                    Header: ' ',
+                    accessor: '2',
+                },
+                {
+                    Header: ' ',
+                    accessor: '3',
+                },
+                {
+                    Header: ' ',
+                    accessor: '4',
+                },
+                {
+                    Header: ' ',
+                    accessor: '5',
+                },
+                {
+                    Header: ' ',
+                    accessor: '6',
+                },
+                {
+                    Header: ' ',
+                    accessor: '7',
+                },
+                {
+                    Header: ' ',
+                    accessor: '8',
+                },
+                {
+                    Header: ' ',
+                    accessor: '9',
+                },
+                {
+                    Header: ' ',
+                    accessor: '10',
+                },
+                {
+                    Header: ' ',
+                    accessor: '11',
+                },
+                {
+                    Header: ' ',
+                    accessor: '12',
+                },
+            ]
+        }]
+
+        return (
+            <div>
+                <Styles>
+                    <Table columns={aux} data={getDataNominas()} />
+                </Styles>
+            </div>
+        )
+    }
+
+    console.log(form)
 
     return (
         <>
-            <div style={{ backgroundColor: 'white', padding: '2rem'}}>
+            <div style={{ backgroundColor: 'white', padding: '2rem' }}>
                 <div>
                     <h1 style={{ textAlign: 'center' }}>Infraestructura e Interiores, S.A. de C.V.</h1>
                     <h2 style={{ textAlign: 'center' }}>Presupuesto Anual 2023</h2>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom:'5rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
                     {createTableDepartamento()}
+                    {createTableColaboradores()}
                     {createTableGerente()}
                     {createTableGranTotal()}
                 </div>
-                <div style={{ marginLeft:'18vw' }}>
+                <div style={{ marginLeft: '18vw' }}>
                     {
                         form.length >= 13 &&
                         createHeader()
-                    }    
+                    }
+                    {
+                        nominas.length > 0 &&
+                        createTableNominas()
+                    }
                 </div>
-                
-                {form.length >= 13 &&
+
+                {form && form.length >= 13 &&
                     partidas.map((partida, index) => {
                         /* if (form[index].length > 0){
                             return createTables(partida, index)
                         } else {
                             return null
                         } */
-                        return createTables(partida, index)
+                         return createTables(partida, index)
+                        /* return nuevaTablaNativa(index) */
                     })
                 }
                 {/* <button onClick={handleAddBloque}>Agregar bloque</button> */}
