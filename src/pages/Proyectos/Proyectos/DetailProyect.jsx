@@ -79,7 +79,7 @@ export default function DetailProyect() {
 
     useEffect(() => { 
         let actualUrl = window.location.href
-        actualUrl = actualUrl.split('/')
+        actualUrl = actualUrl.split('/') // http://localhost:3000/proyectos/proyectos/nuevo/233 -> ['http:', '', 'localhost:3000', 'proyectos', 'proyectos', 'nuevo', '233']
         getOneProyecto(actualUrl[actualUrl.length - 1])
         
     }, [])
