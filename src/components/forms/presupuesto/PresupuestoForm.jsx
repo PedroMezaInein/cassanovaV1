@@ -89,6 +89,7 @@ class PresupuestoForm extends Component {
                 return false
             })
             return false
+
         })
         return aux
     }
@@ -124,20 +125,26 @@ class PresupuestoForm extends Component {
     render() {
         const { options, form, onChange, onSubmit, formeditado, data, checkButton, showFormCalidad, showFormProyecto } = this.props
         const { showForm, partidas } = this.state
+        // console.log(options)
         let options_conceptos  = {}
+        // console.log(data.partidas)
         data.partidas.forEach((partida) => {
-            partida.subpartidas.forEach((subpartida) => {
-                subpartida.conceptos.forEach((concepto) => {
-                    if (form.conceptos[concepto.clave]) {
-                        let tipo = concepto.subpartida.partida.nombre
-                        if (!options_conceptos[tipo]) {
-                            options_conceptos[tipo] = []
+            if(partida.subpartidas){
+                // console.log(partida.subpartidas)
+                partida.subpartidas.forEach((subpartida) => {
+                    subpartida.conceptos.forEach((concepto) => {
+                        if (form.conceptos[concepto.clave]) {
+                            let tipo = concepto.subpartida.partida.nombre
+                            if (!options_conceptos[tipo]) {
+                                options_conceptos[tipo] = []
+                            }
+                            options_conceptos[tipo].push(concepto)
                         }
-                        options_conceptos[tipo].push(concepto)
-                    }
-                    return false
+                        return false
+                    })
                 })
-            })
+            }
+           
         })
         return (
             <div className="row">
@@ -165,7 +172,7 @@ class PresupuestoForm extends Component {
                                             <div className="card-toolbar">
                                                 <SelectSearchGray
                                                     formeditado={formeditado}
-                                                    options={partidas}
+                                                    options={options.partidas}
                                                     placeholder="SELECCIONA LA PARTIDA"
                                                     name="partida"
                                                     value={form.partida}

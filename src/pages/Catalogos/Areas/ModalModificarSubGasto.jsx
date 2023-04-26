@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiPutForm, apiOptions } from '../../../functions/api'
+import { apiDelete } from '../../../functions/api'
 import axios from 'axios'
 import { URL_DEV } from './../../../constants'
 import { setSingleHeader } from './../../../functions/routers'
@@ -11,42 +11,66 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import Swal from 'sweetalert2'
+import './AreaStyle/_agregarGasto.scss'
 
 export default function ModalModificarSubGasto (props){
 
     const { data, handleClose, reload , dataGeneral} = props
     const user = useSelector(state => state.authUser)
+    const [contadorRelaciones, setContadorRelaciones] = useState(0)
+    // console.log(contadorRelaciones)
 
     const [form, setForm] = useState({
-        // subGasto: data.subpartida.map((item,index) => (item.nombre))
+        idsubGasto: '',
+        idsubGastoViejo: data.id,
+        arraySubGastos: ''
     })
+    console.log(form)
 
-    // console.log(dataGeneral)
+    useEffect(() => {
+        contador()
+    }, [])
+
+    console.log(dataGeneral)
     console.log(data)
-    // console.log(user)
+    // console.log(data.nombre)
 
     const handleChange = (event) => {
         let name = event.target.name;
         setForm({
             ...form,
             [name]: event.target.value,
+            // subGasto: null
         });
-        console.log(name)
+        // console.log(name)
     };
 
     const contador = () => {
-        axios.options(`${URL_DEV}v2/catalogos/areas?id=${dataGeneral.partida.id}&tipo=${'gastos'}`, { headers: setSingleHeader(user.access_token) })
+        axios.options(`${URL_DEV}v2/catalogos/areas/gastos?id=${data.id}&tipo=${'gastos'}`, { headers: setSingleHeader(user.access_token) })
         .then((response) => {
-            console.log(response.data)
-            if(response.data.subareas.length > 0) {
-
-            }
+            setContadorRelaciones(response.data.areas)
+            // return(
+            //     <>
+            //         {
+            //             form.datoContador && form.datoContador < 1 ?
+            //                 console.log('hola')
+            //             :
+            //             console.log('adios')
+            //         }
+            //     </>
+            // ) 
+            // setContadorRelaciones(response.data.areas)
+            /* console.log(response.data) */
+            // if(response.data.subareas.length === 0) {
+            /* if(response.data.areas > 0) {
+                console.log(response.data.areas)
+            }else{
+                console.log('adios')
+            } */
         })
     }
 
-
-    const handleSave = () => {
-        // if(validateForm()){
+    const handleChangeSubGasto = () => {
         if(true){
 
             Swal.fire({
@@ -56,77 +80,166 @@ export default function ModalModificarSubGasto (props){
                     Swal.showLoading()
                 }
             }) 
-    
-            let newForm = {
-                id_subarea: form.subpartida,
-            }
+            try {
 
-            apiPutForm(`requisicion/${data.id}`, newForm, user.access_token)
-            .then((response)=>{
-                Swal.close()
-                Swal.fire({
-                    icon: 'success',
-                    tittle: 'Editar requisición',
-                    text: 'Se ha editado correctamente',
-                    timer: 2000,
-                    timerProgressBar: true,
-                })
-                handleClose()
-                if(reload){
-                    reload.reload()
-                }
-            }) 
+                // let newForm = {
+                //     id_subGasto: form.idsubGasto,
+                // }
+                // console.log(newForm.id_subGasto)
 
-            .catch((error)=>{  
+                apiDelete(`v2/catalogos/areas/${form.idsubGastoViejo}/subareagasto/${form.idsubGasto}`, user.access_token)
+                    .then((data) => {
+                        Swal.fire({
+                            title: 'insumo',
+                            text: 'se ha editado correctamente',
+                            icon: 'success',
+                            showConfirmButton: true,
+                            timer: 2000,
+                        }).then(() => {
+                            if (reload) {
+                                reload.reload()
+                            }
+                            handleClose()
+                        })
+                    })
+                    .catch((error) => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error 1',
+                        })
+                        console.log(error)
+                    })
+            } catch (error) { 
+                // console.log(error)
                 Swal.close()
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Ha ocurrido un error',
+                    text: 'Ha ocurrido un error 2',
                 })
+                console.log(error)
+            }
+        } else{
+            Swal.fire({
+                title: 'Faltan campos',
+                text: 'Favor de llenar todos los campos',
+                icon: 'info',
+                showConfirmButton: false,
+                timer: 2000,
             })
         }
-        
-        else {
+    }
+
+    const deleteSubGasto = () => {
+        if(true){
+
             Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Todos los campos son obligatorios',
+                title: 'Cargando...',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                }
+            }) 
+            try {
+
+                // let newForm = {
+                //     id_subGasto: form.idsubGasto,
+                // }
+                // console.log(newForm.id_subGasto)
+
+                apiDelete(`v2/catalogos/areas/${dataGeneral.id}/subarea/${form.idsubGastoViejo}?sub=`, user.access_token)
+                    .then((data) => {
+                        Swal.fire({
+                            title: 'insumo',
+                            text: 'se ha eliminado correctamente',
+                            icon: 'success',
+                            showConfirmButton: true,
+                            timer: 2000,
+                        }).then(() => {
+                            if (reload) {
+                                reload.reload()
+                            }
+                            handleClose()
+                        })
+                    })
+                    .catch((error) => {
+                        Swal.close()
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Ha ocurrido un error 1',
+                        })
+                        console.log(error)
+                    })
+            } catch (error) { 
+                // console.log(error)
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ha ocurrido un error 2',
+                })
+                console.log(error)
+            }
+        } else{
+            Swal.fire({
+                title: 'Faltan campos',
+                text: 'Favor de llenar todos los campos',
+                icon: 'info',
+                showConfirmButton: false,
+                timer: 2000,
             })
         }
     }
 
     return(
-        <>
-            <div> 
-                {/* {data.nombre} */}
+        <> 
+        {
+            contadorRelaciones !== 0  ?
+            <div className='modalModificarSubGasto'> 
                 <h4>Eliminarás el sub gasto "{data.nombre}"</h4>
-                {/* <h4>Eliminarás el sub gasto "{data.subpartida.map(item => item.nombre )}"</h4> */}
-                <br></br>
-                <div>y tiene {contador()} compras asignadas</div>
+                <div className='modalModificarSubGasto_contador'>y tiene {contadorRelaciones} gastos asignados, reemplázalo por otro existente</div>
                 <br></br>
 
                 <div>
                     <InputLabel id="demo-simple-select-label">Selecciona el sub gasto que lo reemplazará</InputLabel>
                     <Select
-                        value={form.subGasto}
-                        name="subGasto"
-                        // onChange={handleChangeArea}
+                        value={form.idsubGasto}
+                        name="idsubGasto"
+                        onChange={handleChange}
                     >
                         {
-                            dataGeneral.subpartida.map((item,index) => (
-                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                            ))
+                            dataGeneral.subpartida.map((item,index) => {
+                                if(item.id !== data.id){
+                                    return <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                }   
+                            })
                         }
 
                     </Select>
                 </div>
-
-                <div>
-                    <button onClick={handleSave}>Aceptar</button>
+                
+                <div className='modalModificarSubGasto_boton'>
+                    <button className='modalModificarSubGasto_aceptar' onClick={handleChangeSubGasto}>Aceptar</button>
                 </div>
             </div>
-
+            
+            :
+            <center>
+                <div className='modalModificarSubGasto_eliminar'>
+                    <h5>estás seguro de eliminar este sub gasto?</h5>
+                    <h6>Una vez eliminado, no podrás recuperarlo</h6>
+                    <div className='modalModificarSubGasto_eliminar_botones'>
+                        <button className='modalModificarSubGasto_eliminar_botones_aceptar' onClick={deleteSubGasto}>Aceptar</button>
+                        <button className='modalModificarSubGasto_eliminar_botones_cancelar' onClick={handleClose}>Cancelar</button>
+                    </div>
+                </div>
+            </center>
+            
+            
+        }
         </>
     )
 }
