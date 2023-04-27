@@ -117,7 +117,6 @@ export default function Venta(props) {
             }
             return false
         })
-        console.log(error)
         setErrors(error)
         return valid
     }
@@ -143,8 +142,6 @@ export default function Venta(props) {
             }
         })
     }
-
-    console.log(errors)
 
     const handleSend = () => {
 

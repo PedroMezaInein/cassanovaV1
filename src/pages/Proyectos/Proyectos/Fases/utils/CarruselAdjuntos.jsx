@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 export default function CarruselAdjuntos(props) { 
     const { data, id, getAdjuntos } = props;
     let adjuntos = data
-    console.log(data)
     const classes = useStyles();
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
