@@ -95,7 +95,7 @@ export default function HeaderDetailProyect(props) {
                             dirección
                         </span>
                         <span className="mt-2 alignContent">
-                            {proyecto.sucursal ? proyecto.sucursal.direccion : 'Sin dirección'}
+                            {proyecto.sucursal ? proyecto.sucursal : 'Sin dirección'}
                         </span>
                     </div>
                 </div>
