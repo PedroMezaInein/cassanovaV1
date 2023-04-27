@@ -5,6 +5,7 @@ import { setFase, setLabelTable, ordenamiento, setOptions, setNaviIcon } from '.
 
 export default function HeaderDetailProyect(props) {
     const { proyecto, fases, modal, setModal } = props;
+    console.log(proyecto)
     return (
         <>
             <div className="HeaderTitle mt-n4 mb-n3">
@@ -40,7 +41,7 @@ export default function HeaderDetailProyect(props) {
             <hr />
             <div className="row HeaderContainer">
 
-                <div className="col-3">
+                <div className="col-2">
                     <div className="col-12">
                         <span className="TagTitle">
                             Contacto
@@ -88,7 +89,18 @@ export default function HeaderDetailProyect(props) {
                     </div>
                 </div>
 
-                <div className="col-5">
+                <div className="col-3">
+                    <div>
+                        <span className="TagTitle">
+                            dirección
+                        </span>
+                        <span className="mt-2 alignContent">
+                            {proyecto.sucursal ? proyecto.sucursal.direccion : 'Sin dirección'}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="col-3">
                     <div>
                         <span className="TagTitle">
                             Cliente

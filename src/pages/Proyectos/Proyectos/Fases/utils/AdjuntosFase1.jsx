@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
         display: 'flex',
-        height: 550,
+        height: '80vh',
         width: '100%',
     },
     tabs: {
@@ -82,6 +82,7 @@ export default function Adjuntos(props) {
         recibos_pago: '',
         file: [],
     })
+    
     const [activeTab, setActiveTab] = useState('fotografias_levantamiento')
     const [adjuntos, setAdjuntos] = useState(false)
     useEffect(() => {
@@ -297,6 +298,55 @@ export default function Adjuntos(props) {
         }
     }
 
+    const uploadButtons = () => {
+        return (
+            <>
+                <div className='upload_buttons'>
+                    <div className="file">
+
+                        <label htmlFor="file">Seleccionar archivo(s)</label>
+                        <input type="file" id="file" name="file" onChange={handleFile} multiple />
+                        <div>
+                            {form.file.length > 0 ?
+                                form.file.length < 3 ?
+                                    <>
+                                        {
+                                            form.file.map((file, index) => {
+                                                return <p key={index}>{file.name}</p>
+                                            })
+                                        }
+                                    </>
+                                    :
+                                    <>
+                                        <p>{`${form.file.length} archivos seleccionados`}</p>
+                                    </>
+                                : <p>No hay archivo seleccionado</p>}
+                        </div>
+
+                    </div>
+                    <div >
+                        <button className="btn-subir" onClick={handleSubmit}>Subir</button>
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+    const viewAdjuntos = (tab) => {
+        return (
+            <>
+                {
+                    adjuntos && adjuntos[tab] && adjuntos[tab].length > 0 ?
+                        <CarruselAdjuntos data={adjuntos[tab]} id={proyecto.id} getAdjuntos={getAdjuntos} />
+                        :
+                        <div className="">
+                            <p>No hay archivos adjuntos</p>
+                        </div>
+                }
+            </>
+        )
+    }
+
     return (
         <>
             <div className={classes.root}>
@@ -323,342 +373,62 @@ export default function Adjuntos(props) {
 
                 <TabPanel value={value} index={0}>
                     <div>
-                        <div>
-                            <div className="file">
-
-                                <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
-                                <div>
-                                    {form.file.length > 0 ?
-                                        <>
-                                            {
-                                                form.file.map((file, index) => {
-                                                    return <p key={index}>{file.name}</p>
-                                                })
-                                            }
-                                        </>
-                                        : <p>No hay archivo seleccionado</p>}
-                                </div>
-
-                            </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
-                            </div>
-                        </div>
-                        {
-                            adjuntos && adjuntos.fotografias_levantamiento && adjuntos.fotografias_levantamiento.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.fotografias_levantamiento} id={proyecto.id} getAdjuntos={getAdjuntos} />
-                                :
-                                <div className="">
-                                    <p>No hay archivos adjuntos</p>
-                                </div>
-                        }
+                        {uploadButtons()}
+                        {viewAdjuntos('fotografias_levantamiento')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <div>
-                        <div>
-                            <div className="file">
-
-                                <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
-                                <div>
-                                    {form.file.length > 0 ?
-                                        <>
-                                            {
-                                                form.file.map((file, index) => {
-                                                    return <p key={index}>{file.name}</p>
-                                                })
-                                            }
-                                        </>
-                                        : <p>No hay archivo seleccionado</p>}
-                                </div>
-
-                            </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
-                            </div>
-                        </div>
-                        {
-                            adjuntos && adjuntos.manuales_de_adaptacion && adjuntos.manuales_de_adaptacion.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.manuales_de_adaptacion} id={proyecto.id} getAdjuntos={getAdjuntos} />
-                                :
-                                <div className="">
-                                    <p>No hay archivos adjuntos</p>
-                                </div>
-                        }
+                        {uploadButtons()}
+                        {viewAdjuntos('manuales_de_adaptacion')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={2}>
                     <div>
-                        <div>
-                            <div className="file">
-
-                                <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
-                                <div>
-                                    {form.file.length > 0 ?
-                                        <>
-                                            {
-                                                form.file.map((file, index) => {
-                                                    return <p key={index}>{file.name}</p>
-                                                })
-                                            }
-                                        </>
-                                        : <p>No hay archivo seleccionado</p>}
-                                </div>
-
-                            </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
-                            </div>
-                        </div>
-                        {
-                            adjuntos && adjuntos.minutas && adjuntos.minutas.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.minutas} id={proyecto.id} getAdjuntos={getAdjuntos} />
-                                :
-                                <div className="">
-                                    <p>No hay archivos adjuntos</p>
-                                </div>
-                        }
+                        {uploadButtons()}
+                        {viewAdjuntos('minutas')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={3}>
                     <div>
-                        <div>
-                            <div className="file">
-
-                                <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
-                                <div>
-                                    {form.file.length > 0 ?
-                                        <>
-                                            {
-                                                form.file.map((file, index) => {
-                                                    return <p key={index}>{file.name}</p>
-                                                })
-                                            }
-                                        </>
-                                        : <p>No hay archivo seleccionado</p>}
-                                </div>
-
-                            </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
-                            </div>
-                        </div>
-                        {
-                            adjuntos && adjuntos.planos_entregados_por_cliente && adjuntos.planos_entregados_por_cliente.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.planos_entregados_por_cliente} id={proyecto.id} getAdjuntos={getAdjuntos} />
-                                :
-                                <div className="">
-                                    <p>No hay archivos adjuntos</p>
-                                </div>
-                        }
+                        {uploadButtons()}
+                        {viewAdjuntos('planos_entregados_por_cliente')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={4}>
                     <div>
-                        <div>
-                            <div className="file">
-
-                                <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
-                                <div>
-                                    {form.file.length > 0 ?
-                                        <>
-                                            {
-                                                form.file.map((file, index) => {
-                                                    return <p key={index}>{file.name}</p>
-                                                })
-                                            }
-                                        </>
-                                        : <p>No hay archivo seleccionado</p>}
-                                </div>
-
-                            </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
-                            </div>
-                        </div>
-                        {
-                            adjuntos && adjuntos.propuestas_arquitectonicas_preliminares && adjuntos.propuestas_arquitectonicas_preliminares.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.propuestas_arquitectonicas_preliminares} id={proyecto.id} getAdjuntos={getAdjuntos} />
-                                :
-                                <div className="">
-                                    <p>No hay archivos adjuntos</p>
-                                </div>
-                        }
+                        {uploadButtons()}
+                        {viewAdjuntos('propuestas_arquitectonicas_preliminares')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={5}>
                     <div>
-                        <div>
-                            <div className="file">
-
-                                <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
-                                <div>
-                                    {form.file.length > 0 ?
-                                        <>
-                                            {
-                                                form.file.map((file, index) => {
-                                                    return <p key={index}>{file.name}</p>
-                                                })
-                                            }
-                                        </>
-                                        : <p>No hay archivo seleccionado</p>}
-                                </div>
-
-                            </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
-                            </div>
-                        </div>
-                        {
-                            adjuntos && adjuntos.referencias_del_diseño_del_proyecto && adjuntos.referencias_del_diseño_del_proyecto.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.referencias_del_diseño_del_proyecto} id={proyecto.id} getAdjuntos={getAdjuntos} />
-                                :
-                                <div className="">
-                                    <p>No hay archivos adjuntos</p>
-                                </div>
-                        }
+                        {uploadButtons()}
+                        {viewAdjuntos('referencias_del_diseño_del_proyecto')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={6}>
                     <div>
-                        <div>
-                            <div className="file">
-
-                                <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
-                                <div>
-                                    {form.file.length > 0 ?
-                                        <>
-                                            {
-                                                form.file.map((file, index) => {
-                                                    return <p key={index}>{file.name}</p>
-                                                })
-                                            }
-                                        </>
-                                        : <p>No hay archivo seleccionado</p>}
-                                </div>
-
-                            </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
-                            </div>
-                        </div>
-                        {
-                            adjuntos && adjuntos.renders && adjuntos.renders.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.renders} id={proyecto.id} getAdjuntos={getAdjuntos} />
-                                :
-                                <div className="">
-                                    <p>No hay archivos adjuntos</p>
-                                </div>
-                        }
+                        {uploadButtons()}
+                        {viewAdjuntos('renders')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={7}>
                     <div>
-                        <div>
-                            <div className="file">
-
-                                <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
-                                <div>
-                                    {form.file.length > 0 ?
-                                        <>
-                                            {
-                                                form.file.map((file, index) => {
-                                                    return <p key={index}>{file.name}</p>
-                                                })
-                                            }
-                                        </>
-                                        : <p>No hay archivo seleccionado</p>}
-                                </div>
-
-                            </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
-                            </div>
-                        </div>
-                        {
-                            adjuntos && adjuntos.sketch_up && adjuntos.sketch_up.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.sketch_up} id={proyecto.id} getAdjuntos={getAdjuntos} />
-                                :
-                                <div className="">
-                                    <p>No hay archivos adjuntos</p>
-                                </div>
-                        }
+                        {uploadButtons()}
+                        {viewAdjuntos('sketch_up')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={8}>
                     <div>
-                        <div>
-                            <div className="file">
-
-                                <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
-                                <div>
-                                    {form.file.length > 0 ?
-                                        <>
-                                            {
-                                                form.file.map((file, index) => {
-                                                    return <p key={index}>{file.name}</p>
-                                                })
-                                            }
-                                        </>
-                                        : <p>No hay archivo seleccionado</p>}
-                                </div>
-
-                            </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
-                            </div>
-                        </div>
-                        {
-                            adjuntos && adjuntos.presupuestos_preliminares && adjuntos.presupuestos_preliminares.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.presupuestos_preliminares} id={proyecto.id} getAdjuntos={getAdjuntos} />
-                                :
-                                <div className="">
-                                    <p>No hay archivos adjuntos</p>
-                                </div>
-                        }
+                        {uploadButtons()}
+                        {viewAdjuntos('presupuestos_preliminares')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={9}>
                     <div>
-                        <div>
-                            <div className="file">
-
-                                <label htmlFor="file">Seleccionar archivo(s)</label>
-                                <input type="file" id="file" name="file" onChange={handleFile} multiple />
-                                <div>
-                                    {form.file.length > 0 ?
-                                        <>
-                                            {
-                                                form.file.map((file, index) => {
-                                                    return <p key={index}>{file.name}</p>
-                                                })
-                                            }
-                                        </>
-                                        : <p>No hay archivo seleccionado</p>}
-                                </div>
-
-                            </div>
-                            <div className="btn-subir">
-                                <button onClick={handleSubmit}>Subir</button>
-                            </div>
-                        </div>
-                        {
-                            adjuntos && adjuntos.recibos_pago && adjuntos.recibos_pago.length > 0 ?
-                                <CarruselAdjuntos data={adjuntos.recibos_pago} id={proyecto.id} getAdjuntos={getAdjuntos} />
-                                :
-                                <div className="">
-                                    <p>No hay archivos adjuntos</p>
-                                </div>
-                        }
+                        {uploadButtons()}
+                        {viewAdjuntos('recibos_pago')}
                     </div>
                 </TabPanel>
 

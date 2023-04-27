@@ -8,6 +8,7 @@ import ProgressBar from './utils/ProgressBar';
 
 import '../../../../styles/_fases.scss'
 import BotonAdjuntos from './BotonAdjuntos';
+import AdjuntosFase1 from './utils/AdjuntosFase1';
 
 import Modales from './utils/Modales';
 
@@ -153,6 +154,8 @@ export default function Fase1(props) {
                         Descripcion
                         <p>{fase.descripcion}</p>
                     </div>
+
+                    <AdjuntosFase1 proyecto={fase} />
                     
                     
                     {/* <div>
