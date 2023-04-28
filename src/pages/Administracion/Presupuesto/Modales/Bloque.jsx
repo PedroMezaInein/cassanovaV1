@@ -153,7 +153,6 @@ export default function Bloque(props) {
         nuevoForm[index][subindex].subpartida_id = ''
         setForm(nuevoForm)
     }
-        
 
     const handleChangeSubpartida = (e, index, subindex) => {
         const nuevoForm = [...form]
@@ -196,10 +195,35 @@ export default function Bloque(props) {
         return suma
     }
 
+    const meses = [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiempre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre'
+    ]
+
+    const sumaAreaMeses = (index) => {
+        let suma = 0
+        meses.map((mes) => {
+            suma += sumaMes(index, mes)
+        })
+        suma = formatNumberCurrency(suma)
+        console.log(suma)
+        return suma
+    }
+
     const getColumnas = (index) => {
         let columnas = [
             {
-                Header: '',
+                Header: ``,
                 accessor: 'area',
 
                 columns: [
@@ -278,109 +302,6 @@ export default function Bloque(props) {
         return columnas
     }
 
-    const nuevaTablaNativa = (index) => {
-        let columnas = [
-            {
-                name: '',
-                accessor: 'eliminar',
-            },
-            {
-                name: 'Partida',
-                accessor: 'partida',
-            },
-            {
-                name: 'Subpartida',
-                accessor: 'subpartida',
-            },
-            {
-                name: `${sumaMes(index, 'Enero')}`,
-                accessor: '1',
-            },
-            {
-                name: `${sumaMes(index, 'Febrero')}`,
-                accessor: '2',
-            },
-            {
-                name: `${sumaMes(index, 'Marzo')}`,
-                accessor: '3',
-            },
-            {
-                name: `${sumaMes(index, 'Abril')}`,
-                accessor: '4',
-            },
-            {
-                name: `${sumaMes(index, 'Mayo')}`,
-                accessor: '5',
-            },
-            {
-                name: `${sumaMes(index, 'Junio')}`,
-                accessor: '6',
-            },
-            {
-                name: `${sumaMes(index, 'Julio')}`,
-                accessor: '7',
-            },
-            {
-                name: `${sumaMes(index, 'Agosto')}`,
-                accessor: '8',
-            },
-            {
-                name: `${sumaMes(index, 'Septiembre')}`,
-                accessor: '9',
-            },
-            {
-                name: `${sumaMes(index, 'Octubre')}`,
-                accessor: '10',
-            },
-            {
-                name: `${sumaMes(index, 'Noviembre')}`,
-                accessor: '11',
-            },
-            {
-                name: `${sumaMes(index, 'Diciembre')}`,
-                accessor: '12',
-            },
-        ]
-
-        return (
-            <div>
-                <table>
-                    <thead>
-                        <tr>
-                            {columnas.map((columna, index) => {
-                                return (
-                                    <th key={index}>{columna.name}</th>
-                                )
-                            })}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            form && form[index].length > 0 ?
-                                form[index].map((fila, subindex) => {
-                                    return (
-                                        <tr key={subindex}>
-                                            {
-                                                columnas.map((columna, subindex) => {
-                                                    return (
-                                                        <td key={subindex}>{fila[columna.accessor]}</td>
-                                                    )
-                                                })
-                                            }
-                                        </tr>
-                                    )
-                                })
-                                : null
-                            
-                        }
-                    </tbody>
-                </table>
-                <button onClick={() => addNewRow(index)}>Agregar</button>
-            </div>       
-        
-        )
-    }
-
     const getColumnsHeader = () => {
         let columnas = [{
             Header: 'Total mensual',
@@ -440,6 +361,7 @@ export default function Bloque(props) {
     }
 
     const deleteRow = (index, subindex) => {
+        console.log(index, subindex)
         const nuevoForm = [...form]
         nuevoForm[index].splice(subindex, 1)
         setForm(nuevoForm)
@@ -450,7 +372,6 @@ export default function Bloque(props) {
             <div onClick={() => deleteRow(index, subindex)} style={{ cursor: 'pointer' }}>
                 <TrashIcon />
             </div>
-
         )
     }
 
@@ -468,19 +389,15 @@ export default function Bloque(props) {
             <div>
                 {
                     form &&
-                    
-                        <CurrencyTextField
-
-                            variant="standard"
-                            value={form[index]?.[subindex]?.[mes] ? form[index][subindex][mes] : ''}
-                            currencySymbol="$"
-                            outputFormat="number"
-                            onChange={(event, value) => handleMoney(partida, index, mes, value, subindex)}
-                        /* error={errores.monto ? true : false} */
-                        />
+                    <CurrencyTextField
+                        variant="standard"
+                        value={form[index]?.[subindex]?.[mes] ? form[index][subindex][mes] : ''}
+                        currencySymbol="$"
+                        outputFormat="number"
+                        onChange={(event, value) => handleMoney(partida, index, mes, value, subindex)}
+                    />
                 }
             </div>
-            
         )
     }
 
@@ -498,16 +415,15 @@ export default function Bloque(props) {
         return aux
     }
 
-    const createSelectInputPartida = (data, index, subindex) => {
-        let id_partida 
-        let id_subpartida
+    const createSelectInputPartida = (id_area, index, subindex) => {
+        
         return (
             <div>
-                <select onChange={e => handleChangePartida(e, index, subindex)} value={form[index][subindex]?.partida_id} style={{ width: '100%' }}>
+                <select onChange={e => handleChangePartida(e, index, subindex)} style={{ width: '100%' }}>
                     <option value='' hidden>Seleccione una partida</option>
-                    {areas?.find(partida => partida.id_area === data) && areas.find(partida => partida.id_area === data).partidas.map(partida => (
+                    {areas?.find(partida => partida.id_area === id_area) && areas.find(partida => partida.id_area === id_area).partidas.map(partida => (
                         <option key={partida.id} value={partida.id}>{partida.nombre}</option>
-                    )) }
+                    ))}
                 </select>
             </div>
         )
@@ -519,7 +435,7 @@ export default function Bloque(props) {
             <div>
                 {
                     form && form[index][subindex] &&
-                        <select onChange={e => handleChangeSubpartida(e, index, subindex)} value={form[index][subindex]?.subpartida_id} style={{ width: '100%' }}>
+                    <select onChange={e => handleChangeSubpartida(e, index, subindex)} value={form[index][subindex]?.subpartida_id} style={{ width: '100%' }}>
                         {form[index][subindex]?.partida_id !== '' ?
                             <>
                                 <option value='' hidden>habilitado</option>
@@ -532,10 +448,9 @@ export default function Bloque(props) {
                             </>
                             :
                             <option value='' hidden>disabled</option>
-                        }    
+                        }
                     </select>
                 }
-                
             </div>
         )
     }
@@ -550,10 +465,8 @@ export default function Bloque(props) {
                             <Table columns={getColumnas(index)} data={form[index]} />
                             <button onClick={() => addNewRow(index)}>Agregar</button>
                         </Styles>
-
                     </div>
                 }
-                
             </>
         )
     }
@@ -841,7 +754,18 @@ export default function Bloque(props) {
         )
     }
 
-    console.log(form)
+    const tables = () => { 
+        return (
+            <>
+                {
+                    form.length &&
+                    form.map((e, index) => {
+                        return createTables(e, index)
+                    })
+                }
+            </>
+        )
+    }
 
     return (
         <>
@@ -867,18 +791,10 @@ export default function Bloque(props) {
                     }
                 </div>
 
-                {form && form.length >= 13 &&
-                    partidas.map((partida, index) => {
-                        /* if (form[index].length > 0){
-                            return createTables(partida, index)
-                        } else {
-                            return null
-                        } */
-                         return createTables(partida, index)
-                        /* return nuevaTablaNativa(index) */
-                    })
+                {
+                    form &&
+                    tables()
                 }
-                {/* <button onClick={handleAddBloque}>Agregar bloque</button> */}
             </div>
         </>
     )

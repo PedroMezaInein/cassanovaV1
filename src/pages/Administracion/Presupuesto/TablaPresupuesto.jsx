@@ -76,7 +76,7 @@ function Table({ columns, data }) {
     )
 }
 
-export default function Presupuesto() { 
+export default function Presupuesto() {
     const partidas = useSelector(state => state.opciones.areas)
 
     const [dataTable, setDataTable] = useState([])
@@ -95,7 +95,7 @@ export default function Presupuesto() {
 
     const createMoneyInput = () => {
         return (
-            <input type="number"style={{width: '8.2rem'}}/>
+            <input type="number" style={{ width: '8.2rem' }} />
         )
     }
 
@@ -139,75 +139,75 @@ export default function Presupuesto() {
     }
 
     const columns =
-    [
-        {
-            Header: ' ' ,
-            columns: [
-                {
-                    Header: 'Partida',
-                    accessor: 'partida',
-                },
-                {
-                    Header: 'Subpartida',
-                    accessor: 'subpartida',
-                },
-            ],
-        },
-        {
-            Header: ' ',
-            columns: [
+        [
+            {
+                Header: ' ',
+                columns: [
+                    {
+                        Header: 'Partida',
+                        accessor: 'partida',
+                    },
+                    {
+                        Header: 'Subpartida',
+                        accessor: 'subpartida',
+                    },
+                ],
+            },
+            {
+                Header: ' ',
+                columns: [
 
-                {
-                    Header: 'Enero',
-                    accessor: '1',
-                },
-                {
-                    Header: 'Febrero',
-                    accessor: '2',
-                },
-                {
-                    Header: 'Marzo',
-                    accessor: '3',
-                },
-                {
-                    Header: 'Abril',
-                    accessor: '4',
-                },
-                {
-                    Header: 'Mayo',
-                    accessor: '5',
-                },
-                {
-                    Header: 'Junio',
-                    accessor: '6',
-                },
-                {
-                    Header: 'Julio',
-                    accessor: '7',
-                },
-                {
-                    Header: 'Agosto',
-                    accessor: '8',
-                },
-                {
-                    Header: 'Septiembre',
-                    accessor: '9',
-                },
-                {
-                    Header: 'Octubre',
-                    accessor: '10',
-                },
-                {
-                    Header: 'Noviembre',
-                    accessor: '11',
-                },
-                {
-                    Header: 'Diciembre',
-                    accessor: '12',
-                },
-            ],
-        },
-    ]
+                    {
+                        Header: 'Enero',
+                        accessor: '1',
+                    },
+                    {
+                        Header: 'Febrero',
+                        accessor: '2',
+                    },
+                    {
+                        Header: 'Marzo',
+                        accessor: '3',
+                    },
+                    {
+                        Header: 'Abril',
+                        accessor: '4',
+                    },
+                    {
+                        Header: 'Mayo',
+                        accessor: '5',
+                    },
+                    {
+                        Header: 'Junio',
+                        accessor: '6',
+                    },
+                    {
+                        Header: 'Julio',
+                        accessor: '7',
+                    },
+                    {
+                        Header: 'Agosto',
+                        accessor: '8',
+                    },
+                    {
+                        Header: 'Septiembre',
+                        accessor: '9',
+                    },
+                    {
+                        Header: 'Octubre',
+                        accessor: '10',
+                    },
+                    {
+                        Header: 'Noviembre',
+                        accessor: '11',
+                    },
+                    {
+                        Header: 'Diciembre',
+                        accessor: '12',
+                    },
+                ],
+            },
+        ]
 
 
     return (
