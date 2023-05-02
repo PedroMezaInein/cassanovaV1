@@ -123,12 +123,13 @@ function Table({ columns, data }) {
 
 
 export default function Bloque(props) {
+    const { form, setForm } = props
     const partidas = useSelector(state => state.opciones.areas)
     const areas = useSelector(state => state.opciones.areas)
     const departamento = useSelector(state => state.authUser.departamento.departamentos[0])
     const nombreUsuario = useSelector(state => state.authUser.user)
     const auth = useSelector(state => state.authUser.access_token)
-    const [form, setForm] = useState([])
+    
     const [general, setGeneral] = useState({
         departamento: departamento.nombre,
         departamento_id: departamento.id,
