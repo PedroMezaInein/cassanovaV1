@@ -597,6 +597,102 @@ export default function EditProyect(props) {
                         
                     </AccordionDetails>
                 </Accordion>
+
+                
+                <Accordion
+                    className='proyect-accordion'
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                        <Typography className='proyect-Subtitulo'>Colaboradores Designados</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <div className='container-Cliente'>
+                            
+                            {
+                                colaboradores.length > 0 &&
+                                <div>
+                                    <InputLabel>Seleccionar Responsable</InputLabel>
+                                    
+                                    <Select
+                                        name='responsable'
+                                        onChange={e => handleSaveResponsable(e.target.value)}
+                                        value={form.responsable}
+                                    >
+                                        <MenuItem value={0}></MenuItem>
+                                        {
+                                            colaboradores.sort((a, b) => {
+                                                if (a.nombre > b.nombre) {
+                                                    return 1
+                                                }
+                                                if (a.nombre < b.nombre) {
+                                                    return -1
+                                                }
+                                                return 0
+                                            }
+                                            ).map((empleado, index) => {
+                                                return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                            })
+                                        }
+
+                                    </Select>
+                                </div>
+                            }    
+                            
+                            
+                            {
+                                colaboradores.length > 0 &&
+                                <div>
+                                    <InputLabel>Agregar colaborador</InputLabel>
+                                    <Select
+                                        onChange={handleChangeAdd}
+                                    >
+                                        <MenuItem value={0}></MenuItem>
+                                        {
+                                            colaboradores.sort((a, b) => {
+                                                if (a.nombre > b.nombre) {
+                                                    return 1
+                                                }
+                                                if (a.nombre < b.nombre) {
+                                                    return -1
+                                                }
+                                                return 0
+                                            }
+                                            ).map((empleado, index) => {
+                                                return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                            })
+                                        }
+
+                                    </Select>
+                                </div>
+                            }
+                            {
+                                state.length > 0 ?
+                                    <div className='colaboradores'>
+                                        {state.sort((a, b) => {
+                                            if (a.nombre > b.nombre) {
+                                                return 1
+                                            }
+                                            if (a.nombre < b.nombre) {
+                                                return -1
+                                            }
+                                            return 0
+                                        }
+                                        ).map((empleado, index) => {
+                                            return <div key={index}><span onClick={e => handleDeleteUser(e, empleado.id_delete)}>X</span>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</div>
+                                        })}
+                                    </div>
+                                    : <></>
+                            }
+
+                            
+                        </div>
+                        
+                    </AccordionDetails>
+                </Accordion>
                 
                 <Accordion className='proyect-accordion'>
                     <AccordionSummary

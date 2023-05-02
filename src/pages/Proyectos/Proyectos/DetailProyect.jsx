@@ -150,7 +150,6 @@ export default function DetailProyect() {
         })
         apiOptions('v2/proyectos/compras', userAuth.access_token)
         .then(response => {
-        
             const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago,
                 metodosPago, estatusFacturas } = response.data
             let options = {}
@@ -233,6 +232,8 @@ export default function DetailProyect() {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    console.log(fases)
 
     return (
         <>
