@@ -144,17 +144,26 @@ export default function Fase1(props) {
                     
                 </div>
                 <div>
+                    <div style={{display: 'flex', justifyContent: 'space-around'}}> 
+                        <div>
+                            <span className="TagTitleFase">
+                                Área    
+                            </span>
+                            
+                            <p>{fase.m2} m2</p>
+                        </div>
 
-                    <div>
-                        Área
-                        <p>{fase.m2} m2</p>
+                        <div>
+                            <span className="TagTitleFase">
+                            Descripción    
+                            </span>
+                        
+                            <p>{fase.descripcion}</p>
+                        </div>    
                     </div>
 
-                    <div>
-                        Descripcion
-                        <p>{fase.descripcion}</p>
-                    </div>
-
+                    
+                    <hr />
                     <AdjuntosFase1 proyecto={fase} />
                     
                     

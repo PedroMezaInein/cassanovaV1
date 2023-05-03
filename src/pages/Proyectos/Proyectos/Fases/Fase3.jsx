@@ -144,15 +144,26 @@ export default function Fase3(props) {
                 </div>
                 <div>
 
-                    <div>
-                        Área
-                        <p>{fase.m2} m2</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                        <div>
+                            <span className="TagTitleFase">
+                                Área
+                            </span>
+
+                            <p>{fase.m2} m2</p>
+                        </div>
+
+                        <div>
+                            <span className="TagTitleFase">
+                                Descripción
+                            </span>
+
+                            <p>{fase.descripcion}</p>
+                        </div>
                     </div>
 
-                    <div>
-                        Descripcion
-                        <p>{fase.descripcion}</p>
-                    </div>
+
+                    <hr />
 
                     <AdjuntosFase3 proyecto={fase} />
 
