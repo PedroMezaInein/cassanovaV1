@@ -28,6 +28,7 @@ import RequisicionCompras from './../RequisicionCompras/RequisicionCompras'
 import RequisicionContabilidad from './../RequisicionContabilidad/RequisicionContabilidad'
 import {Requisiciones} from './../Requisiciones/Requisiciones'
 import Table from './../../../components/NewTables/TablaGeneral/TablaGeneral'
+import TablaGeneralPaginado from '../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 
 export default function Egresos(props) {
 
@@ -275,7 +276,7 @@ export default function Egresos(props) {
         let aux = []
         let _aux = []
         if (egresos)
-            egresos.map((egreso) => {
+            egresos.data.data.map((egreso) => {
                 _aux = []
                 if (egreso.presupuestos) {
                     egreso.presupuestos.map((presupuesto) => {
@@ -311,7 +312,7 @@ export default function Egresos(props) {
                         total: setMoneyTable(egreso.total),
                         impuesto: setTextTableReactDom(egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir', doubleClick, egreso, 'tipoImpuesto', 'text-center'),
                         tipoPago: setTextTableReactDom(egreso.tipo_pago.tipo, doubleClick, egreso, 'tipoPago', 'text-center'),
-                        descripcion: setTextTableReactDom(egreso.descripcion !== null ? egreso.descripcion : '', doubleClick, egreso, 'descripcion', 'text-justify'),
+                        descripcion: setTextTableReactDom(egreso.descripcion !== null ? egreso.descripcion : 'sin descripción', doubleClick, egreso, 'descripcion', 'text-justify'),
                         area: setTextTableReactDom(egreso.area ? egreso.area.nombre : '', doubleClick, egreso, 'area', 'text-center'),
                         subarea: setTextTableReactDom(egreso.subarea ? egreso.subarea.nombre : '', doubleClick, egreso, 'subarea', 'text-center'),
                         estatusCompra: setTextTableReactDom(egreso.estatus_compra ? egreso.estatus_compra.estatus : '', doubleClick, egreso, 'estatusCompra', 'text-center'),
@@ -858,7 +859,7 @@ export default function Egresos(props) {
 
                 <Tab eventKey = { 'gastos' } title = { 'gastos' }>
 
-                    <Table
+                    {/* <Table
                         titulo="Gastos" 
                         subtitle='Listado de gastos'
                         columnas={columnas}
@@ -869,7 +870,18 @@ export default function Egresos(props) {
                         // acciones={acciones()}
                         // reload={setReloadTable}
                         >
-                    </Table> 
+                    </Table>  */}
+
+                    <TablaGeneralPaginado 
+                        titulo="Gastos"
+                        url={'v3/administracion/gastos'}
+                        columnas={columnas}
+                        numItemsPagina={20}
+                        ProccessData={proccessData}
+                        // opciones={handleOpen}
+                        // acciones={acciones()}
+                        // reload={setReloadTable}
+                    />  
 
                     {/* <NewTable
                         tableName='egresos'
@@ -887,6 +899,8 @@ export default function Egresos(props) {
                         exportar_boton={true}
                         onClickExport={() => { exportEgresosAxios() }}
                     /> */}
+
+                    
                 </Tab> 
 
                 <Tab eventKey="requisiciones" title="requisiciones">
