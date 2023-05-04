@@ -19,6 +19,9 @@ import { setSingleHeader } from '../../../../../functions/routers'
 import CarruselAdjuntos from './CarruselAdjuntos'
 import './../../../../../styles/_adjuntosRequisicion.scss'
 
+import CheckCircle from '@material-ui/icons/CheckCircleOutline';
+import ErrorIcon from '@material-ui/icons/ErrorOutline';
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -398,6 +401,31 @@ export default function Adjuntos(props) {
         )
     }
 
+    const iconAdjuntos = (tab, name) => {
+        if (adjuntos[tab]?.length > 0) {
+            return (
+                <div style={{ display: 'flex', alignItems: 'left' }}>
+
+                    <p >
+                        <CheckCircle style={{ color: 'green' }} />
+                        &nbsp;
+                        {name}
+                    </p>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+
+                    <p>
+                        <ErrorIcon style={{ color: 'red' }} />
+                        &nbsp;{name}
+                    </p>
+                </div>
+            )
+        }
+    }
+
     return (
         <>
             <div className={classes.root}>
@@ -408,41 +436,41 @@ export default function Adjuntos(props) {
                     onChange={handleChange}
                     className={classes.tabs}
                 >
-                    <Tab label="DOCUMENTOS CLIENTES " {...a11yProps(0)} name="datos_de_cliente" onClick={() => handleTab('datos_de_cliente')} />
-                    <Tab label="CONTRATO CLIENTE" {...a11yProps(1)} name="contrato_cliente" onClick={() => handleTab('contrato_cliente')} />
-                    <Tab label="PERMISOS DE OBRA" {...a11yProps(2)} name="permisos_de_obra_ante_dependencias" onClick={() => handleTab('permisos_de_obra_ante_dependencias')} />
-                    <Tab label="CATALOGO INICIAL OBRA" {...a11yProps(3)} name="catalogo_inicial_obra" onClick={() => handleTab('catalogo_inicial_obra')} />
-                    <Tab label="PROGRAMA DE OBRA " {...a11yProps(4)} name="programa_de_obra" onClick={() => handleTab('programa_de_obra')} />
+                    <Tab label={iconAdjuntos("datos_de_cliente","DOCUMENTOS CLIENTES")} {...a11yProps(0)} name="datos_de_cliente" onClick={() => handleTab('datos_de_cliente')} />
+                    <Tab label={iconAdjuntos('contrato_cliente', "CONTRATO CLIENTE")} {...a11yProps(1)} name="contrato_cliente" onClick={() => handleTab('contrato_cliente')} />
+                    <Tab label={iconAdjuntos('permisos_de_obra_ante_dependencias', "PERMISOS DE OBRA")} {...a11yProps(2)} name="permisos_de_obra_ante_dependencias" onClick={() => handleTab('permisos_de_obra_ante_dependencias')} />
+                    <Tab label={iconAdjuntos('catalogo_inicial_obra', "CATALOGO INICIAL OBRA")} {...a11yProps(3)} name="catalogo_inicial_obra" onClick={() => handleTab('catalogo_inicial_obra')} />
+                    <Tab label={iconAdjuntos('programa_de_obra', "PROGRAMA DE OBRA")} {...a11yProps(4)} name="programa_de_obra" onClick={() => handleTab('programa_de_obra')} />
 
-                    <Tab label="CONTRATO PROVEEDORES Y CONTRATISTAS" {...a11yProps(5)} name="contrato_proveedores_y_contratistas" onClick={() => handleTab('contrato_proveedores_y_contratistas')} />
+                    <Tab label={iconAdjuntos('contrato_proveedores_y_contratistas', "CONTRATO PROVEEDORES Y CONTRATISTAS")} {...a11yProps(5)} name="contrato_proveedores_y_contratistas" onClick={() => handleTab('contrato_proveedores_y_contratistas')} />
 
-                    <Tab label="FIRMA DE ACABADOS " {...a11yProps(6)} name="firmas_de_aprobacion" onClick={() => handleTab('firmas_de_aprobacion')} />
+                    <Tab label={iconAdjuntos('firmas_de_aprobacion', "FIRMA DE ACABADOS")} {...a11yProps(6)} name="firmas_de_aprobacion" onClick={() => handleTab('firmas_de_aprobacion')} />
 
-                    <Tab label="PLANOS INICIALES DE OBRA " {...a11yProps(7)} name="reporte_fotografico_de_avance_de_obra" onClick={() => handleTab('reporte_fotografico_de_avance_de_obra')} />
+                    <Tab label={iconAdjuntos('reporte_fotografico_de_avance_de_obra', "PLANOS INICIALES DE OBRA ")} {...a11yProps(7)} name="reporte_fotografico_de_avance_de_obra" onClick={() => handleTab('reporte_fotografico_de_avance_de_obra')} />
 
-                    <Tab label="RENDERS APROBADOS" {...a11yProps(8)} name="renders_aprobados" onClick={() => handleTab('renders_aprobados')} />
+                    <Tab label={iconAdjuntos('renders_aprobados', "RENDERS APROBADOS")} {...a11yProps(8)} name="renders_aprobados" onClick={() => handleTab('renders_aprobados')} />
 
-                    <Tab label="FIANZAS Y SEGUROS" {...a11yProps(9)} name="fianzas_y_seguros" onClick={() => handleTab('fianzas_y_seguros')} />
+                    <Tab label={iconAdjuntos('fianzas_y_seguros', "FIANZAS Y SEGUROS")} {...a11yProps(9)} name="fianzas_y_seguros" onClick={() => handleTab('fianzas_y_seguros')} />
 
-                    <Tab label="PLANOS ASBUILT" {...a11yProps(10)} name="catalogo_de_conceptos_asbuilt" onClick={() => handleTab('catalogo_de_conceptos_asbuilt')} />
+                    <Tab label={iconAdjuntos('catalogo_de_conceptos_asbuilt', "PLANOS ASBUILT")} {...a11yProps(10)} name="catalogo_de_conceptos_asbuilt" onClick={() => handleTab('catalogo_de_conceptos_asbuilt')} />
 
-                    <Tab label="CONSIGNAS DE MATENIMIENTO" {...a11yProps(11)} name="consignas_de_matenimiento" onClick={() => handleTab('consignas_de_matenimiento')} />
+                    <Tab label={iconAdjuntos('consignas_de_matenimiento', "CONSIGNAS DE MATENIMIENTO")} {...a11yProps(11)} name="consignas_de_matenimiento" onClick={() => handleTab('consignas_de_matenimiento')} />
 
-                    <Tab label="GARANTÍA DE LOS EQUIPOS" {...a11yProps(12)} name="garantia_de_los_equipos" onClick={() => handleTab('garantia_de_los_equipos')} />
+                    <Tab label={iconAdjuntos('garantia_de_los_equipos', "GARANTÍA DE LOS EQUIPOS")} {...a11yProps(12)} name="garantia_de_los_equipos" onClick={() => handleTab('garantia_de_los_equipos')} />
 
-                    <Tab label="GARANTÍA DE VICIOS OCULTOS" {...a11yProps(13)} name="garantia_de_vicios_ocultos" onClick={() => handleTab('garantia_de_vicios_ocultos')} />
+                    <Tab label={iconAdjuntos('garantia_de_vicios_ocultos', "GARANTÍA DE VICIOS OCULTOS")} {...a11yProps(13)} name="garantia_de_vicios_ocultos" onClick={() => handleTab('garantia_de_vicios_ocultos')} />
 
-                    <Tab label="MEMORIAS DE CÁLCULO" {...a11yProps(14)} name="memorias_de_calculo" onClick={() => handleTab('memorias_de_calculo')} />
+                    <Tab label={iconAdjuntos('memorias_de_calculo', "MEMORIAS DE CÁLCULO")} {...a11yProps(14)} name="memorias_de_calculo" onClick={() => handleTab('memorias_de_calculo')} />
 
-                    <Tab label="MEMORIAS DESCRIPTIVAS " {...a11yProps(15)} name="memorias_descriptivas" onClick={() => handleTab('memorias_descriptivas')} />
+                    <Tab label={iconAdjuntos('memorias_descriptivas', "MEMORIAS DESCRIPTIVAS")} {...a11yProps(15)} name="memorias_descriptivas" onClick={() => handleTab('memorias_descriptivas')} />
 
-                    <Tab label="FICHAS TÉCNICAS " {...a11yProps(16)} name="fichas_tecnicas" onClick={() => handleTab('fichas_tecnicas')} />
+                    <Tab label={iconAdjuntos('fichas_tecnicas', "FICHAS TÉCNICAS")} {...a11yProps(16)} name="fichas_tecnicas" onClick={() => handleTab('fichas_tecnicas')} />
 
-                    <Tab label="PRUEBAS DE INSTALACIONES " {...a11yProps(17)} name="pruebas_de_instalaciones" onClick={() => handleTab('pruebas_de_instalaciones')} />
+                    <Tab label={iconAdjuntos('pruebas_de_instalaciones', "PRUEBAS DE INSTALACIONES")} {...a11yProps(17)} name="pruebas_de_instalaciones" onClick={() => handleTab('pruebas_de_instalaciones')} />
 
-                    <Tab label="FOTOGRAFÍAS FIN DE OBRA" {...a11yProps(18)} name="fotografias_fin_de_obra" onClick={() => handleTab('fotografias_fin_de_obra')} />
+                    <Tab label={iconAdjuntos('fotografias_fin_de_obra', "FOTOGRAFÍAS FIN DE OBRA")} {...a11yProps(18)} name="fotografias_fin_de_obra" onClick={() => handleTab('fotografias_fin_de_obra')} />
 
-                    <Tab label="ACTA DE ENTREGA" {...a11yProps(19)} name="acta_de_entrega" onClick={() => handleTab('acta_de_entrega')} />
+                    <Tab label={iconAdjuntos('acta_de_entrega', "ACTA DE ENTREGA")} {...a11yProps(19)} name="acta_de_entrega" onClick={() => handleTab('acta_de_entrega')} />
 
                 </Tabs>
 
