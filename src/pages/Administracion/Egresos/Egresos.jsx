@@ -27,6 +27,7 @@ import { setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, se
 import RequisicionCompras from './../RequisicionCompras/RequisicionCompras'
 import RequisicionContabilidad from './../RequisicionContabilidad/RequisicionContabilidad'
 import {Requisiciones} from './../Requisiciones/Requisiciones'
+import Table from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 
 export default function Egresos(props) {
 
@@ -118,6 +119,24 @@ export default function Egresos(props) {
             }
         }
     }, [])
+
+    const columnas = [
+        { nombre: 'Opciones', identificador: 'actions', stringSearch: false },
+        { nombre: 'ID', identificador: 'identificador', stringSearch: false },
+        { nombre: 'Fecha', identificador: 'fecha', stringSearch: false },
+        { nombre: 'Proveedor', identificador: 'proveedor', stringSearch: false },
+        { nombre: 'Factura', identificador: 'factura', stringSearch: false },
+        { nombre: 'Área', identificador: 'area', stringSearch: false },
+        { nombre: 'Sub-Área', identificador: 'subarea', stringSearch: false },
+        { nombre: 'Monto', identificador: 'monto', stringSearch: false },
+        { nombre: 'Comisión', identificador: 'comision', stringSearch: false },
+        { nombre: 'Total', identificador: 'total', stringSearch: false },
+        { nombre: 'Cuenta', identificador: 'cuenta', stringSearch: false },
+        { nombre: 'Pago', identificador: 'tipoPago', stringSearch: false },    
+        { nombre: 'Impuesto', identificador: 'impuesto', stringSearch: false },
+        // { nombre: 'Estatus', identificador: 'estatusCompra', stringSearch: false }, 
+        { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false }
+    ]
 
     const getOptionsAxios = async () => {
         waitAlert()
@@ -252,7 +271,7 @@ export default function Egresos(props) {
         })
     }
 
-    const setEgresos = egresos => {
+    const proccessData = egresos => {
         let aux = []
         let _aux = []
         if (egresos)
@@ -839,7 +858,20 @@ export default function Egresos(props) {
 
                 <Tab eventKey = { 'gastos' } title = { 'gastos' }>
 
-                    <NewTable
+                    <Table
+                        titulo="Gastos" 
+                        subtitle='Listado de gastos'
+                        columnas={columnas}
+                        url={'v3/administracion/gastos'}  
+                        numItemsPagina={12}
+                        ProccessData={proccessData}
+                        // opciones={handleOpen}
+                        // acciones={acciones()}
+                        // reload={setReloadTable}
+                        >
+                    </Table> 
+
+                    {/* <NewTable
                         tableName='egresos'
                         // tableName='gastos'
                         subtitle='Listado de gastos'
@@ -848,14 +880,14 @@ export default function Egresos(props) {
                         abrir_modal={false}
                         accessToken={authUser.access_token}
                         columns={EGRESOS_COLUMNS}
-                        setter={setEgresos}
+                        setter={proccessData}
                         url='/administracion/egresos/add'
                         urlRender={`${URL_DEV}v3/administracion/egreso`}
                         filterClick={openModalFiltros}
                         exportar_boton={true}
                         onClickExport={() => { exportEgresosAxios() }}
-                    />
-                </Tab>
+                    /> */}
+                </Tab> 
 
                 <Tab eventKey="requisiciones" title="requisiciones">
                     <Requisiciones/>
