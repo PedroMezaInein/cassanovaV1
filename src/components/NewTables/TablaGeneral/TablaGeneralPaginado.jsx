@@ -412,7 +412,7 @@ export default function TablaGeneralPaginado(props) {
                                 </ul>
                             </div> */}
                             
-                            <div>
+                            <div className='tabla_paginado'>
                                 <button onClick={() => changeCurrentPage(currentPage - 1)} disabled={currentPage === 1}>&#60; Anterior</button>
                                 {getPageNumbersToShow().map((number, index) => (
                                     <button key={index} onClick={() => {

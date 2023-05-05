@@ -213,3 +213,24 @@
 .yellowButton:hover > i{
     color: black;
 }
+
+//TABLA PAGINADO
+
+.tabla_paginado{
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.tabla_paginado button{
+    border: solid 2px #3A89C9;
+    background-color: rgba(22, 147, 165, 0.5);
+    margin: 0px 3px;
+    border-radius: 2px;
+    color: white;
+    font-weight: bold;
+}
+
+.tabla_paginado button:active{
+    transform: translateY(4px);
+}
