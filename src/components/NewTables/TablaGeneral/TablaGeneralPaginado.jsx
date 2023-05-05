@@ -241,17 +241,17 @@ export default function TablaGeneralPaginado(props) {
         }
     }
 
-    <div>
-        <button onClick={() => changeCurrentPage(currentPage - 1)} disabled={currentPage === 1}>&#60; Anterior</button>
-        {getPageNumbersToShow().map((number, index) => (
-            <button key={index} onClick={() => {
-                if (number !== '...') {
-                    changeCurrentPage(number)
-                }
-            }} disabled={number === currentPage}>{number}</button>
-        ))}
-        <button onClick={() => changeCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}> Siguiente &#62;</button>
-    </div>
+    // <div>
+    //     <button onClick={() => changeCurrentPage(currentPage - 1)} disabled={currentPage === 1}>&#60; Anterior</button>
+    //     {getPageNumbersToShow().map((number, index) => (
+    //         <button key={index} onClick={() => {
+    //             if (number !== '...') {
+    //                 changeCurrentPage(number)
+    //             }
+    //         }} disabled={number === currentPage}>{number}</button>
+    //     ))}
+    //     <button onClick={() => changeCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}> Siguiente &#62;</button>
+    // </div>
 
     return (
         <div className='containerTable'>
@@ -413,15 +413,15 @@ export default function TablaGeneralPaginado(props) {
                             </div> */}
                             
                             <div className='tabla_paginado'>
-                                <button onClick={() => changeCurrentPage(currentPage - 1)} disabled={currentPage === 1}>&#60; Anterior</button>
+                                <button className='tabla_paginado_flecha' onClick={() => changeCurrentPage(currentPage - 1)} disabled={currentPage === 1}>&#60; Anterior</button>
                                 {getPageNumbersToShow().map((number, index) => (
-                                    <button key={index} onClick={() => {
+                                    <button className='tabla_paginado_num' key={index} onClick={() => {
                                         if (number !== '...') {
                                             changeCurrentPage(number)
                                         }
                                     }} disabled={number === currentPage}>{number}</button>
                                 ))}
-                                <button onClick={() => changeCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}> Siguiente &#62;</button>
+                                <button className='tabla_paginado_flecha' onClick={() => changeCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}> Siguiente &#62;</button>
                             </div>
 
                         </div>
