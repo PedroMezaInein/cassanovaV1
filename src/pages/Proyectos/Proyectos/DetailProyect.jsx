@@ -244,8 +244,6 @@ export default function DetailProyect() {
         setValue(newValue);
     };
 
-    console.log(fases)
-
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='proyectos'>

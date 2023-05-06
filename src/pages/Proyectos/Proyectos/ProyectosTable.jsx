@@ -8,6 +8,9 @@ import Layout from '../../../components/layout/layout'
 import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { ordenamiento, setOptions } from '../../../functions/setters'
 import { URL_DEV } from '../../../constants'
+import { Modal } from '../../../components/singles'
+
+/* import ProyectosForm from './../../../components/forms/proyectos/ProyectosForm' */
 
 export default function ProyectosTable() { 
     const userAuth = useSelector((state) => state.authUser);
@@ -15,6 +18,10 @@ export default function ProyectosTable() {
     let prop = {
         pathname: '/proyectos/proyectos/',
     }
+
+    const [modal, setModal] = useState({
+        nuevo: false,
+    })
     
     useEffect(() => {
         getOptionsEmpresas()
@@ -26,6 +33,7 @@ export default function ProyectosTable() {
         /* { nombre: 'F. incio', identificador: 'FInicio', sort: true, stringSearch: false },
         { nombre: 'F. fin', identificador: 'FFin', sort: true, stringSearch: false }, */
         { nombre: 'Nombre', identificador: 'nombre', sort: true, stringSearch: true },
+        { nombre : 'Fases', identificador: 'fases', sort: false, stringSearch: false},
         /* { nombre: 'Cliente', identificador: 'cliente', sort: true, stringSearch: true }, */
         { nombre: 'Dirección', identificador: 'direccion', sort: true, stringSearch: true },
         /* { nombre: 'Contacto', identificador: 'contacto', sort: false, stringSearch: true }, */
@@ -125,6 +133,57 @@ export default function ProyectosTable() {
 
         })
     }
+
+    const fases = (data) => {
+        let aux = []
+        if (data.proyectos.length > 0) {
+            data.proyectos.map((proyecto) => {
+                if (proyecto.fase1 === 1) {
+                    aux.push({
+                        fase: 'Fase 1',
+                        name: proyecto.simpleName,
+                        color: '#F26C4F'
+                    })
+                }
+                if (proyecto.fase2 === 1) {
+                    aux.push({
+                        fase: 'Fase 2',
+                        name: proyecto.simpleName,
+                        color: '#1693A5'
+                    })
+                }
+                if (proyecto.fase3 === 1) {
+                    aux.push({
+                        fase: 'Fase 3',
+                        name: proyecto.simpleName,
+                        color: '#FFD549'
+                    })
+                }
+            })
+        }
+        return (
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+                {aux.map((item, index) => {
+                    return (
+                        <div key={index} style={{ display: 'flex', flexDirection: 'column' }}>
+                            <center>
+                                <span style={{backgroundColor: item.color, color: 'white', fontWeight: 'bold', padding: '2px', borderRadius: '5px', width: 'fit-content', textAlign: 'center'}}>
+                                {item.fase}
+                                </span>
+                            </center>
+                            
+                            
+                            <div>
+                                <span>{item.name}</span>    
+                            </div>
+                            
+                        </div>
+                    )
+                })}
+            </div>
+        )
+    }
+
     
     const ProccessData = (data) => {
         let aux = []
@@ -145,7 +204,8 @@ export default function ProyectosTable() {
                         <div title={item.proyectos[0].descripcion}>
                             `${item.proyectos[0].descripcion.slice(0, 100) + '...'}`
                             </div>
-                         : item.proyectos[0].descripcion : 'Sin descripción',
+                        : item.proyectos[0].descripcion : 'Sin descripción',
+                    fases: fases(item),
                 })
             }
         })
@@ -156,7 +216,7 @@ export default function ProyectosTable() {
         {
             nombre: 'Agregar',
             funcion: () => {
-                Swal.fire({
+                /* Swal.fire({
                     title: 'Nuevo',
                     text: '¿Desea crear un nuevo registro?',
                     icon: 'question',
@@ -166,7 +226,11 @@ export default function ProyectosTable() {
                 }).then((result) => {
                     if (result.isConfirmed) {
                     }
-                });
+                }); */
+                setModal({
+                    ...modal,
+                    nuevo: true
+                })
             }
         },
         {
@@ -187,17 +251,19 @@ export default function ProyectosTable() {
         }
     ]
 
-
-
     return (
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='proyectos' >
                 { opciones &&
                     <Tabla
-                    titulo="Proyectos" columnas={columnas} url="proyectos/project" opciones={opcionesbtn} acciones={createAcciones()} numItemsPagina={20} ProccessData={ProccessData}
+                    titulo="Proyectos" columnas={columnas} url="proyectos/project" /* opciones={opcionesbtn} */ acciones={createAcciones()} numItemsPagina={20} ProccessData={ProccessData}
                     />
                 }
             </Layout>
+
+            {/* <Modal size="xl" show={modal.nuevo} title='Información del proyecto' handleClose={() => setModal({ ...modal, nuevo: false })}>
+                <ProyectosForm />
+            </Modal> */}
         </>
     )
 }

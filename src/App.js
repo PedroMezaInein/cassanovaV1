@@ -442,9 +442,9 @@ class App extends Component{
                     <Route path = "/administracion/licencias-equipos" exact component ={ Licencias } />
 
                     <Route path = "/administracion/calendario-pagos" exact component = { CalendarioPagos } />
-                    <Route path="/administracion/gasto" exact component={Requisiciones} />
+                    {/* <Route path="/administracion/gasto" exact component={Requisiciones} />
                     <Route path="/administracion/gasto-compras" exact component={RequisicionCompras} />
-                    <Route path="/administracion/gastos" exact component={RequisicionContabilidad} />
+                    <Route path="/administracion/gastos" exact component={RequisicionContabilidad} /> */}
                     <Route path="/administracion/presupuesto" exact component={PresupuestoAnual} />
 
                     {/*  ANCHOR Routes for bancos */}
