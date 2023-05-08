@@ -6,7 +6,7 @@ import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import ModalAgregar from '../../../pages/Catalogos/Areas/ModalAgregar'
 import ModalEditarGastos from '../../../pages/Catalogos/Areas/ModalEditarGastos'
-import ModalEditarSubPartida from '../../../pages/Catalogos/Areas/ModalEditarSubPartida'
+import ModalEditarSubGasto from '../../../pages/Catalogos/Areas/ModalEditarSubPartida'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 
 export default function Gastos (){
@@ -26,7 +26,7 @@ export default function Gastos (){
             show: false,
             data: false
         },
-        editarSubPartida:{
+        editarSubGasto:{
             show: false,
             data: false
         }
@@ -81,7 +81,7 @@ export default function Gastos (){
     const handleOpenPartida = (info) =>{
         setModal({
             ...modal,
-            editarSubPartida:{
+            ModalEditarSubGasto:{
                 show:true,
                 data: info
             },
@@ -185,9 +185,9 @@ export default function Gastos (){
                 <ModalEditarGastos data={modal.editarGastos.data} handleClose={()=>handleCloseGastos ('editarGastos')} reload={reloadTable}/>
             </Modal>
 
-            <Modal size="lg" title={"Editar Sub partida"} show={modal.editarSubPartida.show} handleClose={()=>handleCloseGastos ('editarSubPartida')}>
+            {/* <Modal size="lg" title={"Editar Sub partida"} show={modal.editarSubPartida.show} handleClose={()=>handleCloseGastos ('editarSubPartida')}>
                 <ModalEditarSubPartida data={modal.editarSubPartida.data}/>
-            </Modal>
+            </Modal> */}
 
         </>
     )

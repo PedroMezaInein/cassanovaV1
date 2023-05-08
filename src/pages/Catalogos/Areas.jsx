@@ -44,6 +44,7 @@ class Areas extends Component {
         key: 'gastos',
         options: { areas: [], subareas: [], partidas: []}
     }
+
     
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -185,6 +186,7 @@ class Areas extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
+        // await axios.delete(`${URL_DEV}v2/catalogos/areas/${data.id}/subarea/${element.id}?sub=${form.subarea}`, 
         await axios.delete(`${URL_DEV}v2/catalogos/areas/${data.id}/subarea/${element.id}?sub=${form.subarea}`, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -206,7 +208,7 @@ class Areas extends Component {
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/catalogos/areas/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/catalogos/areas/${tipo}/${data.id}`,  
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

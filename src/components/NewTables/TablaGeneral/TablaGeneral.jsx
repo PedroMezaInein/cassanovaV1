@@ -14,7 +14,7 @@ import '../../../styles/_TablaGeneral.scss'
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 
 export default function TablaGeneral(props) {
-    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, customFilter } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, customFilter, resetFilters, setResetFilters } = props;
     //para implementar la tabla puedes utilizar los siguientes props
 
     //titulo: titulo de la tabla
@@ -85,7 +85,6 @@ export default function TablaGeneral(props) {
             paginado(numItemsPagina)
         }
     }, [filterData])
-
     const getData = () => {
 
         waitAlert()
@@ -94,8 +93,15 @@ export default function TablaGeneral(props) {
             axios(`${URL_DEV}${url}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
                 .then(res => {
                     if (ProccessData !== undefined) {
-                        setData(ProccessData(res.data))
-                        setFilterData(ProccessData(res.data))
+                        if (customFilter && resetFilters === false) {
+                            let aux = customFilter(ProccessData(res.data))
+                            setData(aux)
+                            setFilterData(aux)
+                        } else {
+                            setData(ProccessData(res.data))
+                            setFilterData(ProccessData(res.data))
+                        }
+                        
                     } else {
                         setData(res.data)
                         setFilterData(res.data)
@@ -116,8 +122,6 @@ export default function TablaGeneral(props) {
             console.log(error)
         }
     }
-    //send reload function to parent
-
 
     const sortData = (identificador) => {
         let dataSort = [...data];
@@ -190,6 +194,9 @@ export default function TablaGeneral(props) {
         resetFilter();
         getData();
         setPaginaActual(0);
+        if (setResetFilters) {
+            setResetFilters(true)
+        }
     }
 
     const resetFilter = () => {
