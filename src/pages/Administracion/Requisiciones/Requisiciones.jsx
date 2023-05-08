@@ -156,7 +156,7 @@ function Requisiciones () {
 
     return (
         <>
-            <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
+            {/* <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'> */}
                 <Tabla
                     titulo="Requisición" 
                     columnas={REQUISICIONES}
@@ -168,7 +168,7 @@ function Requisiciones () {
                     reload={setReloadTable}
                     >
                 </Tabla>
-            </Layout>
+            {/* </Layout> */}
 
             <Modal size="lg" title={"Nueva requisición"} show={modal.crear.show} handleClose={handleClose('crear')}>
                 <NuevaRequisicion handleClose={handleClose('crear')} reload={reloadTable}/>
