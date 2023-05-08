@@ -38,6 +38,7 @@ export default function EditProyect(props) {
     const {proyecto, reload} = props;
     const user = useSelector(state => state.authUser);
     const colaboradores = useSelector(state => state.opciones.vehiculos.colaboradores)
+    const departamentos = useSelector(state => state.opciones.departamentos)
     const [form, setForm] = useState({
         nombre:proyecto.nombre,
         fechaInicio: proyecto.fecha_inicio,
@@ -60,6 +61,14 @@ export default function EditProyect(props) {
         cliente_id: proyecto.cliente_id,
         fases: [],
         responsable: proyecto.responsable ? proyecto.responsable.empleado_id : '',
+    })
+    const [responsable, setResponsable] = useState({
+        responsable: '',
+        id_responsable: '',
+        colaborador: '',
+        id_colaborador: '',
+        departamento: '',
+        id_departamento: '',
     })
     const [state, setState] = useState([])
 
@@ -386,6 +395,61 @@ export default function EditProyect(props) {
         }
     }
 
+    console.log(departamentos)
+
+    const handleChangeDepartamento = (e) => {
+        setResponsable({
+            ...responsable,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const handleAddResponsable = (e) => {
+        e.preventDefault()
+        try {
+            if (responsable.id_responsable !== '') {
+                const newForm = {
+                    id_proyecto: proyecto.id,
+                    id_area: responsable.id_departamento,
+                    id_empleado: responsable.id_responsable,
+                    descripcion: 'responsable'
+                }
+                apiPostForm('areas/asignado', newForm, user.access_token)
+                    .then((response) => {
+                        console.log(response)
+                        /* reload() */
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            } 
+            if (responsable.id_colaborador !== '') {
+                const newForm = {
+                    id_proyecto: proyecto.id,
+                    id_area: responsable.id_departamento,
+                    id_empleado: responsable.id_colaborador,
+                    descripcion: 'colaborador'
+                }
+                apiPostForm('areas/asignado', newForm, user.access_token)
+                    .then((response) => {
+                        console.log(response)
+                        /* reload() */
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            }
+            setResponsable({
+                id_departamento: '',
+                id_responsable: '',
+                id_colaborador: '',
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
     return (
         <>
             <div className='proyect-Titulo'>
@@ -593,7 +657,114 @@ export default function EditProyect(props) {
                             }
 
                             
+
+                            
                         </div>
+                        
+                    </AccordionDetails>
+                </Accordion>
+
+                
+                <Accordion
+                    className='proyect-accordion'
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                        <Typography className='proyect-Subtitulo'>Responsables</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+
+                        <div className="container-Info-Proyecto">
+
+                            <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+                                
+                                {
+                                    departamentos.length > 0 &&
+                                    <div>
+                                            <InputLabel>Departamento</InputLabel>
+                                            <Select 
+                                                name='id_departamento'
+                                                onChange={handleChangeDepartamento}
+                                                value={responsable.id_departamento}
+                                            >
+                                                <MenuItem value={0}></MenuItem>
+                                                {
+                                                    departamentos.map((departamento, index) => {
+                                                        return <MenuItem key={index} value={departamento.id}>{departamento.nombre}</MenuItem>
+                                                    })
+                                                }
+                                            </Select>
+                                    </div>
+                                }    
+                                {
+                                    responsable.id_departamento !== '' &&
+                                    <div>
+                                            <InputLabel>Responsable</InputLabel>
+                                            <Select
+                                                name='id_responsable'
+                                                onChange={handleChangeDepartamento}
+                                                value={responsable.id_responsable}
+                                            >   
+                                                <MenuItem value={0}></MenuItem>
+                                                {
+                                                    departamentos.filter(departamento => departamento.id === responsable.id_departamento)[0].empleados.map((empleado, index) => {
+                                                        return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                                    })
+                                                }
+                                            </Select>
+                                    </div>      
+
+                                }
+
+                                {
+                                    responsable.id_responsable !== '' &&
+                                    <div>
+                                            <InputLabel>Colaborador</InputLabel>
+                                            <Select
+                                                name='id_colaborador'
+                                                onChange={handleChangeDepartamento}
+                                                value={responsable.id_colaborador}
+                                            >
+                                                <MenuItem value={0}></MenuItem>
+                                                {
+                                                    departamentos.filter(departamento => departamento.id === responsable.id_departamento)[0].empleados.map((empleado, index) => {
+                                                        return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                                    }
+                                                    )
+                                                }
+                                            </Select>
+                                    </div>
+                                }
+                                {
+                                    responsable.id_colaborador !== '' &&
+                                    <div>
+                                            <button
+                                                onClick={handleAddResponsable}
+                                            >
+                                                Agregar
+                                            </button>
+                                    </div>
+
+                                }
+
+                                {
+                                    proyecto.departamentos.length > 0 &&
+                                    proyecto.departamentos.map((departamento, index) => {
+                                        return (
+                                            <div key={index} className='colaboradores'>
+                                                <span /* onClick={e => handleDeleteDepartamento(e, departamento.id)} */>X</span>
+                                                {`${departamento.nombre}`}
+                                            </div>
+                                        )
+                                    })
+                                }
+                      
+                            </div> 
+                        </div>
+                        
                         
                     </AccordionDetails>
                 </Accordion>

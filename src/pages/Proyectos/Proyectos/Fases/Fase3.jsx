@@ -8,6 +8,7 @@ import ProgressBar from './utils/ProgressBar';
 
 import '../../../../styles/_fases.scss'
 import BotonAdjuntos from './BotonAdjuntos';
+import AdjuntosFase3 from './utils/AdjuntosFase3';
 
 import Modales from './utils/Modales';
 
@@ -143,16 +144,28 @@ export default function Fase3(props) {
                 </div>
                 <div>
 
-                    <div>
-                        Área
-                        <p>{fase.m2} m2</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                        <div>
+                            <span className="TagTitleFase">
+                                Área
+                            </span>
+
+                            <p>{fase.m2} m2</p>
+                        </div>
+
+                        <div>
+                            <span className="TagTitleFase">
+                                Descripción
+                            </span>
+
+                            <p>{fase.descripcion}</p>
+                        </div>
                     </div>
 
-                    <div>
-                        Descripcion
-                        <p>{fase.descripcion}</p>
-                    </div>
 
+                    <hr />
+
+                    <AdjuntosFase3 proyecto={fase} />
 
                     {/* <div>
                         Presupuesto inicial

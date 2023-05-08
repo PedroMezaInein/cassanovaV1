@@ -208,7 +208,7 @@ class Areas extends Component {
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/catalogos/areas/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/catalogos/areas/${tipo}/${data.id}`,  
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

@@ -60,16 +60,27 @@ function TabPanel(props) {
 export default function DetailProyect() {
     const userAuth = useSelector((state) => state.authUser);
     const [proyecto, setProyecto] = useState();
+    
     const [modal, setModal] = useState({
         edit_proyect: false,
         hire_phase: false,
         info: false,
     });
-    const [value, setValue] = useState(false);
+    
     const [dataFases, setDataFases] = useState(false)
     const [fases, setFases] = useState(false)
+    const [value, setValue] = useState(false);
     const [opciones, setOpciones] = useState(false)
 
+    useEffect(() => {
+        let tab = false
+        if (fases) {
+            if (fases.fase1?.activeTab) tab = 0
+            if (fases.fase2?.activeTab) tab = 1
+            if (fases.fase3?.activeTab) tab = 2
+            setValue(tab)
+        }
+    }, [fases])
 
     let navs = [
         { eventKey: 'fase1', name: 'Fase 1' },
@@ -79,7 +90,7 @@ export default function DetailProyect() {
 
     useEffect(() => { 
         let actualUrl = window.location.href
-        actualUrl = actualUrl.split('/')
+        actualUrl = actualUrl.split('/') // http://localhost:3000/proyectos/proyectos/nuevo/233 -> ['http:', '', 'localhost:3000', 'proyectos', 'proyectos', 'nuevo', '233']
         getOneProyecto(actualUrl[actualUrl.length - 1])
         
     }, [])
@@ -150,7 +161,6 @@ export default function DetailProyect() {
         })
         apiOptions('v2/proyectos/compras', userAuth.access_token)
         .then(response => {
-        
             const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos, proveedores, formasPago,
                 metodosPago, estatusFacturas } = response.data
             let options = {}
@@ -254,11 +264,14 @@ export default function DetailProyect() {
                         <div className=" ml-n4 mr-n4">
                             <Tabs
                                 className='tabs-container'
-                                color='secondary'
+                                color='primary'
                                 value={value}
                                 onChange={handleChange}
-                                indicatorColor="secondary"
-                                variant="fullWidth"
+                            TabIndicatorProps={{ style: { background: '#F26C4F' } }}
+                                /* TabScrollButtonProps={{ style: { background: '#ffd64a' } }} */
+                                /* indicatorColor="#ffd64a" */
+                            variant="fullWidth"
+                            style={{ background: 'rgba(255, 213, 73, 0.75)', color: '#000000' }}
                             >
                                 {<Tab label="Fase 1" disabled={fases.fase1.activeTab ? false : true} />}
                                 {<Tab label="Fase 2" disabled={fases.fase2.activeTab ? false : true} />}
