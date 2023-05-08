@@ -227,13 +227,10 @@ export default function ProyectosTable() {
                     if (result.isConfirmed) {
                     }
                 }); */
-                setModal({
-                    ...modal,
-                    nuevo: true
-                })
+                
             }
         },
-        {
+/*         {
             nombre: 'Exportar',
             funcion: () => {
                 Swal.fire({
@@ -248,7 +245,7 @@ export default function ProyectosTable() {
                     }
                 });
             }
-        }
+        } */
     ]
 
     return (
