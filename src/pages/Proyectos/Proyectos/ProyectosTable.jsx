@@ -227,7 +227,7 @@ export default function ProyectosTable() {
                     if (result.isConfirmed) {
                     }
                 }); */
-                
+                window.location.replace('/proyectos/proyectos/add')
             }
         },
 /*         {
@@ -253,7 +253,7 @@ export default function ProyectosTable() {
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='proyectos' >
                 { opciones &&
                     <Tabla
-                    titulo="Proyectos" columnas={columnas} url="proyectos/project" /* opciones={opcionesbtn} */ acciones={createAcciones()} numItemsPagina={20} ProccessData={ProccessData}
+                    titulo="Proyectos" columnas={columnas} url="proyectos/project" opciones={opcionesbtn} acciones={createAcciones()} numItemsPagina={20} ProccessData={ProccessData}
                     />
                 }
             </Layout>

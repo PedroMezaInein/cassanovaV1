@@ -71,6 +71,7 @@ export default function EditProyect(props) {
         id_departamento: '',
     })
     const [state, setState] = useState([])
+    const [preloadDataResponsables, setPreloadDataResponsables] = useState([])
 
     const arrayFases = [
         { value: 'fase1', name: 'Fase 1', label: 'Fase 1' },
@@ -84,6 +85,49 @@ export default function EditProyect(props) {
         getOptionsEmpresas();
         handleGetUsers();
     }, [])
+
+    useEffect(() => {
+        if (departamentos.length > 0) { 
+            let aux = []
+            departamentos.forEach((element) => {
+                aux.push({
+                    id_area: element.id,
+                    id: '',
+                    id_responsable: '',
+                    colaboradores: [],
+                })
+            })
+            
+            proyecto.departamentos.forEach((element) => { 
+                if (element.descripcion === 'responsable') {
+                    aux.find((item, index) => {
+                        if (item.id_area === element.id_area) {
+                            aux[index].id_responsable = element.id_empleado
+                            aux[index].id = element.id
+                        }
+                    })
+                } else {
+                    aux.find((item, index) => {
+                        if (item.id_area === element.id_area) {
+                            aux[index].colaboradores.push(element)
+                        }
+                    })
+                }
+            })
+
+            let newAux = []
+
+            aux.forEach((element) => {
+                if (element.id_responsable !== '' || element.colaboradores.length > 0) {
+                    newAux.push(element)
+                }
+            })
+
+            setPreloadDataResponsables(newAux)
+        }
+    }, [departamentos, proyecto])
+    console.log(preloadDataResponsables)
+
 
     const handleChange = (e) => {
         setForm({
@@ -417,7 +461,7 @@ export default function EditProyect(props) {
                 apiPostForm('areas/asignado', newForm, user.access_token)
                     .then((response) => {
                         console.log(response)
-                        /* reload() */
+                        reload()
                     })
                     .catch((error) => {
                         console.log(error)
@@ -433,7 +477,7 @@ export default function EditProyect(props) {
                 apiPostForm('areas/asignado', newForm, user.access_token)
                     .then((response) => {
                         console.log(response)
-                        /* reload() */
+                        reload()
                     })
                     .catch((error) => {
                         console.log(error)
@@ -446,6 +490,91 @@ export default function EditProyect(props) {
             })
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    const handleDeleteResponsable = (e, id_usuario) => { 
+        e.preventDefault()
+        console.log(id_usuario)
+        try {
+            apiDelete(`areas/asignado/${id_usuario}`, user.access_token)
+                .then((response) => { 
+                    console.log(response.data)
+                    reload()
+                })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleDeleteAllResponsable = (e, responsable) => { 
+        e.preventDefault()
+        if (responsable.id !== '' && responsable.colaboradores.length === 0) {
+            try {
+                apiDelete(`areas/asignado/${responsable.id}`, user.access_token)
+                    .then((response) => {
+                        reload()
+                    })
+            } catch (error) {
+                console.log(error)
+            }
+        } else if (responsable.id !== '' && responsable.colaboradores.length > 0) {
+            let promesas = []
+            promesas.push(apiDelete(`areas/asignado/${responsable.id}`, user.access_token))
+            responsable.colaboradores.map((colaborador) => {
+                promesas.push(apiDelete(`areas/asignado/${colaborador.id}`, user.access_token))
+            }
+            )
+            Promise.all(promesas)
+                .then((response) => {
+                    reload()
+                }
+                )
+        } 
+
+    }
+
+    const handleAddResponsableOnChanges = (e, id_area) => { 
+        e.preventDefault()
+        console.log(id_area)
+        console.log(e.target.value)
+        console.log(proyecto.id)
+        try {
+            let newForm = {
+                id_proyecto: proyecto.id,
+                id_area: id_area,
+                id_empleado: e.target.value,
+                descripcion: 'colaborador'
+            }
+            apiPostForm('areas/asignado', newForm, user.access_token)
+                .then((response) => {
+                    reload()
+                }
+            )
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleChangesResponsable = (e, id_area, id_responsable) => { 
+        try {
+            apiDelete(`areas/asignado/${id_responsable}`, user.access_token)
+                .then((response) => { 
+                    let newForm = {
+                        id_proyecto: proyecto.id,
+                        id_area: id_area,
+                        id_empleado: e.target.value,
+                        descripcion: 'responsable'
+                    }
+                    apiPostForm('areas/asignado', newForm, user.access_token)
+                        .then((response) => {
+                            reload()
+                        }
+                    )
+
+                })
+        } catch (error) {
+            
         }
     }
 
@@ -679,7 +808,7 @@ export default function EditProyect(props) {
 
                         <div className="container-Info-Proyecto">
 
-                            <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+                            <div style={{display: 'flex', flexDirection: 'column'}}>
                                 
                                 {
                                     departamentos.length > 0 &&
@@ -736,6 +865,101 @@ export default function EditProyect(props) {
                                                     )
                                                 }
                                             </Select>
+                                    </div>
+                                }
+
+                                {
+                                    responsable.id_colaborador !== '' &&
+                                    <div>
+                                        <button onClick={handleAddResponsable}>Agregar</button>
+                                    </div>
+                                }
+                                <hr/>
+                                {
+                                    preloadDataResponsables.length > 0 &&
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <hr />
+                                            {
+                                                preloadDataResponsables.map((responsable, index) => { 
+                                                    return (
+                                                        <>
+                                                            <button onClick={e => handleDeleteAllResponsable(e, responsable)} style={{ alignSelf: 'flex-end' }}>X</button>
+                                                            <div key={index} style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                                <div>
+                                                                    <InputLabel>Departamento</InputLabel>
+                                                                    <Select
+                                                                        value={responsable.id_area}
+                                                                        disabled
+                                                                    >
+                                                                        {
+                                                                            departamentos.map((departamento, index) => {
+                                                                                return <MenuItem key={index} value={departamento.id}>{departamento.nombre}</MenuItem>
+                                                                            })
+                                                                        }
+                                                                    </Select>
+                                                                </div>
+                                                                <div>
+                                                                    <InputLabel>Responsable</InputLabel>
+                                                                    <Select
+                                                                        value={responsable.id_responsable}
+                                                                        onChange={e => handleChangesResponsable(e, responsable.id_area, responsable.id)}
+                                                                    >
+                                                                        <MenuItem value={0}></MenuItem>
+                                                                        {
+                                                                            departamentos.filter(departamento => departamento.id === responsable.id_area)[0].empleados.map((empleado, index) => {
+                                                                                return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                                                            })
+                                                                        }
+                                                                    </Select>
+                                                                </div>  
+                                                                
+                                                                <div>
+                                                                    <InputLabel>Agregar colaborador</InputLabel>
+                                                                    <Select
+                                                                        onChange={e => handleAddResponsableOnChanges(e, responsable.id_area)}
+                                                                    >
+                                                                        <MenuItem value={0}></MenuItem>
+                                                                        {
+                                                                            departamentos.filter(departamento => departamento.id === responsable.id_area)[0].empleados.map((empleado, index) => {
+                                                                                return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                                                            })
+                                                                        }
+                                                                    </Select>
+                                                                </div> 
+                                                            </div>
+                                                            
+                                                            <div>
+                                                                <InputLabel>Colaboradores</InputLabel>
+                                                                {
+                                                                    responsable.colaboradores.length > 0 &&
+                                                                    responsable.colaboradores.map((colaborador, index) => { 
+                                                                        return (
+                                                                            <>
+                                                                                <button onClick={e => handleDeleteResponsable(e, colaborador.id)}>X</button>
+                                                                                
+                                                                                <Select
+                                                                                    value={colaborador.id_empleado}
+                                                                                    disabled
+                                                                                >
+                                                                                    <MenuItem value={0}></MenuItem>
+                                                                                    {
+                                                                                        departamentos.filter(departamento => departamento.id === responsable.id_area)[0].empleados.map((empleado, index) => {
+                                                                                            return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                                                                        })
+                                                                                    }
+                                                                                </Select>
+                                                                            </>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </div>
+
+
+                                                        </>
+                                                    )
+                                                })
+                                            }
+                                            <hr/>
                                     </div>
                                 }
 
