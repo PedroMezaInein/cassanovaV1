@@ -6,14 +6,11 @@ import $ from 'jquery'
 import S3 from 'react-aws-s3'
 import { Tabs, Tab } from 'react-bootstrap'
 import Swal from 'sweetalert2'
-import { connect } from 'react-redux'
 import { Modal } from '../../../components/singles'
 import { Update } from '../../../components/Lottie'
 import Layout from '../../../components/layout/layout'
 import { EgresosCard } from '../../../components/cards'
-import { NewTable } from '../../../components/NewTables'
 import { EngresosFilters } from '../../../components/filters'
-import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
 import { printSwalHeader } from '../../../functions/printers'
 import { FacturasFormTable } from '../../../components/tables'
 import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
@@ -27,8 +24,8 @@ import { setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, se
 import RequisicionCompras from './../RequisicionCompras/RequisicionCompras'
 import RequisicionContabilidad from './../RequisicionContabilidad/RequisicionContabilidad'
 import {Requisiciones} from './../Requisiciones/Requisiciones'
-import Table from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 import TablaGeneralPaginado from '../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
+import ModalAgregarGasto from './ModalAgregarGasto'
 
 export default function Egresos(props) {
 
@@ -52,7 +49,7 @@ export default function Egresos(props) {
             proveedores: [],
             empresas: [],
             egresos: [],
-            adjuntos: []
+            adjuntos: [],
         },
         form: {
             formaPago: '',
@@ -94,6 +91,13 @@ export default function Egresos(props) {
         },
         filters: {},
         key: 'gastos'
+    })
+
+    const [modales, setModales] = useState({
+        crear: {
+            show:false,
+            data:false
+        }
     })
 
     useEffect(() => { 
@@ -461,6 +465,7 @@ export default function Egresos(props) {
         modal.download = false
         modal.filters = false
         modal.facturas = false
+        modal.crear = false
         
         setState({
             ...state,
@@ -852,6 +857,33 @@ export default function Egresos(props) {
         pathname: '/administracion/egresos',
     }
 
+    const opciones = [
+        {
+            nombre: 'Nuevo gasto',
+            funcion: (item) => { 
+                setModales({
+                    ...modales,
+                    crear:{
+                        show:true,
+                        data:item
+                    }
+                })
+            }
+        }
+    ]
+
+    const handleCloseGastos = (tipo) => {
+        setModales({
+            ...modales,
+            [tipo]:{
+                data:false,
+                show: false,
+            }
+        })
+    }
+
+    console.log(modales)
+
     return (
         <Layout authUser={authUser.acces_token} location={prop} history={{ location: prop }} active='administracion'>
 
@@ -878,7 +910,7 @@ export default function Egresos(props) {
                         columnas={columnas}
                         numItemsPagina={20}
                         ProccessData={proccessData}
-                        // opciones={handleOpen}
+                        opciones={opciones}
                         // acciones={acciones()}
                         // reload={setReloadTable}
                     />  
@@ -903,6 +935,7 @@ export default function Egresos(props) {
                     
                 </Tab> 
 
+
                 <Tab eventKey="requisiciones" title="requisiciones">
                     <Requisiciones/>
                 </Tab>
@@ -916,6 +949,10 @@ export default function Egresos(props) {
                 </Tab>
 
             </Tabs>
+
+            <Modal size="lg" title={"Nuevos gastos"} show={modales.crear.show} handleClose={()=>handleCloseGastos('crear')}>
+                <ModalAgregarGasto handleClose={()=>handleCloseGastos('crear')}/>
+            </Modal>
 
             <Modal size="xl" title={"Facturas"} show={state.modal.facturas} handleClose={handleClose} >
                 <FacturasFormTable at={authUser.access_token } tipo_factura='egresos' id={state.egreso.id} dato={state.egreso} reloadTable = {reloadTableFacturas}/>
@@ -933,6 +970,7 @@ export default function Egresos(props) {
             <Modal size='xl' show={state.modal.filters} handleClose={handleClose} title='Filtros'>
                 <EngresosFilters at={authUser.access_token} sendFilters={sendFilters} filters={state.filters} options={state.options} setOptions={setOptionsArray} areas={areas} />
             </Modal>
+
         </Layout>
     )
 }
