@@ -575,7 +575,7 @@ export default function EditProyect(props) {
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
-                        <Typography className='proyect-Subtitulo'>Colaboradores Designados</Typography>
+                        <Typography className='proyect-Subtitulo'>Responsable del proyecto</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <div className='container-Cliente'>
@@ -611,7 +611,7 @@ export default function EditProyect(props) {
                             }    
                             
                             
-                            {
+{/*                             {
                                 colaboradores.length > 0 &&
                                 <div>
                                     <InputLabel>Agregar colaborador</InputLabel>
@@ -636,8 +636,8 @@ export default function EditProyect(props) {
 
                                     </Select>
                                 </div>
-                            }
-                            {
+                            } */}
+{/*                             {
                                 state.length > 0 ?
                                     <div className='colaboradores'>
                                         {state.sort((a, b) => {
@@ -654,7 +654,7 @@ export default function EditProyect(props) {
                                         })}
                                     </div>
                                     : <></>
-                            }
+                            } */}
 
                             
 
@@ -738,29 +738,7 @@ export default function EditProyect(props) {
                                             </Select>
                                     </div>
                                 }
-                                {
-                                    responsable.id_colaborador !== '' &&
-                                    <div>
-                                            <button
-                                                onClick={handleAddResponsable}
-                                            >
-                                                Agregar
-                                            </button>
-                                    </div>
 
-                                }
-
-                                {
-                                    proyecto.departamentos.length > 0 &&
-                                    proyecto.departamentos.map((departamento, index) => {
-                                        return (
-                                            <div key={index} className='colaboradores'>
-                                                <span /* onClick={e => handleDeleteDepartamento(e, departamento.id)} */>X</span>
-                                                {`${departamento.nombre}`}
-                                            </div>
-                                        )
-                                    })
-                                }
                       
                             </div> 
                         </div>
