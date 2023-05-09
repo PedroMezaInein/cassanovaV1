@@ -175,7 +175,7 @@ export default function NuevoTicket (props) {
                         /* disabled={user.user.tipo.id ==1 ? false : true} */
                     >
                         <MenuItem value={0}>cambio</MenuItem>
-                        <MenuItem value={1}>soporte</MenuItem>
+                        {/* <MenuItem value={1}>soporte</MenuItem> */}
                         <MenuItem value={2}>mejora</MenuItem>
                         <MenuItem value={3}>reporte</MenuItem>
                         <MenuItem value={4}>información</MenuItem>
@@ -186,10 +186,14 @@ export default function NuevoTicket (props) {
                 </div>
 
                 
-                <div className='nuevo_ticket_departamento'>
+               
+            </div>
+
+            <div>
+                <div style={{width: '100%', marginTop: '20px'}}>
                     <TextField
                         label="Descripcion"
-                            // placeholder="Deja una descripción"
+                        // placeholder="Deja una descripción"
                         onChange={handleChange}
                         // margin="normal"
                         name='descripcion'
@@ -198,12 +202,14 @@ export default function NuevoTicket (props) {
                             shrink: true,
                         }}
                         multiline
-                        maxRows={4}
-                        // error={errores.descripcion ? true : false}
+                        maxRows={10}
+                        fullWidth
+                        size='medium'
+                    // error={errores.descripcion ? true : false}
                     />
-                </div>
+                </div>    
             </div>
-
+            
             <div className="nuevo_ticket_boton">
                 <button className='sendButton' onClick={enviar}>Agregar</button>
             </div>

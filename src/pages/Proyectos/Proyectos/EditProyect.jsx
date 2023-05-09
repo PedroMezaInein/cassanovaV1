@@ -25,6 +25,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
+import TrashIcon from '@material-ui/icons/DeleteOutline';
 
 import { URL_DEV } from '../../../constants'
 import { ordenamiento, setOptions } from '../../../functions/setters'
@@ -808,72 +809,75 @@ export default function EditProyect(props) {
 
                         <div className="container-Info-Proyecto">
 
-                            <div style={{display: 'flex', flexDirection: 'column'}}>
-                                
-                                {
-                                    departamentos.length > 0 &&
-                                    <div>
-                                            <InputLabel>Departamento</InputLabel>
-                                            <Select 
-                                                name='id_departamento'
-                                                onChange={handleChangeDepartamento}
-                                                value={responsable.id_departamento}
-                                            >
-                                                <MenuItem value={0}></MenuItem>
-                                                {
-                                                    departamentos.map((departamento, index) => {
-                                                        return <MenuItem key={index} value={departamento.id}>{departamento.nombre}</MenuItem>
-                                                    })
-                                                }
-                                            </Select>
-                                    </div>
-                                }    
-                                {
-                                    responsable.id_departamento !== '' &&
-                                    <div>
-                                            <InputLabel>Responsable</InputLabel>
-                                            <Select
-                                                name='id_responsable'
-                                                onChange={handleChangeDepartamento}
-                                                value={responsable.id_responsable}
-                                            >   
-                                                <MenuItem value={0}></MenuItem>
-                                                {
-                                                    departamentos.filter(departamento => departamento.id === responsable.id_departamento)[0].empleados.map((empleado, index) => {
-                                                        return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
-                                                    })
-                                                }
-                                            </Select>
-                                    </div>      
-
-                                }
-
-                                {
-                                    responsable.id_responsable !== '' &&
-                                    <div>
-                                            <InputLabel>Colaborador</InputLabel>
-                                            <Select
-                                                name='id_colaborador'
-                                                onChange={handleChangeDepartamento}
-                                                value={responsable.id_colaborador}
-                                            >
-                                                <MenuItem value={0}></MenuItem>
-                                                {
-                                                    departamentos.filter(departamento => departamento.id === responsable.id_departamento)[0].empleados.map((empleado, index) => {
-                                                        return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div className='container_responsables'>
+                                    {
+                                        departamentos.length > 0 &&
+                                        <div>
+                                                <InputLabel>Departamento</InputLabel>
+                                                <Select 
+                                                    name='id_departamento'
+                                                    onChange={handleChangeDepartamento}
+                                                    value={responsable.id_departamento}
+                                                >
+                                                    <MenuItem value={0}></MenuItem>
+                                                    {
+                                                        departamentos.map((departamento, index) => {
+                                                            return <MenuItem key={index} value={departamento.id}>{departamento.nombre}</MenuItem>
+                                                        })
                                                     }
-                                                    )
-                                                }
-                                            </Select>
-                                    </div>
-                                }
+                                                </Select>
+                                        </div>
+                                    }    
+                                    {
+                                        responsable.id_departamento !== '' &&
+                                        <div>
+                                                <InputLabel>Responsable</InputLabel>
+                                                <Select
+                                                    name='id_responsable'
+                                                    onChange={handleChangeDepartamento}
+                                                    value={responsable.id_responsable}
+                                                >   
+                                                    <MenuItem value={0}></MenuItem>
+                                                    {
+                                                        departamentos.filter(departamento => departamento.id === responsable.id_departamento)[0].empleados.map((empleado, index) => {
+                                                            return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                                        })
+                                                    }
+                                                </Select>
+                                        </div>      
 
-                                {
-                                    responsable.id_colaborador !== '' &&
-                                    <div>
-                                        <button onClick={handleAddResponsable}>Agregar</button>
-                                    </div>
-                                }
+                                    }
+
+                                    {
+                                        responsable.id_responsable !== '' &&
+                                        <div>
+                                                <InputLabel>Colaborador</InputLabel>
+                                                <Select
+                                                    name='id_colaborador'
+                                                    onChange={handleChangeDepartamento}
+                                                    value={responsable.id_colaborador}
+                                                >
+                                                    <MenuItem value={0}></MenuItem>
+                                                    {
+                                                        departamentos.filter(departamento => departamento.id === responsable.id_departamento)[0].empleados.map((empleado, index) => {
+                                                            return <MenuItem key={index} value={empleado.id}>{`${empleado.nombre} ${empleado.apellido_paterno !== null ? empleado.apellido_paterno : ''} ${empleado.apellido_materno !== null ? empleado.apellido_materno : ''}`}</MenuItem>
+                                                        }
+                                                        )
+                                                    }
+                                                </Select>
+                                        </div>
+                                    }
+
+                                    {
+                                        responsable.id_colaborador !== '' &&
+                                        <div>
+                                            <button onClick={handleAddResponsable}>Agregar</button>
+                                        </div>
+                                    }    
+                                </div>
+                                
+
                                 <hr/>
                                 {
                                     preloadDataResponsables.length > 0 &&
@@ -883,8 +887,8 @@ export default function EditProyect(props) {
                                                 preloadDataResponsables.map((responsable, index) => { 
                                                     return (
                                                         <>
-                                                            <button onClick={e => handleDeleteAllResponsable(e, responsable)} style={{ alignSelf: 'flex-end' }}>X</button>
-                                                            <div key={index} style={{display: 'flex', justifyContent: 'space-between'}}>
+                                                            <button className='trashIcon' onClick={e => handleDeleteAllResponsable(e, responsable)} style={{ alignSelf: 'flex-end' }}><TrashIcon/></button>
+                                                            <div key={index} style={{display: 'flex', justifyContent: 'space-evenly'}}>
                                                                 <div>
                                                                     <InputLabel>Departamento</InputLabel>
                                                                     <Select
@@ -928,14 +932,17 @@ export default function EditProyect(props) {
                                                                 </div> 
                                                             </div>
                                                             
-                                                            <div>
-                                                                <InputLabel>Colaboradores</InputLabel>
+                                                            <div className='container_colaboradores'>
+                                                                <div>
+                                                                    <InputLabel >Colaboradores</InputLabel>
+                                                                </div>
+                                                                {/* <InputLabel >Colaboradores</InputLabel> */}
                                                                 {
                                                                     responsable.colaboradores.length > 0 &&
                                                                     responsable.colaboradores.map((colaborador, index) => { 
                                                                         return (
-                                                                            <>
-                                                                                <button onClick={e => handleDeleteResponsable(e, colaborador.id)}>X</button>
+                                                                            <div className='container_colaboradores_titulo'>
+                                                                                <button className='trashIcon' onClick={e => handleDeleteResponsable(e, colaborador.id)}><TrashIcon/></button>
                                                                                 
                                                                                 <Select
                                                                                     value={colaborador.id_empleado}
@@ -948,7 +955,7 @@ export default function EditProyect(props) {
                                                                                         })
                                                                                     }
                                                                                 </Select>
-                                                                            </>
+                                                                            </div>
                                                                         )
                                                                     })
                                                                 }
