@@ -193,9 +193,7 @@ export default function NuevoTicket (props) {
                 <div style={{width: '100%', marginTop: '20px'}}>
                     <TextField
                         label="Descripcion"
-                        // placeholder="Deja una descripción"
                         onChange={handleChange}
-                        // margin="normal"
                         name='descripcion'
                         defaultValue={state.descripcion}
                         InputLabelProps={{
@@ -205,7 +203,6 @@ export default function NuevoTicket (props) {
                         maxRows={10}
                         fullWidth
                         size='medium'
-                    // error={errores.descripcion ? true : false}
                     />
                 </div>    
             </div>
