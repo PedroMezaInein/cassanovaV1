@@ -252,18 +252,14 @@ class Avances extends Component {
     handleImageUpload = async (event) => {
 
         const imageFile = event;
-        console.log('originalFile instanceof Blob', imageFile instanceof Blob); // true
-        console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
 
         const options = {
             maxSizeMB: 1,
-            maxWidthOrHeight: 1920,
+            maxWidthOrHeight: 1024,
             useWebWorker: true,
         }   
         try {
             const compressedFile = await imageCompression(imageFile, options);
-            console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
-            console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
             return compressedFile
 
         } catch (error) {
@@ -276,8 +272,6 @@ class Avances extends Component {
         const { files, value } = e.target
         let aux = []
         let auxFilesPromises = []
-        /* console.log */
-        console.log(value)
         files.forEach(file => {
             auxFilesPromises.push(this.handleImageUpload(file))
         })
