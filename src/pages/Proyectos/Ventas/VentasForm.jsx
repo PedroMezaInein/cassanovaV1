@@ -87,7 +87,7 @@ class VentasForm extends Component {
 
     render() {
         const { type, venta, solicitud } = this.state
-        const { history, authUser: { access_token } } = this.props
+        const { history, authUser: { access_token }, areas } = this.props
         return (
             <Layout active = 'proyectos'  {...this.props}>
                 <Card className="card-custom">
@@ -99,7 +99,7 @@ class VentasForm extends Component {
                     <Card.Body className="pt-0">
                         <VentasFormulario type = { type } at = { access_token } 
                             dato = { venta } solicitud = { solicitud } 
-                            history = { history }  />
+                            history = { history } areas = {areas} />
                     </Card.Body>
                 </Card>
             </Layout>
@@ -107,7 +107,7 @@ class VentasForm extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapStateToProps = state => { return { authUser: state.authUser, areas: state.opciones.areas } }
 const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(VentasForm);
