@@ -789,8 +789,8 @@ class VentasFormulario extends Component {
     
     render() {
         const { formeditado, form, options } = this.state
-        const { type, areas } = this.props
-        console.log(areas)
+        const { type, ventas, areas } = this.props
+
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -906,9 +906,27 @@ class VentasFormulario extends Component {
                                 <CalendarDay date = { form.fecha } onChange = { this.onChange } name = 'fecha' requirevalidation = { 1 } />
                             </div>
 
+                            {/* <div className="col md-6">
+                                <SelectSearchGray options = { options.areas } placeholder = 'Selecciona el área' value = { form.area } 
+                                    onChange = { (value) => { this.updateSelect(value, 'area') } } withtaglabel = { 1 } withtextlabel = { 1 } 
+                                    withicon = { 1 } iconclass = "far fa-window-maximize" messageinc = "Incorrecto. Selecciona el área" 
+                                    formeditado = { formeditado } requirevalidation = { 1 }/>
+                            </div> */}
+
+                            {/* <div className="col md-6">
+                                <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona subarea' value = { form.subarea } 
+                                    onChange = { (value) => { this.updateSelect(value, 'subarea') } } withtaglabel = { 1 } withtextlabel = { 1 } 
+                                    withicon = { 1 } iconclass = "far fa-window-restore" messageinc = "Incorrecto. Selecciona el subárea" 
+                                    formeditado = { formeditado } requirevalidation = { 1 }/>
+                            </div> */}
+
+                            {/* <div className="col-md-12">
+                                <div className="separator separator-dashed mt-1 mb-2" />
+                            </div> */}
+
                             <div className="col-md-3">
-                                <div className="row mx-0">
-                                    {areas.length > 0 ?
+                                {/* <div className="row mx-0"> */}
+                                    {ventas.length > 0 ?
                                         <>
                                             <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
                                                 <SelectMUI
@@ -918,45 +936,18 @@ class VentasFormulario extends Component {
                                                     style={{ width: 230, paddingRight: '2px' }}
 
                                                 >
-                                                    {areas.map((item, index) => (
+                                                    {ventas.map((item, index) => (
                                                         <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
                                                     ))} 
                                                 </SelectMUI>
                                         </>
                                         : null
-                                        }
-                                    
-
-                                    {/* <div className="col md-6">
-                                        <SelectSearchGray options = { options.areas } placeholder = 'Selecciona el área' value = { form.area } 
-                                            onChange = { (value) => { this.updateSelect(value, 'area') } } withtaglabel = { 1 } withtextlabel = { 1 } 
-                                            withicon = { 1 } iconclass = "far fa-window-maximize" messageinc = "Incorrecto. Selecciona el área" 
-                                            formeditado = { formeditado } requirevalidation = { 1 }/>
-                                    </div> */}
-
-                                    {/* <div className="col md-6">
-                                        <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona subarea' value = { form.subarea } 
-                                            onChange = { (value) => { this.updateSelect(value, 'subarea') } } withtaglabel = { 1 } withtextlabel = { 1 } 
-                                            withicon = { 1 } iconclass = "far fa-window-restore" messageinc = "Incorrecto. Selecciona el subárea" 
-                                            formeditado = { formeditado } requirevalidation = { 1 }/>
-                                    </div> */}
-
-                                    {/* <div className="col-md-12">
-                                        <div className="separator separator-dashed mt-1 mb-2" />
-                                    </div> */}
-
-                                    {/* <div className="col-md-12">
-                                        <InputGray requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN" 
-                                            rows = "3" value = { form.descripcion } name = "descripcion" onChange = { this.onChange } 
-                                            customclass = "px-2 text-justify" messageinc="Incorrecto. Ingresa una descripción." 
-                                            withtaglabel = { 1 } withtextlabel = { 1 }/>
-                                    </div> */}
-
-                                </div>
+                                    } 
+                                {/* </div> */}
                             </div>
 
                             <div className='col md-3'>
-                                {areas.length > 0 && form.area !== '' ?
+                                {ventas.length > 0 && form.area !== '' ?
                                 <>
                                     <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
                                         <SelectMUI
@@ -965,7 +956,7 @@ class VentasFormulario extends Component {
                                             onChange={e => this.handleChangeSubarea(e)}
                                             style={{ width: 230, paddingRight: '2px' }}
                                         >
-                                            {areas.find(item => item.id_area == form.area).partidas.map((item, index) => (
+                                            {ventas.find(item => item.id_area == form.area).partidas.map((item, index) => (
                                                 <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                             ))}
 
@@ -975,9 +966,9 @@ class VentasFormulario extends Component {
                             </div>
 
                             <div className='col md-3'>
-                                {areas.length > 0 && form.area !== '' && form.partida !== '' ?
+                                {ventas.length > 0 && form.area !== '' && form.partida !== '' ?
                                     <>
-                                        {areas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida) ?
+                                        {ventas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida) ?
                                             <>
                                                 <InputLabel id="demo-simple-select-label">Tipo de sub Gasto</InputLabel>
                                                 <SelectMUI
@@ -986,7 +977,7 @@ class VentasFormulario extends Component {
                                                     onChange={e => this.handleChangeSubarea(e)}
                                                     style={{ width: 230, paddingRight: '2px' }}
                                                 >
-                                                    {areas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
+                                                    {ventas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
                                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
 
                                                     ))}
@@ -997,6 +988,21 @@ class VentasFormulario extends Component {
                                 }
 
                             </div>
+
+                            <div className="col-md-8" style={{ marginTop: '-15%', marginLeft: '33%' }}>
+                                <InputGray requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN" 
+                                    rows = '3' value = { form.descripcion } name = "descripcion" onChange = { this.onChange } 
+                                    customclass = "px-2 text-justify" messageinc="Incorrecto. Ingresa una descripción." 
+                                    withtaglabel = { 1 } withtextlabel = { 1 }/>
+                            </div>
+                            
+
+                            {/* <div className="col-md-12">
+                                <InputGray requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN" 
+                                    rows = "3" value = { form.descripcion } name = "descripcion" onChange = { this.onChange } 
+                                    customclass = "px-2 text-justify" messageinc="Incorrecto. Ingresa una descripción." 
+                                    withtaglabel = { 1 } withtextlabel = { 1 }/>
+                            </div> */}
 
                         </div>
                         <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -1014,6 +1020,7 @@ class VentasFormulario extends Component {
                             </div>
                         </div>
                     </div>
+
                     <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                         <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>
                         <div className="form-group row form-group-marginless">
