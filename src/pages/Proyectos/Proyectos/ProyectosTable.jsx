@@ -9,6 +9,10 @@ import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { ordenamiento, setOptions } from '../../../functions/setters'
 import { URL_DEV } from '../../../constants'
 import { Modal } from '../../../components/singles'
+import { setSingleHeader } from '../../../functions/routers';
+
+import AddIcon from '@material-ui/icons/Add';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 /* import ProyectosForm from './../../../components/forms/proyectos/ProyectosForm' */
 
@@ -214,7 +218,7 @@ export default function ProyectosTable() {
 
     const opcionesbtn = [
         {
-            nombre: 'Agregar',
+            nombre: <div><AddIcon />Agregar</div>,
             funcion: () => {
                 /* Swal.fire({
                     title: 'Nuevo',
@@ -230,8 +234,8 @@ export default function ProyectosTable() {
                 window.location.replace('/proyectos/proyectos/add')
             }
         },
-/*         {
-            nombre: 'Exportar',
+        {
+            nombre: <div><GetAppIcon/> Exportar</div>,
             funcion: () => {
                 Swal.fire({
                     title: 'Exportar',
@@ -242,10 +246,32 @@ export default function ProyectosTable() {
                     cancelButtonText: 'No',
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Exportando',
+                            text: 'Espere un momento...',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            showConfirmButton: false,
+                            onOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        axios.post(`${URL_DEV}v3/proyectos/proyectos/exportar`, { 'search': '{}' },
+                            { responseType: 'blob', headers: setSingleHeader(userAuth.access_token) }).then(response => { 
+                                Swal.close()
+                                const url = window.URL.createObjectURL(new Blob([response.data]));
+                                const link = document.createElement('a');
+                                link.href = url;
+                                link.setAttribute('download', 'proyectos.xlsx'); //or any other extension
+                                document.body.appendChild(link);
+                                link.click();
+                            })
                     }
                 });
             }
-        } */
+        }
     ]
 
     return (
