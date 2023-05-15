@@ -85,8 +85,6 @@ export default function NuevoPresupuestos() {
 
     const createTable = (presupuesto, indexTable) => {
 
-        
-
         return (
             <table>
                 <thead>
@@ -229,9 +227,6 @@ export default function NuevoPresupuestos() {
             </table>
         )
     }
-
-    console.log(presupuesto)
-
 
     return (
         <div>

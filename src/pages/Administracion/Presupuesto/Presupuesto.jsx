@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 
 import TablaPresupuesto from './TablaPresupuesto'
+import NuevaTabla from './NuevaTabla';
 
 export default function Presupuesto() {
     const userAuth = useSelector((state) => state.authUser);
@@ -17,7 +18,8 @@ export default function Presupuesto() {
         <>
 
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
-                <TablaPresupuesto /> 
+                <TablaPresupuesto />
+                {/* <NuevaTabla /> */}
             </Layout>
 
         </>
