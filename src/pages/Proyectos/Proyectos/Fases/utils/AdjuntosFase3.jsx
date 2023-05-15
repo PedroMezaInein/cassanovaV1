@@ -18,6 +18,9 @@ import { setSingleHeader } from '../../../../../functions/routers'
 
 import CarruselAdjuntos from './CarruselAdjuntos'
 
+import CheckCircle from '@material-ui/icons/CheckCircleOutline';
+import ErrorIcon from '@material-ui/icons/ErrorOutline';
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -347,6 +350,31 @@ export default function Adjuntos(props) {
         )
     }
 
+    const iconAdjuntos = (tab, name) => {
+        if (adjuntos[tab]?.length > 0) {
+            return (
+                <div style={{ display: 'flex', alignItems: 'left' }}>
+
+                    <p >
+                        <CheckCircle style={{ color: 'green' }} />
+                        &nbsp;
+                        {name}
+                    </p>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+
+                    <p>
+                        <ErrorIcon style={{ color: 'red' }} />
+                        &nbsp;{name}
+                    </p>
+                </div>
+            )
+        }
+    }
+
     return (
         <>
             <div className={classes.root}>
@@ -359,16 +387,16 @@ export default function Adjuntos(props) {
                     aria-label="Vertical tabs example"
                     className={classes.tabs}
                 >
-                    <Tab label="Fotografías levantamiento" {...a11yProps(0)} name="fotografias_levantamiento" onClick={() => handleTab('fotografias_levantamiento')} />
-                    <Tab label="Manuales de adaptación" {...a11yProps(1)} name="manuales_de_adaptacion" onClick={() => handleTab('manuales_de_adaptacion')} />
-                    <Tab label="Minutas" {...a11yProps(2)} name="minutas" onClick={() => handleTab('minutas')} />
-                    <Tab label="Planos entregados por cliente" {...a11yProps(3)} name="planos_entregados_por_cliente" onClick={() => handleTab('planos_entregados_por_cliente')} />
-                    <Tab label="Propuestas arquitectónicas preliminares" {...a11yProps(4)} name="propuestas_arquitectonicas_preliminares" onClick={() => handleTab('propuestas_arquitectonicas_preliminares')} />
-                    <Tab label="Referencias del diseño del proyecto" {...a11yProps(5)} name="referencias_del_diseño_del_proyecto" onClick={() => handleTab('referencias_del_diseño_del_proyecto')} />
-                    <Tab label="Renders" {...a11yProps(6)} name="renders" onClick={() => handleTab('renders')} />
-                    <Tab label="Sketch Up" {...a11yProps(7)} name="sketch_up" onClick={() => handleTab('sketch_up')} />
-                    <Tab label="Presupuestos preliminares" {...a11yProps(8)} name="presupuestos_preliminares" onClick={() => handleTab('presupuestos_preliminares')} />
-                    <Tab label="Recibos de pago" {...a11yProps(9)} name="recibos_pago" onClick={() => handleTab('recibos_pago')} />
+                    <Tab label={iconAdjuntos("fotografias_levantamiento", "Fotografias de levantamiento")} {...a11yProps(0)} name="fotografias_levantamiento" onClick={() => handleTab('fotografias_levantamiento')} />
+                    <Tab label={iconAdjuntos('manuales_de_adaptacion', "Manuales de adaptación")} {...a11yProps(1)} name="manuales_de_adaptacion" onClick={() => handleTab('manuales_de_adaptacion')} />
+                    <Tab label={iconAdjuntos('minutas', "Minutas")} {...a11yProps(2)} name="minutas" onClick={() => handleTab('minutas')} />
+                    <Tab label={iconAdjuntos('planos_entregados_por_cliente', "Planos entregados por cliente")} {...a11yProps(3)} name="planos_entregados_por_cliente" onClick={() => handleTab('planos_entregados_por_cliente')} />
+                    <Tab label={iconAdjuntos('propuestas_arquitectonicas_preliminares', "Propuestas arquitectónicas preliminares")} {...a11yProps(4)} name="propuestas_arquitectonicas_preliminares" onClick={() => handleTab('propuestas_arquitectonicas_preliminares')} />
+                    <Tab label={iconAdjuntos('referencias_del_diseño_del_proyecto', "Referencias del diseño del proyecto")} {...a11yProps(5)} name="referencias_del_diseño_del_proyecto" onClick={() => handleTab('referencias_del_diseño_del_proyecto')} />
+                    <Tab label={iconAdjuntos('renders', "Renders")} {...a11yProps(6)} name="renders" onClick={() => handleTab('renders')} />
+                    <Tab label={iconAdjuntos('sketch_up', "Sketch Up")} {...a11yProps(7)} name="sketch_up" onClick={() => handleTab('sketch_up')} />
+                    <Tab label={iconAdjuntos('presupuestos_preliminares', "Presupuestos preliminares")} {...a11yProps(8)} name="presupuestos_preliminares" onClick={() => handleTab('presupuestos_preliminares')} />
+                    <Tab label={iconAdjuntos('recibos_pago', "Recibos de pago")} {...a11yProps(9)} name="recibos_pago" onClick={() => handleTab('recibos_pago')} />
                 </Tabs>
 
                 <TabPanel value={value} index={0}>

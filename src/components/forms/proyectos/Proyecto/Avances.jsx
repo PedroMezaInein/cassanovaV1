@@ -12,6 +12,8 @@ import { URL_DEV } from '../../../../constants'
 import { setSingleHeader } from '../../../../functions/routers'
 import { AvanceForm } from '../../../../components/forms'
 import S3 from 'react-aws-s3';
+import imageCompression from 'browser-image-compression';
+
 class Avances extends Component {
 
     state = {
@@ -247,15 +249,52 @@ class Avances extends Component {
         this.setState({ ...this.state, form })
     }
 
+    handleImageUpload = async (event) => {
+
+        const imageFile = event;
+
+        const options = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1024,
+            useWebWorker: true,
+        }   
+        try {
+            const compressedFile = await imageCompression(imageFile, options);
+            return compressedFile
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     onChangeAdjuntoAvance = (e, key, name) => {
         const { form } = this.state
         const { files, value } = e.target
         let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
+        let auxFilesPromises = []
+        files.forEach(file => {
+            auxFilesPromises.push(this.handleImageUpload(file))
+        })
+        Promise.all(auxFilesPromises).then((values) => {
+            values.forEach((file, index) => {
+                aux.push({
+                    name: file.name,
+                    file: file,
+                    url: URL.createObjectURL(file),
+                    key: index
+                })
+            })
+            /* form.avances[key][name].value = value */
+            form.avances[key][name].files = aux
+            this.setState({ ...this.state, form })
+        })
+
+/*         for (let counter = 0; counter < files.length; counter++) {
+            let aux2 = this.handleImageUpload(files[counter])
             aux.push(
                 {
                     name: files[counter].name,
-                    file: files[counter],
+                    file: aux2,
                     url: URL.createObjectURL(files[counter]),
                     key: counter
                 }
@@ -263,7 +302,7 @@ class Avances extends Component {
         }
         form.avances[key][name].value = value
         form.avances[key][name].files = aux
-        this.setState({ ...this.state, form })
+        this.setState({ ...this.state, form }) */
     }
 
     clearFilesAvances = (name, key, _key) => {

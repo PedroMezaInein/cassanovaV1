@@ -1,21 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {useSelector} from 'react-redux';
 
-import DateFnsUtils from '@date-io/date-fns';
 import Swal from 'sweetalert2'
 import { apiPostForm } from '../../../../../functions/api'
-import { es } from 'date-fns/locale'
-import axios from 'axios';
-import { URL_DEV } from '../../../../../constants'
-import { ordenamiento, setOptions } from '../../../../../functions/setters'
-import { setSingleHeader } from "../../../../../functions/routers"
-
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+
+import Style from './Compra.module.css';
 
 export default function SolicitarFactura(props) {
     const user = useSelector((state) => state.authUser);
@@ -71,97 +64,103 @@ export default function SolicitarFactura(props) {
 
     return (
         <div>
-            <div>
+            <div className={Style.container}>
                 <div>
-                    <InputLabel id="label-select-Tipo">Cliente</InputLabel>
-                    <Select
-                        value={form.cliente_id}
-                        name='cliente_id'
-                        labelId="label-select-Tipo"
-                        onChange={handleChange}
-                    >
-                        {form.clientes.map((item, index) => {
-                            return (<MenuItem key={index} value={item.id} >{item.empresa}</MenuItem>)
-                        })}
+                    <div>
+                        <InputLabel>Cliente</InputLabel>
+                        <Select
+                            value={form.cliente_id}
+                            name='cliente_id'
+                            labelId="label-select-Tipo"
+                            onChange={handleChange}
+                        >
+                            {form.clientes.map((item, index) => {
+                                return (<MenuItem key={index} value={item.id} >{item.empresa}</MenuItem>)
+                            })}
 
-                    </Select>
+                        </Select>
+                    </div>
+
+                    <div>
+                        <InputLabel>Forma de pago</InputLabel>
+                        <Select
+                            value={form.formaPago_id}
+                            name='formaPago_id'
+                            labelId="label-select-Tipo"
+                            onChange={handleChange}
+                        >
+                            {opciones.formasPago.map((item, index) => {
+                                return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
+                            })}
+
+                        </Select>
+                    </div>
+
+{/*                     <div>
+                        <InputLabel>Forma de pago</InputLabel>
+                        <Select
+                            value={form.metodoPago_id}
+                            name='metodoPago_id'
+                            labelId="label-select-Tipo"
+                            onChange={handleChange}
+                        >
+                            {opciones.metodosPago.map((item, index) => {
+                                return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
+                            })}
+
+                        </Select>
+                    </div> */}
+
                 </div>
 
                 <div>
-                    <InputLabel id="label-select-Tipo">Forma de pago</InputLabel>
-                    <Select
-                        value={form.formaPago_id}
-                        name='formaPago_id'
-                        labelId="label-select-Tipo"
-                        onChange={handleChange}
-                    >
-                        {opciones.formasPago.map((item, index) => {
-                            return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
-                        })}
+                    <div>
+                        <InputLabel>Tipo de pago</InputLabel>
+                        <Select
+                            value={form.tipoPago_id}
+                            name='tipoPago_id'
+                            labelId="label-select-Tipo"
+                            onChange={handleChange}
+                        >
+                            {opciones.tiposPagos.map((item, index) => {
+                                return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
+                            })}
 
-                    </Select>
+                        </Select>
+                    </div>
+
+                    <div>
+                        <InputLabel>Estatus de factura</InputLabel>
+                        <Select
+                            value={form.estatusFactura_id}
+                            name='estatusFactura_id'
+                            labelId="label-select-Tipo"
+                            onChange={handleChange}
+                        >
+                            {opciones.estatusFacturas.map((item, index) => {
+                                return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
+                            })}
+
+                        </Select>
+                    </div>
+
+                    <div>
+                        <TextField
+                            name="monto"
+                            value={form.costo}
+                            label="Monto con IVA"
+                            color='primary'
+                            onChange={handleChange}
+                            type='number'
+                            placeholder='$0.00'
+                        />
+                    </div>
                 </div>
-
-                <div>
-                    <InputLabel id="label-select-Tipo">Forma de pago</InputLabel>
-                    <Select
-                        value={form.metodoPago_id}
-                        name='metodoPago_id'
-                        labelId="label-select-Tipo"
-                        onChange={handleChange}
-                    >
-                        {opciones.metodosPago.map((item, index) => {
-                            return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
-                        })}
-
-                    </Select>
-                </div>
-
-                <div>
-                    <InputLabel id="label-select-Tipo">Tipo de pago</InputLabel>
-                    <Select
-                        value={form.tipoPago_id}
-                        name='tipoPago_id'
-                        labelId="label-select-Tipo"
-                        onChange={handleChange}
-                    >
-                        {opciones.tiposPagos.map((item, index) => {
-                            return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
-                        })}
-
-                    </Select>
-                </div>
-
-                <div>
-                    <InputLabel id="label-select-Tipo">Estatus de factura</InputLabel>
-                    <Select
-                        value={form.estatusFactura_id}
-                        name='estatusFactura_id'
-                        labelId="label-select-Tipo"
-                        onChange={handleChange}
-                    >
-                        {opciones.estatusFacturas.map((item, index) => {
-                            return (<MenuItem key={index} value={item.value} >{item.name}</MenuItem>)
-                        })}
-
-                    </Select>
-                </div>
-
-                <div>
-                    <TextField
-                        name="monto"
-                        value={form.costo}
-                        label="Monto con IVA"
-                        color='primary'
-                        onChange={handleChange}
-                        type='number'
-                        placeholder='$0.00'
-                    />
-                </div>
-                
             </div>
-            <div>
-                <button onClick={handleSubmit}>Solicitar factura</button>
+            <div className="row justify-content-end">
+                <div className="col-md-4">
+                    <button onClick={handleSubmit} className={Style.sendButton}>Solicitar</button>
+                </div>
             </div>
         </div>
     )

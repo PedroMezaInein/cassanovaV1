@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import TextField from '@material-ui/core/TextField';
-import {Dropdown} from 'react-bootstrap'
+import { Dropdown } from 'react-bootstrap'
 
 import { URL_DEV } from '../../../constants'
 import SortIcon from '@material-ui/icons/Sort';
@@ -13,7 +13,7 @@ import '../../../styles/_TablaGeneral.scss'
 
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 
-export default function TablaGeneral(props) {
+export default function TablaGeneralPaginado(props) {
     const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, customFilter, resetFilters, setResetFilters } = props;
     //para implementar la tabla puedes utilizar los siguientes props
 
@@ -27,7 +27,7 @@ export default function TablaGeneral(props) {
     //numItemsPagina: numero de items que se van a mostrar por pagina
     //acciones: array de objetos con la siguiente estructura
     //          {nombre: 'nombre del boton', icono: 'icono del boton', color: 'nombre de la clase del color del boton greenButton/blueButton/redButton', funcion: funcion que se va a ejecutar al dar click}
-   
+
     //ProccessData: funcion que se va a ejecutar para procesar los datos que se van a mostrar en la tabla cuando la url no regrese por defecto un array llamado data o quieras procesar los datos de otra manera
     //por defecto ProcessData recibe un parametro que es la respuesta de la api y debe regresar un array con los datos que se van a mostrar en la tabla
     //Un ejemplo de como se puede utilizar ProccessData es el siguiente
@@ -45,7 +45,7 @@ export default function TablaGeneral(props) {
     //    });
     //    return newData
     //}
-   
+
     //opciones: array de objetos con la siguiente estructura
     //          {nombre: 'nombre de la opcion', funcion: funcion que se va a ejecutar al dar click}
     //recargar: Regresa una funcion que se puede utilizar para recargar la tabla
@@ -63,6 +63,9 @@ export default function TablaGeneral(props) {
     const [paginaActual, setPaginaActual] = useState(0);
     const [errorApi, setErrorApi] = useState(false)
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(5);
+
     useEffect(() => {
         getData();
         setFilter(() => {
@@ -78,30 +81,25 @@ export default function TablaGeneral(props) {
             })
         }
 
-    }, []) 
+    }, [])
 
     useEffect(() => {
         if (filterData) {
             paginado(numItemsPagina)
         }
     }, [filterData])
-    const getData = () => {
+
+    const getData = (num) => {
 
         waitAlert()
 
         try {
-            axios(`${URL_DEV}${url}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
+            axios(`${URL_DEV}${url}?page=${num ? num : currentPage}&page_size=${numItemsPagina}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
                 .then(res => {
+                    setTotalPages(res.data.data.last_page)
                     if (ProccessData !== undefined) {
-                        if (customFilter && resetFilters === false) {
-                            let aux = customFilter(ProccessData(res.data))
-                            setData(aux)
-                            setFilterData(aux)
-                        } else {
-                            setData(ProccessData(res.data))
-                            setFilterData(ProccessData(res.data))
-                        }
-                        
+                        setData(ProccessData(res.data))
+                        setFilterData(ProccessData(res.data))
                     } else {
                         setData(res.data)
                         setFilterData(res.data)
@@ -115,7 +113,7 @@ export default function TablaGeneral(props) {
                     Swal.fire({
                         title: 'Error al cargar la información',
                         html: `Intentalo más tarde`,
-                        icon: 'error'                        
+                        icon: 'error'
                     })
                 })
         } catch (error) {
@@ -209,7 +207,52 @@ export default function TablaGeneral(props) {
             return obj
         })
     }
-    
+
+    const changeCurrentPage = (num) => {
+        setCurrentPage(num)
+        getData(num)
+    }
+
+    const getPageNumbersToShow = () => {
+
+        if (totalPages <= 3) {
+            return totalPages
+        } else {
+            const firstPageToShow = Math.max(1, currentPage - 1)
+            const lastPageToShow = Math.min(totalPages, currentPage + 1)
+
+            let pageNumbersToShow = [];
+
+            if (firstPageToShow > 1) {
+                pageNumbersToShow.push(1)
+                pageNumbersToShow.push('...')
+            }
+
+            for (let i = firstPageToShow; i <= lastPageToShow; i++) {
+                pageNumbersToShow.push(i)
+            }
+
+            if (lastPageToShow < totalPages) {
+                pageNumbersToShow.push('...')
+                pageNumbersToShow.push(totalPages)
+            }
+
+            return pageNumbersToShow
+        }
+    }
+
+    // <div>
+    //     <button onClick={() => changeCurrentPage(currentPage - 1)} disabled={currentPage === 1}>&#60; Anterior</button>
+    //     {getPageNumbersToShow().map((number, index) => (
+    //         <button key={index} onClick={() => {
+    //             if (number !== '...') {
+    //                 changeCurrentPage(number)
+    //             }
+    //         }} disabled={number === currentPage}>{number}</button>
+    //     ))}
+    //     <button onClick={() => changeCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}> Siguiente &#62;</button>
+    // </div>
+
     return (
         <div className='containerTable'>
             <div className="row">
@@ -227,7 +270,7 @@ export default function TablaGeneral(props) {
                             </h3>
 
                             <div>
-                                { opciones &&
+                                {opciones &&
                                     <Dropdown>
                                         <Dropdown.Toggle variant="success" id="dropdown-basic">
                                             Opciones
@@ -235,7 +278,7 @@ export default function TablaGeneral(props) {
 
                                         <Dropdown.Menu>
                                             {opciones.map((item, index) => {
-                                                return(
+                                                return (
                                                     <Dropdown.Item key={index} onClick={item.funcion}>
                                                         {item.nombre}
                                                     </Dropdown.Item>
@@ -245,7 +288,7 @@ export default function TablaGeneral(props) {
                                     </Dropdown>
                                 }
                             </div>
-                            
+
                         </div>
 
                         <div className="card-body table-responsive mt-n6 p-n4">
@@ -256,30 +299,30 @@ export default function TablaGeneral(props) {
                                             return (
                                                 <th key={index} className='mt-25'>
                                                     <div className="TitleColumn">
-                                                        
-                                                            {
-                                                                columna.stringSearch ? "" :
-                                                                    <>
-                                                                        <div>
-                                                                            {columna.nombre}
-                                                                        </div>
 
-                                                                        {columna.sort ?
-                                                                            <div className="">
-                                                                                <button type="button" className="dropdown-toggle SortButton" data-toggle="dropdown" aria-expanded="false">
-                                                                                    <SortIcon />
-                                                                                </button>
-                                                                                <div className="dropdown-menu" role="menu">
-                                                                                    <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
-                                                                                    <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
-                                                                                </div>
+                                                        {
+                                                            columna.stringSearch ? "" :
+                                                                <>
+                                                                    <div>
+                                                                        {columna.nombre}
+                                                                    </div>
+
+                                                                    {columna.sort ?
+                                                                        <div className="">
+                                                                            <button type="button" className="dropdown-toggle SortButton" data-toggle="dropdown" aria-expanded="false">
+                                                                                <SortIcon />
+                                                                            </button>
+                                                                            <div className="dropdown-menu" role="menu">
+                                                                                <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
+                                                                                <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
                                                                             </div>
-                                                                            : null
-                                                                        }
-                                                                    </> 
+                                                                        </div>
+                                                                        : null
+                                                                    }
+                                                                </>
 
-                                                            }
-                                                        
+                                                        }
+
                                                     </div>
                                                     <div className="TitleColumn">
                                                         {columna.stringSearch ?
@@ -309,8 +352,8 @@ export default function TablaGeneral(props) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {paginas && paginas[0] ?
-                                        paginas[paginaActual].map((item, index) => {
+                                    { filterData[0] ?
+                                        filterData.map((item, index) => {
                                             return (
                                                 <tr key={index}>
 
@@ -324,18 +367,18 @@ export default function TablaGeneral(props) {
                                                                             <SettingsSharpIcon />
                                                                         </button>
                                                                         <div className="dropdown-menu" role="menu">
-                                                                            
+
                                                                             {acciones.map((accion, index) => {
                                                                                 return (
-                                                                                    <div className={`${accion.color} Button-action`}  onClick={() => accion.funcion(item)} key={index} >
+                                                                                    <div className={`${accion.color} Button-action`} onClick={() => accion.funcion(item)} key={index} >
                                                                                         <i className={` ${accion.icono} generalButtonColor`}>
                                                                                             <span className="ml-2 ">{accion.nombre}</span>
-                                                                                        </i>    
+                                                                                        </i>
                                                                                     </div>
-                                                                                    
+
                                                                                 )
                                                                             })}
-                                                                        </div> 
+                                                                        </div>
                                                                     </div>
                                                                 </td>
                                                             )
@@ -354,7 +397,7 @@ export default function TablaGeneral(props) {
                                     }
                                 </tbody>
                             </table>
-                            <div className="pb-10">
+                            {/* <div className="pb-10">
                                 <ul className="pagination pagination-sm m-0 float-right">
                                     <li className="page-item"><a className="page-link" href="#" onClick={() => handlePrevPagina()}>&laquo;</a></li>
                                     {paginas ?
@@ -367,6 +410,18 @@ export default function TablaGeneral(props) {
                                     }
                                     <li className="page-item"><a className="page-link" href="#" onClick={() => handleNextPagina()}>&raquo;</a></li>
                                 </ul>
+                            </div> */}
+                            
+                            <div className='tabla_paginado'>
+                                <button className='tabla_paginado_flecha' onClick={() => changeCurrentPage(currentPage - 1)} disabled={currentPage === 1}>&#60; Anterior</button>
+                                {getPageNumbersToShow().map((number, index) => (
+                                    <button className='tabla_paginado_num' key={index} onClick={() => {
+                                        if (number !== '...') {
+                                            changeCurrentPage(number)
+                                        }
+                                    }} disabled={number === currentPage}>{number}</button>
+                                ))}
+                                <button className='tabla_paginado_flecha' onClick={() => changeCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}> Siguiente &#62;</button>
                             </div>
 
                         </div>

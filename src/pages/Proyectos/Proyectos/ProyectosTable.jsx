@@ -8,6 +8,13 @@ import Layout from '../../../components/layout/layout'
 import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { ordenamiento, setOptions } from '../../../functions/setters'
 import { URL_DEV } from '../../../constants'
+import { Modal } from '../../../components/singles'
+import { setSingleHeader } from '../../../functions/routers';
+
+import AddIcon from '@material-ui/icons/Add';
+import GetAppIcon from '@material-ui/icons/GetApp';
+
+/* import ProyectosForm from './../../../components/forms/proyectos/ProyectosForm' */
 
 export default function ProyectosTable() { 
     const userAuth = useSelector((state) => state.authUser);
@@ -15,6 +22,10 @@ export default function ProyectosTable() {
     let prop = {
         pathname: '/proyectos/proyectos/',
     }
+
+    const [modal, setModal] = useState({
+        nuevo: false,
+    })
     
     useEffect(() => {
         getOptionsEmpresas()
@@ -26,6 +37,7 @@ export default function ProyectosTable() {
         /* { nombre: 'F. incio', identificador: 'FInicio', sort: true, stringSearch: false },
         { nombre: 'F. fin', identificador: 'FFin', sort: true, stringSearch: false }, */
         { nombre: 'Nombre', identificador: 'nombre', sort: true, stringSearch: true },
+        { nombre : 'Fases', identificador: 'fases', sort: false, stringSearch: false},
         /* { nombre: 'Cliente', identificador: 'cliente', sort: true, stringSearch: true }, */
         { nombre: 'Dirección', identificador: 'direccion', sort: true, stringSearch: true },
         /* { nombre: 'Contacto', identificador: 'contacto', sort: false, stringSearch: true }, */
@@ -125,6 +137,57 @@ export default function ProyectosTable() {
 
         })
     }
+
+    const fases = (data) => {
+        let aux = []
+        if (data.proyectos.length > 0) {
+            data.proyectos.map((proyecto) => {
+                if (proyecto.fase1 === 1) {
+                    aux.push({
+                        fase: 'Fase 1',
+                        name: proyecto.simpleName,
+                        color: '#F26C4F'
+                    })
+                }
+                if (proyecto.fase2 === 1) {
+                    aux.push({
+                        fase: 'Fase 2',
+                        name: proyecto.simpleName,
+                        color: '#1693A5'
+                    })
+                }
+                if (proyecto.fase3 === 1) {
+                    aux.push({
+                        fase: 'Fase 3',
+                        name: proyecto.simpleName,
+                        color: '#FFD549'
+                    })
+                }
+            })
+        }
+        return (
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+                {aux.map((item, index) => {
+                    return (
+                        <div key={index} style={{ display: 'flex', flexDirection: 'column' }}>
+                            <center>
+                                <span style={{backgroundColor: item.color, color: 'white', fontWeight: 'bold', padding: '2px', borderRadius: '5px', width: 'fit-content', textAlign: 'center'}}>
+                                {item.fase}
+                                </span>
+                            </center>
+                            
+                            
+                            <div>
+                                <span>{item.name}</span>    
+                            </div>
+                            
+                        </div>
+                    )
+                })}
+            </div>
+        )
+    }
+
     
     const ProccessData = (data) => {
         let aux = []
@@ -145,7 +208,8 @@ export default function ProyectosTable() {
                         <div title={item.proyectos[0].descripcion}>
                             `${item.proyectos[0].descripcion.slice(0, 100) + '...'}`
                             </div>
-                         : item.proyectos[0].descripcion : 'Sin descripción',
+                        : item.proyectos[0].descripcion : 'Sin descripción',
+                    fases: fases(item),
                 })
             }
         })
@@ -154,9 +218,9 @@ export default function ProyectosTable() {
 
     const opcionesbtn = [
         {
-            nombre: 'Agregar',
+            nombre: <div><AddIcon />Agregar</div>,
             funcion: () => {
-                Swal.fire({
+                /* Swal.fire({
                     title: 'Nuevo',
                     text: '¿Desea crear un nuevo registro?',
                     icon: 'question',
@@ -166,11 +230,12 @@ export default function ProyectosTable() {
                 }).then((result) => {
                     if (result.isConfirmed) {
                     }
-                });
+                }); */
+                window.location.replace('/proyectos/proyectos/add')
             }
         },
         {
-            nombre: 'Exportar',
+            nombre: <div><GetAppIcon/> Exportar</div>,
             funcion: () => {
                 Swal.fire({
                     title: 'Exportar',
@@ -181,13 +246,33 @@ export default function ProyectosTable() {
                     cancelButtonText: 'No',
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Exportando',
+                            text: 'Espere un momento...',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            showConfirmButton: false,
+                            onOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        axios.post(`${URL_DEV}v3/proyectos/proyectos/exportar`, { 'search': '{}' },
+                            { responseType: 'blob', headers: setSingleHeader(userAuth.access_token) }).then(response => { 
+                                Swal.close()
+                                const url = window.URL.createObjectURL(new Blob([response.data]));
+                                const link = document.createElement('a');
+                                link.href = url;
+                                link.setAttribute('download', 'proyectos.xlsx'); //or any other extension
+                                document.body.appendChild(link);
+                                link.click();
+                            })
                     }
                 });
             }
         }
     ]
-
-
 
     return (
         <>
@@ -198,6 +283,10 @@ export default function ProyectosTable() {
                     />
                 }
             </Layout>
+
+            {/* <Modal size="xl" show={modal.nuevo} title='Información del proyecto' handleClose={() => setModal({ ...modal, nuevo: false })}>
+                <ProyectosForm />
+            </Modal> */}
         </>
     )
 }

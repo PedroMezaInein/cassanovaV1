@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 import Swal from 'sweetalert2';
 
-import TablaGeneral from '../../../../components/NewTables/TablaGeneral/TablaGeneral'
+/* import TablaGeneral from '../../../../components/NewTables/TablaGeneral/TablaGeneral' */
 import BotonAcciones from './BotonAcciones';
-import ProgressBar from './utils/ProgressBar';
+/* import ProgressBar from './utils/ProgressBar'; */
 
 import '../../../../styles/_fases.scss'
-import BotonAdjuntos from './BotonAdjuntos';
+/* import BotonAdjuntos from './BotonAdjuntos'; */
 import AdjuntosFase1 from './utils/AdjuntosFase1';
 
 import Modales from './utils/Modales';
@@ -41,7 +41,7 @@ export default function Fase1(props) {
         { nombre: 'Monto', identificador: 'monto', sort: true, stringSearch: true },
     ]
 
-    const createAcciones = () => {
+/*     const createAcciones = () => {
         let aux = [
             {
                 nombre: 'Ver Minuta',
@@ -72,9 +72,9 @@ export default function Fase1(props) {
             }
         ]
         return aux
-    }
+    } */
 
-    const ProccessData = (data) => {
+    /* const ProccessData = (data) => {
         let aux = [
             {
                 id: 1,
@@ -92,7 +92,7 @@ export default function Fase1(props) {
             },
         ]
         return aux
-    }
+    } */
 
     const opcionesbtn = [
         {
@@ -144,31 +144,28 @@ export default function Fase1(props) {
                     
                 </div>
                 <div>
+                    <div style={{display: 'flex', justifyContent: 'space-around'}}> 
+                        <div>
+                            <span className="TagTitleFase">
+                                Área    
+                            </span>
+                            
+                            <p>{fase.m2} m2</p>
+                        </div>
 
-                    <div>
-                        Área
-                        <p>{fase.m2} m2</p>
+                        <div>
+                            <span className="TagTitleFase">
+                            Descripción    
+                            </span>
+                        
+                            <p>{fase.descripcion}</p>
+                        </div>    
                     </div>
 
-                    <div>
-                        Descripcion
-                        <p>{fase.descripcion}</p>
-                    </div>
-
+                    
+                    <hr />
                     <AdjuntosFase1 proyecto={fase} />
                     
-                    
-                    {/* <div>
-                        Presupuesto inicial
-                    </div>
-                    <div>
-                        Presupuestos adicionales
-                    </div>
-                    <div className='container-tabla'>
-                        <TablaGeneral
-                            titulo="Historial de minutas" columnas={columnas} url="proyectos/project" opciones={opcionesbtn} acciones={createAcciones()} numItemsPagina={20} ProccessData={ProccessData}
-                        />
-                    </div> */}
                 </div>
             </div>
 
