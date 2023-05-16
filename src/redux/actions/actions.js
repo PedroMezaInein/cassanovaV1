@@ -7,6 +7,7 @@ export const GET_VEHICULOS = 'GET_VEHICULOS'
 export const ADD_DEPARTAMENTOS = 'ADD_DEPARTAMENTOS'
 export const SAVE_OPTIONS_PRESUPUESTOS = 'SAVE_OPTIONS_PRESUPUESTOS'
 export const SAVE_OPTIONS_VENTAS = 'SAVE_OPTIONS_VENTAS'
+export const SAVE_OPTIONS_INGRESOS = 'SAVE_OPTIONS_INGRESOS'
 
 export function getUser(id) {
     return async function(dispatch){
@@ -64,6 +65,15 @@ export function Ventas(ventas) {
         return dispatch({
             type: SAVE_OPTIONS_VENTAS,
             payload: ventas
+        })
+    }
+}
+
+export function Ingresos(ingresos) {
+    return async function (dispatch) {
+        return dispatch({
+            type: SAVE_OPTIONS_INGRESOS,
+            payload: ingresos
         })
     }
 }

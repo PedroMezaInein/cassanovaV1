@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiGet } from '../functions/api'
-import { SaveOptionsAreas, SaveOptionsPresupuestos, Departamentos, Ventas } from '../redux/actions/actions'
+import { SaveOptionsAreas, SaveOptionsPresupuestos, Departamentos, Ventas, Ingresos } from '../redux/actions/actions'
 
 const useOptionsArea = () => {
     const [opciones, setOpciones] = useState(false)
@@ -23,6 +23,7 @@ const useOptionsArea = () => {
         if (opciones) {
             proccessData()
             proccessDataVentas()
+            proccessDataIngresos()
             dispatch(Departamentos(opciones.departamentos))
         } 
         
@@ -151,6 +152,68 @@ const useOptionsArea = () => {
             })
         }
         dispatch(Ventas(aux))
+    }
+
+    const proccessDataIngresos = () => {
+        let e = opciones
+        let aux = []
+        for(let key in e.ingresos){
+            for(let area in e.ingresos[key]){
+                let auxPartidas = []
+                    for(let idpartida in e.ingresos[key][area]){
+                        for(let partida in e.ingresos[key][area][idpartida]){
+                            // Imprime el nombre de cada partida
+                            let auxSubpartida = []
+                            e.ingresos[key][area][idpartida][partida].forEach(elemento =>{
+                                auxSubpartida.push({
+                                    id: elemento.id,
+                                    nombre: elemento.nombre,
+                                })
+                            })
+
+                            auxSubpartida.sort((a, b) => {
+                                if (a.nombre < b.nombre) {
+                                    return -1;
+                                }
+                                if (a.nombre > b.nombre) {
+                                    return 1;
+                                }
+                                return 0;
+                            })
+                            auxPartidas.push({
+                                id:idpartida,
+                                nombre:partida,
+                                subpartidas:auxSubpartida
+                            })
+                            auxPartidas.sort((a, b) => {
+                                if (a.nombre < b.nombre) {
+                                    return -1;
+                                }
+                                if (a.nombre > b.nombre) {
+                                    return 1;
+                                }
+                                return 0;
+                            })
+                        }
+                    }
+                let areas = {
+                    nombreArea: area,
+                    id_area: key,
+                    partidas:auxPartidas,
+                }
+                aux.push(areas)
+            }
+            aux.sort((a, b) => {
+                if (a.nombreArea < b.nombreArea) {
+                    return -1;
+                }
+                if (a.nombreArea > b.nombreArea) {
+                    return 1;
+                }
+                return 0;
+            })
+        }
+        dispatch(Ingresos(aux))
     }
     
 }
