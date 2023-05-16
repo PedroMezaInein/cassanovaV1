@@ -4,13 +4,16 @@ import { useSelector } from 'react-redux';
 import { useTable } from 'react-table'
 import styled from 'styled-components'
 
+import Swal from 'sweetalert2'
+
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import TrashIcon from '@material-ui/icons/DeleteOutline';
+import AddIcon from '@material-ui/icons/Add';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
-import { apiOptions } from '../../../functions/api'
+import { apiOptions, apiPostForm } from '../../../functions/api'
 
 const Styles = styled.div`
  
@@ -37,8 +40,8 @@ const Styles = styled.div`
       padding: 0.5rem;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
-      min-width: 6vw;
-      max-width: 6vw;
+      min-width: 4vw;
+      max-width: 4vw;
 
       :last-child {
         border-right: 0;
@@ -155,16 +158,15 @@ export default function TablaPresupuesto(props) {
     }, [])
 
     const handleChangePartida = (e, index, subindex) => {
-        let nuevoForm = [...form]
-        nuevoForm[index][subindex].partida_id = e.target.value
-        nuevoForm[index][subindex].subpartida_id = ''
-        setForm(nuevoForm)
+        let nuevoForm = [...formDataTabla]
+        nuevoForm[index].filas[subindex].id_partida = e.target.value
+        setFormDataTabla(nuevoForm)
     }
 
     const handleChangeSubpartida = (e, index, subindex) => {
-        const nuevoForm = [...form]
-        nuevoForm[index][subindex].subpartida_id = e.target.value
-        setForm(nuevoForm)
+        const nuevoForm = [...formDataTabla]
+        nuevoForm[index].filas[subindex].id_subpartida = e.target.value
+        setFormDataTabla(nuevoForm)
     }
     
     useEffect(() => {
@@ -188,18 +190,43 @@ export default function TablaPresupuesto(props) {
 
     const sumaMes = (index, mes) => {
         let suma = 0
-        for (let i = 0; i < form[index].length; i++) {
-            suma += form[index][i][mes]
+        for (let i = 0; i < formDataTabla[index].filas.length; i++) {
+            if (Object.keys(formDataTabla[index].filas[i]) !== 'id_partida' && Object.keys(formDataTabla[index].filas[i]) !== 'id_subpartida') {
+                suma += formDataTabla[index].filas[i][mes]
+            }
+
         }
+        suma = formatNumberCurrency(suma)
+
+        return suma
+        
+    }
+
+    const sumaTotalFila = (index, subindex) => {
+        let suma = 0
+        suma += formDataTabla[index].filas[subindex].enero
+        suma += formDataTabla[index].filas[subindex].febrero
+        suma += formDataTabla[index].filas[subindex].marzo
+        suma += formDataTabla[index].filas[subindex].abril
+        suma += formDataTabla[index].filas[subindex].mayo
+        suma += formDataTabla[index].filas[subindex].junio
+        suma += formDataTabla[index].filas[subindex].julio
+        suma += formDataTabla[index].filas[subindex].agosto
+        suma += formDataTabla[index].filas[subindex].septiembre
+        suma += formDataTabla[index].filas[subindex].octubre
+        suma += formDataTabla[index].filas[subindex].noviembre
+        suma += formDataTabla[index].filas[subindex].diciembre
         suma = formatNumberCurrency(suma)
         return suma
     }
 
     const getSumaMeses = (mes) => {
         let suma = 0
-        form.map((area, index) => {
-            form[index].map((fila, subindex) => {
-                suma += form[index][subindex][mes]
+        formDataTabla.forEach((tabla) => {
+            tabla.filas.forEach((fila) => {
+                if (Object.keys(fila) !== 'id_partida' && Object.keys(fila) !== 'id_subpartida') {
+                    suma += fila[mes]
+                }
             })
         })
         suma = suma + general.nomina
@@ -207,7 +234,30 @@ export default function TablaPresupuesto(props) {
         return suma
     }
 
-    const getColumnas = (index) => {
+    const sumaTabla = (index) => {
+        let suma = 0
+        for (let i = 0; i < formDataTabla[index].filas.length; i++) {
+            if (Object.keys(formDataTabla[index].filas[i]) !== 'id_partida' && Object.keys(formDataTabla[index].filas[i]) !== 'id_subpartida') {
+                suma += formDataTabla[index].filas[i].enero
+                suma += formDataTabla[index].filas[i].febrero
+                suma += formDataTabla[index].filas[i].marzo
+                suma += formDataTabla[index].filas[i].abril
+                suma += formDataTabla[index].filas[i].mayo
+                suma += formDataTabla[index].filas[i].junio
+                suma += formDataTabla[index].filas[i].julio
+                suma += formDataTabla[index].filas[i].agosto
+                suma += formDataTabla[index].filas[i].septiembre
+                suma += formDataTabla[index].filas[i].octubre
+                suma += formDataTabla[index].filas[i].noviembre
+                suma += formDataTabla[index].filas[i].diciembre
+            }
+        }
+        suma = formatNumberCurrency(suma)
+        return suma
+    }
+
+
+    /* const getColumnas = (index) => {
         let columnas = [
             {
                 Header: '',
@@ -287,9 +337,9 @@ export default function TablaPresupuesto(props) {
             },
         ]
         return columnas
-    }
+    } */
 
-    const nuevaTablaNativa = (index) => {
+    /* const nuevaTablaNativa = (index) => {
         let columnas = [
             {
                 name: '',
@@ -390,7 +440,7 @@ export default function TablaPresupuesto(props) {
             </div>
 
         )
-    }
+    } */
 
     const getColumnsHeader = () => {
         let columnas = [{
@@ -444,6 +494,10 @@ export default function TablaPresupuesto(props) {
                     Header: 'Diciembre',
                     accessor: '12',
                 },
+                {
+                    Header: 'Total',
+                    accessor: 'total',
+                }
             ]
         }]
 
@@ -465,32 +519,22 @@ export default function TablaPresupuesto(props) {
         )
     }
 
-    const handleMoney = (partida, index, mes, e, subindex) => {
-        const nuevoForm = [...form]
-        nuevoForm[index][subindex][mes] = e
-        /* console.log(form) */
-        /* createData() */
-        // return form
-        setForm(nuevoForm)
+    const handleMoney = (indexTabla, indexFila, key, value) => {
+        const nuevoForm = [...formDataTabla]
+        nuevoForm[indexTabla].filas[indexFila][key] = value
+        setFormDataTabla(nuevoForm)
     }
 
-    const createCurrencyInput = (partida, index, mes, subindex) => {
+    const createCurrencyInput = (fila, indexTabla, indexFila, key) => {
         return (
-            <div>
-                {
-                    form &&
+            <CurrencyTextField
 
-                    <CurrencyTextField
-
-                        variant="standard"
-                        value={form[index]?.[subindex]?.[mes] ? form[index][subindex][mes] : ''}
-                        currencySymbol="$"
-                        outputFormat="number"
-                        onChange={(event, value) => handleMoney(partida, index, mes, value, subindex)}
-                    /* error={errores.monto ? true : false} */
-                    />
-                }
-            </div>
+                variant="standard"
+                value={formDataTabla[indexTabla].filas[indexFila][key]}
+                currencySymbol="$"
+                outputFormat="number"
+                onChange={(event, value) => handleMoney(indexTabla, indexFila, key, value)}
+            />
 
         )
     }
@@ -504,10 +548,10 @@ export default function TablaPresupuesto(props) {
         setForm(aux)
     }
 
-    const getForm = () => {
+    /* const getForm = () => {
         let aux = [...form]
         return aux
-    }
+    } */
 
     const createSelectInputPartida = (data, index, subindex) => {
         let id_partida
@@ -553,7 +597,7 @@ export default function TablaPresupuesto(props) {
 
 
 
-    const createTables = (partida, index) => {
+    /* const createTables = (partida, index) => {
         return (
             <>
                 {
@@ -569,23 +613,24 @@ export default function TablaPresupuesto(props) {
 
             </>
         )
-    }
+    } */
 
     const getDataHeader = (index) => {
         let aux = [{
             id: 0,
-            1: getSumaMeses('Enero'),
-            2: getSumaMeses('Febrero'),
-            3: getSumaMeses('Marzo'),
-            4: getSumaMeses('Abril'),
-            5: getSumaMeses('Mayo'),
-            6: getSumaMeses('Junio'),
-            7: getSumaMeses('Julio'),
-            8: getSumaMeses('Agosto'),
-            9: getSumaMeses('Septiembre'),
-            10: getSumaMeses('Octubre'),
-            11: getSumaMeses('Noviembre'),
-            12: getSumaMeses('Diciembre'),
+            1: getSumaMeses('enero'),
+            2: getSumaMeses('febrero'),
+            3: getSumaMeses('marzo'),
+            4: getSumaMeses('abril'),
+            5: getSumaMeses('mayo'),
+            6: getSumaMeses('junio'),
+            7: getSumaMeses('julio'),
+            8: getSumaMeses('agosto'),
+            9: getSumaMeses('septiembre'),
+            10: getSumaMeses('octubre'),
+            11: getSumaMeses('noviembre'),
+            12: getSumaMeses('diciembre'),
+            total: getGranTotal(),
 
         }]
         return aux
@@ -601,45 +646,93 @@ export default function TablaPresupuesto(props) {
         )
     }
 
-    const addNewRow = (index) => {
-        let aux = form[index]
-        let id = aux.length > 0 ? aux[aux.length - 1].id + 1 : 0
-
-        aux.push({
-            id: id,
-            area: areas[index].nombreArea,
-            area_id: areas[index].id_area,
-            partida: createSelectInputPartida(areas[index].id_area, index, id),
-            partida_id: '',
-            subpartida: createSelectInputSubpartida(areas[index].id_area, index, id),
-            subpartida_id: '',
-            eliminar: createDeleteButton(index, id),
-            1: createCurrencyInput('', index, 'Enero', id),
-            2: createCurrencyInput('', index, 'Febrero', id),
-            3: createCurrencyInput('', index, 'Marzo', id),
-            4: createCurrencyInput('', index, 'Abril', id),
-            5: createCurrencyInput('', index, 'Mayo', id),
-            6: createCurrencyInput('', index, 'Junio', id),
-            7: createCurrencyInput('', index, 'Julio', id),
-            8: createCurrencyInput('', index, 'Agosto', id),
-            9: createCurrencyInput('', index, 'Septiembre', id),
-            10: createCurrencyInput('', index, 'Octubre', id),
-            11: createCurrencyInput('', index, 'Noviembre', id),
-            12: createCurrencyInput('', index, 'Diciembre', id),
-            Enero: 0,
-            Febrero: 0,
-            Marzo: 0,
-            Abril: 0,
-            Mayo: 0,
-            Junio: 0,
-            Julio: 0,
-            Agosto: 0,
-            Septiembre: 0,
-            Octubre: 0,
-            Noviembre: 0,
-            Diciembre: 0,
+    const nuevaFila = (index) => {
+        let aux = [...formDataTabla]
+        aux[index].filas.push({
+            id_partida: '',
+            id_subpartida: '',
+            enero: 0,
+            febrero: 0,
+            marzo: 0,
+            abril: 0,
+            mayo: 0,
+            junio: 0,
+            julio: 0,
+            agosto: 0,
+            septiembre: 0,
+            octubre: 0,
+            noviembre: 0,
+            diciembre: 0,
         })
-        setForm(form => [...form.slice(0, index), aux, ...form.slice(index + 1)])
+        setFormDataTabla(aux)
+    }
+
+    const eliminarFila = (index, subindex) => { 
+        let aux = [...formDataTabla]
+        aux[index].filas.splice(subindex, 1)
+        setFormDataTabla(aux)
+    }
+
+    const selectPartidas = (index, subindex) => {
+        return (
+            <div>
+                {/* <select
+                    onChange={e => handleChangePartida(e, index, subindex)}
+                    value={formDataTabla[index].filas[subindex].id_partida}
+                    style={{ width: '100%' }}>
+                    
+                    <option value='' hidden>partida</option>
+
+                    {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.map(partida => (
+                        <option key={partida.id} value={partida.id}>{partida.nombre}</option>
+                    ))}
+
+                </select> */}
+
+                <Select 
+                    value={formDataTabla[index].filas[subindex].id_partida}
+                    onChange={e => handleChangePartida(e, index, subindex)}
+                    style={{ maxWidth: '5vw' }}
+                >
+                    <MenuItem value='' hidden>partida</MenuItem>
+                    {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.map(partida => (
+                        <MenuItem key={partida.id} value={partida.id}>{partida.nombre}</MenuItem>
+                    ))}
+                </Select>
+                
+            </div>
+        )
+    }
+
+    const selectSubpartida = (index, subindex) => {
+        return (
+            <div>
+                {
+                    /* formDataTabla[index].filas[subindex].id_partida !== '' &&
+                    <select 
+                    onChange={e => handleChangeSubpartida(e, index, subindex)} 
+                    value={formDataTabla[index].filas[subindex].id_subpartida} style={{ width: '100%' }}>
+                        <option value='' hidden>subpartida</option>
+                        {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.find(partida => partida.id === formDataTabla[index].filas[subindex].id_partida).subpartidas.map(subpartida => (
+                            <option key={subpartida.id} value={subpartida.id}>{subpartida.nombre}</option>
+                        ))}
+                    </select> */
+                    formDataTabla[index].filas[subindex].id_partida !== '' &&
+                    <Select
+                        value={formDataTabla[index].filas[subindex].id_subpartida}
+                        onChange={e => handleChangeSubpartida(e, index, subindex)}
+                        style={{ maxWidth: '5vw' }}
+                            
+                    >
+                        <MenuItem value='' hidden>subpartida</MenuItem>
+                        {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.find(partida => partida.id === formDataTabla[index].filas[subindex].id_partida).subpartidas.map(subpartida => (
+                            <MenuItem key={subpartida.id} value={subpartida.id}>{subpartida.nombre}</MenuItem>
+                        ))}
+                    </Select>
+                }
+                
+            </div>
+        )
     }
 
     const createTableDepartamento = () => {
@@ -693,31 +786,26 @@ export default function TablaPresupuesto(props) {
     }
 
     const getGranTotal = () => {
-        let total = 0
-        const meses = [
-            'Enero',
-            'Febrero',
-            'Marzo',
-            'Abril',
-            'Mayo',
-            'Junio',
-            'Julio',
-            'Agosto',
-            'Septiembre',
-            'Octubre',
-            'Noviembre',
-            'Diciembre'
-        ]
-        for (let i = 0; i < form.length; i++) {
-            for (let j = 0; j < form[i].length; j++) {
-                for (let k = 0; k < meses.length; k++) {
-                    total += form[i][j][meses[k]]
-                }
+        let suma = 0
+        for (let i = 0; i < formDataTabla.length ; i++) {
+            for (let j = 0; j < formDataTabla[i].filas.length; j++) {
+                suma += formDataTabla[i].filas[j].enero 
+                suma += formDataTabla[i].filas[j].febrero
+                suma += formDataTabla[i].filas[j].marzo
+                suma += formDataTabla[i].filas[j].abril
+                suma += formDataTabla[i].filas[j].mayo
+                suma += formDataTabla[i].filas[j].junio
+                suma += formDataTabla[i].filas[j].julio
+                suma += formDataTabla[i].filas[j].agosto
+                suma += formDataTabla[i].filas[j].septiembre
+                suma += formDataTabla[i].filas[j].octubre
+                suma += formDataTabla[i].filas[j].noviembre
+                suma += formDataTabla[i].filas[j].diciembre
             }
         }
-        total = total + (general.nomina * 12)
-        total = formatNumberCurrency(total)
-        return total
+        suma = suma + (general.nomina * 12)
+        suma = formatNumberCurrency(suma)
+        return suma
     }
 
     const getDataGranTotal = () => {
@@ -766,6 +854,19 @@ export default function TablaPresupuesto(props) {
         }
     }
 
+    
+
+    const sendPresupuesto = () => {
+        try {
+            apiPostForm(`presupuestosdep?departamento_id=${general.departamento_id}`, formDataTabla, auth)
+                .then(res => {
+                    console.log(res)
+                })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const getDataNominas = () => {
         let suma = 0
         for (let i = 0; i < nominas.length; i++) {
@@ -786,6 +887,7 @@ export default function TablaPresupuesto(props) {
             10: formatNumberCurrency(suma),
             11: formatNumberCurrency(suma),
             12: formatNumberCurrency(suma),
+            total: formatNumberCurrency(suma * 12),
         }]
         return aux
     }
@@ -842,6 +944,10 @@ export default function TablaPresupuesto(props) {
                     Header: ' ',
                     accessor: '12',
                 },
+                {
+                    Header: 'Total',
+                    accessor: 'total',
+                }
             ]
         }]
 
@@ -864,6 +970,8 @@ export default function TablaPresupuesto(props) {
                 aux = [...aux, area]
             }
         })
+
+        setAreasRestantes(aux)
 
         partidas.forEach(partida => {
             if (partida.id_area === e.target.value) {
@@ -907,8 +1015,27 @@ export default function TablaPresupuesto(props) {
             }
         })
         setFormDataTabla([...formDataTabla, newTable])
-        setAreasRestantes(aux)
-        console.log(aux)
+    }
+
+    const handleDeleteTable = (index) => {
+        Swal.fire({
+            title: '¿Estás seguro de eliminar la tabla de ' + formDataTabla[index].nombre + '?',
+            text: "No podrás revertir esta acción",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) { 
+                let aux = [...formDataTabla]
+                let addArea = partidas.filter(partida => partida.id_area === aux[index].id_area)
+                setAreasRestantes([...areasRestantes, addArea[0]])
+                aux.splice(index, 1)
+                setFormDataTabla(aux)   
+            }
+        })
     }
 
     const generateTables = () => {
@@ -916,78 +1043,80 @@ export default function TablaPresupuesto(props) {
         return (
             <>
                 {
-                    formDataTabla.map((tabla, index) => {
+                    formDataTabla.sort((a, b) => a.nombre > b.nombre ? 1 : -1).map((tabla, indexTabla) => {
                         return (
-                            <div key={index}>
-                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <h3>{tabla.nombre}</h3>
-                                    <button /* onClick={() => handleDeleteTable(index)} */>Eliminar</button>
+                            <div key={indexTabla} style={{ display: 'flex', flexDirection: 'column', marginTop: '20px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', justifyContent: 'center' }}>
+                                    <div><TrashIcon onClick={() => handleDeleteTable(indexTabla)} style={{ cursor: 'pointer', color: 'red', fontSize: '20px' }} /></div>
+                                    <h3 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', padding: '0 10px' }}>
+                                        
+                                        <div>
+                                            {tabla.nombre}
+                                        </div>
+                                        <div style={{ marginLeft: '10px' }}>
+                                            {sumaTabla(indexTabla)}
+                                        </div>
+                                    </h3>
+
                                 </div>
                                 <table>
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>Partida</th>
                                             <th>Subpartida</th>
-                                            <th>Enero</th>
-                                            <th>Febrero</th>
-                                            <th>Marzo</th>
-                                            <th>Abril</th>
-                                            <th>Mayo</th>
-                                            <th>Junio</th>
-                                            <th>Julio</th>
-                                            <th>Agosto</th>
-                                            <th>Septiembre</th>
-                                            <th>Octubre</th>
-                                            <th>Noviembre</th>
-                                            <th>Diciembre</th>
+                                            <th>enero <br /> {sumaMes(indexTabla, 'enero')}</th>
+                                            <th>Febrero <br /> {sumaMes(indexTabla, 'febrero')}</th>
+                                            <th>Marzo <br /> {sumaMes(indexTabla, 'marzo')}</th>
+                                            <th>Abril <br /> {sumaMes(indexTabla, 'abril')}</th>
+                                            <th>Mayo <br /> {sumaMes(indexTabla, 'mayo')}</th>
+                                            <th>Junio <br /> {sumaMes(indexTabla, 'junio')}</th>
+                                            <th>Julio <br /> {sumaMes(indexTabla, 'julio')}</th>
+                                            <th>Agosto <br /> {sumaMes(indexTabla, 'agosto')}</th>
+                                            <th>Septiembre <br /> {sumaMes(indexTabla, 'septiembre')}</th>
+                                            <th>Octubre <br /> {sumaMes(indexTabla, 'octubre')}</th>
+                                            <th>Noviembre <br /> {sumaMes(indexTabla, 'noviembre')}</th>
+                                            <th>Diciembre <br /> {sumaMes(indexTabla, 'diciembre')}</th>
+                                            <th>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            tabla.filas.map((fila, index) => {
+                                            tabla.filas.map((fila, indexFila) => {
                                                 return (
-                                                    <tr key={index}>
+                                                    <tr key={indexFila}>
                                                         <td>
-                                                            <select
-                                                                name="id_partida"
-                                                                value={fila.id_partida}
-                                                               /*  onChange={(e) => handleSelectPartida(e, index, tabla.id_area)} */
-                                                            >
-                                                                <option value="">Selecciona una partida</option>
-                                                                {
-                                                                    partidas.map((partida, index) => {
-                                                                        return (
-                                                                            <option key={index} value={partida.id_partida}>{partida.nombrePartida}</option>
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </select>
+                                                            <center>
+                                                                <TrashIcon onClick={() => eliminarFila(indexTabla, indexFila)} style={{ cursor: 'pointer', color: 'red' }} />
+                                                            </center>
                                                         </td>
                                                         <td>
-                                                            <p>Select</p>
+                                                            {selectPartidas(indexTabla, indexFila)}
+                                                        </td>
+                                                        <td>
+                                                            {selectSubpartida(indexTabla, indexFila)}
                                                         </td>
                                                         {
                                                             Object.keys(fila).map((key, index) => {
                                                                 return (
                                                                     key !== 'id_partida' && key !== 'id_subpartida' &&
                                                                     <td key={index}>
-                                                                            <input
-                                                                                type="number"
-                                                                                name={key}
-                                                                                value={fila[key]}
-                                                                                /* onChange={(e) => handleInputChange(e, index, tabla.id_area)} */
-                                                                            />
+                                                                            {createCurrencyInput(fila, indexTabla, indexFila, key)}
                                                                     </td>
                                                                 )
                                                             })
 
                                                         }
+                                                        <td>
+                                                            {sumaTotalFila(indexTabla, indexFila)}
+                                                        </td>
                                                     </tr>
                                                 )
                                             })
                                         }
                                     </tbody>
-                                </table>                                     
+                                </table>
+                                <AddIcon onClick={() => nuevaFila(indexTabla)} style={{ cursor: 'pointer', color: 'green', fontSize: '25px', alignSelf: 'flex-start', marginTop: '10px', marginBottom: '10px' }} />
                                 
                             </div>
                         )
@@ -1030,25 +1159,31 @@ export default function TablaPresupuesto(props) {
                         return createTables(partida, index)
                     })
                 } */}
+                <Styles>
                 {
                     formDataTabla.length > 0 &&
                     generateTables()
-
-                }
+                }    
+                </Styles>
+                
 
                 {
                     areasRestantes.length > 0 &&
-                    <select onChange={(e) => handleSelectArea(e)}>
-                            <option value={0}>Selecciona un área</option>   
+                    <Select onChange={(e) => handleSelectArea(e)} value={0}>
+                            <MenuItem value={0} hidden>Selecciona un área</MenuItem>   
                             {
-                                areasRestantes.map((area, index) => {
-                                    return <option key={index} value={area.id_area}>{area.nombreArea}</option>
+                                
+                                areasRestantes.sort((a, b) => a.nombreArea > b.nombreArea ? 1 : -1).map((area, index) => {
+                                    return <MenuItem key={index} value={area.id_area}>{area.nombreArea}</MenuItem>
                                 }
                                 )
                             }
-                    </select>
+                    </Select>
                     
                 }
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+                <button onClick={() => sendPresupuesto()} variant="contained" color="primary">Guardar</button>
             </div>
         </>
     )
