@@ -11,12 +11,17 @@ import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from '../../
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert, createAlert } from '../../../functions/alert'
 import { CalendarDay, RadioGroupGray, InputGray, FileInput, SelectSearchGray, InputMoneyGray, Button } from '../../form-components'
 
+import InputLabel from '@material-ui/core/InputLabel';
+import SelectMUI from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 class IngresosFormulario extends Component {
     state = {
         form: {
             cliente: '',
             empresa: '',
             area: '',
+            partida:'',
             subarea: '',
             descripcion: '',
             cuenta: '',
@@ -761,10 +766,19 @@ class IngresosFormulario extends Component {
             default: break;
         }
     }
+
+    handleChangeArea = (e) => {
+        this.updateSelect(`${e.target.value}`, e.target.name)
+    }
+
+    handleChangeSubarea = (e) => {
+        this.updateSelect(`${e.target.value}`, e.target.name)
+    }
     
     render() {
         const { formeditado, form, options } = this.state
-        const { type } = this.props
+        const { type, ingresos } = this.props
+        // console.log(ingresos)
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -870,30 +884,96 @@ class IngresosFormulario extends Component {
                                 </div>
                                 <CalendarDay date = { form.fecha } onChange = { this.onChange } name = 'fecha' requirevalidation = { 1 } />
                             </div>
-                            <div className="col-md-8 align-self-center">
-                                <div className="row mx-0">
-                                    <div className="col md-6">
-                                        <SelectSearchGray options = { options.areas } placeholder = 'Selecciona el área' value = { form.area } 
-                                            onChange = { (value) => { this.updateSelect(value, 'area') } } withtaglabel = { 1 } withtextlabel = { 1 } 
-                                            withicon = { 1 } iconclass = "far fa-window-maximize" messageinc = "Selecciona el área" 
-                                            formeditado = { formeditado } requirevalidation = { 1 }/>
+                            <div className="row col-md-8">
+                            
+                                {/* <div className=""> */}
+
+                                    <div className="col-md-4">
+                                        {ingresos.length > 0 ?
+                                            <>
+                                                <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
+                                                    <SelectMUI
+                                                        value={form.area}
+                                                        name="area"
+                                                        onChange={e => this.handleChangeArea(e)}
+                                                        style={{ width: 230, paddingRight: '2px' }}
+
+                                                    >
+                                                        {ingresos.map((item, index) => (
+                                                            <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+                                                        ))} 
+                                                    </SelectMUI>
+                                            </>: null
+                                        } 
+                                    </div> 
+
+                                    <div className='col-md-4'>
+                                        {ingresos.length > 0 && form.area !== '' ?
+                                        <>
+                                            <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
+                                                <SelectMUI
+                                                    value={form.partida}
+                                                    name="partida"
+                                                    onChange={e => this.handleChangeSubarea(e)}
+                                                    style={{ width: 230, paddingRight: '2px' }}
+                                                >
+                                                    {ingresos.find(item => item.id_area == form.area).partidas.map((item, index) => (
+                                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                                    ))}
+
+                                                </SelectMUI>
+                                        </>:null
+                                        }
                                     </div>
-                                    <div className="col md-6">
-                                        <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona subarea' value = { form.subarea } 
-                                            onChange = { (value) => { this.updateSelect(value, 'subarea') } } withtaglabel = { 1 } withtextlabel = { 1 } 
-                                            withicon = { 1 } iconclass = "far fa-window-restore" messageinc = "Selecciona el subárea" 
-                                            formeditado = { formeditado } requirevalidation = { 1 }/>
+
+                                    <div className='col-md-4'>
+                                        {ingresos.length > 0 && form.area !== '' && form.partida !== '' ?
+                                            <>
+                                                {ingresos.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida) ?
+                                                    <>
+                                                        <InputLabel id="demo-simple-select-label">Tipo de sub Gasto</InputLabel>
+                                                        <SelectMUI
+                                                            value={form.subarea}
+                                                            name="subarea"
+                                                            onChange={e => this.handleChangeSubarea(e)}
+                                                            style={{ width: 230, paddingRight: '2px' }}
+                                                        >
+                                                            {ingresos.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
+                                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+
+                                                            ))}
+                                                        </SelectMUI>
+                                                    </>:null
+                                                }
+                                            </>:null
+                                        }
                                     </div>
-                                    <div className="col-md-12">
-                                        <div className="separator separator-dashed mt-1 mb-2" />
-                                    </div>
+
                                     <div className="col-md-12">
                                         <InputGray requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN" 
                                             rows = "3" value = { form.descripcion } name = "descripcion" onChange = { this.onChange } 
                                             customclass = "px-2 text-justify" messageinc="Ingresa una descripción." 
                                             withtaglabel = { 1 } withtextlabel = { 1 }/>
-                                    </div>
-                                </div>
+                                    </div> 
+
+                                    {/* <div className="col md-6">
+                                            <SelectSearchGray options = { options.areas } placeholder = 'Selecciona el áreeeea' value = { form.area } 
+                                                onChange = { (value) => { this.updateSelect(value, 'area') } } withtaglabel = { 1 } withtextlabel = { 1 } 
+                                                withicon = { 1 } iconclass = "far fa-window-maximize" messageinc = "Selecciona el área" 
+                                                formeditado = { formeditado } requirevalidation = { 1 }/>
+                                        </div> */}
+
+                                        {/* <div className="col md-6">
+                                            <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona subarea' value = { form.subarea } 
+                                                onChange = { (value) => { this.updateSelect(value, 'subarea') } } withtaglabel = { 1 } withtextlabel = { 1 } 
+                                                withicon = { 1 } iconclass = "far fa-window-restore" messageinc = "Selecciona el subárea" 
+                                                formeditado = { formeditado } requirevalidation = { 1 }/>
+                                        </div>
+                                        <div className="col-md-12">
+                                            <div className="separator separator-dashed mt-1 mb-2" />
+                                        </div>*/}
+                                        
+                                {/* </div> */}
                             </div>
                         </div>
                         <div className="d-flex justify-content-between border-top mt-3 pt-3">

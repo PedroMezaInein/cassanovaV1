@@ -11,6 +11,10 @@ import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from '../../
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert, createAlert } from '../../../functions/alert'
 import { CalendarDay, RadioGroup, InputGray, FileInput, SelectSearchGray, InputMoneyGray, Button, SelectSearchGrayTrue } from '../../form-components'
 
+import InputLabel from '@material-ui/core/InputLabel';
+import SelectMUI from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 class VentasFormulario extends Component {
 
     state = {
@@ -19,6 +23,7 @@ class VentasFormulario extends Component {
             proyecto: '',
             empresa: '',
             area: '',
+            partida: '',
             subarea: '',
             descripcion: '',
             cuenta: '',
@@ -773,10 +778,19 @@ class VentasFormulario extends Component {
             default: break;
         }
     }
+
+    handleChangeArea = (e) => {
+        this.updateSelect(`${e.target.value}`, e.target.name)
+    }
+
+    handleChangeSubarea = (e) => {
+        this.updateSelect(`${e.target.value}`, e.target.name)
+    }
     
     render() {
         const { formeditado, form, options } = this.state
-        const { type } = this.props
+        const { type, ventas, areas } = this.props
+
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -891,31 +905,105 @@ class VentasFormulario extends Component {
                                 <br />
                                 <CalendarDay date = { form.fecha } onChange = { this.onChange } name = 'fecha' requirevalidation = { 1 } />
                             </div>
-                            <div className="col-md-8">
-                                <div className="row mx-0">
-                                    <div className="col md-6">
-                                        <SelectSearchGray options = { options.areas } placeholder = 'Selecciona el área' value = { form.area } 
-                                            onChange = { (value) => { this.updateSelect(value, 'area') } } withtaglabel = { 1 } withtextlabel = { 1 } 
-                                            withicon = { 1 } iconclass = "far fa-window-maximize" messageinc = "Incorrecto. Selecciona el área" 
-                                            formeditado = { formeditado } requirevalidation = { 1 }/>
-                                    </div>
-                                    <div className="col md-6">
-                                        <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona subarea' value = { form.subarea } 
-                                            onChange = { (value) => { this.updateSelect(value, 'subarea') } } withtaglabel = { 1 } withtextlabel = { 1 } 
-                                            withicon = { 1 } iconclass = "far fa-window-restore" messageinc = "Incorrecto. Selecciona el subárea" 
-                                            formeditado = { formeditado } requirevalidation = { 1 }/>
-                                    </div>
-                                    <div className="col-md-12">
-                                        <div className="separator separator-dashed mt-1 mb-2" />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <InputGray requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN" 
-                                            rows = "3" value = { form.descripcion } name = "descripcion" onChange = { this.onChange } 
-                                            customclass = "px-2 text-justify" messageinc="Incorrecto. Ingresa una descripción." 
-                                            withtaglabel = { 1 } withtextlabel = { 1 }/>
-                                    </div>
-                                </div>
+
+                            {/* <div className="col md-6">
+                                <SelectSearchGray options = { options.areas } placeholder = 'Selecciona el área' value = { form.area } 
+                                    onChange = { (value) => { this.updateSelect(value, 'area') } } withtaglabel = { 1 } withtextlabel = { 1 } 
+                                    withicon = { 1 } iconclass = "far fa-window-maximize" messageinc = "Incorrecto. Selecciona el área" 
+                                    formeditado = { formeditado } requirevalidation = { 1 }/>
+                            </div> */}
+
+                            {/* <div className="col md-6">
+                                <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona subarea' value = { form.subarea } 
+                                    onChange = { (value) => { this.updateSelect(value, 'subarea') } } withtaglabel = { 1 } withtextlabel = { 1 } 
+                                    withicon = { 1 } iconclass = "far fa-window-restore" messageinc = "Incorrecto. Selecciona el subárea" 
+                                    formeditado = { formeditado } requirevalidation = { 1 }/>
+                            </div> */}
+
+                            {/* <div className="col-md-12">
+                                <div className="separator separator-dashed mt-1 mb-2" />
+                            </div> */}
+
+                            <div className="col-md-3">
+                                {/* <div className="row mx-0"> */}
+                                    {ventas.length > 0 ?
+                                        <>
+                                            <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
+                                                <SelectMUI
+                                                    value={form.area}
+                                                    name="area"
+                                                    onChange={e => this.handleChangeArea(e)}
+                                                    style={{ width: 230, paddingRight: '2px' }}
+
+                                                >
+                                                    {ventas.map((item, index) => (
+                                                        <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+                                                    ))} 
+                                                </SelectMUI>
+                                        </>
+                                        : null
+                                    } 
+                                {/* </div> */}
                             </div>
+
+                            <div className='col md-3'>
+                                {ventas.length > 0 && form.area !== '' ?
+                                <>
+                                    <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
+                                        <SelectMUI
+                                            value={form.partida}
+                                            name="partida"
+                                            onChange={e => this.handleChangeSubarea(e)}
+                                            style={{ width: 230, paddingRight: '2px' }}
+                                        >
+                                            {ventas.find(item => item.id_area == form.area).partidas.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))}
+
+                                        </SelectMUI>
+                                </>:null
+                                }
+                            </div>
+
+                            <div className='col md-3'>
+                                {ventas.length > 0 && form.area !== '' && form.partida !== '' ?
+                                    <>
+                                        {ventas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida) ?
+                                            <>
+                                                <InputLabel id="demo-simple-select-label">Tipo de sub Gasto</InputLabel>
+                                                <SelectMUI
+                                                    value={form.subarea}
+                                                    name="subarea"
+                                                    onChange={e => this.handleChangeSubarea(e)}
+                                                    style={{ width: 230, paddingRight: '2px' }}
+                                                >
+                                                    {ventas.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
+                                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+
+                                                    ))}
+                                                </SelectMUI>
+                                            </>:null
+                                        }
+                                    </>:null
+                                }
+
+                            </div>
+
+                            <div className="col-md-8" style={{ marginTop: '-15%', marginLeft: '33%' }}>
+                                <InputGray requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN" 
+                                    rows = '3' value = { form.descripcion } name = "descripcion" onChange = { this.onChange } 
+                                    customclass = "px-2 text-justify" messageinc="Incorrecto. Ingresa una descripción." 
+                                    withtaglabel = { 1 } withtextlabel = { 1 }/>
+                            </div>
+                            
+
+                            {/* <div className="col-md-12">
+                                <InputGray requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN" 
+                                    rows = "3" value = { form.descripcion } name = "descripcion" onChange = { this.onChange } 
+                                    customclass = "px-2 text-justify" messageinc="Incorrecto. Ingresa una descripción." 
+                                    withtaglabel = { 1 } withtextlabel = { 1 }/>
+                            </div> */}
+
                         </div>
                         <div className="d-flex justify-content-between border-top mt-3 pt-3">
                             <div className="mr-2">
@@ -932,6 +1020,7 @@ class VentasFormulario extends Component {
                             </div>
                         </div>
                     </div>
+
                     <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                         <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>
                         <div className="form-group row form-group-marginless">

@@ -70,7 +70,7 @@ class IngresoFormNew extends Component {
 
     render() {
         const { type, ingreso } = this.state
-        const { history, authUser: { access_token } } = this.props
+        const { history, authUser: { access_token }, ingresos } = this.props
         return (
             <Layout active='administracion'  {...this.props}>
                 <Card className="card-custom">
@@ -80,7 +80,7 @@ class IngresoFormNew extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <IngresosFormulario type={type} at={access_token} dato={ingreso} history={history} />
+                        <IngresosFormulario type={type} at={access_token} dato={ingreso} history={history} ingresos={ingresos} />
                     </Card.Body>
                 </Card>
             </Layout>
@@ -88,7 +88,7 @@ class IngresoFormNew extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapStateToProps = state => { return { authUser: state.authUser, ingresos: state.opciones.ingresos } }
 const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(IngresoFormNew);
