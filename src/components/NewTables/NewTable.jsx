@@ -259,7 +259,7 @@ class NewTable extends Component{
                         break
                 }
                 if (tableName === 'ingresos') {
-                    console.log(objeto)
+                    // console.log(objeto)
                     if(objeto.total <= 0 ){ /* objeto.total < 1 */
                     
                         $(row).removeClass('blanco');
