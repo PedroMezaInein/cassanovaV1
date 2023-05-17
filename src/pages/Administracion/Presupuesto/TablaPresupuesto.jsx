@@ -12,8 +12,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TrashIcon from '@material-ui/icons/DeleteOutline';
 import AddIcon from '@material-ui/icons/Add';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import InputLabel from '@material-ui/core/InputLabel';
 
 import { apiOptions, apiPostForm } from '../../../functions/api'
+
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale'
+import Grid from '@material-ui/core/Grid';
 
 const Styles = styled.div`
  
@@ -142,6 +148,8 @@ export default function TablaPresupuesto(props) {
         granTotal: '',
         nomina: 0,
         colaboradores: '',
+        fecha_inicio: '',
+        fecha_fin: '',
     })
     const [nominas, setNominas] = useState([])
 
@@ -807,6 +815,27 @@ export default function TablaPresupuesto(props) {
         suma = formatNumberCurrency(suma)
         return suma
     }
+    const getGranTotalR = () => {
+        let suma = 0
+        for (let i = 0; i < formDataTabla.length ; i++) {
+            for (let j = 0; j < formDataTabla[i].filas.length; j++) {
+                suma += formDataTabla[i].filas[j].enero 
+                suma += formDataTabla[i].filas[j].febrero
+                suma += formDataTabla[i].filas[j].marzo
+                suma += formDataTabla[i].filas[j].abril
+                suma += formDataTabla[i].filas[j].mayo
+                suma += formDataTabla[i].filas[j].junio
+                suma += formDataTabla[i].filas[j].julio
+                suma += formDataTabla[i].filas[j].agosto
+                suma += formDataTabla[i].filas[j].septiembre
+                suma += formDataTabla[i].filas[j].octubre
+                suma += formDataTabla[i].filas[j].noviembre
+                suma += formDataTabla[i].filas[j].diciembre
+            }
+        }
+        suma = suma + (general.nomina * 12)
+        return suma
+    }
 
     const getDataGranTotal = () => {
         let aux = [{
@@ -854,11 +883,21 @@ export default function TablaPresupuesto(props) {
         }
     }
 
+    console.log(formDataTabla)
     
 
     const sendPresupuesto = () => {
         try {
-            apiPostForm(`presupuestosdep?departamento_id=${general.departamento_id}`, formDataTabla, auth)
+            let aux = {
+                data: formDataTabla,
+                fecha_inicio: general.fecha_inicio,
+                fecha_fin: general.fecha_fin,
+                total: getGranTotalR(),
+            }
+
+            
+
+            apiPostForm(`presupuestosdep?departamento_id=${general.departamento_id}`, aux, auth)
                 .then(res => {
                     console.log(res)
                 })
@@ -1127,7 +1166,12 @@ export default function TablaPresupuesto(props) {
         )
     }
 
-
+    const handleChangeFecha = (date, tipo) => {
+        setGeneral({
+            ...general,
+            [tipo]: new Date(date)
+        })
+    };
 
     return (
         <>
@@ -1142,6 +1186,47 @@ export default function TablaPresupuesto(props) {
                     {createTableGerente()}
                     {createTableGranTotal()}
                 </div>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
+                    <div>
+                        <InputLabel >Fecha Inicio</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid container >
+                                <KeyboardDatePicker
+
+                                    format="dd/MM/yyyy"
+                                    name="fecha_pago"
+                                    value={general.fecha_inicio !== '' ? general.fecha_inicio : null}
+                                    placeholder="dd/mm/yyyy"
+                                    onChange={e => handleChangeFecha(e, 'fecha_inicio')}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                /* error={errores.fecha_pago ? true : false} */
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
+                    </div>
+                    <div>
+                        <InputLabel >Fecha Fin</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid container >
+                                <KeyboardDatePicker
+
+                                    format="dd/MM/yyyy"
+                                    name="fecha_pago"
+                                    value={general.fecha_fin !== '' ? general.fecha_fin : null}
+                                    placeholder="dd/mm/yyyy"
+                                    onChange={e => handleChangeFecha(e, 'fecha_fin')}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                /* error={errores.fecha_pago ? true : false} */
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
+                    </div>    
+                </div>
+                
                 <div style={{ marginLeft: '18vw' }}>
                     {
                         form.length >= 13 &&
@@ -1181,10 +1266,11 @@ export default function TablaPresupuesto(props) {
                     </Select>
                     
                 }
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+                    <button onClick={() => sendPresupuesto()} variant="contained" color="primary">Guardar</button>
+                </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
-                <button onClick={() => sendPresupuesto()} variant="contained" color="primary">Guardar</button>
-            </div>
+            
         </>
     )
 }
