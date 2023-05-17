@@ -8,6 +8,7 @@ import Swal from 'sweetalert2'
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import TextField from '@material-ui/core/TextField';
 
 import TrashIcon from '@material-ui/icons/DeleteOutline';
 import AddIcon from '@material-ui/icons/Add';
@@ -20,6 +21,8 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
 import Grid from '@material-ui/core/Grid';
+
+import Style from './TablaPresupuesto.module.css'
 
 const Styles = styled.div`
  
@@ -39,7 +42,7 @@ const Styles = styled.div`
     }
 
     th{
-        background: rgba(22, 147, 165, 0.75);
+        background: #9CC4E4;
     }
     td {
       margin: 0;
@@ -72,7 +75,7 @@ const StylesGeneral = styled.div`
     }
 
     th{
-        background: rgba(22, 147, 165, 0.75);
+        background: #9CC4E4;
     }
     td {
       margin: 0;
@@ -147,9 +150,9 @@ export default function TablaPresupuesto(props) {
         colaboradores_id: '',
         granTotal: '',
         nomina: 0,
-        colaboradores: '',
         fecha_inicio: '',
         fecha_fin: '',
+        nombre: '',
     })
     const [nominas, setNominas] = useState([])
 
@@ -893,6 +896,9 @@ export default function TablaPresupuesto(props) {
                 fecha_inicio: general.fecha_inicio,
                 fecha_fin: general.fecha_fin,
                 total: getGranTotalR(),
+                id_departamento: general.departamento_id,
+                colaboradores: general.colaboradores,
+                nombre: general.nombre,
             }
 
             
@@ -1035,21 +1041,6 @@ export default function TablaPresupuesto(props) {
                             diciembre: 0
                         }
                     ],
-                    total: 0,
-                    meses: {
-                        enero: 0,
-                        febrero: 0,
-                        marzo: 0,
-                        abril: 0,
-                        mayo: 0,
-                        junio: 0,
-                        julio: 0,
-                        agosto: 0,
-                        septiembre: 0,
-                        octubre: 0,
-                        noviembre: 0,
-                        diciembre: 0
-                    }
                 }
             }
         })
@@ -1173,6 +1164,13 @@ export default function TablaPresupuesto(props) {
         })
     };
 
+    const handleChangeNombre = (e) => {
+        setGeneral({
+            ...general,
+            nombre: e.target.value
+        })
+    }
+
     return (
         <>
             <div style={{ backgroundColor: 'white', padding: '2rem' }}>
@@ -1206,7 +1204,8 @@ export default function TablaPresupuesto(props) {
                             </Grid>
                         </MuiPickersUtilsProvider>
                     </div>
-                    <div>
+
+                    {/* <div>
                         <InputLabel >Fecha Fin</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
@@ -1220,11 +1219,24 @@ export default function TablaPresupuesto(props) {
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
-                                /* error={errores.fecha_pago ? true : false} */
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    </div>    
+                    </div>  */} 
+
+                    <div>
+                        <TextField
+                            name='nombre'
+                            label="Nombre del presupuesto"
+                            type="text"
+                            defaultValue={general.nombre}
+                            onChange={handleChangeNombre}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                    </div>
+                    
                 </div>
                 
                 <div style={{ marginLeft: '18vw' }}>
@@ -1266,9 +1278,13 @@ export default function TablaPresupuesto(props) {
                     </Select>
                     
                 }
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
-                    <button onClick={() => sendPresupuesto()} variant="contained" color="primary">Guardar</button>
+
+                <div className="row justify-content-end">
+                    <div className="col-md-4">
+                        <button className={Style.sendButton} onClick={() => sendPresupuesto()} variant="contained" color="primary">Guardar</button>
+                    </div>
                 </div>
+
             </div>
             
         </>
