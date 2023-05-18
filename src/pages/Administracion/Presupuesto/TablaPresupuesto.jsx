@@ -687,18 +687,6 @@ export default function TablaPresupuesto(props) {
     const selectPartidas = (index, subindex) => {
         return (
             <div>
-                {/* <select
-                    onChange={e => handleChangePartida(e, index, subindex)}
-                    value={formDataTabla[index].filas[subindex].id_partida}
-                    style={{ width: '100%' }}>
-                    
-                    <option value='' hidden>partida</option>
-
-                    {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.map(partida => (
-                        <option key={partida.id} value={partida.id}>{partida.nombre}</option>
-                    ))}
-
-                </select> */}
 
                 <Select 
                     value={formDataTabla[index].filas[subindex].id_partida}
@@ -719,15 +707,6 @@ export default function TablaPresupuesto(props) {
         return (
             <div>
                 {
-                    /* formDataTabla[index].filas[subindex].id_partida !== '' &&
-                    <select 
-                    onChange={e => handleChangeSubpartida(e, index, subindex)} 
-                    value={formDataTabla[index].filas[subindex].id_subpartida} style={{ width: '100%' }}>
-                        <option value='' hidden>subpartida</option>
-                        {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.find(partida => partida.id === formDataTabla[index].filas[subindex].id_partida).subpartidas.map(subpartida => (
-                            <option key={subpartida.id} value={subpartida.id}>{subpartida.nombre}</option>
-                        ))}
-                    </select> */
                     formDataTabla[index].filas[subindex].id_partida !== '' &&
                     <Select
                         value={formDataTabla[index].filas[subindex].id_subpartida}
@@ -885,10 +864,7 @@ export default function TablaPresupuesto(props) {
             console.log(error)
         }
     }
-
-    console.log(formDataTabla)
     
-
     const sendPresupuesto = () => {
         try {
             let aux = {
@@ -917,6 +893,7 @@ export default function TablaPresupuesto(props) {
         for (let i = 0; i < nominas.length; i++) {
             suma += nominas[i].nomina_imss + nominas[i].nomina_extras
         }
+        console.log(nominas)
         suma = suma * 2
         let aux = [{
             nombre: 'Nóminas',
@@ -1157,6 +1134,63 @@ export default function TablaPresupuesto(props) {
         )
     }
 
+    const generateTableNomina = () => {
+        return (
+            <>
+                {
+                    nominas.length > 0 &&
+                    <div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Enero</th>
+                                        <th>Febrero </th>
+                                        <th>Marzo </th>
+                                        <th>Abril </th>
+                                        <th>Mayo </th>
+                                        <th>Junio </th>
+                                        <th>Julio </th>
+                                        <th>Agosto </th>
+                                        <th>Septiembre </th>
+                                        <th>Octubre </th>
+                                        <th>Noviembre </th>
+                                        <th>Diciembre </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        nominas.map((usuario, index) => {
+                                            let nomMensual = usuario.nomina_imss + usuario.nomina_extras
+                                            nomMensual = (nomMensual * 2).toFixed(2)
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{usuario.nombre}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                    <td>{nomMensual}</td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                    </div>
+                }
+
+            </>
+        )
+    }
+
     const handleChangeFecha = (date, tipo) => {
         setGeneral({
             ...general,
@@ -1205,7 +1239,7 @@ export default function TablaPresupuesto(props) {
                         </MuiPickersUtilsProvider>
                     </div>
 
-                    {/* <div>
+                    <div>
                         <InputLabel >Fecha Fin</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
@@ -1222,7 +1256,7 @@ export default function TablaPresupuesto(props) {
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    </div>  */} 
+                    </div>  
 
                     <div>
                         <TextField
@@ -1248,6 +1282,12 @@ export default function TablaPresupuesto(props) {
                         nominas.length > 0 &&
                         createTableNominas()
                     }
+                    <Styles>
+                    {
+                        nominas.length > 0 &&
+                        generateTableNomina()
+                        }
+                    </Styles>
                 </div>
 
                 {/* {form && form.length >= 13 &&
