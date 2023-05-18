@@ -27,10 +27,10 @@ export default class IngresosCard extends Component {
     getNombrePartida = () => {
         const {ingresosAdmin, ingreso} = this.props
         // console.log(ingresosAdmin)
-        // console.log(venta)
+        // console.log(ingreso)
         let aux = ''
         ingresosAdmin.map((item)=>{
-            if(parseInt(item.id_area) === ingreso.area.id){
+            if(parseInt(item.id_area) === ingreso.area_id){
                 if(ingreso.partida_id !== ''  && ingreso.partida_id){
                     
                     item.partidas.find(partida=>{

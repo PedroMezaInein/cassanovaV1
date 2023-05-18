@@ -255,8 +255,8 @@ class Ventas extends Component {
 
     getNombrePartida = (venta) => {
         const {ventasProyectos} = this.props
-        console.log(venta)
-        console.log(ventasProyectos)
+        // console.log(venta)
+        // console.log(ventasProyectos)
         let aux = ''
         ventasProyectos.map((item)=>{
             if(parseInt(item.id_area) === venta.area.id){

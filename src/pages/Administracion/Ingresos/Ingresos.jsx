@@ -108,7 +108,7 @@ class Ingresos extends Component {
                 this.getIngresoAxios(id)
             }
         }
-        console.log(ingresosAdmin)
+        // console.log(ingresosAdmin)
     }
 
     getOptionsAxios = async () => {

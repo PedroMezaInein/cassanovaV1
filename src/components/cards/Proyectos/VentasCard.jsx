@@ -56,7 +56,7 @@ export default class VentasCard extends Component {
 
     setTabAdjunto = () => {
         const { venta } = this.props
-        console.log(venta)
+        // console.log(venta)
         if(venta !== '' && venta){
             if(venta.presupuestos)
                 if(venta.presupuestos.length)

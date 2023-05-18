@@ -374,7 +374,7 @@ export const VENTAS_COLUMNS = [
     { Header: 'Factura', accessor: 'factura', customRender: true },
     { Header: 'Área', accessor: 'area', customRender: true },
     { Header: 'Partida', accessor: 'partida', customRender: true },
-    { Header: 'Sub-A', accessor: 'subarea', customRender: true },
+    { Header: 'Sub partida', accessor: 'subarea', customRender: true },
     { Header: 'Total', accessor: 'total', customRender: true },
     { Header: 'Cuenta', accessor: 'cuenta', customRender: true },
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
