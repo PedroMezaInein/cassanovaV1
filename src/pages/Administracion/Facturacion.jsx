@@ -774,7 +774,7 @@ class Facturacion extends Component {
     }
 
     onChangeAdjuntoFacturas = e => {
-        const { form, data } = this.state
+        const { form, data, key } = this.state
         const { files, value, name } = e.target
         let aux = []
         for (let counter = 0; counter < files.length; counter++) {
@@ -861,11 +861,19 @@ class Facturacion extends Component {
                             return false
                         });
                         let auxCliente = data.clientes.find((element) => {
+                            if (element.rfc === obj.rfc_receptor) {
+                                console.log(element.rfc, obj.rfc_receptor)
+
+                            }
                             return element.rfc === obj.rfc_receptor
                         })
                         if (auxCliente) {
                         } else {
-                            createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
+                            if (key === 'ventas') { 
+                                createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
+                            } else {
+                                createAlert('NO EXISTE EL Proveedor', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
+                            }
                         }
                         if (auxEmpresa && auxCliente) {
                             Swal.close()
@@ -970,6 +978,40 @@ class Facturacion extends Component {
     }
     
     async addClienteAxios(obj) {
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        /* let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase() */
+        let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
+        cadena = cadena.replace(/,/g, '').toUpperCase()
+        cadena = cadena.replace(/\./g, '').toUpperCase()
+        data.append('empresa', cadena)
+        data.append('nombre', cadena)
+        /* data.append('rfc', obj.rfc_receptor.toUpperCase()) */
+        data.append('rfc', obj.rfc_emisor.toUpperCase())
+        await axios.post(URL_DEV + 'cliente', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { clientes } = response.data
+                const { options, data, form } = this.state
+                options.clientes = []
+                options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                data.clientes = clientes
+                clientes.map((cliente) => {
+                    if (cliente.empresa === cadena)
+                        form.cliente = cliente.empresa
+                    return false
+                })
+                this.setState({ ...this.state, form, data, options })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+    async addProveedorAxios(obj) {
         const { access_token } = this.props.authUser
         const data = new FormData();
         let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
