@@ -998,6 +998,7 @@ class Facturacion extends Component {
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 data.clientes = clientes
                 clientes.map((cliente) => {
+                    debugger
                     if (cliente.empresa === cadena)
                         form.cliente = cliente.empresa
                     return false
@@ -1015,21 +1016,23 @@ class Facturacion extends Component {
     async addProveedorAxios(obj) {
         const { access_token } = this.props.authUser
         const data = new FormData();
-        let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
+        /* let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase() */
+        let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
         cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
         cadena = cadena.replace(/,/g, '').toUpperCase()
         cadena = cadena.replace(/\./g, '').toUpperCase()
         data.append('empresa', cadena)
         data.append('nombre', cadena)
-        data.append('rfc', obj.rfc_receptor.toUpperCase())
-        await axios.post(URL_DEV + 'cliente', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        /* data.append('rfc', obj.rfc_receptor.toUpperCase()) */
+        data.append('rfc', obj.rfc_emisor.toUpperCase())
+        await axios.post(URL_DEV + 'proveedores', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { clientes } = response.data
+                const { proveedores} = response.data
                 const { options, data, form } = this.state
                 options.clientes = []
-                options['clientes'] = setOptions(clientes, 'empresa', 'id')
-                data.clientes = clientes
-                clientes.map((cliente) => {
+                options['proveedores'] = setOptions(proveedores, 'empresa', 'id')
+                data.clientes = proveedores
+                proveedores.map((cliente) => {
                     if (cliente.empresa === cadena)
                         form.cliente = cliente.empresa
                     return false
