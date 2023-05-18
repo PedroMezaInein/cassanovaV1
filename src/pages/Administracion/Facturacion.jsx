@@ -214,8 +214,6 @@ class Facturacion extends Component {
 
     handleDeleteCompra = (factura) => {
         const { access_token } = this.props.authUser
-        console.log(factura)
-        console.log(this.state.key)
         Swal.fire({
             title: '¿Estás seguro?',
             text: "¡No podrás revertir esto!",
@@ -860,13 +858,16 @@ class Facturacion extends Component {
                             }
                             return false
                         });
-                        let auxCliente = data.clientes.find((element) => {
-                            if (element.rfc === obj.rfc_receptor) {
-                                console.log(element.rfc, obj.rfc_receptor)
-
-                            }
-                            return element.rfc === obj.rfc_receptor
-                        })
+                        let auxCliente
+                        if (key === 'ventas') { 
+                            auxCliente = data.clientes.find((element) => {
+                                return element.rfc === obj.rfc_emisor
+                            })
+                        } else {
+                            auxCliente = data.clientes.find((element) => {
+                                return element.rfc === obj.rfc_receptor
+                            })
+                        }
                         if (auxCliente) {
                         } else {
                             if (key === 'ventas') { 
@@ -1095,7 +1096,6 @@ class Facturacion extends Component {
 
     reloadTable = (filter) => {
         const { key } = this.state
-        // console.log(key)
         if(key == 'ventas'){
             $(`#ventas`).DataTable().search(JSON.stringify(filter)).draw();
         }else{
