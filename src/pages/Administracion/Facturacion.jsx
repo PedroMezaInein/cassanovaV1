@@ -998,7 +998,6 @@ class Facturacion extends Component {
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 data.clientes = clientes
                 clientes.map((cliente) => {
-                    debugger
                     if (cliente.empresa === cadena)
                         form.cliente = cliente.empresa
                     return false
