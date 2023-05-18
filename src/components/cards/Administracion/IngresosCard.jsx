@@ -23,6 +23,28 @@ export default class IngresosCard extends Component {
         })
         return aux
     }
+
+    getNombrePartida = () => {
+        const {ingresosAdmin, ingreso} = this.props
+        // console.log(ingresosAdmin)
+        // console.log(venta)
+        let aux = ''
+        ingresosAdmin.map((item)=>{
+            if(parseInt(item.id_area) === ingreso.area.id){
+                if(ingreso.partida_id !== ''  && ingreso.partida_id){
+                    
+                    item.partidas.find(partida=>{
+                        if(parseInt(partida.id) === ingreso.partida_id){                            
+                            aux = partida.nombre
+                        }
+                    })
+                }
+
+            }
+        })
+        return aux
+    }
+
     render() {
         const { ingreso } = this.props
         return (
@@ -96,7 +118,18 @@ export default class IngresosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">SUBÁREA:</label>
+                                                    <label className="col-3 font-weight-bolder text-primary">PARTIDA:</label>
+                                                    <div className="col-9">
+                                                        {
+                                                            ingreso.partida_id ?
+                                                            <span>{this.getNombrePartida(ingreso.partida_id)}</span>
+                                                                // <span>{ingreso.subarea.nombre}</span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-3 font-weight-bolder text-primary">SUB PARTIDA:</label>
                                                     <div className="col-9">
                                                         {
                                                             ingreso.subarea ?

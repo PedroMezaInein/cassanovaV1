@@ -83,8 +83,9 @@ class Ingresos extends Component {
         },
         filters: {}
     }
+
     componentDidMount() {
-        const { authUser: { user: { permisos } } } = this.props
+        const { authUser: { user: { permisos } }, ingresosAdmin} = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
         const ingresos = permisos.find(function (element, index) {
@@ -107,7 +108,9 @@ class Ingresos extends Component {
                 this.getIngresoAxios(id)
             }
         }
+        console.log(ingresosAdmin)
     }
+
     getOptionsAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -222,6 +225,29 @@ class Ingresos extends Component {
         form.adjuntos[item].files = aux
         this.setState({ ...this.state, form })
     }
+
+    
+    getNombrePartida = (ingreso) => {
+        const {ingresosAdmin} = this.props
+        /* console.log(ingreso) */
+        let aux = ''
+        ingresosAdmin.map((item)=>{
+            if(parseInt(item.id_area) === ingreso.area.id){
+                if(ingreso.partida_id !== ''  && ingreso.partida_id){
+                    
+                    item.partidas.find(partida=>{
+                        if(parseInt(partida.id) === ingreso.partida_id){
+                            
+                            aux = partida.nombre
+                        }
+                    })
+                }
+
+            }
+        })
+        return aux
+    }
+
     setIngresos = ingresos => {
         let aux = []
         let _aux = []
@@ -263,6 +289,7 @@ class Ingresos extends Component {
                     descripcion: setTextTableReactDom(ingreso.descripcion !== null ? ingreso.descripcion : '', this.doubleClick, ingreso, 'descripcion', 
                         'text-justify'),
                     area: setTextTableReactDom(ingreso.area ? ingreso.area.nombre : '', this.doubleClick, ingreso, 'area', 'text-center'),
+                    partida: this.getNombrePartida(ingreso),
                     subarea: setTextTableReactDom(ingreso.subarea ? ingreso.subarea.nombre : '', this.doubleClick, ingreso, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '', this.doubleClick, ingreso, 
                         'estatusCompra', 'text-center'),
@@ -276,6 +303,7 @@ class Ingresos extends Component {
         })
         return aux
     }
+
     setActions = ingreso => {
         const { history } = this.props
         return (
@@ -771,9 +799,12 @@ class Ingresos extends Component {
         });
         return form
     }
+
     render() {
         const { form, options, modal, ingreso, filters } = this.state
         const { access_token } = this.props.authUser
+        const {ingresosAdmin} = this.props
+
         // createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
         return (
             <Layout active='administracion'  {...this.props}>
@@ -799,7 +830,7 @@ class Ingresos extends Component {
                     <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos}  />
                 </Modal>
                 <Modal size="lg" title="Ingreso" show={modal.see} handleClose={this.handleClose} >
-                    <IngresosCard ingreso={ingreso} />
+                    <IngresosCard ingreso={ingreso} ingresosAdmin={ingresosAdmin}/>
                 </Modal>
                 <Modal size="lg" title="Factura extranjera" show={modal.facturaExtranjera} handleClose={this.handleClose} >
                     <FacturaExtranjera form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
@@ -812,7 +843,7 @@ class Ingresos extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapStateToProps = state => { return { authUser: state.authUser, ingresosAdmin: state.opciones.ingresos} }
 const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Ingresos);
