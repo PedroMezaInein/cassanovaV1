@@ -51,7 +51,6 @@ export default function Compra(props) {
     })
 
     const [errors, setErrors] = useState({})
-    console.log(opciones)
 
     const handleChange = (e) => {
         setForm({

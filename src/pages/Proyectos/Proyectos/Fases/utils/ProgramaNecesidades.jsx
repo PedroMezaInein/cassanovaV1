@@ -30,7 +30,6 @@ export default function ProgramaNecesidades() {
     const getAdjuntos = () => { 
         axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${fileUrl}/adjuntos`, { headers: setSingleHeader(userAuth.access_token) })
         .then(res => {
-            console.log(res.data);
         })
     }
 
@@ -80,8 +79,6 @@ export default function ProgramaNecesidades() {
         })
         .catch(err => console.error(err))
     }
-
-    console.log(s3Auth);
 
     return (
         <>

@@ -5,7 +5,6 @@ import { setFase, setLabelTable, ordenamiento, setOptions, setNaviIcon } from '.
 
 export default function HeaderDetailProyect(props) {
     const { proyecto, fases, modal, setModal } = props;
-    console.log(proyecto)
     return (
         <>
             <div className="HeaderTitle mt-n4 mb-n3">

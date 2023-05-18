@@ -23,7 +23,6 @@ export default function SolicitarFactura(props) {
         monto: 0,
     })
 
-    console.log(opciones)
 
     useEffect(() => {
         

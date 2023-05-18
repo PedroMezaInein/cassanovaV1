@@ -5,10 +5,10 @@ import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 
 import TablaPresupuesto from './TablaPresupuesto'
+import NuevaTabla from './NuevaTabla';
 
-export default function Presupuesto() { 
+export default function Presupuesto() {
     const userAuth = useSelector((state) => state.authUser);
-    const [reloadTable, setReloadTable] = useState()
 
     let prop = {
         pathname: '/administracion/requisicion',
@@ -16,9 +16,10 @@ export default function Presupuesto() {
 
     return (
         <>
-            
+
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'>
                 <TablaPresupuesto />
+                {/* <NuevaTabla /> */}
             </Layout>
 
         </>
