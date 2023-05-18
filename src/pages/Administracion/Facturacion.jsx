@@ -855,17 +855,14 @@ class Facturacion extends Component {
                         }
                         let auxEmpresa = ''
                         data.empresas.find(function (element, index) {
-                            if (element.rfc === obj.rfc_emisor)
+                            if (element.rfc === obj.rfc_emisor) {
                                 auxEmpresa = element
+                            }
                             return false
                         });
                         let auxCliente = data.clientes.find((element) => {
                             return element.rfc === obj.rfc_receptor
                         })
-                        if (auxEmpresa) {
-                        } else {
-                            errorAlert('No existe la empresa')
-                        }
                         if (auxCliente) {
                         } else {
                             createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
