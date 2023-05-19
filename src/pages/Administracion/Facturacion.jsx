@@ -858,9 +858,16 @@ class Facturacion extends Component {
                             }
                             return false
                         });
-                        let auxCliente = data.clientes.find((element) => {
-                            return element.rfc === obj.rfc_receptor
-                        })
+                        let auxCliente
+                        if (key === 'ventas') { 
+                            auxCliente = data.clientes.find((element) => {
+                                return element.rfc === obj.rfc_emisor
+                            })
+                        } else {
+                            auxCliente = data.clientes.find((element) => {
+                                return element.rfc === obj.rfc_emisor
+                            })
+                        }
                         if (auxCliente) {
                         } else {
                             if (key === 'ventas') { 
