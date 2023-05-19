@@ -56,6 +56,7 @@ export default class VentasCard extends Component {
 
     setTabAdjunto = () => {
         const { venta } = this.props
+        // console.log(venta)
         if(venta !== '' && venta){
             if(venta.presupuestos)
                 if(venta.presupuestos.length)
@@ -71,6 +72,27 @@ export default class VentasCard extends Component {
                     return 'fourth'
         }
         return ''
+    }
+
+    getNombrePartida = () => {
+        const {ventasProyectos, venta} = this.props
+        // console.log(ventasProyectos)
+        // console.log(venta)
+        let aux = ''
+        ventasProyectos.map((item)=>{
+            if(parseInt(item.id_area) === venta.area.id){
+                if(venta.partida_id !== ''  && venta.partida_id){
+                    
+                    item.partidas.find(partida=>{
+                        if(parseInt(partida.id) === venta.partida_id){                            
+                            aux = partida.nombre
+                        }
+                    })
+                }
+
+            }
+        })
+        return aux
     }
 
     render() {
@@ -146,7 +168,18 @@ export default class VentasCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">SUBÁREA:</label>
+                                                    <label className="col-3 font-weight-bolder text-primary">partida:</label>
+                                                    <div className="col-9">
+                                                    {
+                                                            venta.partida_id ?
+                                                                // <span>{venta.partida_id}</span>
+                                                                <span>{this.getNombrePartida(venta.partida_id)}</span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-3 font-weight-bolder text-primary">SUB partida:</label>
                                                     <div className="col-9">
                                                         {
                                                             venta.subarea ?

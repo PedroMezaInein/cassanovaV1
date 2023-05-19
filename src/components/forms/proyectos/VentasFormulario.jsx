@@ -622,6 +622,7 @@ class VentasFormulario extends Component {
     getVenta = async() => {
         waitAlert()
         const { dato, at } = this.props
+        console.log(dato)
         apiGet(`v2/proyectos/ventas/${dato.id}`, at).then(
             (response) => {
                 const { venta } = response.data
@@ -662,6 +663,7 @@ class VentasFormulario extends Component {
                         form.subarea = venta.subarea.id.toString()
                     }    
                 }
+                form.partida = dato.partida_id
 
                 if(venta.tipo_pago){
                     form.tipoPago = venta.tipo_pago ? venta.tipo_pago.id.toString() : ''

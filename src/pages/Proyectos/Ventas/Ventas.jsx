@@ -252,6 +252,28 @@ class Ventas extends Component {
         form.adjuntos[item].files = aux
         this.setState({...this.state,form})
     }
+
+    getNombrePartida = (venta) => {
+        const {ventasProyectos} = this.props
+        // console.log(venta)
+        // console.log(ventasProyectos)
+        let aux = ''
+        ventasProyectos.map((item)=>{
+            if(parseInt(item.id_area) === venta.area.id){
+                if(venta.partida_id !== ''  && venta.partida_id){
+                    
+                    item.partidas.find(partida=>{
+                        if(parseInt(partida.id) === venta.partida_id){                            
+                            aux = partida.nombre
+                        }
+                    })
+                }
+
+            }
+        })
+        return aux
+    }
+
     setVentas = ventas => {
         const { data } = this.state
         let _aux = []
@@ -295,6 +317,7 @@ class Ventas extends Component {
                             venta.descripcion !== null ? venta.descripcion :'', this.doubleClick, venta, 'descripcion', 'text-justify'
                         ),
                     area: setTextTableReactDom(venta.area ? venta.area.nombre : '' , this.doubleClick, venta, 'area', 'text-center'),
+                    partida: this.getNombrePartida(venta),
                     subarea: setTextTableReactDom(venta.subarea ? venta.subarea.nombre : '', this.doubleClick, venta, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(
                             venta.estatus_compra ? venta.estatus_compra.estatus : '', this.doubleClick, venta, 'estatusCompra', 'text-center'
@@ -382,6 +405,7 @@ class Ventas extends Component {
         )
     }
     openModalSee = async (venta) => {
+        // console.log(venta)
         waitAlert()
         const { access_token } = this.props.authUser
         apiGet(`v2/proyectos/ventas/${venta.id}`, access_token).then(
@@ -394,6 +418,7 @@ class Ventas extends Component {
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+    
     openModalAdjuntos = async (venta) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -863,6 +888,7 @@ class Ventas extends Component {
     render() {
         const tabs = ['all', 'fase1', 'fase2', 'fase3']
         const { modal, options, form, venta, key, filters } = this.state
+        const {ventasProyectos} = this.props
         const { access_token } = this.props.authUser
         return (
             <Layout active = 'proyectos'  {...this.props}>
@@ -885,7 +911,7 @@ class Ventas extends Component {
                     <AdjuntosForm form = { form } onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos } />
                 </Modal>
                 <Modal size="lg" title="Ventas" show={modal.see} handleClose={this.handleClose} >
-                    <VentasCard venta={venta} />
+                    <VentasCard venta={venta} ventasProyectos={ventasProyectos}/>
                 </Modal>
                 <Modal size="lg" title="Factura extranjera" show={modal.facturaExtranjera} handleClose={this.handleClose} >
                     <FacturaExtranjera form={form} onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos }/>
@@ -899,6 +925,6 @@ class Ventas extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapStateToProps = state => { return { authUser: state.authUser, ventasProyectos: state.opciones.ventas } }
 const mapDispatchToProps = dispatch => ({ })
 export default connect(mapStateToProps, mapDispatchToProps)(Ventas);

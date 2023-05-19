@@ -688,6 +688,7 @@ class IngresosFormulario extends Component {
         const { dato, at } = this.props
         apiGet(`v2/administracion/ingresos/${dato.id}`, at).then(
             (response) => {
+                
                 const { ingreso } = response.data
                 const { form, options } = this.state
                 form.factura = ingreso.factura ? 'Con factura' : 'Sin factura'
@@ -714,6 +715,7 @@ class IngresosFormulario extends Component {
                         form.subarea = ingreso.subarea.id.toString()
                     }    
                 }
+                form.partida = dato.partida_id
 
                 if(ingreso.tipo_pago){
                     form.tipoPago = ingreso.tipo_pago ? ingreso.tipo_pago.id.toString() : ''
@@ -779,6 +781,7 @@ class IngresosFormulario extends Component {
         const { formeditado, form, options } = this.state
         const { type, ingresos } = this.props
         // console.log(ingresos)
+        console.log(form)
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
