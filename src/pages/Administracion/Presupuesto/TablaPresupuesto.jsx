@@ -1134,6 +1134,8 @@ export default function TablaPresupuesto(props) {
         )
     }
 
+    console.log(nominas)
+
     const generateTableNomina = () => {
         return (
             <>
@@ -1143,19 +1145,21 @@ export default function TablaPresupuesto(props) {
                             <table>
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>Nombre</th>
                                         <th>Enero</th>
                                         <th>Febrero </th>
-                                        <th>Marzo </th>
-                                        <th>Abril </th>
-                                        <th>Mayo </th>
-                                        <th>Junio </th>
-                                        <th>Julio </th>
-                                        <th>Agosto </th>
-                                        <th>Septiembre </th>
-                                        <th>Octubre </th>
-                                        <th>Noviembre </th>
-                                        <th>Diciembre </th>
+                                        <th>Marzo</th>
+                                        <th>Abril</th>
+                                        <th>Mayo</th>
+                                        <th>Junio</th>
+                                        <th>Julio</th>
+                                        <th>Agosto</th>
+                                        <th>Septiembre</th>
+                                        <th>Octubre</th>
+                                        <th>Noviembre</th>
+                                        <th>Diciembre</th>
+                                        <th>Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1165,7 +1169,13 @@ export default function TablaPresupuesto(props) {
                                             nomMensual = (nomMensual * 2).toFixed(2)
                                             return (
                                                 <tr key={index}>
-                                                    <td>{usuario.nombre}</td>
+                                                    <td>
+                                                        <TrashIcon style={{ cursor: 'pointer', color: 'red' }} />
+                                                    </td>
+                                                    <td style={{ width: 'fit-content' }}>
+                                                        {`${usuario.nombre} ${usuario.apellido_paterno} ${usuario.apellido_materno}`}
+                                                    </td>
+                                                    
                                                     <td>{nomMensual}</td>
                                                     <td>{nomMensual}</td>
                                                     <td>{nomMensual}</td>
@@ -1178,6 +1188,7 @@ export default function TablaPresupuesto(props) {
                                                     <td>{nomMensual}</td>
                                                     <td>{nomMensual}</td>
                                                     <td>{nomMensual}</td>
+                                                    <td>{(nomMensual * 12).toFixed(2)}</td>
                                                 </tr>
                                             )
                                         })
@@ -1278,17 +1289,18 @@ export default function TablaPresupuesto(props) {
                         form.length >= 13 &&
                         createHeader()
                     }
-                    {
+                    {/* {
                         nominas.length > 0 &&
                         createTableNominas()
-                    }
-                    <Styles>
+                    } */}
+                    
+                </div>
+                <Styles>
                     {
                         nominas.length > 0 &&
                         generateTableNomina()
-                        }
-                    </Styles>
-                </div>
+                    }
+                </Styles>
 
                 {/* {form && form.length >= 13 &&
                     partidas.map((partida, index) => {
