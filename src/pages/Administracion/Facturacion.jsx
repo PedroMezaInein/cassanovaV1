@@ -865,7 +865,7 @@ class Facturacion extends Component {
                             })
                         } else {
                             auxCliente = data.clientes.find((element) => {
-                                return element.rfc === obj.rfc_emisor
+                                return element.rfc === obj.rfc_receptor
                             })
                         }
                         if (auxCliente) {
