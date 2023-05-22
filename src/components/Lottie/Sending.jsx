@@ -6,6 +6,7 @@ import * as valentine from '../../assets/animate/valentines-day.json'
 import * as Mujer from '../../assets/animate/diaDeLaMujer.json'
 import * as Abeja from '../../assets/animate/abeja.json'
 import * as pride from '../../assets/animate/17maylgbt.json'
+import * as Biodiversidad from '../../assets/animate/biodiversidad.json'
 import Lottie from 'react-lottie';
 
 class Sending extends Component{
@@ -13,7 +14,7 @@ class Sending extends Component{
         const defaultOptions = {
             loop: true,
             autoplay: true, 
-            animationData: new Date().getMonth() === 11 ? animationData2.default : pride.default,
+            animationData: new Date().getMonth() === 11 ? animationData2.default : Biodiversidad.default,
             rendererSettings: {
                 preserveAspectRatio: 'xMidYMid slice'
             }
