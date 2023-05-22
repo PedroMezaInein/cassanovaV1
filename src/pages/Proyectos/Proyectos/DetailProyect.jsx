@@ -273,9 +273,9 @@ export default function DetailProyect() {
                             variant="fullWidth"
                             style={{ background: 'rgba(255, 213, 73, 0.75)', color: '#000000' }}
                             >
-                                {<Tab label="Fase 1" disabled={fases.fase1.activeTab ? false : true} />}
-                                {<Tab label="Fase 2" disabled={fases.fase2.activeTab ? false : true} />}
-                                {<Tab label="Fase 3" disabled={fases.fase3.activeTab ? false : true} />}
+                                {<Tab className='fase' label="Fase 1" disabled={fases.fase1.activeTab ? false : true} />}
+                                {<Tab className='fase' label="Fase 2" disabled={fases.fase2.activeTab ? false : true} />}
+                                {<Tab className='fase' label="Fase 3" disabled={fases.fase3.activeTab ? false : true} />}
                             </Tabs>
 
                             <TabPanel value={value} index={0} >

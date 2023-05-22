@@ -34,12 +34,24 @@ import { setSingleHeader } from "../../../functions/routers"
 import { apiPostForm, apiGet, apiDelete } from '../../../functions/api'
 
 import '../../../styles/_editProyect.scss'
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+    formControl: {
+        margin: theme.spacing(1),
+        width: 150
+    },
+    selectEmpty: {
+        marginTop: theme.spacing(2)
+    }
+  }));
 
 export default function EditProyect(props) { 
     const {proyecto, reload} = props;
     const user = useSelector(state => state.authUser);
     const colaboradores = useSelector(state => state.opciones.vehiculos.colaboradores)
     const departamentos = useSelector(state => state.opciones.departamentos)
+    const classes = useStyles();
     const [form, setForm] = useState({
         nombre:proyecto.nombre,
         fechaInicio: proyecto.fecha_inicio,
@@ -73,6 +85,7 @@ export default function EditProyect(props) {
     })
     const [state, setState] = useState([])
     const [preloadDataResponsables, setPreloadDataResponsables] = useState([])
+    const [dataResponsable, setDataResponsable] = useState([])
 
     const arrayFases = [
         { value: 'fase1', name: 'Fase 1', label: 'Fase 1' },
@@ -80,11 +93,14 @@ export default function EditProyect(props) {
         { value: 'fase3', name: 'Fase 3', label: 'Fase 3' },
     ]
 
+    console.log(dataResponsable)
+
     const [opciones, setOpciones] = useState(false)
 
     useEffect(() => {
         getOptionsEmpresas();
         handleGetUsers();
+        getResponsables()
     }, [])
 
     useEffect(() => {
@@ -98,23 +114,26 @@ export default function EditProyect(props) {
                     colaboradores: [],
                 })
             })
+            if(dataResponsable.length > 0){
+                dataResponsable.forEach((element) => { 
+                    if (element.descripcion === 'responsable') {
+                        aux.find((item, index) => {
+                            if (item.id_area === element.id_area) {
+                                aux[index].id_responsable = element.id_empleado
+                                aux[index].id = element.id
+                            }
+                        })
+                    } else {
+                        aux.find((item, index) => {
+                            if (item.id_area === element.id_area) {
+                                aux[index].colaboradores.push(element)
+                            }
+                        })
+                    }
+                })    
+            }
             
-            proyecto.departamentos.forEach((element) => { 
-                if (element.descripcion === 'responsable') {
-                    aux.find((item, index) => {
-                        if (item.id_area === element.id_area) {
-                            aux[index].id_responsable = element.id_empleado
-                            aux[index].id = element.id
-                        }
-                    })
-                } else {
-                    aux.find((item, index) => {
-                        if (item.id_area === element.id_area) {
-                            aux[index].colaboradores.push(element)
-                        }
-                    })
-                }
-            })
+            
 
             let newAux = []
 
@@ -126,8 +145,7 @@ export default function EditProyect(props) {
 
             setPreloadDataResponsables(newAux)
         }
-    }, [departamentos, proyecto])
-    console.log(preloadDataResponsables)
+    }, [departamentos, dataResponsable])
 
 
     const handleChange = (e) => {
@@ -440,13 +458,26 @@ export default function EditProyect(props) {
         }
     }
 
-    console.log(departamentos)
-
     const handleChangeDepartamento = (e) => {
         setResponsable({
             ...responsable,
             [e.target.name]: e.target.value
         })
+    }
+
+    const getResponsables = () => {
+        try {
+            apiGet(`proyectos/responsable/${proyecto.id}`, user.access_token)
+                .then((response) => {
+                    setDataResponsable([...response.data.data.departamentos])
+                    console.log(response)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const handleAddResponsable = (e) => {
@@ -460,9 +491,10 @@ export default function EditProyect(props) {
                     descripcion: 'responsable'
                 }
                 apiPostForm('areas/asignado', newForm, user.access_token)
+                /* apiGet(`proyectos/responsable/${proyecto.id}`, user.access_token) */
                     .then((response) => {
                         console.log(response)
-                        reload()
+                        getResponsables()
                     })
                     .catch((error) => {
                         console.log(error)
@@ -476,9 +508,11 @@ export default function EditProyect(props) {
                     descripcion: 'colaborador'
                 }
                 apiPostForm('areas/asignado', newForm, user.access_token)
+                /* apiGet(`proyectos/responsable/${proyecto.id}`, user.access_token) */
+
                     .then((response) => {
                         console.log(response)
-                        reload()
+                        getResponsables()
                     })
                     .catch((error) => {
                         console.log(error)
@@ -496,14 +530,30 @@ export default function EditProyect(props) {
 
     const handleDeleteResponsable = (e, id_usuario) => { 
         e.preventDefault()
-        console.log(id_usuario)
+        // console.log(id_usuario)
+
         try {
             apiDelete(`areas/asignado/${id_usuario}`, user.access_token)
-                .then((response) => { 
-                    console.log(response.data)
-                    reload()
+                .then(response => { 
+                    getResponsables()
+
+                Swal.fire({
+                    // position: 'top-end',
+                    icon: 'success',
+                    title: 'Se eliminó con éxito',
+                    showConfirmButton: false,
+                    timer: 1500
                 })
+            })
+
         } catch (error) {
+            Swal.fire({
+                // position: 'top-end',
+                icon: 'error',
+                title: 'Ocurrió un error',
+                showConfirmButton: false,
+                timer: 1500
+            })
             console.log(error)
         }
     }
@@ -511,10 +561,18 @@ export default function EditProyect(props) {
     const handleDeleteAllResponsable = (e, responsable) => { 
         e.preventDefault()
         if (responsable.id !== '' && responsable.colaboradores.length === 0) {
+            
             try {
                 apiDelete(`areas/asignado/${responsable.id}`, user.access_token)
                     .then((response) => {
-                        reload()
+                        Swal.fire({
+                            // position: 'top-end',
+                            icon: 'success',
+                            title: 'Se eliminó con éxito',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        getResponsables()
                     })
             } catch (error) {
                 console.log(error)
@@ -528,7 +586,7 @@ export default function EditProyect(props) {
             )
             Promise.all(promesas)
                 .then((response) => {
-                    reload()
+                    getResponsables()
                 }
                 )
         } 
@@ -537,9 +595,6 @@ export default function EditProyect(props) {
 
     const handleAddResponsableOnChanges = (e, id_area) => { 
         e.preventDefault()
-        console.log(id_area)
-        console.log(e.target.value)
-        console.log(proyecto.id)
         try {
             let newForm = {
                 id_proyecto: proyecto.id,
@@ -549,7 +604,7 @@ export default function EditProyect(props) {
             }
             apiPostForm('areas/asignado', newForm, user.access_token)
                 .then((response) => {
-                    reload()
+                    getResponsables()
                 }
             )
         } catch (error) {
@@ -569,7 +624,7 @@ export default function EditProyect(props) {
                     }
                     apiPostForm('areas/asignado', newForm, user.access_token)
                         .then((response) => {
-                            reload()
+                            getResponsables()
                         }
                     )
 
@@ -654,6 +709,7 @@ export default function EditProyect(props) {
                                         <div>
                                             <InputLabel id="label-select-Empresa">Empresa</InputLabel>
                                             <Select
+                                                className={classes.formControl}
                                                 value={form.empresa.value ? form.empresa.value : 0}
                                                 labelId="label-select-Empresa"
                                                 onChange={handleCahngeEmpresa}
@@ -669,6 +725,7 @@ export default function EditProyect(props) {
                                         <div>
                                             <InputLabel id="label-select-Tipo">Tipo de Proyecto</InputLabel>
                                             <Select
+                                                className={classes.formControl}
                                                 value={form.tipo}
                                                 name='tipo'
                                                 labelId="label-select-Tipo"
@@ -716,6 +773,7 @@ export default function EditProyect(props) {
                                     <InputLabel>Seleccionar Responsable</InputLabel>
                                     
                                     <Select
+                                        className={classes.formControl}
                                         name='responsable'
                                         onChange={e => handleSaveResponsable(e.target.value)}
                                         value={form.responsable}
@@ -815,7 +873,8 @@ export default function EditProyect(props) {
                                         departamentos.length > 0 &&
                                         <div>
                                                 <InputLabel>Departamento</InputLabel>
-                                                <Select 
+                                                <Select
+                                                    className={classes.formControl} 
                                                     name='id_departamento'
                                                     onChange={handleChangeDepartamento}
                                                     value={responsable.id_departamento}
@@ -834,6 +893,7 @@ export default function EditProyect(props) {
                                         <div>
                                                 <InputLabel>Responsable</InputLabel>
                                                 <Select
+                                                    className={classes.formControl}
                                                     name='id_responsable'
                                                     onChange={handleChangeDepartamento}
                                                     value={responsable.id_responsable}
@@ -854,6 +914,7 @@ export default function EditProyect(props) {
                                         <div>
                                                 <InputLabel>Colaborador</InputLabel>
                                                 <Select
+                                                    className={classes.formControl}
                                                     name='id_colaborador'
                                                     onChange={handleChangeDepartamento}
                                                     value={responsable.id_colaborador}
@@ -892,6 +953,7 @@ export default function EditProyect(props) {
                                                                 <div>
                                                                     <InputLabel>Departamento</InputLabel>
                                                                     <Select
+                                                                        className={classes.formControl}
                                                                         value={responsable.id_area}
                                                                         disabled
                                                                     >
@@ -905,6 +967,7 @@ export default function EditProyect(props) {
                                                                 <div>
                                                                     <InputLabel>Responsable</InputLabel>
                                                                     <Select
+                                                                        className={classes.formControl}
                                                                         value={responsable.id_responsable}
                                                                         onChange={e => handleChangesResponsable(e, responsable.id_area, responsable.id)}
                                                                     >
@@ -920,6 +983,7 @@ export default function EditProyect(props) {
                                                                 <div>
                                                                     <InputLabel>Agregar colaborador</InputLabel>
                                                                     <Select
+                                                                        className={classes.formControl}
                                                                         onChange={e => handleAddResponsableOnChanges(e, responsable.id_area)}
                                                                     >
                                                                         <MenuItem value={0}></MenuItem>
@@ -945,6 +1009,7 @@ export default function EditProyect(props) {
                                                                                 <button className='trashIcon' onClick={e => handleDeleteResponsable(e, colaborador.id)}><TrashIcon/></button>
                                                                                 
                                                                                 <Select
+                                                                                    className={classes.formControl}
                                                                                     value={colaborador.id_empleado}
                                                                                     disabled
                                                                                 >
@@ -1098,6 +1163,7 @@ export default function EditProyect(props) {
                                     <div>
                                         <InputLabel id="label-select-Cliente_principal">Cliente principal</InputLabel>
                                         <Select
+                                            className={classes.formControl}
                                             value={form.cliente_id}
                                             labelId="label-select-Cliente_principal"
                                             name='cliente_id'
