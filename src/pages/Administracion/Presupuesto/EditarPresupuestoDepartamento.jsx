@@ -15,7 +15,7 @@ import AddIcon from '@material-ui/icons/Add';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { apiOptions, apiPostForm } from '../../../functions/api'
+import { apiOptions, apiPostForm, apiGet } from '../../../functions/api'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -24,7 +24,7 @@ import Grid from '@material-ui/core/Grid';
 
 import Style from './TablaPresupuesto.module.css'
 
-import {waitAlert2} from '../../../functions/alert'
+import { waitAlert2 } from '../../../functions/alert'
 
 const Styles = styled.div`
  
@@ -138,24 +138,25 @@ function Table({ columns, data }) {
 }
 
 
-export default function TablaPresupuesto(props) {
-    const { reload, handleClose } = props
+export default function EditarPresupuestoDepartamento(props) {
+    const { reload, handleClose, data } = props
     const partidas = useSelector(state => state.opciones.areas)
     const areas = useSelector(state => state.opciones.areas)
-    const departamento = useSelector(state => state.authUser.departamento.departamentos[0])
-    const nombreUsuario = useSelector(state => state.authUser.user)
     const auth = useSelector(state => state.authUser.access_token)
+
+    const [preloadData, setPreloadData] = useState(false)
+
     const [form, setForm] = useState([])
     const [general, setGeneral] = useState({
-        departamento: departamento.nombre,
-        departamento_id: departamento.id,
-        gerente: nombreUsuario.name,
-        gerente_id: nombreUsuario.id,
-        colaboradores: '',
+        departamento: preloadData?.area?.nombre,
+        departamento_id: preloadData?.id_area,
+        gerente: preloadData?.usuario?.name,
+        gerente_id: preloadData?.usuario?.id,
+        colaboradores: preloadData?.colaboradores,
         colaboradores_id: '',
         granTotal: '',
         nomina: 0,
-        fecha_inicio: '',
+        fecha_inicio: preloadData?.fecha,
         fecha_fin: '',
         nombre: '',
     })
@@ -170,8 +171,17 @@ export default function TablaPresupuesto(props) {
 
 
     useEffect(() => {
-        getNominas()
+        getDataApi()
     }, [])
+
+    const getDataApi = () => { 
+        apiGet(`presupuestosdep/edit/${data.id}`, auth).then(res => {
+            let data = res.data.presupuesto[0]
+            setPreloadData(data)
+        })
+    }
+
+    console.log(preloadData)
 
     const handleChangePartida = (e, index, subindex) => {
         let nuevoForm = [...formDataTabla]
@@ -184,17 +194,17 @@ export default function TablaPresupuesto(props) {
         nuevoForm[index].filas[subindex].id_subpartida = e.target.value
         setFormDataTabla(nuevoForm)
     }
-    
+
     useEffect(() => {
         if (areas.length >= 13) {
             createData()
         }
 
-        if (areas.length) { 
+        if (areas.length) {
             setAreasRestantes(areas)
         }
     }, [areas])
-    
+
     const formatNumberCurrency = (number) => {
         return new Intl.NumberFormat('es-MX', {
             style: 'currency',
@@ -214,7 +224,7 @@ export default function TablaPresupuesto(props) {
         suma = formatNumberCurrency(suma)
 
         return suma
-        
+
     }
 
     const sumaTotalFila = (index, subindex) => {
@@ -414,7 +424,7 @@ export default function TablaPresupuesto(props) {
         setFormDataTabla(aux)
     }
 
-    const eliminarFila = (index, subindex) => { 
+    const eliminarFila = (index, subindex) => {
         let aux = [...formDataTabla]
         aux[index].filas.splice(subindex, 1)
         setFormDataTabla(aux)
@@ -424,7 +434,7 @@ export default function TablaPresupuesto(props) {
         return (
             <div>
 
-                <Select 
+                <Select
                     value={formDataTabla[index].filas[subindex].id_partida}
                     onChange={e => handleChangePartida(e, index, subindex)}
                     style={{ maxWidth: '5vw' }}
@@ -434,7 +444,7 @@ export default function TablaPresupuesto(props) {
                         <MenuItem key={partida.id} value={partida.id}>{partida.nombre}</MenuItem>
                     ))}
                 </Select>
-                
+
             </div>
         )
     }
@@ -448,7 +458,7 @@ export default function TablaPresupuesto(props) {
                         value={formDataTabla[index].filas[subindex].id_subpartida}
                         onChange={e => handleChangeSubpartida(e, index, subindex)}
                         style={{ maxWidth: '5vw' }}
-                            
+
                     >
                         <MenuItem value='' hidden>subpartida</MenuItem>
                         {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.find(partida => partida.id === formDataTabla[index].filas[subindex].id_partida).subpartidas.map(subpartida => (
@@ -456,22 +466,28 @@ export default function TablaPresupuesto(props) {
                         ))}
                     </Select>
                 }
-                
+
             </div>
         )
     }
 
     const createTableDepartamento = () => {
-        const columnas = [
-            {
-                Header: 'Departamento',
-                accessor: 'nombre',
-            }
-        ]
+
         return (
             <div>
                 <StylesGeneral>
-                    <Table columns={columnas} data={[{ nombre: general.departamento }]} />
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Departamento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{general.departamento}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </StylesGeneral>
             </div>
         )
@@ -513,9 +529,9 @@ export default function TablaPresupuesto(props) {
 
     const getGranTotal = () => {
         let suma = 0
-        for (let i = 0; i < formDataTabla.length ; i++) {
+        for (let i = 0; i < formDataTabla.length; i++) {
             for (let j = 0; j < formDataTabla[i].filas.length; j++) {
-                suma += formDataTabla[i].filas[j].enero 
+                suma += formDataTabla[i].filas[j].enero
                 suma += formDataTabla[i].filas[j].febrero
                 suma += formDataTabla[i].filas[j].marzo
                 suma += formDataTabla[i].filas[j].abril
@@ -536,9 +552,9 @@ export default function TablaPresupuesto(props) {
 
     const getGranTotalR = () => {
         let suma = 0
-        for (let i = 0; i < formDataTabla.length ; i++) {
+        for (let i = 0; i < formDataTabla.length; i++) {
             for (let j = 0; j < formDataTabla[i].filas.length; j++) {
-                suma += formDataTabla[i].filas[j].enero 
+                suma += formDataTabla[i].filas[j].enero
                 suma += formDataTabla[i].filas[j].febrero
                 suma += formDataTabla[i].filas[j].marzo
                 suma += formDataTabla[i].filas[j].abril
@@ -580,31 +596,6 @@ export default function TablaPresupuesto(props) {
         )
     }
 
-    const getNominas = () => {
-        waitAlert2()
-        try {
-            apiOptions(`presupuestosdep?departamento_id=${general.departamento_id}`, auth)
-                .then(res => {
-                    let suma = 0
-                    /* setNominas([...res.data.empleados]) */
-                    for (let i = 0; i < res.data.empleados.length; i++) {
-                        suma += res.data.empleados[i].nomina_imss + res.data.empleados[i].nomina_extras
-                    }
-                    suma = suma * 2
-                    setGeneral({
-                        ...general,
-                        nomina: suma,
-                        colaboradores: res.data.empleados.length
-                    })
-                    Swal.close()
-                })
-
-        } catch (error) {
-            Swal.close()
-            console.log(error)
-        }
-    }
-    
     const sendPresupuesto = () => {
         try {
             let aux = {
@@ -622,12 +613,12 @@ export default function TablaPresupuesto(props) {
                         icon: 'success',
                         title: 'Presupuesto creado con éxito',
                         timer: 2000
-                    }).then(() => { 
+                    }).then(() => {
                         if (reload) {
                             reload.reload()
-                        }    
+                        }
                     })
-                    
+
                 })
         } catch (error) {
             console.log(error)
@@ -686,12 +677,12 @@ export default function TablaPresupuesto(props) {
             confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
-            if (result.isConfirmed) { 
+            if (result.isConfirmed) {
                 let aux = [...formDataTabla]
                 let addArea = partidas.filter(partida => partida.id_area === aux[index].id_area)
                 setAreasRestantes([...areasRestantes, addArea[0]])
                 aux.splice(index, 1)
-                setFormDataTabla(aux)   
+                setFormDataTabla(aux)
             }
         })
     }
@@ -707,7 +698,7 @@ export default function TablaPresupuesto(props) {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', justifyContent: 'center' }}>
                                     <div><TrashIcon onClick={() => handleDeleteTable(indexTabla)} style={{ cursor: 'pointer', color: 'red', fontSize: '20px' }} /></div>
                                     <h3 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', padding: '0 10px' }}>
-                                        
+
                                         <div>
                                             {tabla.nombre}
                                         </div>
@@ -759,7 +750,7 @@ export default function TablaPresupuesto(props) {
                                                                 return (
                                                                     key !== 'id_partida' && key !== 'id_subpartida' &&
                                                                     <td key={index}>
-                                                                            {createCurrencyInput(fila, indexTabla, indexFila, key)}
+                                                                        {createCurrencyInput(fila, indexTabla, indexFila, key)}
                                                                     </td>
                                                                 )
                                                             })
@@ -775,17 +766,16 @@ export default function TablaPresupuesto(props) {
                                     </tbody>
                                 </table>
                                 <AddIcon onClick={() => nuevaFila(indexTabla)} style={{ cursor: 'pointer', color: 'green', fontSize: '25px', alignSelf: 'flex-start', marginTop: '10px', marginBottom: '10px' }} />
-                                
+
                             </div>
                         )
 
                     })
                 }
-            </>       
+            </>
         )
     }
 
-  
     const handleChangeFecha = (date, tipo) => {
         setGeneral({
             ...general,
@@ -807,12 +797,16 @@ export default function TablaPresupuesto(props) {
                     <h1 style={{ textAlign: 'center' }}>Infraestructura e Interiores, S.A. de C.V.</h1>
                     <h2 style={{ textAlign: 'center' }}>Presupuesto Anual</h2>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
-                    {createTableDepartamento()}
-                    {createTableColaboradores()}
-                    {createTableGerente()}
-                    {createTableGranTotal()}
-                </div>
+                {
+                    preloadData &&
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
+                        {createTableDepartamento()}
+                        {createTableColaboradores()}
+                        {createTableGerente()}
+                        {createTableGranTotal()}
+                    </div>
+                }
+                
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
                     <div>
                         <InputLabel >Fecha Inicio</InputLabel>
@@ -850,7 +844,7 @@ export default function TablaPresupuesto(props) {
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    </div>  
+                    </div>
 
                     <div>
                         <TextField
@@ -864,33 +858,33 @@ export default function TablaPresupuesto(props) {
                             }}
                         />
                     </div>
-                    
+
                 </div>
-                
+
                 <div style={{ marginLeft: '18vw' }}>
                     {
                         form.length >= 13 &&
                         createHeader()
                     }
-                    
+
                 </div>
                 <Styles>
-                {
-                    formDataTabla.length > 0 &&
-                    generateTables()
-                }    
+                    {
+                        formDataTabla.length > 0 &&
+                        generateTables()
+                    }
                 </Styles>
-                
+
 
                 {
                     areasRestantes.length > 0 &&
                     <Select onChange={(e) => handleSelectArea(e)} value={0}>
-                            <MenuItem value={0} hidden>Selecciona un área</MenuItem>   
-                            {
-                                areasRestantes.sort((a, b) => a.nombreArea > b.nombreArea ? 1 : -1).map((area, index) => {
-                                    return <MenuItem key={index} value={area.id_area}>{area.nombreArea}</MenuItem>
-                                })
-                            }
+                        <MenuItem value={0} hidden>Selecciona un área</MenuItem>
+                        {
+                            areasRestantes.sort((a, b) => a.nombreArea > b.nombreArea ? 1 : -1).map((area, index) => {
+                                return <MenuItem key={index} value={area.id_area}>{area.nombreArea}</MenuItem>
+                            })
+                        }
                     </Select>
 
                 }
@@ -902,7 +896,7 @@ export default function TablaPresupuesto(props) {
                 </div>
 
             </div>
-            
+
         </>
     )
 }
