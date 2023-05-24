@@ -47,6 +47,20 @@ async function waitAlert() {
     })
 }
 
+async function waitAlert2() {
+    MySwal.fire({
+        title: 'Cargando...',
+        html:
+            <div>
+                <Sending />
+            </div>,
+        customClass: {
+            actions: 'd-none'
+        },
+        timer: 4000,
+    })
+}
+
 const sendFileAlert = ( elemento, action ) => {
     const { files, name } = elemento.target
     let element = files[0]
@@ -99,7 +113,7 @@ const showFilesAlert = (files, title) => {
     })
 }
 
-export{ userWarningAlert, waitAlert, sendFileAlert, showFilesAlert }
+export { userWarningAlert, waitAlert, sendFileAlert, showFilesAlert, waitAlert2 }
 
 export async function commentAlert() {
     MySwal.fire({
