@@ -662,7 +662,7 @@ export default function EditarPresupuestoDepartamento(props) {
                 nombre: general.nombre,
                 tipo:'editar'
             }
-            apiPostForm(`presupuestosdep?departamento_id=${general.departamento_id}`, aux, auth)
+            apiPostForm(`presupuestosdep/update/${general.id}`, aux, auth)
                 .then(res => {
                     Swal.fire({
                         icon: 'success',
