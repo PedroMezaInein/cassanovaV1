@@ -148,17 +148,18 @@ export default function EditarPresupuestoDepartamento(props) {
 
     const [form, setForm] = useState([])
     const [general, setGeneral] = useState({
-        departamento: preloadData?.area?.nombre,
-        departamento_id: preloadData?.id_area,
-        gerente: preloadData?.usuario?.name,
-        gerente_id: preloadData?.usuario?.id,
-        colaboradores: preloadData?.colaboradores,
+        departamento: '',
+        departamento_id: '',
+        gerente: '',
+        gerente_id: '',
+        colaboradores: '',
         colaboradores_id: '',
         granTotal: '',
         nomina: 0,
-        fecha_inicio: preloadData?.fecha,
+        fecha_inicio: '',
         fecha_fin: '',
         nombre: '',
+        id: '',
     })
     /* const [nominas, setNominas] = useState([]) */
 
@@ -174,14 +175,42 @@ export default function EditarPresupuestoDepartamento(props) {
         getDataApi()
     }, [])
 
+    useEffect(() => {
+        if (preloadData) {
+            setFormDataTabla(precargarDatos(preloadData))
+        }
+    }, [preloadData])
+
+    const setDateFormate = (date) => {
+        //yyyy-mm-dd to dd-mm-yyyy
+        let fecha = date.split('-')
+        fecha = new Date(`${fecha[0]}`, `${fecha[1] - 1}`, `${fecha[2]}`)
+        return fecha
+    }
+
+
     const getDataApi = () => { 
         apiGet(`presupuestosdep/edit/${data.id}`, auth).then(res => {
             let data = res.data.presupuesto[0]
+            setGeneral({
+                ...general,
+                departamento: data.area.nombre,
+                departamento_id: data.id_area,
+                gerente: data.usuario.name,
+                gerente_id: data.usuario.id,
+                colaboradores: data.colaboradores,
+                colaboradores_id: '',
+                granTotal: '',
+                nomina: 0,
+                fecha_inicio: setDateFormate(data.fecha_inicio),
+                fecha_fin: setDateFormate(data.fecha_fin),
+                nombre: data.nombre,
+                id: data.id,
+            })
             setPreloadData(data)
         })
     }
 
-    console.log(preloadData)
 
     const handleChangePartida = (e, index, subindex) => {
         let nuevoForm = [...formDataTabla]
@@ -461,8 +490,8 @@ export default function EditarPresupuestoDepartamento(props) {
 
                     >
                         <MenuItem value='' hidden>subpartida</MenuItem>
-                        {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.find(partida => partida.id === formDataTabla[index].filas[subindex].id_partida).subpartidas.map(subpartida => (
-                            <MenuItem key={subpartida.id} value={subpartida.id}>{subpartida.nombre}</MenuItem>
+                            {areas.find(partida => partida.id_area == formDataTabla[index].id_area).partidas.find(partida => partida.id == formDataTabla[index].filas[subindex].id_partida).subpartidas.map(subpartida => (
+                                <MenuItem key={subpartida.id} value={subpartida.id}>{subpartida.nombre}</MenuItem>
                         ))}
                     </Select>
                 }
@@ -471,7 +500,7 @@ export default function EditarPresupuestoDepartamento(props) {
         )
     }
 
-    const createTableDepartamento = () => {
+    const createTableDepartamento = (data) => {
 
         return (
             <div>
@@ -484,7 +513,7 @@ export default function EditarPresupuestoDepartamento(props) {
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{general.departamento}</td>
+                                <td>{data.area.nombre}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -493,7 +522,7 @@ export default function EditarPresupuestoDepartamento(props) {
         )
     }
 
-    const createTableGerente = () => {
+    const createTableGerente = (data) => {
         const columnas = [
             {
                 Header: 'Gerente',
@@ -505,13 +534,24 @@ export default function EditarPresupuestoDepartamento(props) {
         return (
             <div>
                 <StylesGeneral>
-                    <Table columns={columnas} data={[{ nombre: general.gerente }]} />
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Gerente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{data.usuario.name}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </StylesGeneral>
             </div>
         )
     }
 
-    const createTableColaboradores = () => {
+    const createTableColaboradores = (data) => {
         const columnas = [
             {
                 Header: 'Colaboradores',
@@ -521,11 +561,24 @@ export default function EditarPresupuestoDepartamento(props) {
         return (
             <div>
                 <StylesGeneral>
-                    <Table columns={columnas} data={[{ nombre: general.colaboradores }]} />
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Colaboradores</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{data.colaboradores}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </StylesGeneral>
             </div>
         )
     }
+
+  
 
     const getGranTotal = () => {
         let suma = 0
@@ -599,6 +652,7 @@ export default function EditarPresupuestoDepartamento(props) {
     const sendPresupuesto = () => {
         try {
             let aux = {
+                id: general.id,
                 data: formDataTabla,
                 fecha_inicio: general.fecha_inicio,
                 fecha_fin: general.fecha_fin,
@@ -606,12 +660,13 @@ export default function EditarPresupuestoDepartamento(props) {
                 id_departamento: general.departamento_id,
                 colaboradores: general.colaboradores,
                 nombre: general.nombre,
+                tipo:'editar'
             }
             apiPostForm(`presupuestosdep?departamento_id=${general.departamento_id}`, aux, auth)
                 .then(res => {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Presupuesto creado con éxito',
+                        title: 'Presupuesto Editado con éxito',
                         timer: 2000
                     }).then(() => {
                         if (reload) {
@@ -623,6 +678,27 @@ export default function EditarPresupuestoDepartamento(props) {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const handleDeleteTable = (index) => {
+        Swal.fire({
+            title: '¿Estás seguro de eliminar la tabla de ' + formDataTabla[index].nombre + '?',
+            text: "No podrás revertir esta acción",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let aux = [...formDataTabla]
+                let addArea = partidas.filter(partida => partida.id_area === aux[index].id_area)
+                setAreasRestantes([...areasRestantes, addArea[0]])
+                aux.splice(index, 1)
+                setFormDataTabla(aux)
+            }
+        })
     }
 
     const handleSelectArea = (e) => {
@@ -666,28 +742,77 @@ export default function EditarPresupuestoDepartamento(props) {
         setFormDataTabla([...formDataTabla, newTable])
     }
 
-    const handleDeleteTable = (index) => {
-        Swal.fire({
-            title: '¿Estás seguro de eliminar la tabla de ' + formDataTabla[index].nombre + '?',
-            text: "No podrás revertir esta acción",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                let aux = [...formDataTabla]
-                let addArea = partidas.filter(partida => partida.id_area === aux[index].id_area)
-                setAreasRestantes([...areasRestantes, addArea[0]])
-                aux.splice(index, 1)
-                setFormDataTabla(aux)
+    const precargarDatos = (data) => { 
+        let aux = []
+        let table = []
+
+
+
+        partidas.forEach(partida => {
+            table.push({
+                id_area: partida.id_area,
+                nombre: partida.nombreArea,
+                filas: [
+                ],
+            })
+        })
+
+        let nuevaFila = {
+            enero: 0,
+            febrero: 0,
+            marzo: 0,
+            abril: 0,
+            mayo: 0,
+            junio: 0,
+            julio: 0,
+            agosto: 0,
+            septiembre: 0,
+            octubre: 0,
+            noviembre: 0,
+            diciembre: 0,
+            id: '',
+            id_partida: '',
+            id_subpartida: '',
+        }
+
+        data.rel.map((fila, index) => { 
+            table.map((tabla, indexTabla) => { 
+                if (fila.id_area === parseInt(tabla.id_area)) {
+                    nuevaFila = {
+                        enero: fila.enero,
+                        febrero: fila.febrero,
+                        marzo: fila.marzo,
+                        abril: fila.abril,
+                        mayo: fila.mayo,
+                        junio: fila.junio,
+                        julio: fila.julio,
+                        agosto: fila.agosto,
+                        septiembre: fila.septiembre,
+                        octubre: fila.octubre,
+                        noviembre: fila.noviembre,
+                        diciembre: fila.diciembre,
+                        id: fila.id,
+                        id_partida: fila.id_partida,
+                        id_subpartida: fila.id_subareas,
+                    }
+                    
+                    table[indexTabla].filas.push(nuevaFila)
+                }
+            })
+        })
+
+        table.map((tabla, indexTabla) => {
+            if(tabla.filas.length > 0){
+                aux.push(tabla)
             }
         })
+
+        return aux
     }
 
-    const generateTables = () => {
+
+
+    const generateTables = (data) => {
 
         return (
             <>
@@ -748,7 +873,7 @@ export default function EditarPresupuestoDepartamento(props) {
                                                         {
                                                             Object.keys(fila).map((key, index) => {
                                                                 return (
-                                                                    key !== 'id_partida' && key !== 'id_subpartida' &&
+                                                                    key !== 'id_partida' && key !== 'id_subpartida' && key !== 'id' &&
                                                                     <td key={index}>
                                                                         {createCurrencyInput(fila, indexTabla, indexFila, key)}
                                                                     </td>
@@ -800,66 +925,71 @@ export default function EditarPresupuestoDepartamento(props) {
                 {
                     preloadData &&
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
-                        {createTableDepartamento()}
-                        {createTableColaboradores()}
-                        {createTableGerente()}
-                        {createTableGranTotal()}
+                        {createTableDepartamento(preloadData)}
+                        {createTableColaboradores(preloadData)}
+                        {createTableGerente(preloadData)}
+                        {createTableGranTotal(preloadData)}
+                    </div>
+                }
+
+                {
+                    preloadData &&
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
+                        <div>
+                            <InputLabel >Fecha Inicio</InputLabel>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                                <Grid container >
+                                    <KeyboardDatePicker
+
+                                        format="dd/MM/yyyy"
+                                        name="fecha_pago"
+                                        value={general.fecha_inicio !== '' ? general.fecha_inicio : null}
+                                        placeholder="dd/mm/yyyy"
+                                        onChange={e => handleChangeFecha(e, 'fecha_inicio')}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                    />
+                                </Grid>
+                            </MuiPickersUtilsProvider>
+                        </div>
+
+                        <div>
+                            <InputLabel >Fecha Fin</InputLabel>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                                <Grid container >
+                                    <KeyboardDatePicker
+
+                                        format="dd/MM/yyyy"
+                                        name="fecha_pago"
+                                        value={general.fecha_fin !== '' ? general.fecha_fin : null}
+                                        placeholder="dd/mm/yyyy"
+                                        onChange={e => handleChangeFecha(e, 'fecha_fin')}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                    />
+                                </Grid>
+                            </MuiPickersUtilsProvider>
+                        </div>
+
+                        <div>
+                            <TextField
+                                name='nombre'
+                                label="Nombre del presupuesto"
+                                type="text"
+                                defaultValue={general.nombre}
+                                onChange={handleChangeNombre}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                        </div>
+
                     </div>
                 }
                 
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
-                    <div>
-                        <InputLabel >Fecha Inicio</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                            <Grid container >
-                                <KeyboardDatePicker
-
-                                    format="dd/MM/yyyy"
-                                    name="fecha_pago"
-                                    value={general.fecha_inicio !== '' ? general.fecha_inicio : null}
-                                    placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha_inicio')}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-                    </div>
-
-                    <div>
-                        <InputLabel >Fecha Fin</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                            <Grid container >
-                                <KeyboardDatePicker
-
-                                    format="dd/MM/yyyy"
-                                    name="fecha_pago"
-                                    value={general.fecha_fin !== '' ? general.fecha_fin : null}
-                                    placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha_fin')}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-                    </div>
-
-                    <div>
-                        <TextField
-                            name='nombre'
-                            label="Nombre del presupuesto"
-                            type="text"
-                            defaultValue={general.nombre}
-                            onChange={handleChangeNombre}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                    </div>
-
-                </div>
+                
 
                 <div style={{ marginLeft: '18vw' }}>
                     {
@@ -868,12 +998,16 @@ export default function EditarPresupuestoDepartamento(props) {
                     }
 
                 </div>
-                <Styles>
-                    {
-                        formDataTabla.length > 0 &&
-                        generateTables()
-                    }
-                </Styles>
+                {
+                    preloadData &&
+                    <Styles>
+                        {
+                            formDataTabla.length > 0 &&
+                                generateTables(preloadData)
+                        }
+                    </Styles>
+                }
+                
 
 
                 {
@@ -891,7 +1025,7 @@ export default function EditarPresupuestoDepartamento(props) {
 
                 <div className="row justify-content-end">
                     <div className="col-md-4">
-                        <button className={Style.sendButton} onClick={() => sendPresupuesto()} variant="contained" color="primary">Crear</button>
+                        <button className={Style.sendButton} onClick={() => sendPresupuesto()} variant="contained" color="primary">Editar</button>
                     </div>
                 </div>
 

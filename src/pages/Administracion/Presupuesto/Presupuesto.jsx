@@ -7,6 +7,7 @@ import Layout from '../../../components/layout/layout'
 import TablaPresupuesto from './TablaPresupuesto'
 import TablaPresupuestoObra from './TablaPresupuestoObra'
 import Editar from './EditarPresupuestoDepartamento'
+import Ver from './VerPresupuestoDepartamento'
 
 import { Form, Tabs, Tab, Row, Col } from 'react-bootstrap'
 import { Modal } from '../../../components/singles'
@@ -101,7 +102,13 @@ export default function Presupuesto() {
                 color: 'blueButton',
                 icono: 'fas fa-eye',
                 funcion: (item) => {
-                    console.log(item)
+                    setModal({
+                        ...modal,
+                        ver: {
+                            show: true,
+                            data: item
+                        }
+                    })
                 }
             },
             {
@@ -109,13 +116,13 @@ export default function Presupuesto() {
                 color: 'blueButton',
                 icono: 'fas fa-edit',
                 funcion: (item) => {
-                    /* setModal({
+                    setModal({
                         ...modal,
                         editar: {
                             show: true,
                             data: item
                         }
-                    }) */
+                    })
                 }
             },
             {
@@ -273,6 +280,13 @@ export default function Presupuesto() {
                 modal.editar.data &&
                 <Modal size="xl" title={"Editar presupuesto"} show={modal.editar.show} handleClose={handleClose('editar')}>
                     <Editar data={modal.editar.data} reload={reloadTable} handleClose={handleClose('editar')} />
+                </Modal>
+            }
+
+            {
+                modal.ver.data &&
+                <Modal size="xl" title={"Ver presupuesto"} show={modal.ver.show} handleClose={handleClose('ver')}>
+                    <Ver data={modal.ver.data} reload={reloadTable} handleClose={handleClose('ver')} />
                 </Modal>
             }
             
