@@ -71,6 +71,27 @@ export default class ComprasCard extends Component {
         }
         return ''
     }
+
+    getNombrePartida = () => {
+        const {comprasProyectos, compra} = this.props
+        // console.log(comprasProyectos)
+        // console.log(compra)
+        let aux = ''
+        comprasProyectos.map((item)=>{
+            if(parseInt(item.id_area) === compra.area.id){
+                if(compra.partida_id !== ''  && compra.partida_id){
+                    
+                    item.partidas.find(partida=>{
+                        if(parseInt(partida.id) === compra.partida_id){                            
+                            aux = partida.nombre
+                        }
+                    })
+                }
+
+            }
+        })
+        return aux
+    }
     
     render() {
         const { compra } = this.props
@@ -145,7 +166,18 @@ export default class ComprasCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
-                                                    <label className="col-3 font-weight-bolder text-primary">SUBÁREA:</label>
+                                                    <label className="col-3 font-weight-bolder text-primary">partida:</label>
+                                                    <div className="col-9">
+                                                    {
+                                                            compra.partida_id ?
+                                                                // <span>{compra.partida_id}</span>
+                                                                <span>{this.getNombrePartida(compra.partida_id)}</span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
+                                                    <label className="col-3 font-weight-bolder text-primary">SUB partida:</label>
                                                     <div className="col-9">
                                                         {
                                                             compra.subarea ?

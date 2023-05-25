@@ -42,6 +42,7 @@ class Compras extends Component {
             empresa: '',
             cuenta: '',
             area: '',
+            partida: '',
             subarea: '',
             comision: '',
             solicitud: '',
@@ -157,6 +158,7 @@ class Compras extends Component {
                 options['formasPago'] = setOptionsWithLabel(formasPago, 'nombre', 'id')
                 options['metodosPago'] = setOptionsWithLabel(metodosPago, 'nombre', 'id')
                 options.allCuentas = setOptionsWithLabel(cuentas, 'nombre', 'id')
+                // form.partida = dato.partida_id
                 data.proveedores = proveedores
                 data.empresas = empresas
                 this.setState({ ...this.state, options, data })
@@ -268,8 +270,36 @@ class Compras extends Component {
         form.adjuntos[item].files = aux
         this.setState({ ...this.state, form })
     }
+
+    getNombrePartida = (compra) => {
+        const {comprasProyectos} = this.props
+        // console.log(compra)
+        // console.log(comprasProyectos)
+        let aux = ''
+        comprasProyectos.map((item)=>{
+            if(parseInt(item.id_area) === compra.area.id){
+                if(compra.partida_id !== ''  && compra.partida_id){
+                    
+                    item.partidas.find(partida=>{
+                        if(parseInt(partida.id) === compra.partida_id){                            
+                            aux = partida.nombre
+                        }
+                    })
+                }
+
+            }
+        })
+        return aux
+    }
+
     setCompras = compras => {
+        const { data } = this.state
+        data.compras = compras
+        // console.log(compras)
         let aux = []
+        this.setState({
+            data
+        })
         let _aux = []
         compras.map((compra) => {
             _aux = []
@@ -311,6 +341,7 @@ class Compras extends Component {
                     descripcion: setCustomeDescripcionReactDom(compra.descripcion !== null ? compra.descripcion :'', this.doubleClick, compra, 'descripcion', 
                         'text-justify'),
                     area: setTextTableReactDom(compra.area ? compra.area.nombre : '', this.doubleClick, compra, 'area', 'text-center'),
+                    partida: this.getNombrePartida(compra),
                     subarea: setTextTableReactDom(compra.subarea ? compra.subarea.nombre : '', this.doubleClick, compra, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 
                         'text-center'),
@@ -596,6 +627,8 @@ class Compras extends Component {
                             if(busqueda){ form.subarea = busqueda.value }
                         }
                     }
+                // form.partida = data.partida_id
+
                 }else{ 
                     flag = true 
                     if(data.area){
@@ -816,6 +849,8 @@ class Compras extends Component {
     render() {
         const { modal, form, options, compra, filters } = this.state
         const { access_token } = this.props.authUser
+        const {comprasProyectos} = this.props
+
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTable
@@ -839,7 +874,7 @@ class Compras extends Component {
                     <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
                 </Modal>
                 <Modal size="lg" title="Compra" show={modal.see} handleClose={this.handleClose} >
-                    <ComprasCard compra={compra} />
+                    <ComprasCard compra={compra} comprasProyectos={comprasProyectos}/>
                 </Modal>
                 <Modal size="lg" title="Factura extranjera" show={modal.facturaExtranjera} handleClose={this.handleClose} >
                     <FacturaExtranjera form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
@@ -852,7 +887,7 @@ class Compras extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapStateToProps = state => { return { authUser: state.authUser, comprasProyectos: state.opciones.compras } }
 const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Compras);
