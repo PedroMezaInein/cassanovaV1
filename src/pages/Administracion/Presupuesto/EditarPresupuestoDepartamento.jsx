@@ -15,7 +15,7 @@ import AddIcon from '@material-ui/icons/Add';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { apiOptions, apiPostForm, apiGet } from '../../../functions/api'
+import { apiOptions, apiPostForm, apiGet, apiPutForm } from '../../../functions/api'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -662,7 +662,7 @@ export default function EditarPresupuestoDepartamento(props) {
                 nombre: general.nombre,
                 tipo:'editar'
             }
-            apiPostForm(`presupuestosdep/update/${general.id}`, aux, auth)
+            apiPutForm(`presupuestosdep/update/${general.id}`, aux, auth)
                 .then(res => {
                     Swal.fire({
                         icon: 'success',
