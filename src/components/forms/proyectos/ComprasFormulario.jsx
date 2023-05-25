@@ -104,7 +104,7 @@ class ComprasFormulario extends Component {
                 item = options.empresas.find((elemento) => {
                     return elemento.value === value
                 })
-                console.log(item)
+                // console.log(item)
                 if(item){
                     form.cuenta = ''
                     options.cuentas = setOptions(item.cuentas, 'nombre', 'id')
@@ -585,11 +585,11 @@ class ComprasFormulario extends Component {
     getCompra = async() => {
         waitAlert()
         const { dato, at } = this.props
-        console.log(dato)
+        // console.log(dato)
         apiGet(`v2/proyectos/compras/${dato.id}`, at).then(
             (response) => {
                 const { compra } = response.data
-                console.log(compra)
+                // console.log(compra)
                 const { form, options } = this.state
                 form.factura = compra.factura ? 'Con factura' : 'Sin factura'
                 if(compra.proveedor){
@@ -627,8 +627,8 @@ class ComprasFormulario extends Component {
                     //     form.partida_id = compra.partida_id
                     // }    
                 }
-                form.partida_id = dato.partida_id
-                console.log(form)
+                form.partida = dato.partida_id
+                // console.log(form)
 
                 if(compra.tipo_pago){
                     form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id.toString() : ''
@@ -753,7 +753,7 @@ class ComprasFormulario extends Component {
     
     render() {
         const { formeditado, form, options } = this.state
-        console.log(form)
+        // console.log(form)
         const { type, compras } = this.props
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">

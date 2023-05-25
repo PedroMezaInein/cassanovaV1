@@ -273,8 +273,8 @@ class Compras extends Component {
 
     getNombrePartida = (compra) => {
         const {comprasProyectos} = this.props
-        console.log(compra)
-        console.log(comprasProyectos)
+        // console.log(compra)
+        // console.log(comprasProyectos)
         let aux = ''
         comprasProyectos.map((item)=>{
             if(parseInt(item.id_area) === compra.area.id){
@@ -295,7 +295,7 @@ class Compras extends Component {
     setCompras = compras => {
         const { data } = this.state
         data.compras = compras
-        console.log(compras)
+        // console.log(compras)
         let aux = []
         this.setState({
             data
