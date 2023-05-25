@@ -67,7 +67,7 @@ export default function RequisicionCompras() {
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
         /* { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
         { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false }, */
-        { nombre: 'Estatus', identificador: 'semaforo', sort: true, stringSearch: false },
+        { nombre: 'Estatus', identificador: 'semaforo', sort: false, stringSearch: false },
         /* { nombre: 'Aprobación', identificador: 'aprobacion', sort: false, stringSearch: false }, */
     ]
 

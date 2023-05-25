@@ -1011,6 +1011,7 @@ export const REQUISICIONES = [
     { nombre: 'Gasto', identificador: 'tipo_gasto', sort: true, stringSearch: false},
     { nombre: 'Fecha', identificador: 'fecha_view', sort: true, stringSearch: false},
     // { nombre: 'Descripcion', identificador: 'descripcion', sort: true, stringSearch: false},
-    { nombre: 'Estatus', identificador: 'estatus', sort: true, stringSearch: false},
-    { nombre: 'Tiempo estimado', identificador: 'tiempo_estimado', sort: true, stringSearch: false},
+    { nombre: 'Tiempo estimado', identificador: 'tiempo_estimado', sort: true, stringSearch: false },
+    { nombre: 'Estatus', identificador: 'semaforo', sort: false, stringSearch: false},
+    
 ]

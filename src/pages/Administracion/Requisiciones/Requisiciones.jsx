@@ -12,6 +12,7 @@ import VerRequisicion from '../../../components/forms/administracion/VerRequisic
 import {EditarRequisicion} from '../../../components/forms/administracion/EditarRequisicion'
 
 import useOptionsArea from '../../../hooks/useOptionsArea'
+import StatusIndicator from './utils/StatusIndicator'
 
 function Requisiciones () {
 
@@ -47,6 +48,11 @@ function Requisiciones () {
         pathname: '/administracion/requisicion',
     }
 
+    const createStatusIndicator = (item) => {
+        return (
+            <StatusIndicator data={item} />
+        )
+    }
 
     const proccessData = (datos) => {
         
@@ -65,7 +71,8 @@ function Requisiciones () {
                         estatus: result.estatus ? result.estatus.estatus : 'pendiente' ,
                         tiempo_estimado: result.fecha_entrega ? result.fecha_entrega : 'no especificado',
                         id:result.id,
-                        data:result
+                        data: result,
+                        semaforo: createStatusIndicator(result)
                     }
                 )
             })
