@@ -88,7 +88,7 @@ class ComprasForm extends Component {
 
     render() {
         const { type, compra, solicitud } = this.state
-        const { history, authUser: { access_token } } = this.props
+        const { history, authUser: { access_token }, compras } = this.props
         return (
             <Layout active = 'proyectos'  {...this.props}>
                 <Card className="card-custom">
@@ -100,7 +100,7 @@ class ComprasForm extends Component {
                     <Card.Body className="pt-0">
                         <ComprasFormulario type = { type } at = { access_token } 
                             dato = { compra } solicitud = { solicitud } 
-                            history = { history }  />
+                            history = { history } compras = {compras} />
                     </Card.Body>
                 </Card>
             </Layout>
@@ -108,7 +108,7 @@ class ComprasForm extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapStateToProps = state => { return { authUser: state.authUser, compras: state.opciones.compras } }
 const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ComprasForm);

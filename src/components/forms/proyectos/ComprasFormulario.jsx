@@ -10,6 +10,10 @@ import j2xParser from 'fast-xml-parser'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3';
 
+import InputLabel from '@material-ui/core/InputLabel';
+import SelectMUI from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 class ComprasFormulario extends Component {
 
     state = {
@@ -18,6 +22,7 @@ class ComprasFormulario extends Component {
             proyecto: '',
             empresa: '',
             area: '',
+            partida: '',
             subarea: '',
             descripcion: '',
             cuenta: '',
@@ -580,9 +585,11 @@ class ComprasFormulario extends Component {
     getCompra = async() => {
         waitAlert()
         const { dato, at } = this.props
+        console.log(dato)
         apiGet(`v2/proyectos/compras/${dato.id}`, at).then(
             (response) => {
                 const { compra } = response.data
+                console.log(compra)
                 const { form, options } = this.state
                 form.factura = compra.factura ? 'Con factura' : 'Sin factura'
                 if(compra.proveedor){
@@ -616,7 +623,12 @@ class ComprasFormulario extends Component {
                     if (compra.subarea) {
                         form.subarea = compra.subarea.id.toString()
                     }    
+                    // if (compra.partida_id) {
+                    //     form.partida_id = compra.partida_id
+                    // }    
                 }
+                form.partida_id = dato.partida_id
+                console.log(form)
 
                 if(compra.tipo_pago){
                     form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id.toString() : ''
@@ -730,11 +742,19 @@ class ComprasFormulario extends Component {
             default: break;
         }
     }
+
+    handleChangeArea = (e) => {
+        this.updateSelect(`${e.target.value}`, e.target.name)
+    }
+
+    handleChangeSubarea = (e) => {
+        this.updateSelect(`${e.target.value}`, e.target.name)
+    }
     
     render() {
         const { formeditado, form, options } = this.state
         console.log(form)
-        const { type } = this.props
+        const { type, compras } = this.props
         return(
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -845,18 +865,81 @@ class ComprasFormulario extends Component {
                             </div>
                             <div className="col-md-8">
                                 <div className="row mx-0">
-                                    <div className="col md-6">
+
+                                    <div className="col-md-4">
+                                        {compras.length > 0 ?
+                                            <>
+                                                <InputLabel id="demo-simple-select-label">área</InputLabel>
+                                                    <SelectMUI
+                                                        value={form.area}
+                                                        name="area"
+                                                        onChange={e => this.handleChangeArea(e)}
+                                                        style={{ width: 230, paddingRight: '2px' }}
+
+                                                    >
+                                                        {compras.map((item, index) => (
+                                                            <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+                                                        ))} 
+                                                    </SelectMUI>
+                                            </>
+                                            : null
+                                        } 
+                                    </div>
+
+                                    <div className='col md-4'>
+                                        {compras.length > 0 && form.area !== '' ?
+                                        <>
+                                            <InputLabel id="demo-simple-select-label">Gasto</InputLabel>
+                                                <SelectMUI
+                                                    value={form.partida}
+                                                    name="partida"
+                                                    onChange={e => this.handleChangeSubarea(e)}
+                                                    style={{ width: 230, paddingRight: '2px' }}
+                                                >
+                                                    {compras.find(item => item.id_area == form.area).partidas.map((item, index) => (
+                                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                                    ))}
+
+                                                </SelectMUI>
+                                        </>:null
+                                        }
+                                    </div>
+
+                                    <div className='col md-4'>
+                                        {compras.length > 0 && form.area !== '' && form.partida !== '' ?
+                                            <>
+                                                {compras.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida) ?
+                                                    <>
+                                                        <InputLabel id="demo-simple-select-label">sub Gasto</InputLabel>
+                                                        <SelectMUI
+                                                            value={form.subarea}
+                                                            name="subarea"
+                                                            onChange={e => this.handleChangeSubarea(e)}
+                                                            style={{ width: 230, paddingRight: '2px' }}
+                                                        >
+                                                            {compras.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
+                                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+
+                                                            ))}
+                                                        </SelectMUI>
+                                                    </>:null
+                                                }
+                                            </>:null
+                                        }
+                                    </div>
+
+                                    {/* <div className="col md-6">
                                         <SelectSearchGray options = { options.areas } placeholder = 'Selecciona el área' value = { form.area } 
                                             onChange = { (value) => { this.updateSelect(value, 'area') } } withtaglabel = { 1 } withtextlabel = { 1 } 
                                             withicon = { 1 } iconclass = "far fa-window-maximize" messageinc = "Incorrecto. Selecciona el área" 
                                             formeditado = { formeditado } requirevalidation = { 1 }/>
-                                    </div>
-                                    <div className="col md-6">
-                                        <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona subarea' value = { form.subarea } 
+                                    </div> */}
+                                    {/* <div className="col md-6">
+                                        <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona subaaaarea' value = { form.subarea } 
                                             onChange = { (value) => { this.updateSelect(value, 'subarea') } } withtaglabel = { 1 } withtextlabel = { 1 } 
                                             withicon = { 1 } iconclass = "far fa-window-restore" messageinc = "Incorrecto. Selecciona el subárea" 
                                             formeditado = { formeditado } requirevalidation = { 1 }/>
-                                    </div>
+                                    </div> */}
                                     <div className="col-md-12">
                                         <div className="separator separator-dashed mt-1 mb-2" />
                                     </div>
