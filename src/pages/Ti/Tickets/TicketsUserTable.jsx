@@ -15,7 +15,6 @@ import EditarTicket from './EditarTicket'
 import VerTicket from './VerTicket'
 import AprobarTicket from './Modales/AprobarTicket'
 
-
 import Style from './Modales/TicketsTi.module.css'
 
 export default function TicketsUserTable() {
@@ -52,6 +51,7 @@ export default function TicketsUserTable() {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
+        { nombre: 'Nombre', identificador: 'nombre' },
         { nombre: 'Fecha', identificador: 'fecha' },
         { nombre: 'Tipo', identificador: 'tipo_view' },
         { nombre: 'Estatus', identificador: 'estatus_view' },
@@ -198,6 +198,7 @@ export default function TicketsUserTable() {
                 departamento: item.departamento,
                 descripcion: item.descripcion,
                 estatus_view: setEstatus(item.estatus),
+                nombre: item.solicitante ? item.solicitante.name : '',
                 estatus: item.estatus,
                 tipo_view: setTipo(item.tipo),
                 tipo: item.tipo,
