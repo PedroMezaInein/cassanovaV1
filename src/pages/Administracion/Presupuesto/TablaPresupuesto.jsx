@@ -608,33 +608,58 @@ export default function TablaPresupuesto(props) {
     }
     
     const sendPresupuesto = () => {
-        try {
-            let aux = {
-                tipo: 'crear',
-                data: formDataTabla,
-                fecha_inicio: general.fecha_inicio,
-                fecha_fin: general.fecha_fin,
-                total: getGranTotalR(),
-                id_departamento: general.departamento_id,
-                colaboradores: general.colaboradores,
-                nombre: general.nombre,
-            }
-            apiPostForm(`presupuestosdep?departamento_id=${general.departamento_id}`, aux, auth)
-                .then(res => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Presupuesto creado con éxito',
-                        timer: 2000
-                    }).then(() => { 
-                        if (reload) {
-                            reload.reload()
-                        }    
-                    })
-                    
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Se creará el presupuesto",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Creando presupuesto',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
                 })
-        } catch (error) {
-            console.log(error)
-        }
+                try {
+                    let aux = {
+                        tipo: 'crear',
+                        data: formDataTabla,
+                        fecha_inicio: general.fecha_inicio,
+                        fecha_fin: general.fecha_fin,
+                        total: getGranTotalR(),
+                        id_departamento: general.departamento_id,
+                        colaboradores: general.colaboradores,
+                        nombre: general.nombre,
+                    }
+                    apiPostForm(`presupuestosdep?departamento_id=${general.departamento_id}`, aux, auth)
+                        .then(res => {
+                            Swal.close()
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Presupuesto creado con éxito',
+                                timer: 2000
+                            }).then(() => {
+                                if (reload) {
+                                    reload.reload()
+                                }
+                                handleClose()
+                            })
+                            
+                        })
+                } catch (error) {
+                    Swal.close()
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al crear el presupuesto',
+                        timer: 2000
+                    })
+                }
+            }
+        })
     }
 
     const handleSelectArea = (e) => {

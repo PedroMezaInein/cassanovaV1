@@ -180,6 +180,13 @@ export default function VerPresupuestoDepartamento(props) {
         }
     }, [preloadData])
 
+    const setDateFormate = (date) => {
+        //yyyy-mm-dd to dd-mm-yyyy
+        let fecha = date.split('-')
+        fecha = new Date(`${fecha[0]}`, `${fecha[1] - 1}`, `${fecha[2]}`)
+        return fecha
+    }
+
     const getDataApi = () => {
         apiGet(`presupuestosdep/edit/${data.id}`, auth).then(res => {
             let data = res.data.presupuesto[0]
@@ -193,8 +200,8 @@ export default function VerPresupuestoDepartamento(props) {
                 colaboradores_id: '',
                 granTotal: '',
                 nomina: 0,
-                fecha_inicio: data.fecha,
-                fecha_fin: data.fecha_fin,
+                fecha_inicio: setDateFormate(data.fecha_inicio),
+                fecha_fin: setDateFormate(data.fecha_fin),
                 nombre: data.nombre,
             })
             setPreloadData(data)
@@ -964,11 +971,11 @@ export default function VerPresupuestoDepartamento(props) {
                             </MuiPickersUtilsProvider>
                         </div>
 
-                        <div>
+                            <div>
+                                <InputLabel >Nombre del presupuesto</InputLabel>
                                 <TextField
                                     disabled
                                     name='nombre'
-                                    label="Nombre del presupuesto"
                                     type="text"
                                     defaultValue={general.nombre}
                                     onChange={handleChangeNombre}
