@@ -137,7 +137,6 @@ function Table({ columns, data }) {
     )
 }
 
-
 export default function EditarPresupuestoDepartamento(props) {
     const { reload, handleClose, data } = props
     const partidas = useSelector(state => state.opciones.areas)
@@ -161,14 +160,9 @@ export default function EditarPresupuestoDepartamento(props) {
         nombre: '',
         id: '',
     })
-    /* const [nominas, setNominas] = useState([]) */
-
-    /*     */
 
     const [areasRestantes, setAreasRestantes] = useState([])
     const [formDataTabla, setFormDataTabla] = useState([])
-
-    /*     */
 
 
     useEffect(() => {
@@ -181,13 +175,36 @@ export default function EditarPresupuestoDepartamento(props) {
         }
     }, [preloadData])
 
+    useEffect(() => {
+        if (areas.length >= 13) {
+            createData()
+        }
+
+        /* if (areas.length) {
+            setAreasRestantes(areas)
+        } */
+    }, [areas])
+
+    useEffect(() => { 
+        if (formDataTabla.length && areas.length) { 
+            let areasRestantes = areas.filter(area => {
+                let existe = formDataTabla.find(data => data.id_area === area.id_area)
+                if (existe) {
+                    return false
+                } else {
+                    return true
+                }
+            })
+            setAreasRestantes(areasRestantes)
+        }
+    }, [formDataTabla, areas])
+
     const setDateFormate = (date) => {
         //yyyy-mm-dd to dd-mm-yyyy
         let fecha = date.split('-')
         fecha = new Date(`${fecha[0]}`, `${fecha[1] - 1}`, `${fecha[2]}`)
         return fecha
     }
-
 
     const getDataApi = () => { 
         apiGet(`presupuestosdep/edit/${data.id}`, auth).then(res => {
@@ -211,7 +228,6 @@ export default function EditarPresupuestoDepartamento(props) {
         })
     }
 
-
     const handleChangePartida = (e, index, subindex) => {
         let nuevoForm = [...formDataTabla]
         nuevoForm[index].filas[subindex].id_partida = e.target.value
@@ -223,16 +239,6 @@ export default function EditarPresupuestoDepartamento(props) {
         nuevoForm[index].filas[subindex].id_subpartida = e.target.value
         setFormDataTabla(nuevoForm)
     }
-
-    useEffect(() => {
-        if (areas.length >= 13) {
-            createData()
-        }
-
-        if (areas.length) {
-            setAreasRestantes(areas)
-        }
-    }, [areas])
 
     const formatNumberCurrency = (number) => {
         return new Intl.NumberFormat('es-MX', {
@@ -469,7 +475,7 @@ export default function EditarPresupuestoDepartamento(props) {
                     style={{ maxWidth: '5vw' }}
                 >
                     <MenuItem value='' hidden>partida</MenuItem>
-                    {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.map(partida => (
+                    {areas.find(partida => partida.id_area == formDataTabla[index].id_area).partidas.map(partida => (
                         <MenuItem key={partida.id} value={partida.id}>{partida.nombre}</MenuItem>
                     ))}
                 </Select>
@@ -578,8 +584,6 @@ export default function EditarPresupuestoDepartamento(props) {
         )
     }
 
-  
-
     const getGranTotal = () => {
         let suma = 0
         for (let i = 0; i < formDataTabla.length; i++) {
@@ -650,34 +654,65 @@ export default function EditarPresupuestoDepartamento(props) {
     }
 
     const sendPresupuesto = () => {
-        try {
-            let aux = {
-                id: general.id,
-                data: formDataTabla,
-                fecha_inicio: general.fecha_inicio,
-                fecha_fin: general.fecha_fin,
-                total: getGranTotalR(),
-                id_departamento: general.departamento_id,
-                colaboradores: general.colaboradores,
-                nombre: general.nombre,
-                tipo:'editar'
-            }
-            apiPutForm(`presupuestosdep/update/${general.id}`, aux, auth)
-                .then(res => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Presupuesto Editado con éxito',
-                        timer: 2000
-                    }).then(() => {
-                        if (reload) {
-                            reload.reload()
-                        }
-                    })
-
+        Swal.fire({
+            title: '¿Estás seguro de editar el presupuesto?',
+            text: "¡Se eliminará la autorización del presupuesto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: `Si, editar`,
+            cancelButtonText: 'Cancelar'
+            
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Editando Presupuesto',
+                    allowOutsideClick: false,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
                 })
-        } catch (error) {
-            console.log(error)
-        }
+
+
+                try {
+                    let aux = {
+                        id: general.id,
+                        data: formDataTabla,
+                        fecha_inicio: general.fecha_inicio,
+                        fecha_fin: general.fecha_fin,
+                        total: getGranTotalR(),
+                        id_departamento: general.departamento_id,
+                        colaboradores: general.colaboradores,
+                        nombre: general.nombre,
+                        tipo: 'editar'
+                    }
+                    apiPutForm(`presupuestosdep/update/${general.id}`, aux, auth)
+                        .then(res => {
+                            Swal.close()
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Presupuesto Editado con éxito',
+                                timer: 2000
+                            }).then(() => {
+                                if (reload) {
+                                    reload.reload()
+                                }
+                                handleClose()
+                            })
+
+                        })
+                } catch (error) {
+                    Swal.close()
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al editar el presupuesto',
+                        text: error
+                    })
+                }
+            }
+        })
     }
 
     const handleDeleteTable = (index) => {
@@ -746,8 +781,6 @@ export default function EditarPresupuestoDepartamento(props) {
         let aux = []
         let table = []
 
-
-
         partidas.forEach(partida => {
             table.push({
                 id_area: partida.id_area,
@@ -807,10 +840,9 @@ export default function EditarPresupuestoDepartamento(props) {
             }
         })
 
+
         return aux
     }
-
-
 
     const generateTables = (data) => {
 
@@ -973,23 +1005,21 @@ export default function EditarPresupuestoDepartamento(props) {
                             </MuiPickersUtilsProvider>
                         </div>
 
-                        <div>
-                            <TextField
-                                name='nombre'
-                                label="Nombre del presupuesto"
-                                type="text"
-                                defaultValue={general.nombre}
-                                onChange={handleChangeNombre}
-                                InputLabelProps={{
-                                    shrink: true,
+                            <div>
+                                <InputLabel >Nombre del presupuesto</InputLabel>
+                                <TextField
+                                    name='nombre'
+                                    type="text"
+                                    defaultValue={general.nombre}
+                                    onChange={handleChangeNombre}
+                                    InputLabelProps={{
+                                        shrink: true,
                                 }}
                             />
                         </div>
 
                     </div>
                 }
-                
-                
 
                 <div style={{ marginLeft: '18vw' }}>
                     {
@@ -1008,8 +1038,6 @@ export default function EditarPresupuestoDepartamento(props) {
                     </Styles>
                 }
                 
-
-
                 {
                     areasRestantes.length > 0 &&
                     <Select onChange={(e) => handleSelectArea(e)} value={0}>
@@ -1020,7 +1048,6 @@ export default function EditarPresupuestoDepartamento(props) {
                             })
                         }
                     </Select>
-
                 }
 
                 <div className="row justify-content-end">

@@ -80,6 +80,8 @@ export default function Presupuesto() {
                 departamento: item.area.nombre,
                 usuario: item.usuario ? item.usuario.name : '',
                 autorizacion: tagAprobado(item.estatus),
+                estatus: item.estatus === "1"? true : false, 
+                presupuesto_autorizado: item.presupuesto_autorizado ? formatNumberCurrency(item.presupuesto_autorizado) : ''
             })
         })
         return aux
@@ -91,7 +93,8 @@ export default function Presupuesto() {
         { nombre: 'usuario', identificador: 'usuario', sort: false, },
         { nombre: 'Nombre', identificador: 'nombre', sort: false, },
         { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
-        { nombre: 'Monto', identificador: 'monto_show', sort: false, stringSearch: false },
+        { nombre: 'Ppto.', identificador: 'monto_show', sort: false, stringSearch: false },
+        { nombre: 'Ppto. autorizado', identificador: 'presupuesto_autorizado', sort: false, stringSearch: false },
         { nombre: 'Autorización', identificador: 'autorizacion', sort: false, stringSearch: false },
     ]
 
@@ -173,40 +176,70 @@ export default function Presupuesto() {
                 }
             },
             {
-                nombre: 'Aprobar',
+                nombre: 'Autorizar',
                 color: 'perryButton',
                 icono: 'fas fa-check',
                 funcion: (item) => {
+                    console.log(item)
                     if (userAuth.user.tipo.tipo === 'Administrador') { 
-                        Swal.fire({
-                            title: '¿Estas seguro?',
-                            text: "¡No podrás revertir esto!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            cancelButtonText: 'Cancelar',
-                            confirmButtonText: 'Si, aprobar'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                try {
-                                    apiPutForm(`presupuestosdep/aprobacion/${item.id}`, { aprobado: 1 }, userAuth.access_token).then(result => { 
-                                        Swal.fire(
-                                            '¡Aprobado!',
-                                            'El presupuesto ha sido aprobado.',
-                                            'success'
-                                        )
-                                        if (reloadTable) {
-                                            reloadTable.reload()
+                        if (!item.estatus) {
+                            Swal.fire({
+                                title: '¿Estas seguro?',
+                                text: "¡No podrás revertir esto!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                cancelButtonText: 'Cancelar',
+                                confirmButtonText: 'Si, autorizar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire({
+                                        title: 'autorizando',
+                                        text: 'Espere un momento...',
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        allowEnterKey: false,
+                                        showConfirmButton: false,
+                                        onOpen: () => {
+                                            Swal.showLoading()
                                         }
-
                                     })
-                                } catch (error) { 
+                                    try {
+                                        apiPutForm(`presupuestosdep/aprobacion/${item.id}`, { aprobado: 1 }, userAuth.access_token).then(result => {
+                                            Swal.close()
+                                            Swal.fire(
+                                                '¡Autorizado!',
+                                                'El presupuesto ha sido Autorizado.',
+                                                'success'
+                                            )
+                                            if (reloadTable) {
+                                                reloadTable.reload()
+                                            }
 
+                                        })
+                                    } catch (error) {
+                                        Swal.close()
+                                        Swal.fire(
+                                            '¡Error!',
+                                            'El presupuesto no ha sido Autorizado.',
+                                            'error'
+                                        )
+
+                                    }
+                                    
                                 }
-                                
-                            }
-                        })
+                            })
+                        } else {
+                            Swal.fire({
+                                title: 'Presupuesto ya autorizado',
+                                text: "¡El presupuesto ya ha sido autorizado!",
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Ok'
+                            })
+                        }
+
                     } else {
                         Swal.fire({
                             title: '¡No tienes permisos!',
