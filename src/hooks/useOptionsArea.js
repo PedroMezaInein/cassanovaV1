@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiGet } from '../functions/api'
-import { SaveOptionsAreas, SaveOptionsPresupuestos, Departamentos, Ventas, Ingresos, Compras } from '../redux/actions/actions'
+import { SaveOptionsAreas, SaveOptionsPresupuestos, Departamentos, Ventas, Ingresos, Compras, Proyectos } from '../redux/actions/actions'
 
 const useOptionsArea = () => {
     const [opciones, setOpciones] = useState(false)
@@ -12,6 +12,7 @@ const useOptionsArea = () => {
     useEffect(() => {
         apiGet('areas', user.access_token)
             .then((response) => {
+                
                 setOpciones(response.data)
             })
             .catch((error) => {
@@ -26,6 +27,7 @@ const useOptionsArea = () => {
             proccessDataIngresos()
             proccessDataCompras()
             dispatch(Departamentos(opciones.departamentos))
+            proccessDataProyectos()
         } 
         
     }, [opciones])
@@ -277,6 +279,31 @@ const useOptionsArea = () => {
             })
         }
         dispatch(Compras(aux))
+    }
+
+    const proccessDataProyectos = () => {
+        let aux = []
+        let e = opciones
+        opciones.proyectos.forEach(element => {
+            aux.push({
+                id: element.id,
+                nombre: element.nombre,
+                simpleName: element.simpleName,
+            })
+        }
+        )
+        aux.sort((a, b) => {
+            if (a.nombre < b.nombre) {
+                return -1;
+            }
+            if (a.nombre > b.nombre) {
+                return 1;
+            }
+            return 0;
+        }
+        )
+        dispatch(Proyectos(aux))
+
     }
     
 }

@@ -15,16 +15,13 @@ import AddIcon from '@material-ui/icons/Add';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { apiOptions, apiPostForm, apiGet } from '../../../functions/api'
+import { apiOptions, apiPostForm, apiGet } from '../../../../functions/api'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
 import Grid from '@material-ui/core/Grid';
 
-import Style from './TablaPresupuesto.module.css'
-
-import { waitAlert2 } from '../../../functions/alert'
 
 const Styles = styled.div`
  
@@ -971,18 +968,18 @@ export default function VerPresupuestoDepartamento(props) {
                             </MuiPickersUtilsProvider>
                         </div>
 
-                            <div>
-                                <InputLabel >Nombre del presupuesto</InputLabel>
-                                <TextField
-                                    disabled
-                                    name='nombre'
-                                    type="text"
-                                    defaultValue={general.nombre}
-                                    onChange={handleChangeNombre}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
+                        <div>
+                            <InputLabel >Nombre del presupuesto</InputLabel>
+                            <TextField
+                                disabled
+                                name='nombre'
+                                type="text"
+                                defaultValue={general.nombre}
+                                onChange={handleChangeNombre}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
                         </div>
 
                     </div>
@@ -1009,7 +1006,7 @@ export default function VerPresupuestoDepartamento(props) {
 
 
 
-               {/*  {
+                {/*  {
                     areasRestantes.length > 0 &&
                     <Select onChange={(e) => handleSelectArea(e)} value={0}>
                         <MenuItem value={0} hidden>Selecciona un área</MenuItem>

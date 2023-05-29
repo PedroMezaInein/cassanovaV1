@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 
-import TablaPresupuesto from './TablaPresupuesto'
-import TablaPresupuestoObra from './TablaPresupuestoObra'
-import Editar from './EditarPresupuestoDepartamento'
-import Ver from './VerPresupuestoDepartamento'
+import TablaPresupuesto from './Departamento/TablaPresupuesto'
+import TablaPresupuestoObra from './Obra/TablaPresupuestoObra'
+import Editar from './Departamento/EditarPresupuestoDepartamento'
+import Ver from './Departamento/VerPresupuestoDepartamento'
 
 import { Form, Tabs, Tab, Row, Col } from 'react-bootstrap'
 import { Modal } from '../../../components/singles'
@@ -20,8 +20,24 @@ import { apiDelete, apiPutForm } from '../../../functions/api'
 export default function Presupuesto() {
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState()
+    const [reloadTableObra, setReloadTableObra] = useState()
 
     const [modal, setModal] = useState({
+        nuevo: {
+            show: false,
+            data: null
+        },
+        editar: {
+            show: false,
+            data: null
+        },
+        ver: {
+            show: false,
+            data: null
+        }
+    })
+
+    const [modalObra, setModalObra] = useState({
         nuevo: {
             show: false,
             data: null
@@ -67,6 +83,8 @@ export default function Presupuesto() {
         }
     }
 
+    // Departamentos
+
     const ProccessData = (e) => {
         let aux = []
         e.presupuesto.map(item => {
@@ -80,7 +98,7 @@ export default function Presupuesto() {
                 departamento: item.area.nombre,
                 usuario: item.usuario ? item.usuario.name : '',
                 autorizacion: tagAprobado(item.estatus),
-                estatus: item.estatus === "1"? true : false, 
+                estatus: item.estatus === "1" ? true : false,
                 presupuesto_autorizado: item.presupuesto_autorizado ? formatNumberCurrency(item.presupuesto_autorizado) : ''
             })
         })
@@ -133,7 +151,7 @@ export default function Presupuesto() {
                 color: 'redButton',
                 icono: 'fas fa-trash-alt',
                 funcion: (item) => {
-                    if (userAuth.user.tipo.tipo === 'Administrador') { 
+                    if (userAuth.user.tipo.tipo === 'Administrador') {
                         Swal.fire({
                             title: '¿Estas seguro?',
                             text: "¡No podrás revertir esto!",
@@ -158,8 +176,8 @@ export default function Presupuesto() {
                                             confirmButtonText: 'Ok',
                                             timer: 2000
                                         })
-                                    })    
-                                } catch (error) { 
+                                    })
+                                } catch (error) {
 
                                 }
                             }
@@ -181,7 +199,7 @@ export default function Presupuesto() {
                 icono: 'fas fa-check',
                 funcion: (item) => {
                     console.log(item)
-                    if (userAuth.user.tipo.tipo === 'Administrador') { 
+                    if (userAuth.user.tipo.tipo === 'Administrador') {
                         if (!item.estatus) {
                             Swal.fire({
                                 title: '¿Estas seguro?',
@@ -227,7 +245,7 @@ export default function Presupuesto() {
                                         )
 
                                     }
-                                    
+
                                 }
                             })
                         } else {
@@ -280,6 +298,81 @@ export default function Presupuesto() {
         })
     }
 
+    // Obras
+
+    const columnasObras = [
+        { nombre: 'Nombre', identificador: 'nombre', sort: false, stringSearch: false },
+        { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false },
+        { nombre: 'Fecha de inicio', identificador: 'fecha_inicio', sort: false, stringSearch: false },
+        { nombre: 'Fecha de fin', identificador: 'fecha_fin', sort: false, stringSearch: false },
+        { nombre: 'Ppto. Total', identificador: 'ppto_total', sort: false, stringSearch: false },
+        { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
+    ]
+
+    const ProccessDataObras = (data) => {
+        let aux = []
+        return aux
+    }
+
+    const accionesObras = [
+        {
+            nombre: 'Editar',
+            color: 'blueButton',
+            icono: 'fas fa-edit',
+            funcion: (item) => {
+                setModalObra({
+                    ...modalObra,
+                    editar: {
+                        show: true,
+                        data: item
+                    }   
+                })
+
+            }
+        },
+        {
+            nombre: 'Ver',
+            color: 'greenButton',
+            icono: 'fas fa-eye',
+            funcion: (item) => {
+                setModalObra({
+                    ...modalObra,
+                    ver: {
+                        show: true,
+                        data: item
+                    }
+                })
+            }
+        },
+    ]
+
+    const opcionesObras = [
+        {
+            nombre: 'Nuevo presupuesto',
+            funcion: (item) => {
+                setModalObra({
+                    ...modalObra,
+                    nuevo: {
+                        show: true,
+                        data: item
+                    }
+                })
+            }
+        },
+    ]
+
+    const handleCloseObra = (data) => () => {
+        setModalObra({
+            ...modalObra,
+            [data]: {
+                show: false,
+                data: null
+            }
+        })
+    }
+
+
+
     return (
         <>
 
@@ -288,7 +381,7 @@ export default function Presupuesto() {
 
                 <Tabs defaultActiveKey="departamentos" activeKey={key} onSelect={(value) => { setKeyTab(value) }}>
                     <Tab eventKey="departamentos" title="Presupuestos departamentos">
-                        <Tabla 
+                        <Tabla
                             titulo='Presupuestos'
                             columnas={columnas}
                             url='presupuestosdep'
@@ -296,14 +389,23 @@ export default function Presupuesto() {
                             numItemsPagina={12}
                             acciones={createAcciones()}
                             opciones={opciones}
-                            reload={setReloadTable} 
+                            reload={setReloadTable}
                         />
                     </Tab>
-                    {/* <Tab eventKey="obra" title="Presupuestos Obra">
-                        <TablaPresupuestoObra />
-                    </Tab> */}
+                    <Tab eventKey="obra" title="Presupuestos Obra">
+                        <Tabla
+                            titulo='Presupuestos'
+                            columnas={columnasObras}
+                            url='presupuestosdep'
+                            ProccessData={ProccessDataObras}
+                            numItemsPagina={12}
+                            acciones={accionesObras}
+                            opciones={opcionesObras}
+                            reload={setReloadTableObra}
+                        />
+                    </Tab>
                 </Tabs>
-                
+
             </Layout>
 
             <Modal size="xl" title={"Nuevo presupuesto"} show={modal.nuevo.show} handleClose={handleClose('nuevo')}>
@@ -322,7 +424,25 @@ export default function Presupuesto() {
                     <Ver data={modal.ver.data} reload={reloadTable} handleClose={handleClose('ver')} />
                 </Modal>
             }
-            
+
+            <Modal size="xl" title={"Nuevo presupuesto"} show={modalObra.nuevo.show} handleClose={handleCloseObra('nuevo')}>
+                <TablaPresupuestoObra reload={reloadTableObra} handleClose={handleClose('nuevoObra')} />
+            </Modal>
+
+            {
+                modalObra.editar.data &&
+                <Modal size="xl" title={"Editar presupuesto"} show={modalObra.editar.show} handleClose={handleCloseObra('editar')}>
+                       
+                </Modal>
+            }
+
+            {
+                modalObra.ver.data &&
+                <Modal size="xl" title={"Ver presupuesto"} show={modalObra.ver.show} handleClose={handleCloseObra('ver')}>
+                    
+                </Modal>
+            }
+
 
         </>
     );
