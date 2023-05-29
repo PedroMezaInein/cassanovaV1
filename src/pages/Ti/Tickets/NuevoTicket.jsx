@@ -8,7 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
 import Grid from '@material-ui/core/Grid';
@@ -20,7 +20,7 @@ export default function NuevoTicket (props) {
 
     const user = useSelector(state => state.authUser)
     const departamento = useSelector(state => state.authUser.departamento)
-    const [errores, setErrores] = useState({})
+
     const[state, setState] = useState({
         departamento: departamento.departamentos[0].id,
         tipo: '',
@@ -61,7 +61,6 @@ export default function NuevoTicket (props) {
             validar = false
         }
         
-        setErrores(error)
         return validar
     }
 

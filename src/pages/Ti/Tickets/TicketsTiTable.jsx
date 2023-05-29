@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import Swal from 'sweetalert2'
 
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
-import { apiDelete } from '../../../functions/api'
-import { setOptions } from '../../../functions/setters'
-import useOptionsArea from '../../../hooks/useOptionsArea'
+
 import Layout from '../../../components/layout/layout'
 
 import EditarTicketTi from './Modales/EditarTicketTi'
@@ -66,7 +63,6 @@ export default function TicketsUserTable() {
                 tipo_view: setTipo(item.tipo) ,
                 estatus: item.estatus,
                 estatus_view: setEstatus(item.estatus) ,
-                fecha_entrega: item.fecha_entrega,
                 autorizacion: item.autorizacion,
                 auto_view: item.autorizacion ? <span className={Style.autorizado}>Aprobado</span> : <span className={Style.pendiente}>pendiente</span>,
                 descripcion: item.descripcion,
@@ -76,6 +72,7 @@ export default function TicketsUserTable() {
                 depto_show: item.departamento ? item.departamento.nombre : 'Sin departamento',
                 id_solicitante: item.id_solicitante,
             })
+            return true
         })
         aux = aux.reverse()
         return aux

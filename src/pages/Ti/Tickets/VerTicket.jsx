@@ -17,6 +17,7 @@ export default function VerTicket({ data }) {
 
     useEffect(() => {
         getFuncionalidades()
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
     const getFuncionalidades = () => {

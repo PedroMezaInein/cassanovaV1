@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2'
-import axios from 'axios'
 
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
-import { apiGet } from '../../../functions/api'
-import { URL_DEV } from './../../../constants'
-import { setOptions } from '../../../functions/setters'
-import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
 import NuevoTicket from './NuevoTicket'
 import EditarTicket from './EditarTicket'
@@ -143,54 +138,6 @@ export default function TicketsUserTable() {
         })
     }
 
-    const aprobarTicket = (e, data)=>{
-
-        Swal.fire({
-            title: '¿Estás seguro de aprobar las funcionalidades?',
-            icon: 'question',
-            text: 'Una vez aprobado no se podrá modificar',
-            showDenyButton: false,
-            showCancelButton: true,
-            confirmButtonText: 'Aceptar',
-            
-          }).then((result) => {
-            console.log(result)
-            if (result.isConfirmed) {
-                Swal.fire('Se aprobó con éxito', '', 'success') 
-            }
-            else if (result.isDenied) {
-              Swal.fire('Changes are not saved', '', 'info')
-            }
-        })
-    }
-
-    const cancelarTicket = (e, data)=>{
-        console.log(data)
-
-        Swal.fire({
-            title: '¿Estás seguro de cancelar el ticket?',
-            icon: 'question',
-            showDenyButton: false,
-            showCancelButton: true,
-            confirmButtonText: 'Aceptar',
-            
-          }).then((result) => {
-            console.log(result)
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                // let form = {
-                //     estatus: 'aprobado',
-                //     id_ticket: data.id,
-                // }
-                // postAprobacion(form,data.id)
-                Swal.fire('Ticket cancelado', '', 'success') 
-            }
-            else if (result.isDenied) {
-              Swal.fire('Changes are not saved', '', 'info')
-            }
-        })
-    }
-
     const ProccessData = (data) => {
         let aux = []
         data.ti.map((item) => {
@@ -207,6 +154,7 @@ export default function TicketsUserTable() {
                 id: item.id,
                 aprobacion: item.autorizacion ? <span className={Style.autorizado}>Aprobado</span> : <span className={Style.pendiente}>pendiente</span>,
             })
+            return true
         })
         aux = aux.reverse()
         return aux
