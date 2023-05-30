@@ -29,7 +29,6 @@ const useOptionsArea = () => {
             dispatch(Departamentos(opciones.departamentos))
             proccessDataProyectos()
         } 
-        
     }, [opciones])
 
     const proccessData = () => {

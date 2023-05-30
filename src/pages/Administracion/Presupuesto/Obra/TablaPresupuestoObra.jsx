@@ -364,6 +364,7 @@ export default function TablaPresupuestoObra(props) {
                 nombre: general.nombre,
                 tipo: "crear",
                 tab: "obra",
+                id_proyecto: general.id_proyecto,
             }
             apiPostForm(`presupuestosdep?departamento_id=${general.departamento_id}`, aux, auth)
                 .then(res => {
@@ -400,7 +401,7 @@ export default function TablaPresupuestoObra(props) {
     const handleChangeProyecto = (e) => {
         setGeneral({
             ...general,
-            proyecto: e.target.value
+            id_proyecto: e.target.value
         })
     }
     return (

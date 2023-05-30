@@ -310,6 +310,7 @@ export default function Presupuesto() {
     ]
 
     const ProccessDataObras = (data) => {
+        console.log(data)
         let aux = []
         return aux
     }
@@ -371,8 +372,6 @@ export default function Presupuesto() {
         })
     }
 
-
-
     return (
         <>
 
@@ -396,7 +395,7 @@ export default function Presupuesto() {
                         <Tabla
                             titulo='Presupuestos'
                             columnas={columnasObras}
-                            url='presupuestosdep'
+                            url='presupuestosdep/obra'
                             ProccessData={ProccessDataObras}
                             numItemsPagina={12}
                             acciones={accionesObras}
