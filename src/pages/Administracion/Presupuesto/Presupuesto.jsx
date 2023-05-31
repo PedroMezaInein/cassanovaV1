@@ -301,17 +301,33 @@ export default function Presupuesto() {
     // Obras
 
     const columnasObras = [
-        { nombre: 'Nombre', identificador: 'nombre', sort: false, stringSearch: false },
-        { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false },
-        { nombre: 'Fecha de inicio', identificador: 'fecha_inicio', sort: false, stringSearch: false },
-        { nombre: 'Fecha de fin', identificador: 'fecha_fin', sort: false, stringSearch: false },
-        { nombre: 'Ppto. Total', identificador: 'ppto_total', sort: false, stringSearch: false },
-        { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
+        { nombre: 'Acciones', identificador: 'acciones' },
+        { nombre: 'Departamento', identificador: 'departamento', sort: false, },
+        { nombre: 'usuario', identificador: 'usuario', sort: false, },
+        { nombre: 'Nombre', identificador: 'nombre', sort: false, },
+        { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
+        { nombre: 'Ppto.', identificador: 'monto_show', sort: false, stringSearch: false },
+        { nombre: 'Ppto. autorizado', identificador: 'presupuesto_autorizado', sort: false, stringSearch: false },
+        { nombre: 'Autorización', identificador: 'autorizacion', sort: false, stringSearch: false },
     ]
 
-    const ProccessDataObras = (data) => {
-        console.log(data)
+    const ProccessDataObras = (e) => {
         let aux = []
+        e.presupuesto.map(item => {
+            aux.push({
+                id: item.id,
+                id_area: item.id_area,
+                nombre: item.nombre,
+                fecha: formatDateString(item.fecha),
+                monto: item.presupuesto,
+                monto_show: formatNumberCurrency(item.presupuesto),
+                departamento: item.area.nombre,
+                usuario: item.usuario ? item.usuario.name : '',
+                autorizacion: tagAprobado(item.estatus),
+                estatus: item.estatus === "1" ? true : false,
+                presupuesto_autorizado: item.presupuesto_autorizado ? formatNumberCurrency(item.presupuesto_autorizado) : ''
+            })
+        })
         return aux
     }
 
