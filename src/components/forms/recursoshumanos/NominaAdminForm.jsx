@@ -319,7 +319,7 @@ class NominaAdminForm extends Component {
                                 <tbody>
                                     {
                                         form.nominasAdmin.map((nominaAdmin, key) => {
-                                            console.log(this.setOptions(key))
+
                                             return (
                                                 <tr key={key}>
                                                     <td className='text-center' style={{ minWidth: "60px" }}>
