@@ -319,6 +319,7 @@ class NominaAdminForm extends Component {
                                 <tbody>
                                     {
                                         form.nominasAdmin.map((nominaAdmin, key) => {
+
                                             return (
                                                 <tr key={key}>
                                                     <td className='text-center' style={{ minWidth: "60px" }}>
@@ -329,11 +330,11 @@ class NominaAdminForm extends Component {
                                                         <SelectSearchGray formeditado={formeditado} options={this.setOptions(key)} placeholder="SELECCIONA EL EMPLEADO"
                                                             name="usuario" value={nominaAdmin.usuario} onChange={(value) => this.updateUsuario(value, key)}
                                                             customstyle={{ minWidth: "300px" }} withtaglabel={0} withtextlabel={0} withicon={0}
-                                                            customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`} customdiv="mb-0" iconvalid={1} />
+                                                            customclass={`form-control-sm text-center `} customdiv="mb-0" iconvalid={1} />
                                                     </td>
                                                     <td>
                                                         <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
-                                                            withformgroup={0} customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`}
+                                                            withformgroup={0} customclass={`form-control-sm text-center `}
                                                             requirevalidation={1} formeditado={1} name="nominImss" thousandseparator={true}
                                                             value={nominaAdmin.nominImss} onChange={e => onChangeNominasAdmin(key, e, 'nominImss')}
                                                             prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
@@ -341,7 +342,7 @@ class NominaAdminForm extends Component {
 
                                                     <td>
                                                         <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
-                                                            withformgroup={0} customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`}
+                                                            withformgroup={0} customclass={`form-control-sm text-center `}
                                                             requirevalidation={1} formeditado={1} name="extraImss" thousandseparator={true}
                                                             value={nominaAdmin.extraImss} onChange={e => onChangeNominasAdmin(key, e, 'extraImss')}
                                                             prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
@@ -349,14 +350,14 @@ class NominaAdminForm extends Component {
 
                                                     <td>
                                                         <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
-                                                            withformgroup={0} customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`}
+                                                            withformgroup={0} customclass={`form-control-sm text-center `}
                                                             requirevalidation={1} formeditado={1} name="restanteNomina"
                                                             value={nominaAdmin.restanteNomina} onChange={e => onChangeNominasAdmin(key, e, 'restanteNomina')}
                                                             thousandseparator={true} prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
                                                     </td>
                                                     <td>
                                                         <InputMoneyGray withtaglabel={0} withtextlabel={0} withplaceholder={1} withicon={0}
-                                                            withformgroup={0} customclass={`form-control-sm text-center ${action === 'edit' ? 'pointer-events-none' : ''}`}
+                                                            withformgroup={0} customclass={`form-control-sm text-center `}
                                                             requirevalidation={1} formeditado={1} name="extras" thousandseparator={true}
                                                             value={nominaAdmin.extras} onChange={e => onChangeNominasAdmin(key, e, 'extras')}
                                                             prefix='$' customstyle={{ minWidth: "160px" }} classlabel="font-size-sm" iconvalid={1} />
