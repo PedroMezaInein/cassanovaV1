@@ -15,7 +15,7 @@ import AddIcon from '@material-ui/icons/Add';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { apiOptions, apiPostForm, apiGet, apiPutForm, apiDelete } from '../../../../functions/api'
+import { apiGet, apiPutForm, apiDelete } from '../../../../functions/api'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -23,8 +23,6 @@ import { es } from 'date-fns/locale'
 import Grid from '@material-ui/core/Grid';
 
 import Style from './TablaPresupuesto.module.css'
-
-import { waitAlert2 } from '../../../../functions/alert'
 
 const Styles = styled.div`
  
@@ -200,12 +198,11 @@ export default function EditarPresupuestoDepartamento(props) {
     }, [formDataTabla, areas])
 
     const setDateFormate = (date) => {
-        //yyyy-mm-dd to dd-mm-yyyy
         let fecha = date.split('-')
         fecha = new Date(`${fecha[0]}`, `${fecha[1] - 1}`, `${fecha[2]}`)
         return fecha
     }
-
+    
     const getDataApi = () => { 
         apiGet(`presupuestosdep/edit/${data.id}`, auth).then(res => {
             let data = res.data.presupuesto[0]
@@ -1024,8 +1021,6 @@ export default function EditarPresupuestoDepartamento(props) {
             nombre: e.target.value
         })
     }
-
-    console.log(areasRestantes)
 
     return (
         <>

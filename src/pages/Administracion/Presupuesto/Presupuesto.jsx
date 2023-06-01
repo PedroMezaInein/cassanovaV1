@@ -9,7 +9,10 @@ import TablaPresupuestoObra from './Obra/TablaPresupuestoObra'
 import Editar from './Departamento/EditarPresupuestoDepartamento'
 import Ver from './Departamento/VerPresupuestoDepartamento'
 
-import { Form, Tabs, Tab, Row, Col } from 'react-bootstrap'
+import EditarObra from './Obra/EditarPresupuestoObra'
+import VerObra from './Obra/VerPresupuestoObra'
+
+import {Tabs, Tab } from 'react-bootstrap'
 import { Modal } from '../../../components/singles'
 
 import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
@@ -198,7 +201,6 @@ export default function Presupuesto() {
                 color: 'perryButton',
                 icono: 'fas fa-check',
                 funcion: (item) => {
-                    console.log(item)
                     if (userAuth.user.tipo.tipo === 'Administrador') {
                         if (!item.estatus) {
                             Swal.fire({
@@ -315,6 +317,7 @@ export default function Presupuesto() {
         let aux = []
         e.presupuesto.map(item => {
             aux.push({
+                data: item,
                 id: item.id,
                 id_area: item.id_area,
                 nombre: item.nombre,
@@ -359,6 +362,128 @@ export default function Presupuesto() {
                         data: item
                     }
                 })
+            }
+        },
+        {
+            nombre: 'Eliminar',
+            color: 'redButton',
+            icono: 'fas fa-trash-alt',
+            funcion: (item) => {
+                if (userAuth.user.tipo.tipo === 'Administrador') {
+                    Swal.fire({
+                        title: '¿Estas seguro?',
+                        text: "¡No podrás revertir esto!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonText: 'Si, eliminar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            try {
+                                apiDelete(`presupuestosdep/${item.id}`, userAuth.access_token).then(result => {
+                                    if (reloadTableObra) {
+                                        reloadTableObra.reload()
+                                    }
+                                    Swal.fire({
+                                        title: '¡Eliminado!',
+                                        text: 'El presupuesto ha sido eliminado.',
+                                        icon: 'success',
+                                        confirmButtonColor: '#3085d6',
+                                        confirmButtonText: 'Ok',
+                                        timer: 2000
+                                    })
+                                })
+                            } catch (error) {
+
+                            }
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: '¡No tienes permisos!',
+                        text: "¡No tienes permisos para eliminar el presupuesto!",
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Ok'
+                    })
+                }
+            }
+        },
+        {
+            nombre: 'Autorizar',
+            color: 'perryButton',
+            icono: 'fas fa-check',
+            funcion: (item) => {
+                if (userAuth.user.tipo.tipo === 'Administrador') {
+                    if (!item.estatus) {
+                        Swal.fire({
+                            title: '¿Estas seguro?',
+                            text: "¡No podrás revertir esto!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonText: 'Si, autorizar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    title: 'autorizando',
+                                    text: 'Espere un momento...',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false,
+                                    allowEnterKey: false,
+                                    showConfirmButton: false,
+                                    onOpen: () => {
+                                        Swal.showLoading()
+                                    }
+                                })
+                                try {
+                                    apiPutForm(`presupuestosdep/aprobacion/${item.id}`, { aprobado: 1 }, userAuth.access_token).then(result => {
+                                        Swal.close()
+                                        Swal.fire(
+                                            '¡Autorizado!',
+                                            'El presupuesto ha sido Autorizado.',
+                                            'success'
+                                        )
+                                        if (reloadTableObra) {
+                                            reloadTableObra.reload()
+                                        }
+
+                                    })
+                                } catch (error) {
+                                    Swal.close()
+                                    Swal.fire(
+                                        '¡Error!',
+                                        'El presupuesto no ha sido Autorizado.',
+                                        'error'
+                                    )
+
+                                }
+
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'Presupuesto ya autorizado',
+                            text: "¡El presupuesto ya ha sido autorizado!",
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Ok'
+                        })
+                    }
+
+                } else {
+                    Swal.fire({
+                        title: '¡No tienes permisos!',
+                        text: "¡No tienes permisos para aprobar el presupuesto!",
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Ok'
+                    })
+                }
             }
         },
     ]
@@ -447,14 +572,14 @@ export default function Presupuesto() {
             {
                 modalObra.editar.data &&
                 <Modal size="xl" title={"Editar presupuesto"} show={modalObra.editar.show} handleClose={handleCloseObra('editar')}>
-                       
+                    <EditarObra data={modalObra.editar.data} reload={reloadTableObra} handleClose={handleCloseObra('editar')} />
                 </Modal>
             }
 
             {
                 modalObra.ver.data &&
                 <Modal size="xl" title={"Ver presupuesto"} show={modalObra.ver.show} handleClose={handleCloseObra('ver')}>
-                    
+                    <VerObra data={modalObra.ver.data} reload={reloadTableObra} handleClose={handleCloseObra('ver')} />
                 </Modal>
             }
 

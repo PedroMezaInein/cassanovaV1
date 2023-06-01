@@ -195,8 +195,6 @@ export default function TablaPresupuesto(props) {
         }
     }, [areas])
 
-    console.log(formDataTabla)
-
     const formatNumberCurrency = (number) => {
         return new Intl.NumberFormat('es-MX', {
             style: 'currency',

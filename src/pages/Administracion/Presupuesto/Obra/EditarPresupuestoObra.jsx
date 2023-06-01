@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { apiOptions, apiPostForm } from '../../../../functions/api'
+import { apiOptions,  apiPutForm } from '../../../../functions/api'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -21,27 +21,34 @@ import Style from './../Departamento/TablaPresupuesto.module.css'
 
 import { waitAlert2 } from '../../../../functions/alert'
 
-export default function TablaPresupuestoObra(props) {
-    const { reload, handleClose } = props
+
+const setDateFormate = (date) => {
+    let fecha = date.split('-')
+    fecha = new Date(`${fecha[0]}`, `${fecha[1] - 1}`, `${fecha[2]}`)
+    return fecha
+}
+
+export default function EditarPresupuestoObra(props) {
+    const { reload, handleClose, data } = props
     const areas = useSelector(state => state.opciones.areas)
-    const departamento = useSelector(state => state.authUser.departamento.departamentos[0])
-    const nombreUsuario = useSelector(state => state.authUser.user)
     const auth = useSelector(state => state.authUser.access_token)
     const proyectos = useSelector(state => state.opciones.proyectos)
     const [form, setForm] = useState([])
     const [general, setGeneral] = useState({
-        departamento: departamento.nombre,
-        departamento_id: departamento.id,
-        gerente: nombreUsuario.name,
-        gerente_id: nombreUsuario.id,
-        colaboradores: 0,
+        departamento: data.data.area.nombre,
+        departamento_id: data.data.id_area,
+        gerente: data.data.usuario.name,
+        gerente_id: data.data.usuario.id,
+        colaboradores: data.data.colaboradores,
         colaboradores_id: '',
+        id_proyecto: data.data.id_proyecto,
         granTotal: '',
-        fecha_inicio: '',
-        fecha_fin: '',
-        nombre: '',
-        id_proyecto: '',
-        total: 0,
+        nomina: 0,
+        fecha_inicio: setDateFormate(data.data.fecha_inicio),
+        fecha_fin: setDateFormate(data.data.fecha_fin),
+        nombre: data.data.nombre,
+        id: data.data.id,
+        total: data.data.presupuesto,
     })
 
     const [formDataTabla, setFormDataTabla] = useState([])
@@ -56,11 +63,20 @@ export default function TablaPresupuestoObra(props) {
             createData()
         }
 
-        
+
     }, [areas])
+
+    const formatNumberCurrency = (number) => {
+        return new Intl.NumberFormat('es-MX', {
+            style: 'currency',
+            currency: 'MXN',
+            minimumFractionDigits: 2
+        }).format(number)
+    }
 
     const createData = () => {
         let aux = []
+        let id = 0
         areas.map((area, index) => {
             aux.push([])
         })
@@ -80,6 +96,7 @@ export default function TablaPresupuestoObra(props) {
             apiOptions(`presupuestosdep?departamento_id=${general.departamento_id}`, auth)
                 .then(res => {
                     let suma = 0
+                    /* setNominas([...res.data.empleados]) */
                     for (let i = 0; i < res.data.empleados.length; i++) {
                         suma += res.data.empleados[i].nomina_imss + res.data.empleados[i].nomina_extras
                     }
@@ -108,15 +125,15 @@ export default function TablaPresupuestoObra(props) {
                 id_departamento: general.departamento_id,
                 colaboradores: general.colaboradores,
                 nombre: general.nombre,
-                tipo: "crear",
+                tipo: "editar",
                 tab: "obra",
                 id_proyecto: general.id_proyecto,
             }
-            apiPostForm(`presupuestosdep?departamento_id=${general.departamento_id}`, aux, auth)
+            apiPutForm(`presupuestosdep/update/${general.id}`, aux, auth)
                 .then(res => {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Presupuesto creado con éxito',
+                        title: 'Presupuesto editado con éxito',
                         timer: 2000
                     }).then(() => {
                         if (reload) {
@@ -151,7 +168,6 @@ export default function TablaPresupuestoObra(props) {
             id_proyecto: e.target.value
         })
     }
-
     return (
         <>
             <div style={{ backgroundColor: 'white', padding: '2rem' }}>
@@ -164,7 +180,7 @@ export default function TablaPresupuestoObra(props) {
                         <InputLabel >Departamento</InputLabel>
                         <TextField
                             type="text"
-                            value={general.departamento}
+                            defaultValue={general.departamento}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -175,7 +191,7 @@ export default function TablaPresupuestoObra(props) {
                         <InputLabel >Colaboradores</InputLabel>
                         <TextField
                             type="text"
-                            value={general.colaboradores}
+                            defaultValue={general.colaboradores}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -186,7 +202,7 @@ export default function TablaPresupuestoObra(props) {
                         <InputLabel >Gerente</InputLabel>
                         <TextField
                             type="text"
-                            value={general.gerente}
+                            defaultValue={general.gerente}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -259,24 +275,26 @@ export default function TablaPresupuestoObra(props) {
                     {
                         proyectos.length > 0 &&
                         <div>
-                                <InputLabel >Proyecto</InputLabel>
-                                <Select onChange={(e) => handleChangeProyecto(e)} value={general.proyecto}>
+                            <InputLabel >Proyecto</InputLabel>
+                                <Select onChange={(e) => handleChangeProyecto(e)} value={general.id_proyecto}>
                                 <MenuItem value="" hidden>Selecciona proyecto</MenuItem>
-                                    {
-                                        proyectos.map((proyecto, index) => (
-                                            <MenuItem key={index} value={proyecto.id}>{proyecto.nombre}</MenuItem>
-                                        ))
-                                    }
+                                {
+                                    proyectos.map((proyecto, index) => (
+                                        <MenuItem key={index} value={proyecto.id}>{proyecto.nombre}</MenuItem>
+                                    ))
+                                }
 
                             </Select>
                         </div>
                     }
 
+
+
                 </div>
 
                 <div className="row justify-content-end">
                     <div className="col-md-4">
-                        <button className={Style.sendButton} onClick={() => sendPresupuesto()} variant="contained" color="primary">Crear</button>
+                        <button className={Style.sendButton} onClick={() => sendPresupuesto()} variant="contained" color="primary">Editar</button>
                     </div>
                 </div>
 
