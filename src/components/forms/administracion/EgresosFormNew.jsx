@@ -527,7 +527,6 @@ class EgresosFormNew extends Component {
                     setTimeout(function () {
                         errorAlert(textError)
                     }, 100);
-                    // Swal.close()
                 } else {
                     form.facturaObject = obj
                     form.total = obj.total

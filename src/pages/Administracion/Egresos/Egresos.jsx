@@ -1,5 +1,4 @@
 import React, { Component, useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 
 
 import $ from 'jquery'
@@ -23,13 +22,13 @@ import { setOptions, setOptionsWithLabel, setTextTable, setDateTableReactDom, se
 } from '../../../functions/setters'
 import RequisicionCompras from './../RequisicionCompras/RequisicionCompras'
 import RequisicionContabilidad from './../RequisicionContabilidad/RequisicionContabilidad'
-import {Requisiciones} from './../Requisiciones/Requisiciones'
-import TablaGeneralPaginado from '../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
-import ModalAgregarGasto from './ModalAgregarGasto'
+import { Requisiciones } from './../Requisiciones/Requisiciones'
+import EgresosTable from './EgresosTable'
 
 import NewTable from './../../../components/NewTables/NewTable'
 import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
 import { connect } from 'react-redux'
+
 
 // export default function Egresos(props) {
 
@@ -104,7 +103,7 @@ import { connect } from 'react-redux'
 //         }
 //     })
 
-//     useEffect(() => { 
+//     useEffect(() => {
 //         const { history: { location: { pathname } } } = props
 //         const { history } = props
 //         const egresos = authUser.user.permisos.find(function (element, index) {
@@ -141,9 +140,9 @@ import { connect } from 'react-redux'
 //         { nombre: 'Comisión', identificador: 'comision', stringSearch: false },
 //         { nombre: 'Total', identificador: 'total', stringSearch: false },
 //         { nombre: 'Cuenta', identificador: 'cuenta', stringSearch: false },
-//         { nombre: 'Pago', identificador: 'tipoPago', stringSearch: false },    
+//         { nombre: 'Pago', identificador: 'tipoPago', stringSearch: false },
 //         { nombre: 'Impuesto', identificador: 'impuesto', stringSearch: false },
-//         // { nombre: 'Estatus', identificador: 'estatusCompra', stringSearch: false }, 
+//         // { nombre: 'Estatus', identificador: 'estatusCompra', stringSearch: false },
 //         { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false }
 //     ]
 
@@ -340,7 +339,7 @@ import { connect } from 'react-redux'
 //         return (
 //             <div className="w-100 d-flex justify-content-center">
 //                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-//                     <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); 
+//                     <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault();
 //                         history.push({ pathname: '/administracion/egresos/edit', state: { egreso: egreso } }) }} >
 //                         {setNaviIcon('flaticon2-pen', 'editar')}
 //                     </Dropdown.Item>
@@ -373,7 +372,7 @@ import { connect } from 'react-redux'
 //         return (
 //             <div className="w-100 d-flex justify-content-center">
 //                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-//                     <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); 
+//                     <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault();
 //                         history.push({ pathname: '/administracion/egresos/edit', state: { egreso: egreso } }) }} >
 //                         {setNaviIcon('flaticon2-pen', 'editar')}
 //                     </Dropdown.Item>
@@ -498,7 +497,7 @@ import { connect } from 'react-redux'
 //                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue eliminado con éxito.', () => { reloadTable(filters) })
 //             }, (error) => { printResponseErrorAlert(error) }
 //         ).catch((error) => { catchErrors(error) })
-//     }    
+//     }
 
 //     const exportEgresosAxios = async () => {
 //         waitAlert()
@@ -512,8 +511,8 @@ import { connect } from 'react-redux'
 //                 document.body.appendChild(link);
 //                 link.click();
 //                 doneAlert(
-//                     response.data.message !== undefined ? 
-//                         response.data.message 
+//                     response.data.message !== undefined ?
+//                         response.data.message
 //                     : 'Ingresos exportados con éxito.'
 //                 )
 //             }, (error) => { printResponseErrorAlert(error) }
@@ -565,7 +564,7 @@ import { connect } from 'react-redux'
 //                             })
 //                     })
 //                 })
-//                 Promise.all(auxPromises).then(values => { attachFilesS3(values, item)}).catch(err => console.error(err)) 
+//                 Promise.all(auxPromises).then(values => { attachFilesS3(values, item)}).catch(err => console.error(err))
 //             }, (error) => { printResponseErrorAlert(error) }
 //         ).catch((error) => { catchErrors(error) })
 //     }
@@ -574,15 +573,15 @@ import { connect } from 'react-redux'
 //         const { egreso, filters } = state
 //         apiPutForm(`v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, authUser.access_token ).then(
 //             ( response ) => {
-//                 doneAlert(`Archivos adjuntados con éxito`, 
-//                     () => { 
+//                 doneAlert(`Archivos adjuntados con éxito`,
+//                     () => {
 //                         switch(item){
 //                             case 'presupuesto':
 //                             case 'pago':
-//                                 openModalAdjuntos(egreso)         
+//                                 openModalAdjuntos(egreso)
 //                                 break;
 //                             case 'facturas_pdf':
-//                                 openFacturaExtranjera(egreso) 
+//                                 openFacturaExtranjera(egreso)
 //                                 reloadTable(filters)
 //                                 break;
 //                             default: break;
@@ -864,7 +863,7 @@ import { connect } from 'react-redux'
 //     const opciones = [
 //         {
 //             nombre: 'Nuevo gasto',
-//             funcion: (item) => { 
+//             funcion: (item) => {
 //                 setModales({
 //                     ...modales,
 //                     crear:{
@@ -896,10 +895,10 @@ import { connect } from 'react-redux'
 //                 <Tab eventKey = { 'gastos' } title = { 'gastos' }>
 
 //                     {/* <Table
-//                         titulo="Gastos" 
+//                         titulo="Gastos"
 //                         subtitle='Listado de gastos'
 //                         columnas={columnas}
-//                         url={'v3/administracion/gastos'}  
+//                         url={'v3/administracion/gastos'}
 //                         numItemsPagina={12}
 //                         ProccessData={proccessData}
 //                         // opciones={handleOpen}
@@ -908,7 +907,7 @@ import { connect } from 'react-redux'
 //                         >
 //                     </Table>  */}
 
-//                     <TablaGeneralPaginado 
+//                     <TablaGeneralPaginado
 //                         titulo="Gastos"
 //                         url={'v3/administracion/gastos'}
 //                         columnas={columnas}
@@ -917,7 +916,7 @@ import { connect } from 'react-redux'
 //                         opciones={opciones}
 //                         // acciones={acciones()}
 //                         // reload={setReloadTable}
-//                     />  
+//                     />
 
 //                     {/* <NewTable
 //                         tableName='egresos'
@@ -937,7 +936,7 @@ import { connect } from 'react-redux'
 //                     /> */}
 
                     
-//                 </Tab> 
+//                 </Tab>
 
 
 //                 <Tab eventKey="requisiciones" title="requisiciones">
@@ -978,15 +977,6 @@ import { connect } from 'react-redux'
 //         </Layout>
 //     )
 // }
-
-
-
-
-
-
-
-
-
 
 
 class Egresos extends Component {
@@ -1779,13 +1769,13 @@ class Egresos extends Component {
 
                     <Tab eventKey = { 'gastos' } title = { 'gastos' }>
 
-                        <NewTable
+                        {/* <NewTable
                             tableName='egresos'
                             // tableName='gastos'
                             subtitle='Listado de gastos'
                             title='Gastos'
                             mostrar_boton={true}
-                            abrir_modal={false}
+                            abrir_modal={false} 
                             accessToken={access_token}
                             columns={EGRESOS_COLUMNS}
                             setter={this.setEgresos}
@@ -1794,7 +1784,8 @@ class Egresos extends Component {
                             filterClick={this.openModalFiltros}
                             exportar_boton={true}
                             onClickExport={() => { this.exportEgresosAxios() }}
-                        />
+                        /> */}
+                        <EgresosTable />
                     </Tab>
 
                     <Tab eventKey="requisiciones" title="requisiciones">
