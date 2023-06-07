@@ -104,6 +104,7 @@ class NotasObra extends Component {
         const { proyecto, at, refresh } = this.props
         await axios.delete(`${URL_DEV}v1/proyectos/nota-bitacora/${nota.id}?proyecto=${proyecto.id}`, { headers: setSingleHeader(at) }).then(
             (response) => {
+                console.log(nota.id)
                 const { proyecto } = response.data
                 let { activeNota } = this.state
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La nota fue eliminada con éxito.')

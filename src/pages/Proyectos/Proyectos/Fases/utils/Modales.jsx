@@ -42,7 +42,7 @@ export default function Modales({ modal, setModal, proyecto, reload, opciones, f
             </Modal>
 
             <Modal size="lg" show={modal.construction_notes} title='Notas de Obra' handleClose={() => setModal({ ...modal, construction_notes: false })}>
-                <NotasObra proyecto={proyecto} activo={modal.construction_notes} />
+                <NotasObra proyecto={proyecto} activo={modal.construction_notes} opciones={opciones}/>
             </Modal>
 
             <Modal size="xl" show={modal.budget} title='Presupuesto' handleClose={() => setModal({ ...modal, budget: false })}>
