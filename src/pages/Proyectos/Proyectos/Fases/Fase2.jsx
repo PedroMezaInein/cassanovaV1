@@ -181,7 +181,10 @@ export default function Fase2(props) {
                 </div>
             </div>
 
-            <Modales modal={modal} setModal={setModal} proyecto={fase} reload={reload} opciones={opciones} fase={2} />
+            {
+                opciones &&
+                <Modales modal={modal} setModal={setModal} proyecto={fase} reload={reload} opciones={opciones} fase={1} />
+            }
 
         </>
 

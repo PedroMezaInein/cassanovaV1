@@ -207,9 +207,6 @@ export default function NativeSelects(props) {
             tipo_gasto: null,
         })
     }
-
-    console.log(state.departamento)
-    console.log(presupuestos)
     
     return (
         <>
@@ -281,18 +278,14 @@ export default function NativeSelects(props) {
                                     onChange={handleChange}
                                     error={errores.presupuesto ? true : false}
                                 >
-{/*                                     {
-                                        user.user.tipo.tipo === 'Administrador' &&
-                                            presupuestos.map((item, index) => (
-                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                            ))
-                                    } */}
                                     {
                                         presupuestos.find(item => item.id_area == state.departamento) ?
                                             [presupuestos.find(item => item.id_area == state.departamento)].map((item, index) => (
                                                 <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                             ))
                                             : <MenuItem value={null}>No hay presupuestos</MenuItem>
+
+
                                     }
                                 </Select>
                             </>

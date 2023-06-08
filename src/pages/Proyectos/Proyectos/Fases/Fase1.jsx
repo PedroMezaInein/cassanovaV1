@@ -168,8 +168,12 @@ export default function Fase1(props) {
                     
                 </div>
             </div>
+            {
+                opciones &&
+                <Modales modal={modal} setModal={setModal} proyecto={fase} reload={reload} opciones={opciones} fase={1} />
+            }
 
-            <Modales modal={modal} setModal={setModal} proyecto={fase} reload={reload} opciones={opciones} fase={1} />
+            
 
         </>
         
