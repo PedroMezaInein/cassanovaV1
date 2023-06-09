@@ -1,98 +1,58 @@
 import React from 'react'
-import style from './../../../../../pages/Administracion/RequisicionCompras/Modales/Ver'
+// import style from './../../../../../pages/Administracion/RequisicionCompras/Modales/Ver'
+// import Style from './../../../../../pages/Administracion/RequisicionCompras/Modales/Ver.module.css'
 
 export default function VerNotaObra ({ data }) {
     console.log(data)
     return (
         <>
-            <div className='row ml-10 mt-2'>
+            <div className='row mt-2' style={{ padding: '1rem' }}>
 
-                <div className='col-6'>
-                    <div className={style.container}>
+                <div className='col-5'>
+                    <div>
 
                         <div>
-                            <span>
+                            <span style={{ color: '#315694', fontWeight: 'bold'}}>
                                 Fecha:
                             </span>
                             <p>{` ${data.fecha}`}</p>
                         </div>
 
                         <div>
-                            <span>
-                                Número de nota:
-                            </span>
-                            <p>{` ${data.numero_nota}`}</p>
-                        </div>
-
-                        <div>
-                            <span>
+                            <span style={{ color: '#315694', fontWeight: 'bold'}}>
                                 tipo de nota:
                             </span>
                             <p>{`${data.tipo_nota}`}</p>
                         </div>
 
                         <div>
-                            <span>
+                            <span style={{ color: '#315694', fontWeight: 'bold'}}>
                                 nota:
                             </span>
                             <p>{`${data.nota}`}</p>
                         </div>
 
                         <div>
-                            <object
-                            // data={data.item.url}
-                            // className={classes.adjuntos}
-                        >
-                        </object>
+                            <span style={{ color: '#315694', fontWeight: 'bold'}}>
+                                proveedor:
+                            </span>
+                            <p>{`${data.proveedor}`}</p>
                         </div>
 
-                        {/* <div>
-                            <span>
-                                Fecha de solicitud:
-                            </span>
-                            <p>{`${data.fecha}`}</p>
-                        </div> */}
                     </div>
                 </div>
+
+                <div className='col-1'></div>
                 
-                {/* <div className='col-6'>
+                <div className='col-6'>
                     <div>
-                        <span>Estatus</span>
-                        <p>
-                            {
-                                data.estatus
-                            }
-                        </p>
-                        
+                        <object
+                            data={data.url}
+                        // className={classes.adjuntos}
+                        >
+                        </object> 
                     </div>
-
-                    <div ClassName={style.div9}> 
-                        <span>
-                            Descripción:
-                        </span>
-                        <p>{`${data.descripcion}`}</p>
-                    </div>
-
-                    <div>
-                        <span>
-                            Aprobación:
-                        </span>
-                        <p>
-                            {`Compras: ${data.auto1 && data.auto1.name ? data.auto1.name : 'Pendiente'}`}
-                        </p>
-                        <p>
-                            {`Contabilidad: ${data.auto2 && data.auto2.name ? data.auto2.name : 'Pendiente'}`}
-                        </p>
-                    </div>
-
-                    <div>
-                        <span>
-                            Tiempo estimado
-                        </span>
-                        <p>{`${data.tiempo_estimado}`}</p>
-                    </div>
-
-                </div> */}
+                </div> 
             </div>
         </>
     )
