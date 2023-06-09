@@ -10,28 +10,14 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
-import { makeStyles } from '@material-ui/core/styles';
 
-import AdjuntosObra from './AdjuntosObra'
-import './../../../../../styles/_nuevaNotaObra.scss'
-import Style from '././../../../../../components/forms/administracion/NuevaRequisicion.module.css'
+import Style from './../../../../../styles/_nuevaNotaObra.module.css'
 
 import { apiPostForm } from '../../../../../functions/api';
-
-const useStyles = makeStyles((theme) => ({
-    formControl: {
-        margin: theme.spacing(1),
-        maxWidth: 400,
-    },
-    // selectEmpty: {
-    //     marginTop: theme.spacing(2),
-    // },
-}));
 
 export default function NuevaNota(props) { 
     const { proyecto, reload, opciones, handleClose } = props
     const auth = useSelector(state => state.authUser);
-    // const classes = useStyles();
 
     const [form, setForm] = useState({ 
         fecha:'',
@@ -42,7 +28,6 @@ export default function NuevaNota(props) {
     });
 
     const [errores, setErrores] = useState({})
-    // const [adjuntos, setAdjuntos] = useState([])
 
     const validateForm = () => {
         let validar = true
@@ -63,6 +48,10 @@ export default function NuevaNota(props) {
             error.nota = "Escriba una nota"
             validar = false
         }
+        // if(form.adjunto === ''){
+        //     error.adjunto = "egregue una adjunto"
+        //     validar = false
+        // }
         
         setErrores(error)
         return validar
@@ -80,18 +69,18 @@ export default function NuevaNota(props) {
             ...form, 
             [e.target.name]: e.target.value })
     };
+
     function formatDate(date) {
         var year = date.getFullYear();
-      
+    
         var month = (1 + date.getMonth()).toString();
         month = month.length > 1 ? month : '0' + month;
-      
+    
         var day = date.getDate().toString();
         day = day.length > 1 ? day : '0' + day;
         
         return year + '/' + month + '/' + day;
-      }
-
+    }
 
     const handleFile = (e) => {
         debugger
@@ -102,12 +91,10 @@ export default function NuevaNota(props) {
         })
     }
 
-    console.log(form.adjunto)
-
     const handleSend = () => {
         
-        // if (validateForm()) {
-        if (true) {
+        if (validateForm()) {
+        // if (true) {
             Swal.fire({
                 title: 'Cargando...',
                 allowOutsideClick: false,
@@ -211,54 +198,75 @@ export default function NuevaNota(props) {
 
     return (
         // <div className={classes.formControl}>
-        <div>
+        <div className={Style.nueva_nota}>
 
             <div className='row'>
                 <div className='col-xl-6'>
+                    <InputLabel>Fecha</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <Grid>
+                                <KeyboardDatePicker
+                                    className={Style.nuevaRequisicion_fecha}
+                                    format="dd/MM/yyyy"
+                                    name='fecha'
+                                    value={form.fecha !=='' ? form.fecha : null}
+                                    onChange={e=>handleChangeFecha(e,'fecha')}
+                                    // defaultValue={state.fecha}
+                                    placeholder="dd/mm/yyyy"
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
+                    {/* <InputLabel>Fecha</InputLabel>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <Grid container justifyContent="space-around">
                             <KeyboardDatePicker
-                            // margin="normal"
-                            id="date-picker-dialog"
-                            label="fecha"
-                            format="dd/MM/yyyy"
-                            // value={selectedDate}
-                            value={form.fecha !=='' ? form.fecha : null}
-                            onChange={e=>handleChangeFecha(e, 'fecha')}
-                            // onChange={handleDateChange}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change date',
-                            }}
+                                className={Style.nuevaRequisicion_fecha}
+                                // margin="normal"
+                                id="date-picker-dialog"
+                                label="fecha"
+                                format="dd/MM/yyyy"
+                                name='fecha'
+                                // value={selectedDate}
+                                value={form.fecha !=='' ? form.fecha : null}
+                                onChange={e=>handleChangeFecha(e, 'fecha')}
+                                error={errores.fecha ? true : false}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
                             /> 
                         </Grid>
-                    </MuiPickersUtilsProvider>
+                    </MuiPickersUtilsProvider> */}
                 </div>
             
-                <div className='col-xl-6'>
-                    {/* {opciones.proveedores.length > 0 ? */}
-                        <>  
-                            <InputLabel>proveedor</InputLabel>
-                            <Select
-                                name="proveedor"
-                                value={form.proveedor}
-                                onChange={handleChange}
-                                // error={errores.proveedor ? true : false}
-                            >
-                                {
-                                    opciones.proveedores.map((item, index) => {
-                                        return <MenuItem value={item.value} key={index}>{item.name}</MenuItem>
-                                    })
-                                }   
-                            </Select>
-                        </> 
-                    {/* } */}
+                {/* <div className={`col-xl-6 ${Style.proveedor}`}> */}
+                <div style={{ marginLeft: '1rem' }}>
+                    <>  
+                        <InputLabel>proveedor</InputLabel>
+                        <Select
+                            className={Style.proveedor}
+                            name="proveedor"
+                            value={form.proveedor}
+                            onChange={handleChange}
+                            error={errores.proveedor ? true : false}
+                        >
+                            {
+                                opciones.proveedores.map((item, index) => {
+                                    return <MenuItem value={item.value} key={index}>{item.name}</MenuItem>
+                                })
+                            }   
+                        </Select>
+                    </> 
                 </div>
             </div>
 
             <div className='row'>
-                <div className='col-xl-6'>
+                <div className={`col-xl-6 ${Style.nuevaRequisicion_fecha}`}>
                     <TextField
-                        className="text"
+                        // className={Style.nuevaRequisicion_fecha}
+                        // className="text"
                         id="standard-multiline-static"
                         label="tipo de nota"
                         value={form.tipo_nota}
@@ -266,14 +274,14 @@ export default function NuevaNota(props) {
                         onChange={handleChange}
                         multiline
                         rows={2}
-                        // error={errores.destino ? true : false}
+                        error={errores.tipo_nota ? true : false}
                         // defaultValue="Default Value"
                     />
                 </div>
 
-                <div className='col-xl-6'>
+                <div className={`col-xl-6 ${Style.nuevaRequisicion_fecha}`}>
                     <TextField
-                        className="text"
+                        // className="text"
                         id="standard-multiline-static"
                         label="nota"
                         value={form.nota}
@@ -281,7 +289,7 @@ export default function NuevaNota(props) {
                         onChange={handleChange}
                         multiline
                         rows={2}
-                        // error={errores.destino ? true : false}
+                        error={errores.nota ? true : false}
                         // defaultValue="Default Value"
                     />
                 </div>

@@ -1,0 +1,89 @@
+.error{
+    color: red;
+}
+
+.nueva_nota{
+    margin-top: 2rem;
+    margin-left: 2rem;
+}
+
+.nuevaRequisicion_fecha{
+    width: 150px;
+    /* display: flex;
+    justify-content: center; */
+}
+
+.proveedor{
+    width: 150px;
+    /* display: flex;
+    justify-content: center; */
+}
+
+.sendButton {
+    margin-top: 1rem;
+    width: 7rem;
+    height: 2.5rem;
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.sendButton:hover {
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+
+}
+
+.sendButton:active {
+    background: #FFD549;
+    color: white;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    transform: translateY(4px);
+}
+
+.file {
+    margin-left: 6rem;
+}
+
+.file input {
+    display: none;
+    cursor: pointer;
+}
+
+.file label {
+    border: none;
+    background-color: #3A89C9;
+    color: white;
+    padding: 1rem;
+    margin-top: 1rem;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 30% 3%;
+}
+
+.file label:hover {
+    background-color: #9CC4E4;
+    cursor: pointer;
+}
+
+.file label:active {
+    background-color: #9CC4E4;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    transform: translateY(4px);
+}
+
+.file-name {
+    color: #2171c1;
+    font-weight: bold;
+    background-color: #e1f0ff;
+    width: 150px;
+    padding: 0.3rem;
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+}

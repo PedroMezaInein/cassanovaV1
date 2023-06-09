@@ -34,7 +34,7 @@ import { NotasObra } from './../../../../../components/forms'
 // }));
 
 export default function Notas(props) { 
-    const { proyecto, activo, reload, opciones } = props
+    const { proyecto, reload, opciones } = props
     const auth = useSelector(state => state.authUser);
     const [reloadTable, setReloadTable] = useState()
     // console.log(opciones.proveedores)
@@ -138,35 +138,38 @@ export default function Notas(props) {
                         confirmButtonText: '¡Sí, bórralo!'
                     }).then((result) => {
                         apiDelete(`v1/proyectos/nota-bitacora/${item.id}?proyecto=${proyecto.id}`, auth.access_token)
-                            .then(res => {
-                                if (reload) {
-                                    reload.reload()
-                                }
+                        if (reloadTable) {
+                            reloadTable.reload()
+                        }
+                            handleClose()
                                 Swal.fire(
                                     '¡Eliminado!',
                                     'El registro ha sido eliminado.',
                                     'success'
                                 )
-                            })
                     })
                 }
             }, 
         ]
         return aux
     }
+    console.log(proyecto)
 
     const proccessData = (datos) => {
+        console.log(datos)
         
         let aux = []
             datos.proyecto.notas.map((result) => {
+                console.log(result)
                 aux.push(
                     {
                         acciones: acciones(),
                         fecha: result.fecha,
                         nota: result.notas,
                         tipo_nota: result.tipo_nota,
-                        // numero_nota: result.numero_nota,
-                        id: result.id
+                        proveedor: result.proveedor.razon_social,
+                        id: result.id,
+                        url: result.adjuntos.length > 0 ? result.adjuntos[0].url : ''
                         // fecha_view: reformatDate(result.fecha),
                     }
                 )
@@ -228,7 +231,7 @@ export default function Notas(props) {
                 notas: form.nota,
                 tipo_nota: form.tipo_nota,
                 fecha: form.fecha,
-                adjuntos: form.adjuntos,
+                adjuntos: form.adjunto,
             }
 
             try {
@@ -415,7 +418,7 @@ export default function Notas(props) {
             <Modal size="md" title={"Nueva nota"} show={modal.crear.show} handleClose={handleClose('crear')}>
                 <NuevaNota handleClose={handleClose('crear')} reload={reloadTable} opciones={opciones} proyecto={proyecto}/>
             </Modal>
-            <Modal size="md" title={"ver nota"} show={modal.ver.show} handleClose={handleClose('ver')}>
+            <Modal size="lg" title={"ver nota"} show={modal.ver.show} handleClose={handleClose('ver')}>
                 <VerNotaObra data={modal.ver.data} verNotaObra={true}/>
             </Modal>
         </>
