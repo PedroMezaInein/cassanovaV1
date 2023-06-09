@@ -3,7 +3,6 @@ import React from 'react'
 // import Style from './../../../../../pages/Administracion/RequisicionCompras/Modales/Ver.module.css'
 
 export default function VerNotaObra ({ data }) {
-    console.log(data)
     return (
         <>
             <div className='row mt-2' style={{ padding: '1rem' }}>
@@ -48,16 +47,16 @@ export default function VerNotaObra ({ data }) {
                     <div>
                         <object
                             data={data.url}
-                        // className={classes.adjuntos}
+                            style={{ width: '90%', heigth: '70%' }}
                         >
                         </object> 
                     </div>
-                    <div>
-                        <button className='btn btn-primary' style={{ width: '100%' }}>
-                            <a href={data.url} target='_blank' rel="noreferrer" style={{ color: 'white' }}>
-                                Descargar
-                            </a>
-                        </button>
+                    <div style={{ display:'flex', justifyContent:'center' }}>
+                        <a href={data.url} target='_blank' rel="noreferrer" style={{ color: 'white' }}>
+                            <button className='btn btn-primary' style={{ width: '90px' }}>
+                                ver
+                            </button>
+                        </a>
                     </div>
                 </div> 
                 

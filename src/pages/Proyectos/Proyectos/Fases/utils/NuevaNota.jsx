@@ -83,8 +83,6 @@ export default function NuevaNota(props) {
     }
 
     const handleFile = (e) => {
-        debugger
-        console.log(e)
         setForm({
             ...form,
             adjunto: e.target.files[0]
@@ -113,8 +111,6 @@ export default function NuevaNota(props) {
                     fecha:  formatDate(form.fecha),
                     adjunto: form.adjunto,
                 }
-                console.log(form.adjunto)
-
 
                 let aux = Object.keys(newForm)
 
@@ -131,9 +127,6 @@ export default function NuevaNota(props) {
                 dataForm.append(`files_name_notaObra[]`, 'notaObra')
                 dataForm.append(`files_notaObra[]`, form.adjunto)
                 dataForm.append('adjuntos[]', "notaObra")
-
-                console.log(form)
-
 
                 apiPostForm(`v2/proyectos/nota-bitacora/${proyecto.id}`, dataForm, auth.access_token)
                 .then(

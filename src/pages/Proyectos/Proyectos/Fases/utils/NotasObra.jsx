@@ -23,22 +23,10 @@ import Table from './../../../../../components/NewTables/TablaGeneral/TablaGener
 import { setOptions } from './../../../../../functions/setters'
 import { NotasObra } from './../../../../../components/forms'
 
-// const useStyles = makeStyles((theme) => ({
-//     formControl: {
-//         margin: theme.spacing(1),
-//         minWidth: 120,
-//     },
-//     selectEmpty: {
-//         marginTop: theme.spacing(2),
-//     },
-// }));
-
 export default function Notas(props) { 
     const { proyecto, reload, opciones } = props
     const auth = useSelector(state => state.authUser);
     const [reloadTable, setReloadTable] = useState()
-    // console.log(opciones.proveedores)
-    // console.log(opciones)
 
     const [form, setForm] = useState({ 
         fecha:'',
@@ -78,7 +66,6 @@ export default function Notas(props) {
         { nombre: 'fecha', identificador: 'fecha', sort: false, stringSearch: false},
         { nombre: 'tipo de nota', identificador: 'tipo_nota', sort: false, stringSearch: false},
         { nombre: 'Nota', identificador: 'nota', sort: false, stringSearch: false},
-        // { nombre: 'numero de nota', identificador: 'numero_nota', sort: false, stringSearch: false},
     ]
 
     const handleOpen = [
@@ -153,14 +140,11 @@ export default function Notas(props) {
         ]
         return aux
     }
-    console.log(proyecto)
 
     const proccessData = (datos) => {
-        console.log(datos)
         
         let aux = []
             datos.proyecto.notas.map((result) => {
-                console.log(result)
                 aux.push(
                     {
                         acciones: acciones(),
@@ -170,7 +154,6 @@ export default function Notas(props) {
                         proveedor: result.proveedor.razon_social,
                         id: result.id,
                         url: result.adjuntos.length > 0 ? result.adjuntos[0].url : ''
-                        // fecha_view: reformatDate(result.fecha),
                     }
                 )
             })
@@ -293,90 +276,8 @@ export default function Notas(props) {
     const getNotas = () => {
         apiGet(`v1/proyectos/nota-bitacora?proyecto=${proyecto.id}`, auth.access_token)
         .then((response) => {
-            console.log(response.data)
             setNotas([...response.data.proyecto.notas])
         })
-    }
-
-    const nuevaNota = () => {
-        return (
-            <div>
-                <div>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <Grid container justifyContent="space-around">
-                            <KeyboardDatePicker
-                            // margin="normal"
-                            id="date-picker-dialog"
-                            label="fecha"
-                            format="dd/MM/yyyy"
-                            // value={selectedDate}
-                            value={form.fecha !=='' ? form.fecha : null}
-                            onChange={e=>handleChangeFecha(e, 'fecha')}
-                            // onChange={handleDateChange}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change date',
-                            }}
-                            /> 
-                        </Grid>
-                    </MuiPickersUtilsProvider>
-                </div>
-                
-                <div>
-                    {/* {opciones.proveedores.length > 0 ? */}
-                        <>  
-                            <InputLabel>proveedor</InputLabel>
-                            <Select
-                                name="proveedor"
-                                value={form.proveedor}
-                                onChange={handleChange}
-                                // error={errores.proveedor ? true : false}
-                            >
-                                {
-                                    opciones.proveedores.map((item, index) => {
-                                        return <MenuItem value={item.value} key={index}>{item.name}</MenuItem>
-                                    })
-                                }   
-                            </Select>
-                        </> 
-                    {/* } */}
-                </div>
-
-                <div>
-                    <TextField
-                        className="text"
-                        id="standard-multiline-static"
-                        label="tipo de nota"
-                        value={form.tipo_nota}
-                        name='tipo_nota'
-                        onChange={handleChange}
-                        multiline
-                        rows={1}
-                        // error={errores.destino ? true : false}
-                        // defaultValue="Default Value"
-                    />
-                </div>
-
-                <div>
-                    <TextField
-                        className="text"
-                        id="standard-multiline-static"
-                        label="nota"
-                        value={form.nota}
-                        name='nota'
-                        onChange={handleChange}
-                        multiline
-                        rows={3}
-                        // error={errores.destino ? true : false}
-                        // defaultValue="Default Value"
-                    />
-                </div>
-                <div>
-                    {/* <AdjuntosObra data={proyecto}/> */}
-                </div>
-
-                <button onClick={handleSend}>Enviar</button>
-            </div>
-        )
     }
 
     const listaNotas = (data) => {
@@ -393,15 +294,6 @@ export default function Notas(props) {
                     reload={setReloadTable}
                     >
                 </Table>
-                {/* {
-                    data.map(nota=>{
-                        return(
-                            <div>
-                                {nota.notas}
-                            </div>
-                        )
-                    })
-                } */}
             </>
         )
     }
@@ -409,10 +301,7 @@ export default function Notas(props) {
     return (
         <>
             {
-                // notas.length > 0 ?
                 listaNotas(notas)
-                // :
-                // nuevaNota()
             }
 
             <Modal size="md" title={"Nueva nota"} show={modal.crear.show} handleClose={handleClose('crear')}>
