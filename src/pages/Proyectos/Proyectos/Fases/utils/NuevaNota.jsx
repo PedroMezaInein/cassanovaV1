@@ -297,8 +297,8 @@ export default function NuevaNota(props) {
 
             <div className='row'>
                 <div style={{ marginLeft: '0rem' }} className={`col-xl-8 ${Style.file}`}>
-                    <label htmlFor="file">Seleccionar archivo</label>
-                    <input type="file" id='file' name="file" onChange={handleFile} />
+                    <label htmlFor="fileObra">Seleccionar archivo</label>
+                    <input type="file" id='fileObra' name="file" onChange={handleFile} />
                     <div>
                         {form.adjunto.name ? <div className='file-name'>{form.adjunto.name}</div> : null}
                     </div>

@@ -52,7 +52,15 @@ export default function VerNotaObra ({ data }) {
                         >
                         </object> 
                     </div>
+                    <div>
+                        <button className='btn btn-primary' style={{ width: '100%' }}>
+                            <a href={data.url} target='_blank' rel="noreferrer" style={{ color: 'white' }}>
+                                Descargar
+                            </a>
+                        </button>
+                    </div>
                 </div> 
+                
             </div>
         </>
     )
