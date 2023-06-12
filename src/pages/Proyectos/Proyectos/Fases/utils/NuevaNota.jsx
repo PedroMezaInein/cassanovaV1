@@ -83,7 +83,6 @@ export default function NuevaNota(props) {
     }
 
     const handleFile = (e) => {
-        debugger
         console.log(e)
         setForm({
             ...form,

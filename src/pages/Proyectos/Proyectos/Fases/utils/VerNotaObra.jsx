@@ -49,6 +49,7 @@ export default function VerNotaObra ({ data }) {
                         <object
                             data={data.url}
                         // className={classes.adjuntos}
+                        style={{ width: '100%', height: '100%' }}
                         >
                         </object> 
                     </div>

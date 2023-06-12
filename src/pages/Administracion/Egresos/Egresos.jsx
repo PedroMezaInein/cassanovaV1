@@ -1769,7 +1769,7 @@ class Egresos extends Component {
 
                     <Tab eventKey = { 'gastos' } title = { 'gastos' }>
 
-                        {/* <NewTable
+                         <NewTable
                             tableName='egresos'
                             // tableName='gastos'
                             subtitle='Listado de gastos'
@@ -1784,8 +1784,8 @@ class Egresos extends Component {
                             filterClick={this.openModalFiltros}
                             exportar_boton={true}
                             onClickExport={() => { this.exportEgresosAxios() }}
-                        /> */}
-                        <EgresosTable />
+                        /> 
+                        {/* <EgresosTable /> */}
                     </Tab>
 
                     <Tab eventKey="requisiciones" title="requisiciones">
