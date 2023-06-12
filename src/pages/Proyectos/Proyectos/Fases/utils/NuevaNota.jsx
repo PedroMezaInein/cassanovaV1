@@ -48,10 +48,10 @@ export default function NuevaNota(props) {
             error.nota = "Escriba una nota"
             validar = false
         }
-        // if(form.adjunto === ''){
-        //     error.adjunto = "egregue una adjunto"
-        //     validar = false
-        // }
+        if(form.adjunto === ''){
+            error.adjunto = "egregue un adjunto"
+            validar = false
+        }
         
         setErrores(error)
         return validar
@@ -206,6 +206,7 @@ export default function NuevaNota(props) {
                                     onChange={e=>handleChangeFecha(e,'fecha')}
                                     // defaultValue={state.fecha}
                                     placeholder="dd/mm/yyyy"
+                                    error={errores.fecha ? true : false}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
@@ -292,8 +293,9 @@ export default function NuevaNota(props) {
                 <div style={{ marginLeft: '0rem' }} className={`col-xl-8 ${Style.file}`}>
                     <label htmlFor="fileObra">Seleccionar archivo</label>
                     <input type="file" id='fileObra' name="file" onChange={handleFile} />
+                    <div error={errores.adjunto ? true : false}></div>
                     <div>
-                        {form.adjunto.name ? <div className='file-name'>{form.adjunto.name}</div> : null}
+                        {form.adjunto.name ? <div className='file-name' >{form.adjunto.name}</div> : null}
                     </div>
                 </div>
             
