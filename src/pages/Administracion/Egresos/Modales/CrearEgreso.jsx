@@ -32,7 +32,10 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import j2xParser from 'fast-xml-parser'
 
-export default function CrearEgreso() {
+import Style from './CrearEgreso.module.css'
+
+export default function CrearEgreso(props) {
+    const {opcionesData} = props
     const auth = useSelector((state) => state.authUser.access_token);
     const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState({
@@ -44,6 +47,13 @@ export default function CrearEgreso() {
         tiposPagos: [],
     })
 
+    useEffect(() => {
+        
+        if(opcionesData){
+            setOpciones(opcionesData)
+        }
+    }, [opcionesData])
+
     const [form, setForm] = useState({
         adjuntos: {
             pago: {files:[], value: ''},
@@ -53,12 +63,14 @@ export default function CrearEgreso() {
         },
         area: '',
         banco: 0,
-        comision: '',
+        comision: 0,
         correo: '',
         cuenta: '',
+        cuentas: [],
+        comision: 0,
         descripcion: '',
         empresa: '',
-        estatusCompra: '',
+        estatusCompra: 2,
         factura: false, //'Sin factura, con factura'
         facturaItem: { nombre_emisor: "", nombre_receptor: "" },
         facturaObject: {},
@@ -74,87 +86,12 @@ export default function CrearEgreso() {
         subarea: '', //subpartida?
         telefono: '',
         tipo: 0,
-        tipoImpuesto: '',
-        tipoPago: '',
+        tipoImpuesto: 1,
+        tipoPago: 4,
         total: '',
     })
 
-    useEffect(() => {
-        getProveedores()
-    }, [])
-
-    const getProveedores = () => {
-        Swal.fire({
-            title: 'Cargando...',
-            allowOutsideClick: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            },
-        })
-        apiOptions(`v2/administracion/egresos`, auth)
-            .then(res => {
-                let data = res.data
-                let aux = {
-                    cuentas: [],
-                    empresas: [],
-                    estatusCompras: [],
-                    proveedores: [],
-                    tiposImpuestos: [],
-                    tiposPagos: [],
-                }
-
-                data.proveedores.map((proveedor) => {
-                    if (proveedor.nombre !== null) {
-                        aux.proveedores.push({
-                            id: proveedor.id,
-                            name: proveedor.nombre
-                        })   
-                    }  
-                })
-
-                data.empresas.map((empresa) => {
-                    if (empresa.nombre !== null) {
-                        aux.empresas.push({
-                            id: empresa.id,
-                            name: empresa.name,
-                        })
-                    }
-                })
-
-                data.estatusCompras.map((estatusCompra) => {
-                    if (estatusCompra.estatus !== null) {
-                        aux.estatusCompras.push({
-                            id: estatusCompra.id,
-                            name: estatusCompra.estatus,
-                        })
-                    }
-                })
-
-                data.tiposImpuestos.map((tipoImpuesto) => {
-                    if (tipoImpuesto.tipo !== null) {
-                        aux.tiposImpuestos.push({
-                            id: tipoImpuesto.id,
-                            name: tipoImpuesto.tipo,
-                        })
-                    }
-                })
-
-                data.tiposPagos.map((tipoPago) => {
-                    if (tipoPago.tipo !== null) {
-                        aux.tiposPagos.push({
-                            id: tipoPago.id,
-                            name: tipoPago.tipo,
-                        })
-                    }
-                })
-
-                Swal.close()
-                setOpciones(aux)
-                    
-            }
-        )
-        
-    }
+    
 
     const handleChangeCheck = () => {
         setForm({
@@ -164,10 +101,19 @@ export default function CrearEgreso() {
     };
 
     const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
+        if(e.target.name === 'empresa'){
+            setForm({
+                ...form,
+                [e.target.name]: e.target.value,
+                cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas
+            });
+        } else {
+            setForm({
+                ...form,
+                [e.target.name]: e.target.value
+            });
+        }
+        
     };
 
     const onChangeFactura = (e) => {
@@ -247,7 +193,26 @@ export default function CrearEgreso() {
                             obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']
                         }
                     }
-                    console.log(obj)
+
+                    let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
+                    let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
+                    
+                    setForm({
+                        ...form,
+                        fecha: obj.fecha,
+                        rfc: obj.rfc_emisor,
+                        total: obj.total,
+                        descripcion: obj.descripcion,
+                        empresa: empresa ? empresa.id : null,
+                        empresa_nombre: empresa ? empresa.nombre : null,
+                        proveedor: proveedor ? proveedor.id : null,
+                        proveedor_nombre: proveedor ? proveedor.name : null,
+                        cuentas: opciones.empresas.find((empresa) => empresa.id === empresa.id).cuentas,
+                        adjuntos: {
+                            ...form.adjuntos,
+                            xml: {files: [...files], value: ''}
+                        }
+                    })
                     /* setForm({
                         ...form,
                         monto: obj.total ? obj.total : form.monto,
@@ -265,11 +230,6 @@ export default function CrearEgreso() {
                 }
             }
 
-            /* setFile({
-                ...file,
-                xml: files[0]
-            }) */
-
         } else {
             Swal.fire({
                 icon: 'error',
@@ -284,7 +244,68 @@ export default function CrearEgreso() {
 
     }
 
-    console.log(opciones)
+    const handleChangeProveedor = (e, value) => {
+        if (value && value.name) {
+            setForm({
+                ...form,
+                proveedor: value.id,
+                proveedor_nombre: value.name,
+            })
+        }
+        if (value === null) {
+            setForm({
+                ...form,
+                proveedor: null,
+                proveedor_nombre: null,
+            })
+        }
+    }
+
+    const handleMoney = (e) => {
+        setForm({
+            ...form,
+            total: e
+        })
+    }
+
+    const handleMoneyComision = (e) => {
+        setForm({
+            ...form,
+            comision: e
+        })
+    }
+
+    const handleAddFile = (e, tipo) => {
+        setForm({
+            ...form,
+            adjuntos: {
+                ...form.adjuntos,
+                [tipo]: {files: [...e.target.files], value: ''}
+            }
+        })
+    }
+
+    const handleSend = () => {
+        try {
+            apiPostForm('v3/administracion/egresos', form, auth)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleDeleteFile = (tipo, index) => {
+        let files = form.adjuntos[tipo].files
+        files.splice(index, 1)
+        setForm({
+            ...form,
+            adjuntos: {
+                ...form.adjuntos,
+                [tipo]: {files: [...files], value: ''}
+            }
+        })
+    }
+
+    console.log(form.adjuntos)
 
     return (
         <>
@@ -296,8 +317,8 @@ export default function CrearEgreso() {
                     <Typography className='proyect-Subtitulo'>DATOS DE LA FACTURA</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginRight: '10px' }}>
+                    <div style={{ width: '100%' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-evenly', marginRight: '10px', flexDirection: 'column' }}>
                             <div>
                                 <InputLabel>Lleva factura?</InputLabel>
                                 <FormGroup row>
@@ -315,16 +336,17 @@ export default function CrearEgreso() {
                             </div>  
                             {
                                 form.factura ?
-                                    <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <div>
                                             <InputLabel>XML de la factura</InputLabel>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <div >
+
                                                 <div>
                                                     <input
                                                         accept="application/xml"
                                                         style={{ display: 'none' }}
                                                         id="xml"
-                                                        multiple
+                                                        
                                                         type="file"
                                                         onChange={onChangeFactura}
                                                     />
@@ -334,19 +356,36 @@ export default function CrearEgreso() {
                                                         </Button>
                                                     </label>
                                                 </div>
+
+                                                <div>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                        {
+                                                            form.adjuntos.xml.files.map((item, index) => (
+                                                                <div key={index}  style={{ backgroundColor: '#e0e0e0', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
+                                                                    <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'space-between' }}>
+                                                                        <p>{item.name}<span onClick={() => handleDeleteFile('xml', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span></p>
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </div>    
+                                                </div> 
+
                                             </div>   
-                                        </div>    
-                                        <div>
-                                            <InputLabel>PDF de la factura</InputLabel>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        </div> 
+
+                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            
+                                            <div>
+                                                <InputLabel>PDF de la factura</InputLabel>
                                                 <div>
                                                     <input
                                                         accept="application/pdf"
                                                         style={{ display: 'none' }}
                                                         id="pdf"
-                                                        multiple
+                                                        
                                                         type="file"
-                                                    /* onChange={(e) => handleChangeFile(e, 'pdf')} */
+                                                        onChange={(e) => handleAddFile(e, 'pdf')} 
                                                     />
                                                     <label htmlFor="pdf">
                                                         <Button variant="contained" color="primary" component="span">
@@ -354,15 +393,29 @@ export default function CrearEgreso() {
                                                         </Button>
                                                     </label>
                                                 </div>
+
+                                                <div>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                        {
+                                                            form.adjuntos.pdf.files.map((item, index) => (
+                                                                <div key={index} style={{ backgroundColor: '#e0e0e0', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
+                                                                    <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'space-between' }}>
+                                                                        <p>{item.name}<span onClick={() => handleDeleteFile('pdf', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span></p>
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </div>    
+                                                </div> 
                                                 
                                             </div>
                                         </div>
                                         <div>
+                                        <InputLabel>RFC</InputLabel>
                                             <TextField
-                                                id="outlined-basic"
-                                                label="RFC"
                                                 variant="outlined"
                                                 name="nombreArchivo"
+                                                value={form.rfc ? form.rfc : ''}
                                             /* onChange={handleChange} */
                                             />
 
@@ -375,18 +428,23 @@ export default function CrearEgreso() {
                             
                         </div>
 
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
                             <div>
                                 {
                                     opciones.proveedores.length > 0 ?
+                                    <div>
+                                        <InputLabel>Proveedor</InputLabel>
                                         <Autocomplete
                                             name="proveedor"
                                             options={opciones.proveedores}
                                             getOptionLabel={(option) => option.name}
                                             style={{ width: 230, paddingRight: '1rem' }}
-                                            /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                            renderInput={(params) => <TextField {...params} label={'proveedor'} variant="outlined" />}
+                                            onChange={(event, value) => handleChangeProveedor(event, value)}
+                                            renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
+                                            
                                         />
+                                    </div>
+                                            
                                         : null
                                 }
                                 
@@ -394,14 +452,30 @@ export default function CrearEgreso() {
                             <div>
                                 {
                                     opciones.empresas.length > 0 ?
-                                        <Autocomplete
-                                            name="empresa"
-                                            options={opciones.empresas}
-                                            getOptionLabel={(option) => option.name}
-                                            style={{ width: 230, paddingRight: '1rem' }}
-                                            /* onChange={(event, value) => handleChangeEmpresa(event, value)} */
-                                            renderInput={(params) => <TextField {...params} label={'empresa'} variant="outlined" />}
-                                        />
+                                        // <Autocomplete
+                                        //     name="empresa"
+                                        //     options={opciones.empresas}
+                                        //     getOptionLabel={(option) => option.name}
+                                        //     style={{ width: 230, paddingRight: '1rem' }}
+                                        //     value={form.empresa_nombre}
+                                        //     /* onChange={(event, value) => handleChangeEmpresa(event, value)} */
+                                        //     renderInput={(params) => <TextField {...params} label={'empresa'} variant="outlined" />}
+                                        // />
+                                        <div>
+                                            <InputLabel>Empresa</InputLabel>
+                                            <Select
+                                                name="empresa"
+                                                value={form.empresa}
+                                                onChange={handleChange}
+                                                style={{ width: 230, paddingRight: '1rem' }}
+                                            >
+                                                {
+                                                    opciones.empresas.map((item, index) => (
+                                                        <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                                    ))
+                                                }
+                                            </Select>
+                                        </div>
                                         : null
 
                                 }
@@ -545,15 +619,28 @@ export default function CrearEgreso() {
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <div>
                                 {
-                                    opciones.tiposPagos.length > 0 ?
-                                        <Autocomplete
-                                            name="proveedor"
-                                            options={opciones.tiposPagos}
-                                            getOptionLabel={(option) => option.name}
-                                            style={{ width: 230, paddingRight: '1rem' }}
-                                            /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                            renderInput={(params) => <TextField {...params} label={'cuenta'} variant="outlined" />}
-                                        />
+                                    form.cuentas.length > 0 ?
+                                        // <Autocomplete
+                                        //     name="proveedor"
+                                        //     options={opciones.tiposPagos}
+                                        //     getOptionLabel={(option) => option.name}
+                                        //     style={{ width: 230, paddingRight: '1rem' }}
+                                        //     /* onChange={(event, value) => handleChangeProveedor(event, value)} */
+                                        //     renderInput={(params) => <TextField {...params} label={'cuenta'} variant="outlined" />}
+                                        // />
+                                        <div>
+                                            <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
+                                            <Select
+                                                value={form.cuenta}
+                                                name="cuenta"
+                                                onChange={handleChange}
+                                                style={{ width: 230, marginRight: '1rem' }}
+                                            >
+                                                {form.cuentas.map((item, index) => (
+                                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </div>
                                         : null
                                 }
 
@@ -561,14 +648,28 @@ export default function CrearEgreso() {
                             <div>
                                 {
                                     opciones.tiposPagos.length > 0 ?
-                                        <Autocomplete
-                                            name="proveedor"
-                                            options={opciones.tiposPagos}
-                                            getOptionLabel={(option) => option.name}
-                                            style={{ width: 230, paddingRight: '1rem' }}
-                                            /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                            renderInput={(params) => <TextField {...params} label={'tipo de pago'} variant="outlined" />}
-                                        />
+                                        // <Autocomplete
+                                        //     name="proveedor"
+                                        //     options={opciones.tiposPagos}
+                                        //     getOptionLabel={(option) => option.name}
+                                        //     style={{ width: 230, paddingRight: '1rem' }}
+                                        //     /* onChange={(event, value) => handleChangeProveedor(event, value)} */
+                                        //     renderInput={(params) => <TextField {...params} label={'tipo de pago'} variant="outlined" />}
+                                        // />
+                                        <div>
+                                            <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
+
+                                            <Select
+                                                value={form.tipoPago}
+                                                name="tipoPago"
+                                                onChange={handleChange}
+                                                style={{ width: 230, marginRight: '1rem' }}
+                                            >
+                                                {opciones.tiposPagos.map((item, index) => (
+                                                    <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </div>
                                         : null
                                 }
 
@@ -576,14 +677,27 @@ export default function CrearEgreso() {
                             <div>
                                 {
                                     opciones.estatusCompras.length > 0 ?
-                                        <Autocomplete
-                                            name="proveedor"
-                                            options={opciones.estatusCompras}
-                                            getOptionLabel={(option) => option.name}
-                                            style={{ width: 230, paddingRight: '1rem' }}
-                                            /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                            renderInput={(params) => <TextField {...params} label={'estatus de compra'} variant="outlined" />}
-                                        />
+                                        // <Autocomplete
+                                        //     name="proveedor"
+                                        //     options={opciones.estatusCompras}
+                                        //     getOptionLabel={(option) => option.name}
+                                        //     style={{ width: 230, paddingRight: '1rem' }}
+                                        //     /* onChange={(event, value) => handleChangeProveedor(event, value)} */
+                                        //     renderInput={(params) => <TextField {...params} label={'estatus de compra'} variant="outlined" />}
+                                        // />
+                                        <div>
+                                            <InputLabel id="demo-simple-select-label">Estatus de Compra</InputLabel>
+                                            <Select
+                                                value={form.estatusCompra}
+                                                name="estatusCompra"
+                                                onChange={handleChange}
+                                                style={{ width: 230, marginRight: '1rem' }}
+                                            >
+                                                {opciones.estatusCompras.map((item, index) => (
+                                                    <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </div>
                                         : null
                                 }
 
@@ -594,26 +708,40 @@ export default function CrearEgreso() {
                             <div>
                                 {
                                     opciones.tiposImpuestos.length > 0 ?
-                                        <Autocomplete
-                                            name="proveedor"
-                                            options={opciones.tiposImpuestos}
-                                            getOptionLabel={(option) => option.name}
-                                            style={{ width: 230, paddingRight: '1rem' }}
-                                            /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                            renderInput={(params) => <TextField {...params} label={'tipo de impuesto'} variant="outlined" />}
-                                        />
+                                        // <Autocomplete
+                                        //     name="proveedor"
+                                        //     options={opciones.tiposImpuestos}
+                                        //     getOptionLabel={(option) => option.name}
+                                        //     style={{ width: 230, paddingRight: '1rem' }}
+                                        //     value={form.tipoImpuesto !== '' ? form.tipoImpuesto : 1}
+                                        //     /* onChange={(event, value) => handleChangeProveedor(event, value)} */
+                                        //     renderInput={(params) => <TextField {...params} label={'tipo de impuesto'} variant="outlined" />}
+                                        // />
+                                        <div>
+                                            <InputLabel id="demo-simple-select-label">Tipo de Impuesto</InputLabel>
+                                            <Select
+                                                value={form.tipoImpuesto}
+                                                name="tipoImpuesto"
+                                                onChange={handleChange}
+                                                style={{ width: 230, marginRight: '1rem' }}
+                                            >
+                                                {opciones.tiposImpuestos.map((item, index) => (
+                                                    <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </div>
                                         : null
                                 }
 
                             </div> 
                             <div>
                                 <CurrencyTextField
-                                    label="monto"
+                                    label="total"
                                     variant="standard"
-                                    /* value={form.monto} */
+                                    value={form.total} 
                                     currencySymbol="$"
                                     outputFormat="number"
-                                    /* onChange={(event, value) => handleMoney(value)} */
+                                    onChange={(event, value) => handleMoney(value)} 
                                     
                                 />
                             </div>
@@ -621,21 +749,25 @@ export default function CrearEgreso() {
                                 <CurrencyTextField
                                     label="comision"
                                     variant="standard"
-                                    /* value={form.monto} */
+                                    value={form.comision} 
                                     currencySymbol="$"
                                     outputFormat="number"
-                                    /* onChange={(event, value) => handleMoney(value)} */
+                                    onChange={(event, value) => handleMoneyComision(value)} 
                                     
                                 />
                             </div>
                         </div>
-                        
-
-                        
-
                     </div>
                 </AccordionDetails>
             </Accordion>
+
+            <div>
+                <div className="row justify-content-end">
+                    <div className="col-md-4">
+                        <button className={Style.sendButton} onClick={handleSend}>Crear</button>
+                    </div>
+                </div>   
+            </div>
         
         </>
     )

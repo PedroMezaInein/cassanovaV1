@@ -7,9 +7,16 @@ import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 
 import Crear from './Modales/CrearEgreso'
 
+import Swal from 'sweetalert2'
+
+
+import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from './../../../functions/api';
+
 
 
 export default function EgresosTable() { 
+    const auth = useSelector((state) => state.authUser.access_token);
+    const [opcionesData, setOpcionesData] = useState()
 
     const [modal, setModal] = useState({
         ver: {
@@ -25,6 +32,90 @@ export default function EgresosTable() {
             data: null
         },
     })
+
+
+
+    useEffect(() => {
+        getProveedores()
+    }, [])
+
+    const getProveedores = () => {
+        Swal.fire({
+            title: 'Cargando...',
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+        })
+        apiOptions(`v2/administracion/egresos`, auth)
+            .then(res => {
+                let data = res.data
+                console.log(data)
+                let aux = {
+                    cuentas: [],
+                    empresas: [],
+                    estatusCompras: [],
+                    proveedores: [],
+                    tiposImpuestos: [],
+                    tiposPagos: [],
+                }
+
+                data.proveedores.map((proveedor) => {
+                    if (proveedor.nombre !== null) {
+                        aux.proveedores.push({
+                            id: proveedor.id,
+                            name: proveedor.nombre,
+                            rfc: proveedor.rfc,
+                        })   
+                    }  
+                })
+
+                data.empresas.map((empresa) => {
+                    if (empresa.nombre !== null) {
+                        aux.empresas.push({
+                            id: empresa.id,
+                            name: empresa.name,
+                            rfc: empresa.rfc,
+                            cuentas: empresa.cuentas,
+                        })
+                    }
+                })
+
+                data.estatusCompras.map((estatusCompra) => {
+                    if (estatusCompra.estatus !== null) {
+                        aux.estatusCompras.push({
+                            id: estatusCompra.id,
+                            name: estatusCompra.estatus,
+                        })
+                    }
+                })
+
+                data.tiposImpuestos.map((tipoImpuesto) => {
+                    if (tipoImpuesto.tipo !== null) {
+                        aux.tiposImpuestos.push({
+                            id: tipoImpuesto.id,
+                            name: tipoImpuesto.tipo,
+                        })
+                    }
+                })
+
+                data.tiposPagos.map((tipoPago) => {
+                    if (tipoPago.tipo !== null) {
+                        aux.tiposPagos.push({
+                            id: tipoPago.id,
+                            name: tipoPago.tipo,
+                        })
+                    }
+                })
+
+                Swal.close()
+                setOpcionesData(aux)
+                    
+            }
+        )
+        
+    }
+
 
     const [filtrado, setFiltrado] = useState({
         
@@ -154,7 +245,7 @@ export default function EgresosTable() {
             >
             </Tabla>
             <Modal size="lg" title={"Nuevo gasto"} show={modal.crear.show} handleClose={e => handleClose('crear')} >
-                <Crear handleClose={e => handleClose('crear')} />   
+                <Crear handleClose={e => handleClose('crear')} opcionesData={opcionesData}/>   
             </Modal>
         </>
     )

@@ -83,6 +83,7 @@ export default function NuevaNota(props) {
     }
 
     const handleFile = (e) => {
+
         setForm({
             ...form,
             adjunto: e.target.files[0]
