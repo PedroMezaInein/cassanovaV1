@@ -63,6 +63,4 @@ export default function VerNotaObra ({ data }) {
             </div>
         </>
     )
-
-    
 }
