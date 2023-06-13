@@ -194,7 +194,7 @@ export default function NuevaNota(props) {
         <div className={Style.nueva_nota}>
 
             <div className='row'>
-                <div className='col-xl-6'>
+                <div className='col-xl-6 col-md-6 col-sm-6 col-xs-12'>
                     <InputLabel>Fecha</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <Grid>
@@ -236,7 +236,7 @@ export default function NuevaNota(props) {
                 </div>
             
                 {/* <div className={`col-xl-6 ${Style.proveedor}`}> */}
-                <div style={{ marginLeft: '1rem' }}>
+                <div className={`col-xl-6 col-md-6 col-sm-6 col-12 ${Style.prov}`}>
                     <>  
                         <InputLabel>proveedor</InputLabel>
                         <Select
@@ -257,7 +257,7 @@ export default function NuevaNota(props) {
             </div>
 
             <div className='row'>
-                <div className={`col-xl-6 ${Style.nuevaRequisicion_fecha}`}>
+                <div className={`col-xl-6 col-md-6 col-sm-6 col-12 ${Style.nuevaRequisicion_fecha}`}>
                     <TextField
                         // className={Style.nuevaRequisicion_fecha}
                         // className="text"
@@ -273,7 +273,7 @@ export default function NuevaNota(props) {
                     />
                 </div>
 
-                <div className={`col-xl-6 ${Style.nuevaRequisicion_fecha}`}>
+                <div className={`col-xl-6 col-md-6 col-sm-6 col-12 ${Style.nuevaRequisicion_fecha}`}>
                     <TextField
                         // className="text"
                         id="standard-multiline-static"
@@ -290,7 +290,7 @@ export default function NuevaNota(props) {
             </div>
 
             <div className='row'>
-                <div style={{ marginLeft: '0rem' }} className={`col-xl-8 ${Style.file}`}>
+                <div style={{ marginLeft: '0rem' }} className={`col-xl-8 col-md-8 col-sm-6 col-xs-12 ${Style.file}`}>
                     <label htmlFor="fileObra">Seleccionar archivo</label>
                     <input type="file" id='fileObra' name="file" onChange={handleFile} />
                     <div error={errores.adjunto ? true : false}></div>
@@ -299,7 +299,7 @@ export default function NuevaNota(props) {
                     </div>
                 </div>
             
-                <div className='col-xl-4'>
+                <div className='col-xl-4 col-md-4 col-sm-6 col-xs-12'>
                     <button className={Style.sendButton} onClick={handleSend}>Crear</button>
                 </div>
             </div>

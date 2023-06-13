@@ -87,3 +87,18 @@
     justify-content: center;
     border-radius: 5px;
 }
+
+@media (max-width: 575px){
+    .nueva_nota{
+        text-align: center;
+        margin-top: .5rem;
+    }
+
+    .nuevaRequisicion_fecha{
+        margin-bottom: .5rem;
+    }
+
+    .prov{
+        margin-top: 1rem;
+    }
+}
