@@ -26,4 +26,8 @@ yarn-error.log*
 # Local Netlify folder
 .netlify
 .vercel
+
+# json
+
 package-lock.json
+yarn.lock
