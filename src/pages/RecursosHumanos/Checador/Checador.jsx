@@ -151,11 +151,21 @@ class Checador extends Component {
                     timeFechaEnd = this.setTimer(fechaEnd.getHours()) + ":" + this.setTimer(fechaEnd.getMinutes())
                 }
                 var fecha3 =fechaEnd-fechaStart
-                var minutosTrabajados = Math.floor((fecha3/1000)/60)
-
+                var minutosTrabajados = Math.floor((fecha3/1000)/60-60)
+              
                 if(minutosTrabajados<(horasPorTrabajar * 60)){
                     noCumplioHorario = true
                 }
+                // console.log(user)
+                // console.log(timeFechaStart)
+
+                // console.log(timeFechaEnd)
+                // console.log(fecha3)
+
+                // console.log(horasPorTrabajar * 60)
+                // console.log(minutosTrabajados)
+                // console.log(noCumplioHorario)
+
             }
         })
         if (user.empleado.permiso.length > 0){
@@ -163,30 +173,35 @@ class Checador extends Component {
                 var fechaStart = new Date(element.fecha_inicio)
                 var fechaEnd = new Date(element.fecha_fin)
                 // debugger
-                if(fechaStart.getDate() === day){
-                    Permiso = 'Permiso'
-                }
-                if(fechaEnd.getDate() === day){
-                    Permiso = 'Permiso'
-                }
+            if(element.estatus == 'Aceptado'){
 
-                if(day < fechaEnd.getDate() && day > fechaStart.getDate() ){
-                    Permiso = 'Permiso'
-                }
+                    if(fechaStart.getDate() === day){
+                        Permiso = 'Permiso'
+                    }
+                    if(fechaEnd.getDate() === day){
+                        Permiso = 'Permiso'
+                    }
+
+                    if(day < fechaEnd.getDate() && day > fechaStart.getDate() ){
+                        Permiso = 'Permiso'
+                    }
+             }
             })
         }
 
         user.empleado.vacaciones.forEach(element=>{
             var fechaStart = new Date(element.fecha_inicio)
             var fechaEnd = new Date(element.fecha_fin)
-            if(fechaStart.getDate() === day){
-                Vacaciones = 'Vacaciones'
-            }
-            if(fechaEnd.getDate() === day){
-                Vacaciones = 'Vacaciones'
-            }
-            if(day < fechaEnd.getDate() && day > fechaStart.getDate() ){
-                Vacaciones = 'Vacaciones'
+            if(element.estatus == 'Aceptadas'){
+                if(fechaStart.getDate() === day){
+                    Vacaciones = 'Vacaciones'
+                }
+                if(fechaEnd.getDate() === day){
+                    Vacaciones = 'Vacaciones'
+                }
+                if(day < fechaEnd.getDate() && day > fechaStart.getDate() ){
+                    Vacaciones = 'Vacaciones'
+                }
             }
         })
 
