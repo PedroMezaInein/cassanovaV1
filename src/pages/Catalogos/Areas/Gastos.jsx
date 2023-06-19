@@ -9,7 +9,7 @@ import ModalEditarGastos from '../../../pages/Catalogos/Areas/ModalEditarGastos'
 import ModalEditarSubGasto from '../../../pages/Catalogos/Areas/ModalEditarSubPartida'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 
-export default function Gastos (){
+export default function Gastos (key){
 
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState()
@@ -18,7 +18,7 @@ export default function Gastos (){
             show:false,
             data:false
         },
-        editarGastos:{
+        editar:{
             show: false,
             data:false
         },
@@ -37,13 +37,13 @@ export default function Gastos (){
     const actionsGastos = () => {    
         let aux = [
             {
-                nombre: 'editarGastos',
+                nombre: 'editar',
                 icono: 'fas fa-edit',
                 color: 'blueButton ',
                 funcion: (item) => {
                     setModal({
                         ...modal,
-                        editarGastos: {
+                        editar: {
                         show: true,
                         data: item
                         }
@@ -56,7 +56,7 @@ export default function Gastos (){
 
     const handleOpen = [
         {
-            nombre: 'Nuevo gasto',
+            nombre: 'Nuevo',
             funcion: (item) => { 
                 setModal({
                 ...modal,
@@ -94,11 +94,9 @@ export default function Gastos (){
         for(let key in e.area){
             // Imprime el id del area
         
-
             for(let area in e.area[key]){
                 // Imprime el area
         
-
                 let auxPartidas = []
 
                     for(let idpartida in e.area[key][area]){
@@ -178,11 +176,11 @@ export default function Gastos (){
             </TablaGeneral>
 
             <Modal size="lg" title={"Nuevos gastos"} show={modal.crear.show} handleClose={()=>handleCloseGastos ('crear')}>
-                <ModalAgregar handleClose={()=>handleCloseGastos ('crear')} reload={reloadTable}/>
+                <ModalAgregar tipo = {key.eventKey} handleClose={()=>handleCloseGastos ('crear')} reload={reloadTable}/>
             </Modal>    
 
-            <Modal size="lg" title={"Editar gastos"} show={modal.editarGastos.show} handleClose={()=>handleCloseGastos ('editarGastos')}>
-                <ModalEditarGastos data={modal.editarGastos.data} handleClose={()=>handleCloseGastos ('editarGastos')} reload={reloadTable}/>
+            <Modal size="lg" title={"Editar gastos"} show={modal.editar.show} handleClose={()=>handleCloseGastos ('editar')}>
+                <ModalEditarGastos data={modal.editar.data} handleClose={()=>handleCloseGastos ('editar')} reload={reloadTable}/>
             </Modal>
 
             {/* <Modal size="lg" title={"Editar Sub partida"} show={modal.editarSubPartida.show} handleClose={()=>handleCloseGastos ('editarSubPartida')}>

@@ -25,8 +25,6 @@ export default function ModalAgregar (props) {
         // i_selectArea: '',
     })
 
-    console.log(form)
-
     const [errores, setErrores] = useState({})
 
     //de aqui son nuevas funciones handlechange
@@ -132,7 +130,6 @@ export default function ModalAgregar (props) {
 
     const submit = () =>{
         // if(Object.keys(validateForm()).length ===0){
-            console.log(form)
         if(validateForm()){
 
             Swal.fire({

@@ -9,7 +9,7 @@ import ModalEditarGastos from '../../../pages/Catalogos/Areas/ModalEditarGastos'
 import ModalEditarSubGasto from '../../../pages/Catalogos/Areas/ModalEditarSubPartida'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 
-export default function Ventas (key){
+export default function Compras (key){
 
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState()
@@ -18,7 +18,7 @@ export default function Ventas (key){
             show:false,
             data:false
         },
-        editarGastos:{
+        editar:{
             show: false,
             data:false
         },
@@ -31,18 +31,26 @@ export default function Ventas (key){
             data: false
         }
     })
+
     useOptionsArea()
+
+    const columnas = [
+        { nombre: 'Acciones', identificador: 'acciones', sort: false, stringSearch: false},
+        { nombre: 'Área', identificador: 'nombreArea', sort: true, stringSearch: true },
+        { nombre: 'Partidas', identificador: 'partidas', sort: true, stringSearch: true },
+        { nombre: 'Sub partidas', identificador: 'subpartidas', sort: true, stringSearch: false },
+    ]
 
     const actionsGastos = () => {    
         let aux = [
             {
-                nombre: 'editarGastos',
+                nombre: 'editar',
                 icono: 'fas fa-edit',
                 color: 'blueButton ',
                 funcion: (item) => {
                     setModal({
                         ...modal,
-                        editarGastos: {
+                        editar: {
                         show: true,
                         data: item
                         }
@@ -55,7 +63,7 @@ export default function Ventas (key){
 
     const handleOpen = [
         {
-            nombre: 'Nueva venta',
+            nombre: 'Nuevo',
             funcion: (item) => { 
                 setModal({
                 ...modal,
@@ -88,23 +96,23 @@ export default function Ventas (key){
     }
 
     const proccessData = (e) => {
+
         let aux = []
+        for(let key in e.compras){
+            // Imprime el id del compras
         
-        for(let key in e.ingresos){
-            // Imprime el id del ingresos
-        
-            for(let ingresos in e.ingresos[key]){
-                // Imprime el ingresos
+            for(let compras in e.compras[key]){
+                // Imprime el compras
         
                 let auxPartidas = []
 
-                    for(let idpartida in e.ingresos[key][ingresos]){
+                    for(let idpartida in e.compras[key][compras]){
 
-                        for(let partida in e.ingresos[key][ingresos][idpartida]){
+                        for(let partida in e.compras[key][compras][idpartida]){
                             // Imprime el nombre de cada partida
                             let auxSubpartida = []
 
-                            e.ingresos[key][ingresos][idpartida][partida].forEach(elemento =>{
+                            e.compras[key][compras][idpartida][partida].forEach(elemento =>{
                                 auxSubpartida.push({
                                     id: elemento.id,
                                     nombre: elemento.nombre,
@@ -119,7 +127,7 @@ export default function Ventas (key){
                         }
                     }
                 let areas = {
-                    nombreArea: ingresos,
+                    nombreArea: compras,
                     id_area: key,
                     partidas:auxPartidas,
                 }
@@ -129,7 +137,7 @@ export default function Ventas (key){
         let dataTable = []
 
         aux.map(item =>{
-
+            
             item.partidas.forEach((partidaitem, index)=>{
                 let subpartidaaux =[] 
 
@@ -163,8 +171,8 @@ export default function Ventas (key){
     return(
         <>
             <TablaGeneral
-                titulo="Ingreso" 
-                columnas={AREAS_GASTOS_COLUMNS}
+                titulo="Compras" 
+                columnas={columnas}
                 url={'areas'}  
                 numItemsPagina={12}
                 opciones={handleOpen}
@@ -174,12 +182,12 @@ export default function Ventas (key){
                 >
             </TablaGeneral>
 
-            <Modal size="lg" title={"Nuevo Ingreso"} show={modal.crear.show} handleClose={()=>handleCloseGastos ('crear')}>
-                <ModalAgregar tipo= {key.eventKey} handleClose={()=>handleCloseGastos ('crear')} reload={reloadTable}/>
+            <Modal size="lg" title={"Nuevas compras"} show={modal.crear.show} handleClose={()=>handleCloseGastos ('crear')}>
+                <ModalAgregar tipo = {key.eventKey} handleClose={()=>handleCloseGastos ('crear')} reload={reloadTable}/>
             </Modal>    
 
-            <Modal size="lg" title={"Editar Ingreso"} show={modal.editarGastos.show} handleClose={()=>handleCloseGastos ('editarGastos')}>
-                <ModalEditarGastos data={modal.editarGastos.data} handleClose={()=>handleCloseGastos ('editarGastos')} reload={reloadTable}/>
+            <Modal size="lg" title={"Editar compras"} show={modal.editar.show} handleClose={()=>handleCloseGastos ('editar')}>
+                <ModalEditarGastos data={modal.editar.data} handleClose={()=>handleCloseGastos ('editar')} reload={reloadTable}/>
             </Modal>
 
             {/* <Modal size="lg" title={"Editar Sub partida"} show={modal.editarSubPartida.show} handleClose={()=>handleCloseGastos ('editarSubPartida')}>

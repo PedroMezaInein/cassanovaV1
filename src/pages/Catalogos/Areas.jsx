@@ -23,6 +23,7 @@ import { EdithSubArea } from '../../components/cards/Catalogos/EdithSubArea'
 import Gastos from '../../pages/Catalogos/Areas/Gastos'
 import Ventas from '../../pages/Catalogos/Areas/Ventas'
 import Ingresos from '../../pages/Catalogos/Areas/Ingresos'
+import Compras from '../../pages/Catalogos/Areas/Compras'
 
 class Areas extends Component {
 
@@ -533,7 +534,6 @@ class Areas extends Component {
     }
 
     doubleClickSubArea = (element) => {
-        console.log(element)
         this.setState({
             ...this.state,
             subArea:true,
@@ -560,8 +560,12 @@ class Areas extends Component {
                             actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }/>
                     </Tab> */}
 
-                    <Tab eventKey="gastos" title="gastos">
+                    <Tab eventKey="egresos" title="gastos">
                         <Gastos eventKey = { key  } /> 
+                    </Tab>
+
+                    <Tab eventKey="compras" title="compras">
+                        <Compras  eventKey = { key  }/> 
                     </Tab>
 
                     <Tab eventKey="ventas" title="ventas">

@@ -31,7 +31,7 @@ export default function Ventas (key){
             data: false
         }
     })
-console.log(key.eventKey)
+
     useOptionsArea()
 
     const actionsGastos = () => {    
