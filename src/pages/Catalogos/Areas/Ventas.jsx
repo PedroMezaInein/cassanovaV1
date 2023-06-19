@@ -9,7 +9,7 @@ import ModalEditarGastos from '../../../pages/Catalogos/Areas/ModalEditarGastos'
 import ModalEditarSubGasto from '../../../pages/Catalogos/Areas/ModalEditarSubPartida'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 
-export default function Gastos (key){
+export default function Ventas (key){
 
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState()
@@ -18,7 +18,7 @@ export default function Gastos (key){
             show:false,
             data:false
         },
-        editar:{
+        editarGastos:{
             show: false,
             data:false
         },
@@ -37,13 +37,13 @@ export default function Gastos (key){
     const actionsGastos = () => {    
         let aux = [
             {
-                nombre: 'editar',
+                nombre: 'editarGastos',
                 icono: 'fas fa-edit',
                 color: 'blueButton ',
                 funcion: (item) => {
                     setModal({
                         ...modal,
-                        editar: {
+                        editarGastos: {
                         show: true,
                         data: item
                         }
@@ -56,7 +56,7 @@ export default function Gastos (key){
 
     const handleOpen = [
         {
-            nombre: 'Nuevo',
+            nombre: 'Nueva venta',
             funcion: (item) => { 
                 setModal({
                 ...modal,
@@ -89,23 +89,22 @@ export default function Gastos (key){
     }
 
     const proccessData = (e) => {
-
         let aux = []
-        for(let key in e.area){
-            // Imprime el id del area
+        for(let key in e.ventas){
+            // Imprime el id del ventas
         
-            for(let area in e.area[key]){
-                // Imprime el area
+            for(let ventas in e.ventas[key]){
+                // Imprime el ventas
         
                 let auxPartidas = []
 
-                    for(let idpartida in e.area[key][area]){
+                    for(let idpartida in e.ventas[key][ventas]){
 
-                        for(let partida in e.area[key][area][idpartida]){
+                        for(let partida in e.ventas[key][ventas][idpartida]){
                             // Imprime el nombre de cada partida
                             let auxSubpartida = []
 
-                            e.area[key][area][idpartida][partida].forEach(elemento =>{
+                            e.ventas[key][ventas][idpartida][partida].forEach(elemento =>{
                                 auxSubpartida.push({
                                     id: elemento.id,
                                     nombre: elemento.nombre,
@@ -120,7 +119,7 @@ export default function Gastos (key){
                         }
                     }
                 let areas = {
-                    nombreArea: area,
+                    nombreArea: ventas,
                     id_area: key,
                     partidas:auxPartidas,
                 }
@@ -130,7 +129,7 @@ export default function Gastos (key){
         let dataTable = []
 
         aux.map(item =>{
-            
+
             item.partidas.forEach((partidaitem, index)=>{
                 let subpartidaaux =[] 
 
@@ -164,7 +163,7 @@ export default function Gastos (key){
     return(
         <>
             <TablaGeneral
-                titulo="Gastos" 
+                titulo="Ventas" 
                 columnas={AREAS_GASTOS_COLUMNS}
                 url={'areas'}  
                 numItemsPagina={12}
@@ -174,13 +173,13 @@ export default function Gastos (key){
                 reload={setReloadTable}
                 >
             </TablaGeneral>
-
-            <Modal size="lg" title={"Nuevos gastos"} show={modal.crear.show} handleClose={()=>handleCloseGastos ('crear')}>
+            
+            <Modal size="lg" title={"Nuevos venta"} show={modal.crear.show} handleClose={()=>handleCloseGastos ('crear')}>
                 <ModalAgregar tipo = {key.eventKey} handleClose={()=>handleCloseGastos ('crear')} reload={reloadTable}/>
             </Modal>    
 
-            <Modal size="lg" title={"Editar gastos"} show={modal.editar.show} handleClose={()=>handleCloseGastos ('editar')}>
-                <ModalEditarGastos data={modal.editar.data} handleClose={()=>handleCloseGastos ('editar')} reload={reloadTable}/>
+            <Modal size="lg" title={"Editar venta"} show={modal.editarGastos.show} handleClose={()=>handleCloseGastos ('editarGastos')}>
+                <ModalEditarGastos data={modal.editarGastos.data} handleClose={()=>handleCloseGastos ('editarGastos')} reload={reloadTable}/>
             </Modal>
 
             {/* <Modal size="lg" title={"Editar Sub partida"} show={modal.editarSubPartida.show} handleClose={()=>handleCloseGastos ('editarSubPartida')}>
