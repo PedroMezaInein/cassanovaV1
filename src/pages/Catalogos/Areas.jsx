@@ -21,7 +21,8 @@ import { renderToString } from 'react-dom/server'
 import MiModal from 'react-bootstrap/Modal'
 import { EdithSubArea } from '../../components/cards/Catalogos/EdithSubArea'
 import Gastos from '../../pages/Catalogos/Areas/Gastos'
-
+import Ventas from '../../pages/Catalogos/Areas/Ventas'
+import Ingresos from '../../pages/Catalogos/Areas/Ingresos'
 
 class Areas extends Component {
 
@@ -30,7 +31,9 @@ class Areas extends Component {
             nombre: '',
             subarea: '',
             subareas: [],
-            subareasEditable: []
+            subareasEditable: [],
+            tipo: '',
+
         },
         formeditado:0,
         subArea: false,
@@ -45,7 +48,6 @@ class Areas extends Component {
         options: { areas: [], subareas: [], partidas: []}
     }
 
-    
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -178,8 +180,11 @@ class Areas extends Component {
     }
 
     controlledTab = async(value) => {
+
+        const {form} = this.state
         $(`#kt_datatable_${value}`).DataTable().ajax.reload();
-        this.setState({ ...this.state, key: value })
+        form.tipo = value
+        this.setState({ ...this.state, key: value})
     }
 
     deleteElementAxios = async(data, element, tipo) => {
@@ -538,15 +543,14 @@ class Areas extends Component {
 
     render() {
         const { form, modal, title, formeditado, key, modalSee, area, options, subArea, selectedSubArea } = this.state
-        const { access_token } = this.props.authUser
+        const { access_token  } = this.props.authUser
         const tabs = [ 'ventas', 'ingresos']
       
-        console.log(this.props)
         return (
             <Layout active = 'catalogos'  {...this.props} >
 
                 <Tabs id = "tabsAreas" defaultActiveKey = "compras" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
-                    <Tab eventKey = { 'compras' } title = { 'compras' }>
+                    {/* <Tab eventKey = { 'compras' } title = { 'compras' }>
                         <NewTableServerRender columns = { AREAS_COMPRAS_COLUMNS } title = 'ÁREAS' 
                             subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
                             onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } accessToken = { access_token } 
@@ -554,13 +558,21 @@ class Areas extends Component {
                             cardTable = {`card_table_compras`} cardTableHeader = {`card_table_header_compras`} 
                             cardBody = {`card_body_compras`} isTab = { true }
                             actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }/>
-                    </Tab>
+                    </Tab> */}
 
                     <Tab eventKey="gastos" title="gastos">
-                        <Gastos/> 
+                        <Gastos eventKey = { key  } /> 
                     </Tab>
 
-                    {
+                    <Tab eventKey="ventas" title="ventas">
+                        <Ventas eventKey = { key  }  /> 
+                    </Tab>
+
+                    <Tab eventKey="ingresos" title="ingresos">
+                        <Ingresos eventKey = { key  } /> 
+                    </Tab>
+                    
+                    {/* {
                         tabs.map((elemento,index) => {
                             return(
                                 <Tab key={index} eventKey = { elemento } title = { elemento }>
@@ -574,7 +586,7 @@ class Areas extends Component {
                                 </Tab>
                             )
                         })
-                    }
+                    } */}
                 </Tabs>
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>

@@ -11,9 +11,8 @@ import './AreaStyle/_agregarGasto.scss'
 
 export default function ModalAgregar (props) {
 
-    const {handleClose, reload} = props
+    const {handleClose, reload, tipo} = props
     const user = useSelector(state=> state.authUser)
-
     const [form, setForm] = useState ({
         area:'',
         partida: '',
@@ -21,6 +20,7 @@ export default function ModalAgregar (props) {
         createArea: '',
         subPartida: '',
         arraySubPartidas: [],
+        tipo: tipo,
         // i_select: '',
         // i_selectArea: '',
     })
@@ -132,6 +132,7 @@ export default function ModalAgregar (props) {
 
     const submit = () =>{
         // if(Object.keys(validateForm()).length ===0){
+            console.log(form)
         if(validateForm()){
 
             Swal.fire({
@@ -150,7 +151,7 @@ export default function ModalAgregar (props) {
                 subareas: form.arraySubPartidas.map((item, index) => {
                     return item.nombre
                 }),
-                tipo: 'egresos'
+                tipo: form.tipo
             }
  
             apiPostForm('areas', newForm, user.access_token)
@@ -177,7 +178,7 @@ export default function ModalAgregar (props) {
                     text: 'Ha ocurrido un error',
                 })
             })
-        }// 
+        }
         else{
             Swal.fire({
                 title: 'Error',
@@ -275,7 +276,6 @@ export default function ModalAgregar (props) {
 
                 {/* {errores && errores.partida && form.area !== '' && form.area !== null && (form.partida === '' || form.partida === null) &&<span>{errores.partida}</span>} */}
 
-
             </div>
 
             <div className='gasto_subpartida'>
@@ -329,11 +329,9 @@ export default function ModalAgregar (props) {
                 </div>
             </div>
 
-            
             {/* {errores && errores.subPartida && form.subPartida === '' &&<span className='error_departamento'>{errores.subPartida}</span>} */}
             
             {/* {errores && errores.subPartida && form.partida !== '' && form.partida !== null && (form.subPartida === '' || form.subPartida === null) &&<span>{errores.subPartida}</span>} */}
-
 
             {/* ENVIAR */}
             <div className='boton'>
@@ -345,8 +343,6 @@ export default function ModalAgregar (props) {
         
     )
 }
-
-
 
 // export default function ModalAgregar (props) {
 //     const {handleClose, reload} = props
@@ -525,7 +521,6 @@ export default function ModalAgregar (props) {
 //                 //     reload.reload()
 //                 // }
                
-                
 //             })
 //             .catch((error)=>{  
 //                 Swal.close()
@@ -735,7 +730,6 @@ export default function ModalAgregar (props) {
 //             </div>
             
 //             {errores && errores.subPartida && form.partida !== '' && form.partida !== null && (form.subPartida === '' || form.subPartida === null) &&<span>{errores.subPartida}</span>}
-
 
 //             {/* ENVIAR */}
 //             <div className='boton'>
