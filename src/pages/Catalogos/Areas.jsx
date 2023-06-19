@@ -45,7 +45,7 @@ class Areas extends Component {
         title: 'Nueva área',
         area: '',
         tipo: 'compras',
-        key: 'gastos',
+        key: 'egresos',
         options: { areas: [], subareas: [], partidas: []}
     }
 
@@ -544,12 +544,12 @@ class Areas extends Component {
     render() {
         const { form, modal, title, formeditado, key, modalSee, area, options, subArea, selectedSubArea } = this.state
         const { access_token  } = this.props.authUser
-        const tabs = [ 'ventas', 'ingresos']
+        const tabs = [ 'egresos','compras','ventas', 'ingresos']
       
         return (
-            <Layout active = 'catalogos'  {...this.props} >
+            <Layout active = 'compras'  {...this.props} >
 
-                <Tabs id = "tabsAreas" defaultActiveKey = "compras" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
+                <Tabs id = "tabsAreas" defaultActiveKey = "egresos" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
                     {/* <Tab eventKey = { 'compras' } title = { 'compras' }>
                         <NewTableServerRender columns = { AREAS_COMPRAS_COLUMNS } title = 'ÁREAS' 
                             subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
@@ -560,19 +560,19 @@ class Areas extends Component {
                             actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }/>
                     </Tab> */}
 
-                    <Tab eventKey="egresos" title="gastos">
-                        <Gastos eventKey = { key  } /> 
+                    <Tab eventKey="egresos" title="gastos"  >
+                        <Gastos eventKey = { key  }  /> 
                     </Tab>
 
-                    <Tab eventKey="compras" title="compras">
+                    <Tab eventKey="compras" title="compras" >
                         <Compras  eventKey = { key  }/> 
                     </Tab>
 
-                    <Tab eventKey="ventas" title="ventas">
+                    <Tab eventKey="ventas" title="ventas" >
                         <Ventas eventKey = { key  }  /> 
                     </Tab>
 
-                    <Tab eventKey="ingresos" title="ingresos">
+                    <Tab eventKey="ingresos" title="ingresos" >
                         <Ingresos eventKey = { key  } /> 
                     </Tab>
                     
