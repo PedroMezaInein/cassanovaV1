@@ -21,6 +21,7 @@ import { renderToString } from 'react-dom/server'
 import MiModal from 'react-bootstrap/Modal'
 import { EdithSubArea } from '../../components/cards/Catalogos/EdithSubArea'
 import Gastos from '../../pages/Catalogos/Areas/Gastos'
+import Compras from '../../pages/Catalogos/Areas/Compras'
 
 
 class Areas extends Component {
@@ -546,7 +547,7 @@ class Areas extends Component {
             <Layout active = 'catalogos'  {...this.props} >
 
                 <Tabs id = "tabsAreas" defaultActiveKey = "compras" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
-                    <Tab eventKey = { 'compras' } title = { 'compras' }>
+                    {/* <Tab eventKey = { 'compras' } title = { 'compras' }>
                         <NewTableServerRender columns = { AREAS_COMPRAS_COLUMNS } title = 'ÁREAS' 
                             subtitle = 'Listado de áreas' mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } 
                             onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } accessToken = { access_token } 
@@ -554,10 +555,14 @@ class Areas extends Component {
                             cardTable = {`card_table_compras`} cardTableHeader = {`card_table_header_compras`} 
                             cardBody = {`card_body_compras`} isTab = { true }
                             actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }/>
+                    </Tab> */}
+
+                    <Tab eventKey="gastos" title="gastos" onSelect = { (value) => { this.controlledTab(value) } }>
+                        <Gastos /> 
                     </Tab>
 
-                    <Tab eventKey="gastos" title="gastos">
-                        <Gastos/> 
+                    <Tab eventKey="compras" title="compras">
+                        <Compras/> 
                     </Tab>
 
                     {
