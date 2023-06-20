@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from './../../../../functions/api';
+import { apiOptions, apiPutForm, apiPostForm, apiGet } from './../../../../functions/api';
 
 import DateFnsUtils from '@date-io/date-fns';
 import Swal from 'sweetalert2'
 import { es } from 'date-fns/locale'
-import axios from 'axios';
 import S3 from 'react-aws-s3'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -17,27 +16,24 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputLabel from '@material-ui/core/InputLabel';
-import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
-import TrashIcon from '@material-ui/icons/DeleteOutline';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import j2xParser from 'fast-xml-parser'
 
 import Style from './CrearEgreso.module.css'
 
-export default function CrearEgreso(props) {
-    const {opcionesData, reload, handleClose} = props
-    const auth = useSelector((state) => state.authUser.access_token);
+export default function VerEgreso(props) {
+    const {opcionesData, reload, handleClose, data} = props
+    console.log(data)
+    const auth = useSelector((state) => state.authUser.access_token)
     const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState({
         cuentas: [],
@@ -48,12 +44,23 @@ export default function CrearEgreso(props) {
         tiposPagos: [],
     })
 
+    console.log(opciones)
+
     useEffect(() => {
         
         if(opcionesData){
             setOpciones(opcionesData)
         }
     }, [opcionesData])
+
+    useEffect(() => {
+        if(opciones.empresas.length > 0){
+            setForm({
+                ...form,
+                cuentas: opciones.empresas.find(empresa => empresa.id === form.empresa).cuentas
+            })
+        }
+    }, [opciones.empresas])
 
     const [form, setForm] = useState({
         adjuntos: {
@@ -62,35 +69,38 @@ export default function CrearEgreso(props) {
             presupuesto: { files: [], value: '' },
             xml: { files: [], value: '' },
         },
-        area: '',
+        area: data.area.id,
         banco: 0,
-        comision: 0,
+        comision: data.comision,
         correo: '',
-        cuenta: '',
+        cuenta: data.cuenta.id,
         cuentas: [],
         comision: 0,
-        descripcion: '',
-        empresa: '',
-        estatusCompra: 2,
-        factura: false, 
+        descripcion: data.descripcion,
+        empresa: data.empresa.id,
+        estatusCompra: data.estatus_compra.id,
+        factura: data.factura === 1 ? true : false,
         facturaItem: '',
         facturaObject: {},
         fecha: '',
-        id_partidas: "",
+        id_partidas: `${data.id_partidas}`,
         leadId: "",
         nombre: "",
         numCuenta: "",
         partida: '',
-        proveedor: '',
+        proveedor: data.proveedor.id,
+        proveedor_nombre: data.proveedor.razon_social,
         razonSocial: '',
         rfc: null,
-        subarea: '', 
+        subarea: data.subarea.id, 
         telefono: '',
         tipo: 0,
-        tipoImpuesto: 1,
-        tipoPago: 4,
-        total: '',
+        tipoImpuesto: data.tipo_impuesto.id,
+        tipoPago: data.tipo_pago.id,
+        total: data.total,
     })
+
+    console.log(form)
 
     const handleChangeCheck = () => {
         setForm({
@@ -180,7 +190,6 @@ export default function CrearEgreso(props) {
                             obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']
                         }
                     }
-                    console.log(obj)
 
                     let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
                     let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
@@ -193,7 +202,7 @@ export default function CrearEgreso(props) {
                             key: index
                         })
                     })
-                    let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
+                    let path = `C:/fakepath/` + aux[0].name
                     
                     setForm({
                         ...form,
@@ -205,7 +214,7 @@ export default function CrearEgreso(props) {
                         empresa_nombre: empresa ? empresa.nombre : null,
                         proveedor: proveedor ? proveedor.id : null,
                         proveedor_nombre: proveedor ? proveedor.name : null,
-                        cuentas: opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas,
+                        cuentas: opciones.empresas.find((empresa) => empresa.id === empresa.id).cuentas,
                         adjuntos: {
                             ...form.adjuntos,
                             xml: {
@@ -488,7 +497,6 @@ export default function CrearEgreso(props) {
             cancelButtonColor: '#d33',
             reverseButtons: true
         }).then((result) => {
-            
             if (result.value) {
                 Swal.close()
                 Swal.fire({
@@ -524,7 +532,6 @@ export default function CrearEgreso(props) {
                         })
         
                         if (egreso.factura) {
-                            // Adjunto un XML
                             if (Object.keys(form.facturaObject).length > 0) {
                                 if (form.facturaItem) {
                                     //Tiene una factura guardada
@@ -560,7 +567,7 @@ export default function CrearEgreso(props) {
                             if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
                                 //La egreso tiene adjuntos
                                 attachFiles(egreso)
-
+                                
                             } else {
                                 //Egreso generado con éxito 
                                 Swal.close()
@@ -575,8 +582,10 @@ export default function CrearEgreso(props) {
                                     reload.reload()
                                 }
                                 handleClose()
+
                             }
                         }
+        
                     })
                     .catch((error) => {
                         console.log(error)
@@ -616,8 +625,6 @@ export default function CrearEgreso(props) {
         })
     };
 
-    console.log(form)
-
     return (
         <>
             
@@ -627,7 +634,7 @@ export default function CrearEgreso(props) {
                 >
                     <Typography className='proyect-Subtitulo'>DATOS DE LA FACTURA</Typography>
                 </AccordionSummary>
-                <AccordionDetails> 
+                <AccordionDetails>
                     <div style={{ width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-evenly', marginRight: '10px', flexDirection: 'column' }}>
                             <div>
@@ -636,16 +643,15 @@ export default function CrearEgreso(props) {
                                     <FormControlLabel
                                         control={<Checkbox checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
                                         label="No"
-
+                                        disabled
                                     />
                                     <FormControlLabel
                                         control={<Checkbox checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
                                         label="Si"
-
+                                        disabled
                                     />
                                 </FormGroup>
                             </div>  
-                            
                             {
                                 form.factura ?
                                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -658,12 +664,12 @@ export default function CrearEgreso(props) {
                                                         accept="application/xml"
                                                         style={{ display: 'none' }}
                                                         id="xml"
-                                                        
+                                                        disabled
                                                         type="file"
                                                         onChange={onChangeFactura}
                                                     />
                                                     <label htmlFor="xml" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                                        <Button variant="contained" color="primary" component="span">
+                                                        <Button variant="contained" color="primary" component="span" disabled>
                                                             Agregar
                                                         </Button>
                                                     </label>
@@ -695,12 +701,12 @@ export default function CrearEgreso(props) {
                                                         accept="application/pdf"
                                                         style={{ display: 'none' }}
                                                         id="pdf"
-                                                        
+                                                        disabled
                                                         type="file"
                                                         onChange={(e) => handleAddFile(e, 'pdf')} 
                                                     />
                                                     <label htmlFor="pdf" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                                        <Button variant="contained" color="primary" component="span">
+                                                        <Button variant="contained" color="primary" component="span" disabled>
                                                             Agregar
                                                         </Button>
                                                     </label>
@@ -731,6 +737,7 @@ export default function CrearEgreso(props) {
                                                 name="rfc"
                                                 value={form.rfc ? form.rfc : ''}
                                                 onChange={handleChange}
+                                                disabled
                                             />
 
                                         </div>
@@ -752,10 +759,10 @@ export default function CrearEgreso(props) {
                                             name="proveedor"
                                             options={opciones.proveedores}
                                             getOptionLabel={(option) => option.name}
-                                            style={{ width: 230, paddingRight: '1rem' }}
+                                            style={{ width: 270, paddingRight: '1rem' }}
                                             onChange={(event, value) => handleChangeProveedor(event, value)}
                                             renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
-                                            
+                                            disabled
                                         />
                                     </div>
                                             
@@ -773,6 +780,7 @@ export default function CrearEgreso(props) {
                                                 value={form.empresa}
                                                 onChange={handleChange}
                                                 style={{ width: 230, paddingRight: '1rem' }}
+                                                disabled
                                             >
                                                 {
                                                     opciones.empresas.map((item, index) => (
@@ -793,7 +801,7 @@ export default function CrearEgreso(props) {
             </Accordion>
 
 
-            <Accordion defaultExpanded className='proyect-accordion'>
+            <Accordion className='proyect-accordion'>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                 >
@@ -817,6 +825,7 @@ export default function CrearEgreso(props) {
                                             KeyboardButtonProps={{
                                                 'aria-label': 'change date',
                                             }}
+                                            disabled
                                         />
                                     </Grid>
                                 </MuiPickersUtilsProvider>
@@ -833,6 +842,7 @@ export default function CrearEgreso(props) {
                                             name="area"
                                             onChange={handleChange}
                                             style={{ width: 230, marginRight: '1rem' }}
+                                            disabled
                                         >
                                             {departamentos.map((item, index) => (
                                                 <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
@@ -850,10 +860,11 @@ export default function CrearEgreso(props) {
                                     <>
                                         <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
                                         <Select
-                                            value={form.c}
-                                            name="id_partidas"
+                                            value={form.id_partidas}
+                                            name="partida"
                                             onChange={handleChange}
                                             style={{ width: 230, marginRight: '1rem' }}
+                                            disabled
                                         >
                                             {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
                                                 <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -874,6 +885,7 @@ export default function CrearEgreso(props) {
                                             onChange={handleChange}
                                             value={form.subarea}
                                             style={{ width: 230, marginRight: '1rem' }}
+                                            disabled
                                         >
                                             {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id == form.id_partidas).subpartidas.map((item, index) => (
                                                 <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -901,6 +913,7 @@ export default function CrearEgreso(props) {
                                     }}
                                     multiline
                                     style={{ width: '70vh', height: 100 }}
+                                    disabled
                                 />
                             </div>
 
@@ -912,7 +925,7 @@ export default function CrearEgreso(props) {
             </Accordion>
 
 
-            <Accordion defaultExpanded className='proyect-accordion'>
+            <Accordion className='proyect-accordion'>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                 >
@@ -932,6 +945,7 @@ export default function CrearEgreso(props) {
                                                 name="cuenta"
                                                 onChange={handleChange}
                                                 style={{ width: 230, marginRight: '1rem' }}
+                                                disabled
                                             >
                                                 {form.cuentas.map((item, index) => (
                                                     <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -945,14 +959,6 @@ export default function CrearEgreso(props) {
                             <div>
                                 {
                                     opciones.tiposPagos.length > 0 ?
-                                        // <Autocomplete
-                                        //     name="proveedor"
-                                        //     options={opciones.tiposPagos}
-                                        //     getOptionLabel={(option) => option.name}
-                                        //     style={{ width: 230, paddingRight: '1rem' }}
-                                        //     /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                        //     renderInput={(params) => <TextField {...params} label={'tipo de pago'} variant="outlined" />}
-                                        // />
                                         <div>
                                             <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
 
@@ -961,6 +967,7 @@ export default function CrearEgreso(props) {
                                                 name="tipoPago"
                                                 onChange={handleChange}
                                                 style={{ width: 230, marginRight: '1rem' }}
+                                                disabled
                                             >
                                                 {opciones.tiposPagos.map((item, index) => (
                                                     <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
@@ -974,14 +981,6 @@ export default function CrearEgreso(props) {
                             <div>
                                 {
                                     opciones.estatusCompras.length > 0 ?
-                                        // <Autocomplete
-                                        //     name="proveedor"
-                                        //     options={opciones.estatusCompras}
-                                        //     getOptionLabel={(option) => option.name}
-                                        //     style={{ width: 230, paddingRight: '1rem' }}
-                                        //     /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                        //     renderInput={(params) => <TextField {...params} label={'estatus de compra'} variant="outlined" />}
-                                        // />
                                         <div>
                                             <InputLabel id="demo-simple-select-label">Estatus de Compra</InputLabel>
                                             <Select
@@ -989,6 +988,7 @@ export default function CrearEgreso(props) {
                                                 name="estatusCompra"
                                                 onChange={handleChange}
                                                 style={{ width: 230, marginRight: '1rem' }}
+                                                disabled
                                             >
                                                 {opciones.estatusCompras.map((item, index) => (
                                                     <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
@@ -1012,6 +1012,7 @@ export default function CrearEgreso(props) {
                                                 name="tipoImpuesto"
                                                 onChange={handleChange}
                                                 style={{ width: 230, marginRight: '1rem' }}
+                                                disabled
                                             >
                                                 {opciones.tiposImpuestos.map((item, index) => (
                                                     <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
@@ -1030,6 +1031,7 @@ export default function CrearEgreso(props) {
                                     currencySymbol="$"
                                     outputFormat="number"
                                     onChange={(event, value) => handleMoney(value)} 
+                                    disabled
                                     
                                 />
                             </div>
@@ -1041,7 +1043,7 @@ export default function CrearEgreso(props) {
                                     currencySymbol="$"
                                     outputFormat="number"
                                     onChange={(event, value) => handleMoneyComision(value)} 
-                                    
+                                    disabled
                                 />
                             </div>
                         </div>
@@ -1059,9 +1061,10 @@ export default function CrearEgreso(props) {
                                         multiple
                                         type="file"
                                         onChange={(e) => handleAddFile(e, 'pago')} 
+                                        disabled
                                     />
                                     <label htmlFor="pago_gasto" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                        <Button variant="contained" color="primary" component="span">
+                                        <Button variant="contained" color="primary" component="span" disabled>
                                             Agregar
                                         </Button>
                                     </label>
@@ -1094,9 +1097,10 @@ export default function CrearEgreso(props) {
                                         multiple
                                         type="file"
                                         onChange={(e) => handleAddFile(e, 'presupuesto')} 
+                                        disabled
                                     />
                                     <label htmlFor="presupuesto_gasto" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                        <Button variant="contained" color="primary" component="span">
+                                        <Button variant="contained" color="primary" component="span" disabled>
                                             Agregar
                                         </Button>
                                     </label>
@@ -1124,13 +1128,13 @@ export default function CrearEgreso(props) {
                 </AccordionDetails>
             </Accordion>
 
-            <div>
+            {/* <div>
                 <div className="row justify-content-end">
                     <div className="col-md-4">
                         <button className={Style.sendButton} onClick={e => handleSend(form)}>Crear</button>
                     </div>
                 </div>   
-            </div>
+            </div> */}
         
         </>
     )

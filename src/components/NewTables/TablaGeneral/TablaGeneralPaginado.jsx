@@ -14,7 +14,7 @@ import '../../../styles/_TablaGeneral.scss'
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 
 export default function TablaGeneralPaginado(props) {
-    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, customFilter, resetFilters, setResetFilters } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, filtros } = props;
     //para implementar la tabla puedes utilizar los siguientes props
 
     //titulo: titulo de la tabla
@@ -52,6 +52,11 @@ export default function TablaGeneralPaginado(props) {
 
     //ejemplo de uso
     // <Tabla titulo='Titulo de la tabla' subtitulo='Subtitulo de la tabla' columnas={columnas} url={url} numItemsPagina={numItemsPagina} acciones={acciones} ProccessData={ProccessData} opciones={opciones} />
+
+    //filtros: un string con un query para filtrar los datos de la tabla. Se coloca en la url de la siguiente manera
+    //url = url + filtros
+    //ejemplo de estructura de filtros
+    //filtros = '&nombre=valor&nombre2=valor2'
 
     //Los campos obligatorios son titulo, columnas y url
 
@@ -94,7 +99,7 @@ export default function TablaGeneralPaginado(props) {
         waitAlert()
 
         try {
-            axios(`${URL_DEV}${url}?page=${num ? num : currentPage}&page_size=${numItemsPagina}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
+            axios(`${URL_DEV}${url}?page=${num ? num : currentPage}&page_size=${numItemsPagina}${filtros}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
                 .then(res => {
                     setTotalPages(res.data.data.last_page)
                     if (ProccessData !== undefined) {
@@ -192,9 +197,6 @@ export default function TablaGeneralPaginado(props) {
         resetFilter();
         getData();
         setPaginaActual(0);
-        if (setResetFilters) {
-            setResetFilters(true)
-        }
     }
 
     const resetFilter = () => {

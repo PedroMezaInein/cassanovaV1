@@ -26,6 +26,7 @@ import { Requisiciones } from './../Requisiciones/Requisiciones'
 import EgresosTable from './EgresosTable'
 
 import NewTable from './../../../components/NewTables/NewTable'
+import TablaPaginado from './../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
 import { connect } from 'react-redux'
 
@@ -1769,7 +1770,7 @@ class Egresos extends Component {
 
                     <Tab eventKey = { 'gastos' } title = { 'gastos' }>
 
-                         <NewTable
+                        <NewTable
                             tableName='egresos'
                             // tableName='gastos'
                             subtitle='Listado de gastos'
