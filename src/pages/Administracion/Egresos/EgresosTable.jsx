@@ -12,13 +12,13 @@ import Ver from './Modales/VerEgreso'
 import Filtrar from './Modales/Filtrar'
 import FacturaExtranjera from './Modales/FacturaExtranjera'
 import Facturas from './Modales/Facturas'
+import { setMoneyTable, setDateTable } from '../../../functions/setters'
 
 import Swal from 'sweetalert2'
 
 import { apiOptions, catchErrors, apiDelete, apiPostForm, apiGet } from './../../../functions/api';
 
-export default function EgresosTable(id_egreso) { 
-
+export default function EgresosTable() { 
     const auth = useSelector((state) => state.authUser.access_token);
     const [opcionesData, setOpcionesData] = useState()
     const [reloadTable, setReloadTable] = useState()
@@ -50,18 +50,17 @@ export default function EgresosTable(id_egreso) {
         }
     })
 
-    const [proveedoresData, setProveedoresData] = useState();
+    // useEffect(() => {
+    //     getProveedores()
+    // }, [filtrado])
 
     useEffect(() => {
         getProveedores()
-    }, [])
-
-    useEffect(() => {
         if (reloadTable) {
             reloadTable.reload()
         }
     }, [filtrado])
-
+    
     const getProveedores = () => {
         Swal.fire({
             title: 'Cargando...',
@@ -73,7 +72,7 @@ export default function EgresosTable(id_egreso) {
         apiOptions(`v2/administracion/egresos`, auth)
             .then(res => {
                 let data = res.data
-                console.log(data)
+
                 let aux = {
                     cuentas: [],
                     empresas: [],
@@ -140,7 +139,20 @@ export default function EgresosTable(id_egreso) {
         
     }
 
-    const [filtrado, setFiltrado] = useState('')
+    const [filtrado, setFiltrado] = useState('') 
+
+    useEffect(() => {
+        // getProveedores()
+
+        // setFiltrado()
+        console.log('recarga de nuevo')
+        if (filtrado) {
+            reloadTable.reload(filtrado)
+             setFiltrado('')
+
+        }
+
+    }, [filtrado])
 
     const deleteEgresoAxios = (id) => {
         apiDelete(`egresos/${id}`, auth).then(
@@ -158,7 +170,7 @@ export default function EgresosTable(id_egreso) {
     }  
 
     const columns = [
-        { nombre: 'Acciones', identificador: 'acciones', sort: false, stringSearch: false },
+        { nombre: '', identificador: 'acciones', sort: false, stringSearch: false },
         { nombre: 'ID', identificador: 'id', stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', stringSearch: false },
         { nombre: 'Proveedor', identificador: 'proveedor', stringSearch: false },
@@ -166,8 +178,7 @@ export default function EgresosTable(id_egreso) {
         { nombre: 'Área', identificador: 'area', stringSearch: false },
         { nombre: 'Sub-Área', identificador: 'subarea', stringSearch: false },
         { nombre: 'Monto', identificador: 'monto', stringSearch: false },
-        { nombre: 'Comisión', identificador: 'comision', stringSearch: false },
-        { nombre: 'Total', identificador: 'total', stringSearch: false },
+        // { nombre: 'Total', identificador: 'total', stringSearch: false },
         { nombre: 'Cuenta', identificador: 'cuenta', stringSearch: false },
         { nombre: 'Pago', identificador: 'pago', stringSearch: false },
         { nombre: 'Impuesto', identificador: 'impuesto', stringSearch: false },
@@ -266,6 +277,8 @@ export default function EgresosTable(id_egreso) {
     ]
 
     const openModal = (tipo, data) => {
+        console.log(tipo)
+
         setModal({
             ...modal,
             [tipo]: {
@@ -276,6 +289,7 @@ export default function EgresosTable(id_egreso) {
     }
 
     const handleClose = (tipo) => {
+        console.log(tipo)
         setModal({
             ...modal,
             [tipo]: {
@@ -284,6 +298,10 @@ export default function EgresosTable(id_egreso) {
             }
         })
     }
+    
+    const formatNumber = (num) => {
+        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+    }
 
     const proccessData = (datos) => { 
         let aux = []
@@ -291,9 +309,9 @@ export default function EgresosTable(id_egreso) {
             aux.push({
                 data: dato,
                 id: dato.id,
-                monto: dato.monto,
-                total: dato.total,
-                comision: dato.comision,
+                fecha: setDateTable(dato.created_at),
+                monto: formatNumber(dato.monto),
+                // total: formatNumber(dato.total),
                 area: dato.area.nombre,
                 subarea: dato.subarea.nombre,
                 proveedor: dato.proveedor?.razon_social,
@@ -308,6 +326,11 @@ export default function EgresosTable(id_egreso) {
         return aux
     }
 
+    function reformatDate(dateStr) {
+        var dArr = dateStr.split("-");  // ex input: "2010-01-18"
+        return dArr[2] + "/" + dArr[1] + "/" + dArr[0]/* .substring(2) */; //ex output: "18/01/10"
+    }
+
     return (
         <>
             <TablaGeneralPaginado
@@ -315,7 +338,7 @@ export default function EgresosTable(id_egreso) {
                 subtitulo="listado de gastos"
                 url={'v3/administracion/gastos'}
                 columnas={columns}
-                numItemsPagina={20}
+                numItemsPagina={50}
                 ProccessData={proccessData}
                 opciones={opciones}
                 acciones={acciones}
@@ -327,9 +350,9 @@ export default function EgresosTable(id_egreso) {
                 <Crear handleClose={e => handleClose('crear')} opcionesData={opcionesData} reload={reloadTable}/> 
             </Modal>
 
-            <Modal size="xl" title={"Facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
+            {/* <Modal size="xl" title={"Facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
                     <Facturas handleClose={e => handleClose('facturas')} opcionesData={opcionesData} estado={proveedoresData} data={modal.facturas.data}/>
-                </Modal>
+                </Modal> */}
 
             {
                 modal.editar?.data &&
@@ -348,7 +371,7 @@ export default function EgresosTable(id_egreso) {
             {
                 modal.filtrar.data &&
                 <Modal size="lg" title={"Filtrar gastos"} show={modal.filtrar?.show} handleClose={e => handleClose('filtrar')} >
-                    <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado}/>
+                    <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado}  reload={reloadTable}/>
                 </Modal>
             }
 

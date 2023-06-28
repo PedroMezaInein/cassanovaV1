@@ -18,10 +18,15 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputLabel from '@material-ui/core/InputLabel';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+
+import Style from './estilos.module.css'
 
 export default function CrearEgreso(props) {
-    const {opcionesData, reload, handleClose, filtrarTabla} = props
+    const {opcionesData, reload, handleClose, filtrarTabla,filtrada,setFiltrado} = props
     const departamentos = useSelector(state => state.opciones.areas)
+    const auth = useSelector((state) => state.authUser.access_token);
+
     const [opciones, setOpciones] = useState({
         cuentas: [],
         empresas: [],
@@ -32,12 +37,12 @@ export default function CrearEgreso(props) {
     })
 
     useEffect(() => {
-        
+       
         if(opcionesData){
             setOpciones(opcionesData)
         }
     }, [opcionesData])
-
+ 
     const [form, setForm] = useState({
         area: '',
         cuenta: '',
@@ -45,7 +50,7 @@ export default function CrearEgreso(props) {
         descripcion: '',
         identificador: '',
         empresa: '',
-        estatusCompra: '',
+        monto: '',
         factura: '', 
         fecha_fin: '',
         fecha_inicio: '',
@@ -121,6 +126,13 @@ export default function CrearEgreso(props) {
             [tipo]: new Date(date)
         })
     };
+    
+    const handleMoney = (e) => {
+        setForm({
+            ...form,
+            monto: e
+        })
+    }
 
     const changeDateFormat = (date) => {
         if(date === null || date === ''){
@@ -135,8 +147,11 @@ export default function CrearEgreso(props) {
     }
 
     const filtrar = () => {
-        filtrarTabla(`&identificador=${form.identificador}&fecha_inicio=${changeDateFormat(form.fecha_inicio)}&fecha_fin=${changeDateFormat(form.fecha_fin)}&proveedor=${form.proveedor}&empresa=${form.empresa}&area=${form.area}&subarea=${form.subarea}&cuenta=${form.cuenta}&estatusCompra=${form.estatusCompra}&factura=${form.factura}&descripcion=${form.descripcion}`)
-    }
+        
+            filtrarTabla(`&identificador=${form.identificador}&fecha_inicio=${changeDateFormat(form.fecha_inicio)}&fecha_fin=${changeDateFormat(form.fecha_fin)}&proveedor=${form.proveedor}&empresa=${form.empresa}&area=${form.area}&subarea=${form.subarea}&cuenta=${form.cuenta}&monto=${form.monto}&factura=${form.factura}&descripcion=${form.descripcion}`)
+            // console.log('filtrar tabla')
+            handleClose()
+        }
 
     return (
         <>
@@ -158,7 +173,7 @@ export default function CrearEgreso(props) {
                         />    
                     </div>
                     <div>
-                        <InputLabel >Fecha inicio</InputLabel>
+                        <InputLabel >RANGO INICIAL</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardDatePicker
@@ -177,7 +192,7 @@ export default function CrearEgreso(props) {
                     </div> 
 
                     <div>
-                        <InputLabel >Fecha fin</InputLabel>
+                        <InputLabel >RANGO FINAL</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardDatePicker
@@ -196,10 +211,6 @@ export default function CrearEgreso(props) {
                     </div>     
                 </div>
                 
-
-                
-                      
-
                 <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '4rem', marginBottom: '4rem'}}>
                     {
                         opciones.proveedores.length > 0 ?
@@ -209,7 +220,7 @@ export default function CrearEgreso(props) {
                                 name="proveedor"
                                 options={opciones.proveedores}
                                 getOptionLabel={(option) => option.name}
-                                style={{ width: 230, paddingRight: '1rem' }}
+                                style={{ width: 350, paddingRight: '1rem' }}
                                 onChange={(event, value) => handleChangeProveedor(event, value)}
                                 renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
                             />
@@ -217,6 +228,26 @@ export default function CrearEgreso(props) {
                                 
                         : null
                     } 
+
+                        <div>
+                            <CurrencyTextField
+                                label="monto"
+                                name="monto"
+                                value={form.monto}
+                                currencySymbol="$"
+                                outputFormat="number"
+                                onChange={(event, value) => handleMoney(value)}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                style={{width: '150px'}}
+                                />
+                        
+                        </div>
+                </div>
+
+                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '4rem', marginBottom: '4rem'}}>
+
                     {
                         opciones.empresas.length > 0 ?
                             <div>
@@ -255,9 +286,6 @@ export default function CrearEgreso(props) {
                         : null
                     }    
                 </div>
-
-                
-
 
                 <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '1.5rem', marginBottom: '5rem'}}>
                     <div>
@@ -324,7 +352,7 @@ export default function CrearEgreso(props) {
                 </div>
 
                 <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '1.5rem', marginBottom: '5rem'}}>
-                    {
+                    {/* {
                         opciones.estatusCompras.length > 0 ?
                             <div>
                                 <InputLabel id="demo-simple-select-label">Estatus de Compra</InputLabel>
@@ -340,10 +368,10 @@ export default function CrearEgreso(props) {
                                 </Select>
                             </div>
                             : null
-                    }
-
+                    } */}
+                    
                     <div>
-                        <InputLabel>¿Lleva factura?</InputLabel>
+                        <InputLabel>¿Factura?</InputLabel>
                         <FormGroup row>
                             <FormControlLabel
                                 control={<Checkbox checked={form.factura === false ? true : false} onChange={e=>handleChangeCheck('no')} color='secondary' name='factura' />}
@@ -358,9 +386,6 @@ export default function CrearEgreso(props) {
                         </FormGroup>
                     </div>     
                 </div>
-
-
-                
 
                 <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '1.5rem', marginBottom: '1rem'}}>
                     <TextField
@@ -380,7 +405,7 @@ export default function CrearEgreso(props) {
             </div>
 
             <div>
-                <button onClick={filtrar}>Filtrar</button>
+                <button className={Style.sendButton}  onClick={filtrar}>Filtrar</button>
             </div>
 
         </>
