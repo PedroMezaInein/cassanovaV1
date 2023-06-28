@@ -102,7 +102,7 @@ export default function TablaGeneralPaginado(props) {
             axios(`${URL_DEV}${url}?page=${num ? num : currentPage}&page_size=${numItemsPagina}${filtros}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
                 .then(res => {
                     setTotalPages(res.data.data.last_page? res.data.data.last_page : 1)
-                    console.log(filtros)
+
                     if (ProccessData !== undefined) {
                         setData(ProccessData(res.data))
                         setFilterData(ProccessData(res.data))
@@ -327,7 +327,7 @@ export default function TablaGeneralPaginado(props) {
                                     <tr >
                                         {columnas.map((columna, index) => {
                                             return (
-                                                <th key={index} className='mt-25'>
+                                                <th key={index} className='mt-20'>
                                                     <div className="TitleColumn">
 
                                                         {

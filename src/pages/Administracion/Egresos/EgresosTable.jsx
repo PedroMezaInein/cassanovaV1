@@ -11,6 +11,7 @@ import Editar from './Modales/EditarGasto'
 import Ver from './Modales/VerEgreso'
 import Filtrar from './Modales/Filtrar'
 import FacturaExtranjera from './Modales/FacturaExtranjera'
+import { setMoneyTable, setDateTable } from '../../../functions/setters'
 
 import Swal from 'sweetalert2'
 
@@ -147,7 +148,6 @@ export default function EgresosTable() {
 
     }, [filtrado])
 
-
     const deleteEgresoAxios = (id) => {
         apiDelete(`egresos/${id}`, auth).then(
             (response) => {
@@ -164,7 +164,7 @@ export default function EgresosTable() {
     }  
 
     const columns = [
-        { nombre: 'Acciones', identificador: 'acciones', sort: false, stringSearch: false },
+        { nombre: '', identificador: 'acciones', sort: false, stringSearch: false },
         { nombre: 'ID', identificador: 'id', stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', stringSearch: false },
         { nombre: 'Proveedor', identificador: 'proveedor', stringSearch: false },
@@ -172,8 +172,7 @@ export default function EgresosTable() {
         { nombre: 'Área', identificador: 'area', stringSearch: false },
         { nombre: 'Sub-Área', identificador: 'subarea', stringSearch: false },
         { nombre: 'Monto', identificador: 'monto', stringSearch: false },
-        { nombre: 'Comisión', identificador: 'comision', stringSearch: false },
-        { nombre: 'Total', identificador: 'total', stringSearch: false },
+        // { nombre: 'Total', identificador: 'total', stringSearch: false },
         { nombre: 'Cuenta', identificador: 'cuenta', stringSearch: false },
         { nombre: 'Pago', identificador: 'pago', stringSearch: false },
         { nombre: 'Impuesto', identificador: 'impuesto', stringSearch: false },
@@ -293,6 +292,10 @@ export default function EgresosTable() {
             }
         })
     }
+    
+    const formatNumber = (num) => {
+        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+    }
 
     const proccessData = (datos) => { 
         let aux = []
@@ -300,9 +303,9 @@ export default function EgresosTable() {
             aux.push({
                 data: dato,
                 id: dato.id,
-                monto: dato.monto,
-                total: dato.total,
-                comision: dato.comision,
+                fecha: setDateTable(dato.created_at),
+                monto: formatNumber(dato.monto),
+                // total: formatNumber(dato.total),
                 area: dato.area.nombre,
                 subarea: dato.subarea.nombre,
                 proveedor: dato.proveedor?.razon_social,
@@ -317,6 +320,11 @@ export default function EgresosTable() {
         return aux
     }
 
+    function reformatDate(dateStr) {
+        var dArr = dateStr.split("-");  // ex input: "2010-01-18"
+        return dArr[2] + "/" + dArr[1] + "/" + dArr[0]/* .substring(2) */; //ex output: "18/01/10"
+    }
+
     return (
         <>
             <TablaGeneralPaginado
@@ -324,7 +332,7 @@ export default function EgresosTable() {
                 subtitulo="listado de gastos"
                 url={'v3/administracion/gastos'}
                 columnas={columns}
-                numItemsPagina={20}
+                numItemsPagina={50}
                 ProccessData={proccessData}
                 opciones={opciones}
                 acciones={acciones}
