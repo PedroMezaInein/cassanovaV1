@@ -14,7 +14,7 @@ import '../../../styles/_TablaGeneral.scss'
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 
 export default function TablaGeneralPaginado(props) {
-    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, filtros } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, filtros, customFilter,resetFilters } = props;
     //para implementar la tabla puedes utilizar los siguientes props
 
     //titulo: titulo de la tabla
@@ -101,11 +101,31 @@ export default function TablaGeneralPaginado(props) {
         try {
             axios(`${URL_DEV}${url}?page=${num ? num : currentPage}&page_size=${numItemsPagina}${filtros}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
                 .then(res => {
-                    setTotalPages(res.data.data.last_page)
+                    setTotalPages(res.data.data.last_page? res.data.data.last_page : 1)
+                    console.log(filtros)
                     if (ProccessData !== undefined) {
                         setData(ProccessData(res.data))
                         setFilterData(ProccessData(res.data))
+
+                        // if (customFilter && resetFilters === false) {
+                        //     let aux = customFilter(ProccessData(res.data))
+                        //     setData(aux)
+                        //     setFilterData(aux)
+                        //     .then(() => {
+                        //         if (reload) {
+                        //             reload.reload()
+                        //         }
+                        //         handleClose()
+                        //     })
+                            
+                        // } else {
+                        //     setData(ProccessData(res.data))
+                        //     setFilterData(ProccessData(res.data))
+                        // }
+
                     } else {
+                        // setData(ProccessData(res.data))
+                        // setFilterData(ProccessData(res.data))
                         setData(res.data)
                         setFilterData(res.data)
                     }
@@ -217,9 +237,17 @@ export default function TablaGeneralPaginado(props) {
 
     const getPageNumbersToShow = () => {
 
-        if (totalPages <= 3) {
-            return totalPages
-        } else {
+        // if (totalPages <= 1) {
+           
+        //     const firstPageToShow = Math.max(1, currentPage - 1)
+        //     const lastPageToShow = Math.min(totalPages, currentPage + 1)
+        //     let pageNumbersToShow = [];
+
+        //     pageNumbersToShow.push(1)
+
+        //     return pageNumbersToShow
+        // } else {
+
             const firstPageToShow = Math.max(1, currentPage - 1)
             const lastPageToShow = Math.min(totalPages, currentPage + 1)
 
@@ -239,8 +267,8 @@ export default function TablaGeneralPaginado(props) {
                 pageNumbersToShow.push(totalPages)
             }
 
-            return pageNumbersToShow
-        }
+                return pageNumbersToShow
+        // }
     }
 
     // <div>
@@ -415,14 +443,18 @@ export default function TablaGeneralPaginado(props) {
                             </div> */}
                             
                             <div className='tabla_paginado'>
-                                <button className='tabla_paginado_flecha' onClick={() => changeCurrentPage(currentPage - 1)} disabled={currentPage === 1}>&#60; Anterior</button>
-                                {getPageNumbersToShow().map((number, index) => (
-                                    <button className='tabla_paginado_num' key={index} onClick={() => {
-                                        if (number !== '...') {
-                                            changeCurrentPage(number)
-                                        }
-                                    }} disabled={number === currentPage}>{number}</button>
-                                ))}
+                                <button className='tabla_paginado_flecha' onClick={() => handlePrevPagina()} disabled={currentPage === 1}>&#60; Anterior</button>
+                                { 
+                                getPageNumbersToShow ?
+                                    getPageNumbersToShow().map((number, index) => (
+                                        <button className='tabla_paginado_num' key={index} onClick={() => {
+                                            if (number !== '...') {
+                                                changeCurrentPage(number)
+                                            }
+                                        }} disabled={number === currentPage}>{number}</button>
+                                    ))
+                                    : null
+                                }
                                 <button className='tabla_paginado_flecha' onClick={() => changeCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}> Siguiente &#62;</button>
                             </div>
 

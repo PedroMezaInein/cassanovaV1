@@ -14,10 +14,7 @@ import FacturaExtranjera from './Modales/FacturaExtranjera'
 
 import Swal from 'sweetalert2'
 
-
 import { apiOptions, catchErrors, apiDelete, apiPostForm, apiGet } from './../../../functions/api';
-
-
 
 export default function EgresosTable() { 
     const auth = useSelector((state) => state.authUser.access_token);
@@ -47,16 +44,17 @@ export default function EgresosTable() {
         }
     })
 
-    useEffect(() => {
-        getProveedores()
-    }, [])
+    // useEffect(() => {
+    //     getProveedores()
+    // }, [filtrado])
 
     useEffect(() => {
+        getProveedores()
         if (reloadTable) {
             reloadTable.reload()
         }
     }, [filtrado])
-
+    
     const getProveedores = () => {
         Swal.fire({
             title: 'Cargando...',
@@ -68,7 +66,7 @@ export default function EgresosTable() {
         apiOptions(`v2/administracion/egresos`, auth)
             .then(res => {
                 let data = res.data
-                console.log(data)
+
                 let aux = {
                     cuentas: [],
                     empresas: [],
@@ -134,7 +132,21 @@ export default function EgresosTable() {
         
     }
 
-    const [filtrado, setFiltrado] = useState('')
+    const [filtrado, setFiltrado] = useState('') 
+
+    useEffect(() => {
+        // getProveedores()
+
+        // setFiltrado()
+        console.log('recarga de nuevo')
+        if (filtrado) {
+            reloadTable.reload(filtrado)
+             setFiltrado('')
+
+        }
+
+    }, [filtrado])
+
 
     const deleteEgresoAxios = (id) => {
         apiDelete(`egresos/${id}`, auth).then(
@@ -260,6 +272,8 @@ export default function EgresosTable() {
     ]
 
     const openModal = (tipo, data) => {
+        console.log(tipo)
+
         setModal({
             ...modal,
             [tipo]: {
@@ -270,6 +284,7 @@ export default function EgresosTable() {
     }
 
     const handleClose = (tipo) => {
+        console.log(tipo)
         setModal({
             ...modal,
             [tipo]: {
@@ -338,7 +353,7 @@ export default function EgresosTable() {
             {
                 modal.filtrar.data &&
                 <Modal size="lg" title={"Filtrar gastos"} show={modal.filtrar?.show} handleClose={e => handleClose('filtrar')} >
-                    <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado}/>
+                    <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado}  reload={reloadTable}/>
                 </Modal>
             }
 
