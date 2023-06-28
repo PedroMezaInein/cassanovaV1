@@ -43,6 +43,8 @@ export default function EditarEgreso(props) {
         tiposPagos: [],
     })
 
+    console.log(data)
+
     useEffect(() => {
         
         if(opcionesData){

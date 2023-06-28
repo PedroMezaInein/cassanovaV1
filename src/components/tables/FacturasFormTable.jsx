@@ -43,6 +43,7 @@ class PermisosForm extends Component {
     
     getOptions = async() => {
         const { tipo_factura, at } = this.props
+        console.log(tipo_factura)
         apiOptions(`v2/administracion/facturas/${tipo_factura}`, at).then(
             (response) => {
                 const { estatusCompras, clientes, empresas, proveedores } = response.data
@@ -170,6 +171,7 @@ class PermisosForm extends Component {
         }else{
             const { form } = this.state
             form[name] = value
+            console.log(value)
             this.setState({ ...this.state, form })
             questionAlertY(
                 `Cambiarás el estatus de la compra a: ${value.label}`,
@@ -180,6 +182,7 @@ class PermisosForm extends Component {
     }
     updateStatus = async () => {
         const { at } = this.props
+        // console.log(at)
         const { form } = this.state
         let value = form.estatusCompra.value
         waitAlert()
@@ -491,9 +494,13 @@ class PermisosForm extends Component {
 
     attachFactura = () => {
         const { at, tipo_factura, id } = this.props
+        console.log('id.data')
+        console.log(id)
         const { form } = this.state
         let objeto = {}
         objeto.dato = id
+        console.log('objeto.dato')
+        console.log(objeto) //contiene id_item, id_factura y tipo: egresos
         switch(tipo_factura){
             case 'compras':
                 objeto.tipo = 'compra'

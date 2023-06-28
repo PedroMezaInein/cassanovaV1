@@ -11,15 +11,14 @@ import Editar from './Modales/EditarGasto'
 import Ver from './Modales/VerEgreso'
 import Filtrar from './Modales/Filtrar'
 import FacturaExtranjera from './Modales/FacturaExtranjera'
+import Facturas from './Modales/Facturas'
 
 import Swal from 'sweetalert2'
 
-
 import { apiOptions, catchErrors, apiDelete, apiPostForm, apiGet } from './../../../functions/api';
 
+export default function EgresosTable(id_egreso) { 
 
-
-export default function EgresosTable() { 
     const auth = useSelector((state) => state.authUser.access_token);
     const [opcionesData, setOpcionesData] = useState()
     const [reloadTable, setReloadTable] = useState()
@@ -44,8 +43,14 @@ export default function EgresosTable() {
         facturaExtranjera: {
             show: false,
             data: null
+        },
+        facturas: {
+            show: false,
+            data: null
         }
     })
+
+    const [proveedoresData, setProveedoresData] = useState();
 
     useEffect(() => {
         getProveedores()
@@ -128,7 +133,8 @@ export default function EgresosTable() {
 
                 Swal.close()
                 setOpcionesData(aux)
-                    
+                // setProveedoresData(aux);
+  
             }
         )
         
@@ -213,7 +219,7 @@ export default function EgresosTable() {
         {
             nombre: 'Adjuntos',
             icono: 'fas fa-paperclip',
-            color: 'reyButton',
+            color: 'yellowButton',
             funcion: (item) => {
             
             }
@@ -229,9 +235,9 @@ export default function EgresosTable() {
         {
             nombre: 'Facturas',
             icono: 'fas fa-file-invoice',
-            color: 'reyButton',
+            color: 'perryButton',
             funcion: (item) => {
-
+                openModal('facturas', item)
             }
         },
     ]
@@ -321,6 +327,10 @@ export default function EgresosTable() {
                 <Crear handleClose={e => handleClose('crear')} opcionesData={opcionesData} reload={reloadTable}/> 
             </Modal>
 
+            <Modal size="xl" title={"Facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
+                    <Facturas handleClose={e => handleClose('facturas')} opcionesData={opcionesData} estado={proveedoresData} data={modal.facturas.data}/>
+                </Modal>
+
             {
                 modal.editar?.data &&
                 <Modal size="lg" title={"Editar gasto"} show={modal.editar?.show} handleClose={e => handleClose('editar')} >
@@ -348,6 +358,13 @@ export default function EgresosTable() {
                     <FacturaExtranjera handleClose={e => handleClose('facturaExtranjera')} opcionesData={opcionesData} data={modal.facturaExtranjera.data}/>
                 </Modal>
             }
+
+            {/* {
+                modal.facturas.data &&
+                <Modal size="lg" title={"Facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
+                    <Facturas handleClose={e => handleClose('facturas')} opcionesData={opcionesData} data={modal.facturas.data}/>
+                </Modal>
+            } */}
 
         </>
     )
