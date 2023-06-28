@@ -972,31 +972,7 @@ export default function CrearEgreso(props) {
 
                             </div> 
                             <div>
-                                {
-                                    opciones.estatusCompras.length > 0 ?
-                                        // <Autocomplete
-                                        //     name="proveedor"
-                                        //     options={opciones.estatusCompras}
-                                        //     getOptionLabel={(option) => option.name}
-                                        //     style={{ width: 230, paddingRight: '1rem' }}
-                                        //     /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                        //     renderInput={(params) => <TextField {...params} label={'estatus de compra'} variant="outlined" />}
-                                        // />
-                                        <div>
-                                            <InputLabel id="demo-simple-select-label">Estatus de Compra</InputLabel>
-                                            <Select
-                                                value={form.estatusCompra}
-                                                name="estatusCompra"
-                                                onChange={handleChange}
-                                                style={{ width: 230, marginRight: '1rem' }}
-                                            >
-                                                {opciones.estatusCompras.map((item, index) => (
-                                                    <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        </div>
-                                        : null
-                                }
+                              
 
                             </div> 
                         </div>
