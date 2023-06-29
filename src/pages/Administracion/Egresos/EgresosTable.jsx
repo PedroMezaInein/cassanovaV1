@@ -139,7 +139,6 @@ export default function EgresosTable() {
         // getProveedores()
 
         // setFiltrado()
-        console.log('recarga de nuevo')
         if (filtrado) {
             reloadTable.reload(filtrado)
              setFiltrado('')
@@ -221,17 +220,10 @@ export default function EgresosTable() {
                 openModal('ver', item)
             }
         },
+       
         {
             nombre: 'Adjuntos',
             icono: 'fas fa-paperclip',
-            color: 'reyButton',
-            funcion: (item) => {
-            
-            }
-        },
-        {
-            nombre: 'Factura extranjera',
-            icono: 'fas fa-file-invoice-dollar',
             color: 'reyButton',
             funcion: (item) => {
                 openModal('facturaExtranjera', item)
@@ -271,7 +263,6 @@ export default function EgresosTable() {
     ]
 
     const openModal = (tipo, data) => {
-        console.log(tipo)
 
         setModal({
             ...modal,
@@ -283,7 +274,6 @@ export default function EgresosTable() {
     }
 
     const handleClose = (tipo) => {
-        console.log(tipo)
         setModal({
             ...modal,
             [tipo]: {
