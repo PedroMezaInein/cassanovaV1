@@ -86,16 +86,13 @@ export default function FacturaExtranjera(props) {
     }, [])
 
     const handleChange = (event, newValue) => {
-        console.log('newvalue', event) 
         setValue(newValue);
     };
 
     const getAdjuntos = () => {
-        console.log(props.data.id)
         try {
             apiGet(`v2/administracion/egresos/adjuntos/${props.data.id}`, authUser)
                 .then(res => {
-                    console.log(res.data.egreso.facturas_pdf)
                     let adjunAux = res.data.egreso.facturas_pdf
                     let adjunPagos = res.data.egreso.pagos
                     let adjunPresupuesto = res.data.egreso.presupuestos
@@ -108,7 +105,6 @@ export default function FacturaExtranjera(props) {
 
                     }
                     adjunAux.forEach((element) => {
-                        console.log(element)
                         switch (element.pivot.tipo) {
                             case 'facturas_pdf':
                                 aux.facturas_pdf.push(element)
@@ -118,7 +114,6 @@ export default function FacturaExtranjera(props) {
                         }
                     });
                     adjunPagos.forEach((element) => {
-                        console.log(element)
                         switch (element.pivot.tipo) { 
                             case 'pago':
                                 aux.pago.push(element)
@@ -128,7 +123,6 @@ export default function FacturaExtranjera(props) {
                         }
                     });
                     adjunPresupuesto.forEach((element) => {
-                        console.log(element)
                         switch (element.pivot.tipo) { 
                             case 'presupuesto':
                                 aux.Presupuestos.push(element)
@@ -137,9 +131,6 @@ export default function FacturaExtranjera(props) {
                                 break;
                         }
                     });
-                    console.log(aux)
-                    console.log('aux')
-
                     setAdjuntos(aux)
                 })
             
@@ -165,7 +156,6 @@ export default function FacturaExtranjera(props) {
 
     const handleFile = (e) => {
         form.tipo = e.target.files[0]
-        console.log(form)
         setForm({
             ...form,
             [activeTab]: [e.target.files[0]]
@@ -203,17 +193,14 @@ export default function FacturaExtranjera(props) {
                         break
                 }
             }) */
-            console.log(activeTab)
             data.append(`files_name_${activeTab}[]`, form[activeTab][0].name)
             data.append(`files_${activeTab}[]`, form[activeTab][0])
             data.append('adjuntos[]', activeTab)
             data.append('tipo', activeTab)
-            console.log(data)
 
             try {
                 apiPostForm(`v2/administracion/egresos/${props.data.id}/archivos/s3`, data, authUser)
                     .then(res => {
-                        console.log(res)
                         Swal.close()
                         Swal.fire({
                             icon: 'success',
@@ -223,7 +210,6 @@ export default function FacturaExtranjera(props) {
                         })
                         getAdjuntos()
 
-                        console.log('res', res)
                         if (res.status === 200) {
                             Swal.fire({
                                 icon: 'success',
@@ -262,7 +248,6 @@ export default function FacturaExtranjera(props) {
     }
 
     const getButtonOptions = (tipo) => { 
-        console.log(form.tipo.name)
         
         return (
             <>
