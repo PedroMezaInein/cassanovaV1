@@ -34,6 +34,7 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import j2xParser from 'fast-xml-parser'
 
 import Style from './CrearEgreso.module.css'
+import EgresosTable from '../EgresosTable';
 
 export default function CrearEgreso(props) {
     const {opcionesData, reload, handleClose} = props
@@ -180,9 +181,19 @@ export default function CrearEgreso(props) {
                             obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']
                         }
                     }
-                    console.log(obj)
+                    // console.log(obj)
 
                     let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
+
+                    if(empresa === undefined ){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Fromato XML incorrecto',
+                            text: 'En esta factura no somos los receptores',
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+                    }
                     let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
                     let aux = []
                     files.forEach((file, index) => {
@@ -194,7 +205,6 @@ export default function CrearEgreso(props) {
                         })
                     })
                     let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
-                    
                     setForm({
                         ...form,
                         fecha: obj.fecha,
@@ -205,7 +215,7 @@ export default function CrearEgreso(props) {
                         empresa_nombre: empresa ? empresa.nombre : null,
                         proveedor: proveedor ? proveedor.id : null,
                         proveedor_nombre: proveedor ? proveedor.name : null,
-                        cuentas: opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas,
+                        cuentas: empresa ? opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas : '',
                         adjuntos: {
                             ...form.adjuntos,
                             xml: {
@@ -402,6 +412,7 @@ export default function CrearEgreso(props) {
                             })
                     })
                 })
+                
                 Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, egreso) }).catch(err => console.error(err))
             }, (error) => { }
         ).catch((error) => { 
@@ -423,6 +434,7 @@ export default function CrearEgreso(props) {
         apiPostForm(`v2/administracion/facturas`, aux, auth).then(
             (response) => {
                 const { factura } = response.data
+
                 setForm({
                     ...form,
                     facturaItem: factura,
@@ -441,6 +453,7 @@ export default function CrearEgreso(props) {
             tipo: 'egreso',
             factura: factura.id
         }
+
         apiPutForm(`v2/administracion/facturas/attach`, objeto, auth).then(
             (response) => {
                 if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
@@ -522,7 +535,6 @@ export default function CrearEgreso(props) {
                             ...form,
                             egreso
                         })
-        
                         if (egreso.factura) {
                             // Adjunto un XML
                             if (Object.keys(form.facturaObject).length > 0) {
@@ -531,7 +543,7 @@ export default function CrearEgreso(props) {
                                     attachFactura(egreso, egreso.factura)
                                 } else {
                                     //No hay factura generada
-                                    addFacturaS3()
+                                    addFacturaS3(egreso.id , egreso)
                                 }
                             } else {
                                 //No adjunto XML
@@ -616,7 +628,6 @@ export default function CrearEgreso(props) {
         })
     };
 
-    console.log(form)
 
     return (
         <>
@@ -739,7 +750,6 @@ export default function CrearEgreso(props) {
                                 
                             }
 
-                            
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
@@ -787,11 +797,9 @@ export default function CrearEgreso(props) {
                             </div>    
                         </div>
                         
-                        
                     </div>
                 </AccordionDetails>
             </Accordion>
-
 
             <Accordion defaultExpanded className='proyect-accordion'>
                 <AccordionSummary
@@ -906,11 +914,9 @@ export default function CrearEgreso(props) {
 
                         </div>
 
-                        
                     </div>
                 </AccordionDetails>
             </Accordion>
-
 
             <Accordion defaultExpanded className='proyect-accordion'>
                 <AccordionSummary
@@ -972,32 +978,7 @@ export default function CrearEgreso(props) {
 
                             </div> 
                             <div>
-                                {
-                                    opciones.estatusCompras.length > 0 ?
-                                        // <Autocomplete
-                                        //     name="proveedor"
-                                        //     options={opciones.estatusCompras}
-                                        //     getOptionLabel={(option) => option.name}
-                                        //     style={{ width: 230, paddingRight: '1rem' }}
-                                        //     /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                        //     renderInput={(params) => <TextField {...params} label={'estatus de compra'} variant="outlined" />}
-                                        // />
-                                        <div>
-                                            <InputLabel id="demo-simple-select-label">Estatus de Compra</InputLabel>
-                                            <Select
-                                                value={form.estatusCompra}
-                                                name="estatusCompra"
-                                                onChange={handleChange}
-                                                style={{ width: 230, marginRight: '1rem' }}
-                                            >
-                                                {opciones.estatusCompras.map((item, index) => (
-                                                    <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        </div>
-                                        : null
-                                }
-
+                              
                             </div> 
                         </div>
                         
