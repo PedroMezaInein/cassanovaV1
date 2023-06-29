@@ -14,9 +14,12 @@ import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3'
 
 export default function Factura(props) {
-    const { opcionesData, data, reloadTable,setReloadTable, } = props
+    const { opcionesData, data } = props
     const auth = useSelector((state) => state.authUser.access_token);
+    const [reloadTable, setReloadTable] = useState()
+
     const tipo_factura = 'egresos'
+    console.log(data.id)
 
     const [opciones, setOpciones] = useState({
         cuentas: [],
@@ -54,6 +57,9 @@ export default function Factura(props) {
     useEffect(() => {
         if(opcionesData){
             setOpciones(opcionesData)
+        }
+        if (reloadTable) {
+            reloadTable.reload()
         }
     }, [opcionesData])
 
@@ -661,30 +667,113 @@ export default function Factura(props) {
     const columns = [
         { nombre: 'folio', identificador: 'folio', sort: false, stringSearch: false },
         { nombre: 'estatus', identificador: 'estatus', stringSearch: false },
-        { nombre: 'Fecha', identificador: 'data.fecha', stringSearch: false },
+        { nombre: 'Fecha', identificador: 'fecha', stringSearch: false },
         { nombre: 'serie', identificador: 'serie', stringSearch: false },
         { nombre: 'emisor', identificador: 'emisor', stringSearch: false },
         { nombre: 'receptor', identificador: 'receptor', stringSearch: false },
-        { nombre: 'subtotal', identificador: 'subtotal', stringSearch: false },
+        { nombre: 'sub total', identificador: 'subtotal', stringSearch: false },
         { nombre: 'total', identificador: 'total', stringSearch: false },
-        { nombre: 'monto acumulado', identificador: 'monto_acumulado', stringSearch: false },
-        { nombre: 'monto restante', identificador: 'monto_restante', stringSearch: false },
+        // { nombre: 'monto acumulado', identificador: 'monto_acumulado', stringSearch: false },
+        // { nombre: 'monto restante', identificador: 'monto_restante', stringSearch: false },
         { nombre: 'adjuntos', identificador: 'adjuntos', stringSearch: false },
-    ]
+    ] 
+      
+    // const proccessData = (datos) => {
+    //     let aux = [];
+    //     console.log(datos.egreso.facturas);
+      
+    //     if (datos.egreso.facturas.length === 0) {
+    //       aux.push({
+    //         folio: 'n/a',
+    //         estatus: datos.egreso.estatus_compra.estatus ? datos.egreso.estatus_compra.estatus : 'n/a',
+    //         fecha: 'n/a',
+    //         serie: 'n/a',
+    //         emisor: 'n/a',
+    //         receptor: 'n/a',
+    //         subtotal: 'n/a',
+    //         total: 'n/a',
+    //         adjuntos: 'n/a'
+    //       });
+    //     } else {
+    //       datos.egreso.facturas.forEach((factura) => {
+    //         let adjuntos = '';
+    //         if (factura.xml.name) {
+    //           adjuntos += 'XML: ' + factura.xml.name;
+    //         }
+    //         if (factura.pdf.name) {
+    //           if (adjuntos !== '') {
+    //             adjuntos += ' | ';
+    //           }
+    //           adjuntos += 'PDF: ' + factura.pdf.name;
+    //         }
+      
+    //         aux.push({
+    //           folio: factura.pivot.egreso_id ? factura.pivot.egreso_id : 'n/a',
+    //           estatus: datos.egreso.estatus_compra.estatus ? datos.egreso.estatus_compra.estatus : 'n/a',
+    //           fecha: factura.fecha ? factura.fecha : 'n/a',
+    //           serie: factura.serie ? factura.serie : 'n/a',
+    //           emisor: factura.nombre_emisor ? factura.nombre_emisor : 'n/a',
+    //           receptor: factura.nombre_receptor ? factura.nombre_receptor : 'n/a',
+    //           subtotal: factura.subtotal ? factura.subtotal : 'n/a',
+    //           total: factura.total ? factura.total : 'n/a',
+    //           adjuntos: adjuntos !== '' ? adjuntos : 'n/a',
+    //         });
+    //       });
+    //     }
+      
+    //     return aux;
+    //   };
 
-    const proccessData = (datos) => { 
-        let aux = []
-        datos.data.data.map((dato) => {
-            console.log(datos)
+    const proccessData = (datos) => {
+        let aux = [];
+        console.log(datos.egreso.facturas);
+
+        if (datos.egreso.facturas.length === 0) { //todos estos valores excepto "estatus" estan dentro del array FACTURAS que esta en el objeto EGRESO. Pregunto si existe FACTURAS
             aux.push({
-                data: dato,
-                
-            })
+                folio: 'n/a',
+                estatus: datos.egreso.estatus_compra.estatus ? datos.egreso.estatus_compra.estatus : 'n/a',
+                fecha: 'n/a',
+                serie: 'n/a',
+                emisor: 'n/a',
+                receptor: 'n/a',
+                subtotal: 'n/a',
+                total: 'n/a',
+                adjuntos: 'n/a'
+            });
+        } else { // dentro de facturas están las propiedades de XML y PDF, cada uno es un objeto
+            datos.egreso.facturas.forEach((factura) => {
+                let adjuntos = []; // creo un nuevo array para almacenar los valores de los adjuntos 
+                if (factura.xml.name) {
+                    adjuntos.push(
+                        <a href={factura.xml.url} target="_blank" rel="noopener noreferrer">
+                        XML: {factura.xml.name}
+                        </a>
+                    );
+                }
+                if (factura.pdf.name) {
+                    adjuntos.push(
+                        <a href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
+                        PDF: {factura.pdf.name}
+                        </a>
+                    );
+                }
+    
+                aux.push({
+                folio: factura.pivot.egreso_id ? factura.pivot.egreso_id : 'n/a',
+                estatus: datos.egreso.estatus_compra.estatus ? datos.egreso.estatus_compra.estatus : 'n/a',
+                fecha: factura.fecha ? factura.fecha : 'n/a',
+                serie: factura.serie ? factura.serie : 'n/a',
+                emisor: factura.nombre_emisor ? factura.nombre_emisor : 'n/a',
+                receptor: factura.nombre_receptor ? factura.nombre_receptor : 'n/a',
+                subtotal: factura.subtotal ? factura.subtotal : 'n/a',
+                total: factura.total ? factura.total : 'n/a',
+                adjuntos: adjuntos.length > 0 ? adjuntos : 'n/a',
+                });
+            });
         }
-        )
-        return aux
-    }
-
+    
+        return aux;
+    };
 
     return (
 
@@ -788,13 +877,12 @@ export default function Factura(props) {
                 <TablaGeneral
                     subtitulo="información general"
                     url={`v2/administracion/egresos/facturas/${data.id}`}
-                    // url={`v2/administracion/egresos/facturas/5478`}
                     columnas={columns}
-                    // numItemsPagina={20}
+                    numItemsPagina={20}
                     ProccessData={proccessData}
                     // opciones={opciones}
                     // acciones={acciones}
-                    // reload={setReloadTable} 
+                    reload={setReloadTable} 
                     // filtros={filtrado}
                 />
             </div>
