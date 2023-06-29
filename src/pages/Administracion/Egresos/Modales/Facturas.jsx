@@ -672,6 +672,20 @@ export default function Factura(props) {
         { nombre: 'adjuntos', identificador: 'adjuntos', stringSearch: false },
     ]
 
+    const proccessData = (datos) => { 
+        let aux = []
+        datos.data.data.map((dato) => {
+            console.log(datos)
+            aux.push({
+                data: dato,
+                
+            })
+        }
+        )
+        return aux
+    }
+
+
     return (
 
         <div>
@@ -777,7 +791,7 @@ export default function Factura(props) {
                     // url={`v2/administracion/egresos/facturas/5478`}
                     columnas={columns}
                     // numItemsPagina={20}
-                    // ProccessData={proccessData}
+                    ProccessData={proccessData}
                     // opciones={opciones}
                     // acciones={acciones}
                     // reload={setReloadTable} 
