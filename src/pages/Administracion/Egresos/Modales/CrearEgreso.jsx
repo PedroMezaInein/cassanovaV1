@@ -594,8 +594,8 @@ export default function CrearEgreso(props) {
             }
         })
 
-        
     }
+    console.log(form)
 
     const handleDeleteFile = (tipo, index) => {
         let files = form.adjuntos[tipo].files

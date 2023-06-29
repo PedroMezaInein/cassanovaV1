@@ -148,7 +148,7 @@ export default function EgresosTable() {
         console.log('recarga de nuevo')
         if (filtrado) {
             reloadTable.reload(filtrado)
-             setFiltrado('')
+            setFiltrado('')
 
         }
 
@@ -350,9 +350,9 @@ export default function EgresosTable() {
                 <Crear handleClose={e => handleClose('crear')} opcionesData={opcionesData} reload={reloadTable}/> 
             </Modal>
 
-            {/* <Modal size="xl" title={"Facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
-                    <Facturas handleClose={e => handleClose('facturas')} opcionesData={opcionesData} estado={proveedoresData} data={modal.facturas.data}/>
-                </Modal> */}
+            <Modal size="xl" title={"Facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
+                <Facturas handleClose={e => handleClose('facturas')}  opcionesData={opcionesData} data={modal.facturas.data}/>
+            </Modal> 
 
             {
                 modal.editar?.data &&

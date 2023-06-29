@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react"
 import { useSelector } from 'react-redux';
 
-import TablaGeneralPaginado from './../../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
-import { apiGet, apiOptions, apiPutForm } from './../../../../functions/api'
+// import TablaGeneralPaginado from './../../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
+import TablaGeneral from './../../../../components/NewTables/TablaGeneral/TablaGeneral'
+
+import { apiPostForm, apiGet, apiPutForm } from './../../../../functions/api'
 
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
 
 import j2xParser from 'fast-xml-parser'
 import Swal from 'sweetalert2'
+import S3 from 'react-aws-s3'
 
 export default function Factura(props) {
-    const { opcionesData, data } = props
+    const { opcionesData, data, reloadTable,setReloadTable, } = props
     const auth = useSelector((state) => state.authUser.access_token);
     const tipo_factura = 'egresos'
 
@@ -23,15 +26,6 @@ export default function Factura(props) {
         tiposImpuestos: [],
         tiposPagos: [],
     })
-
-    console.log(data)
-
-    useEffect(() => {
-        
-        if(opcionesData){
-            setOpciones(opcionesData)
-        }
-    }, [opcionesData])
 
     const [form, setForm] = useState({
         adjuntos: {
@@ -56,6 +50,12 @@ export default function Factura(props) {
         facturas: [],
         url_factura:''
     })
+
+    useEffect(() => {
+        if(opcionesData){
+            setOpciones(opcionesData)
+        }
+    }, [opcionesData])
 
     // *************** ESTATUS DE COMPRA ***************
     // const handleChange = (event) => {
@@ -295,6 +295,317 @@ export default function Factura(props) {
         })
     }
 
+    // *************** AGREGAR ARCHIVOS ***************
+
+    const handleSend = () => {
+        Swal.fire({
+            title: '¿Estás seguro?',    
+            text: 'Se creará el gasto',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, crear',
+            cancelButtonText: 'No, cancelar',
+            cancelButtonColor: '#d33',
+            reverseButtons: true
+        }).then((result) => {
+            
+            if (result.value) {
+                Swal.close()
+                Swal.fire({
+                    title: 'Creando gasto',
+                    text: 'Por favor, espere...',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    },
+                })
+
+                let aux = form
+
+                aux.factura = form.factura ? 'Con factura' : 'Sin factura'
+        
+                try {
+                    apiPostForm('v3/administracion/egresos', form, auth)
+                    .then((response) => {
+                        const {egreso} = response.data
+                        Swal.close()
+                        Swal.fire({
+                            title: 'Gasto creado con éxito',
+                            text: 'Subiendo adjuntos...',
+                            allowOutsideClick: false,
+                            onBeforeOpen: () => {
+                                Swal.showLoading()
+                            },
+                        })
+                        
+                        setForm({
+                            ...form,
+                            egreso
+                        })
+        
+                        if (egreso.factura) {
+                            // Adjunto un XML
+                            if (Object.keys(form.facturaObject).length > 0) {
+                                if (form.facturaItem) {
+                                    //Tiene una factura guardada
+                                    attachFactura(egreso, egreso.factura)
+                                } else {
+                                    //No hay factura generada
+                                    addFacturaS3()
+                                }
+                            } else {
+                                //No adjunto XML
+                                if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
+                                    //El egreso tiene adjuntos
+                                    attachFiles(egreso)
+                                } else {
+                                    //Egreso generado con éxito 
+                                    
+                                }
+                            }
+                            Swal.close()
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Adjuntos subidos con éxito',
+                                text: 'Se subieron los adjuntos con éxito',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            // if(reload){
+                            //     reload.reload()
+                            // }
+                            // handleClose()
+                        } else {
+                            // La egreso no es con factura
+                            if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
+                                //La egreso tiene adjuntos
+                                attachFiles(egreso)
+
+                            } else {
+                                //Egreso generado con éxito 
+                                Swal.close()
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Gasto creado con éxito',
+                                    text: 'Se creó el gasto con éxito',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                                // if(reload){
+                                //     reload.reload()
+                                // }
+                                // handleClose()
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error)
+
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'No se pudo crear el gasto',
+                            icon: 'error',
+                            confirmButtonText: 'Cerrar',
+                        })
+                    })
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        })
+
+    }
+
+    const addNewFacturaAxios = (files, egreso) => {
+        let aux = form
+        aux.archivos = files
+        apiPostForm(`v2/administracion/facturas`, aux, auth).then(
+            (response) => {
+                const { factura } = response.data
+                setForm({
+                    ...form,
+                    facturaItem: factura,
+                    archivos: files
+                })
+                attachFactura(egreso, factura)
+            }, (error) => { }
+        ).catch((error) => {
+            console.error(error, 'error')
+        })
+    }
+
+    const attachFactura = (egreso, factura) => {
+        let objeto = {
+            dato: data.id,
+            tipo: 'egreso',
+            factura: factura.id
+        }
+        console.log(objeto.dato)
+        console.log(objeto.factura)
+
+
+        apiPutForm(`v2/administracion/facturas/attach`, objeto, auth).then(
+            (response) => {
+                if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
+                    attachFiles(egreso)
+                } else {
+                    Swal.close()
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Gasto creado con éxito',
+                        text: 'Se creó el gasto con éxito',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            }, (error) => { 
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al adjuntar archivos',
+                    text: 'Ocurrio un error al adjuntar los archivos',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        ).catch((error) => { 
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al adjuntar archivos',
+                text: 'Ocurrio un error al adjuntar los archivos',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        })
+    }
+
+    const  attachFiles = (egreso) => {
+        apiGet(`v1/constant/admin-proyectos`, auth).then(
+            (response) => {
+                const { alma } = response.data
+                let filePath = `egresos/${egreso.id}/`
+                let aux = []
+                form.adjuntos.pago.files.forEach((file) => {
+                    aux.push(
+                        {
+                            name: `${filePath}pagos/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                            file: file,
+                            tipo: 'pago'
+                        }
+                    )
+                })
+                form.adjuntos.presupuesto.files.forEach((file) => {
+                    aux.push(
+                        {
+                            name: `${filePath}presupuestos/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                            file: file,
+                            tipo: 'presupuesto'
+                        }
+                    )
+                })
+                let auxPromises = aux.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file.file, file.name)
+                            .then((data) => {
+                                const { location, status } = data
+                                if (status === 204) resolve({ name: file.name, url: location, tipo: file.tipo })
+                                else reject(data)
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            })
+                    })
+                })
+                Promise.all(auxPromises).then(values => { 
+                    attachFilesS3(values, egreso) 
+                }).catch(err => console.error(err))
+            }, (error) => { }
+        ).catch((error) => { 
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al adjuntar archivos',
+                text: 'Ocurrio un error al adjuntar los archivos',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        })
+    }
+
+    const attachFilesS3 =  (files, egreso) => {
+        apiPutForm(`v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, auth).then(
+            (response) => {
+                Swal.close()
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Archivos adjuntados',
+                    text: 'Los archivos se adjuntaron correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                // if(reload){
+                //     reload.reload()
+                // }
+                // handleClose()
+
+            }, (error) => { }
+        ).catch((error) => {  
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al adjuntar archivos',
+                text: 'Ocurrio un error al adjuntar los archivos',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        })
+    }
+    
+    const addFacturaS3 =  (values, egreso) => {
+        apiGet(`v1/constant/admin-proyectos`, auth).then(
+            (response) => {
+                const { alma } = response.data
+                let filePath = `facturas/egresos/`
+                let aux = []
+                form.adjuntos.xml.files.forEach((file) => {
+                    aux.push(file)
+                })
+                form.adjuntos.pdf.files.forEach((file) => {
+                    aux.push(file)
+                })
+                let auxPromises = aux.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+                            .then((data) => {
+                                const { location, status } = data
+                                if (status === 204) resolve({ name: file.name, url: location })
+                                else reject(data)
+                            })
+                            .catch((error) => {
+                                reject(error)
+                            })
+                    })
+                })
+                Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, egreso) }).catch(err => console.error(err))
+            }, (error) => { }
+        ).catch((error) => { 
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al adjuntar archivos',
+                text: 'Ocurrio un error al adjuntar los archivos',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+        })
+    }
+
+
+
+
+
     const handleSaveEstatus = () => {
         if(true){
 
@@ -345,10 +656,12 @@ export default function Factura(props) {
         }
     }
 
+
+
     const columns = [
         { nombre: 'folio', identificador: 'folio', sort: false, stringSearch: false },
         { nombre: 'estatus', identificador: 'estatus', stringSearch: false },
-        { nombre: 'Fecha', identificador: 'fecha', stringSearch: false },
+        { nombre: 'Fecha', identificador: 'data.fecha', stringSearch: false },
         { nombre: 'serie', identificador: 'serie', stringSearch: false },
         { nombre: 'emisor', identificador: 'emisor', stringSearch: false },
         { nombre: 'receptor', identificador: 'receptor', stringSearch: false },
@@ -452,17 +765,18 @@ export default function Factura(props) {
                 </div> 
 
                 <div>
-                    <button>Enviar</button>
+                    <button onClick={attachFactura}>Enviar</button>
                 </div>
                 
             </div>
 
             <div>
-                <TablaGeneralPaginado
+                <TablaGeneral
                     subtitulo="información general"
-                    url={'v3/administracion/gastos'}
+                    url={`v2/administracion/egresos/facturas/${data.id}`}
+                    // url={`v2/administracion/egresos/facturas/5478`}
                     columnas={columns}
-                    numItemsPagina={5}
+                    // numItemsPagina={20}
                     // ProccessData={proccessData}
                     // opciones={opciones}
                     // acciones={acciones}
