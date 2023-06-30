@@ -368,7 +368,7 @@ export default function EgresosTable() {
 
             {
                 modal.facturaExtranjera.data &&
-                <Modal size="lg" title={"Factura extranjera"} show={modal.facturaExtranjera?.show} handleClose={e => handleClose('facturaExtranjera')} >
+                <Modal size="lg" title={"Adjuntos"} show={modal.facturaExtranjera?.show} handleClose={e => handleClose('facturaExtranjera')} >
                     <FacturaExtranjera handleClose={e => handleClose('facturaExtranjera')} opcionesData={opcionesData} data={modal.facturaExtranjera.data}/>
                 </Modal>
             }
