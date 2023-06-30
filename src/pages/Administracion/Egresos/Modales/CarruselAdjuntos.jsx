@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 export default function CarruselAdjuntos(props) {
     const { data, id, getAdjuntos} = props;
     let adjuntos = data

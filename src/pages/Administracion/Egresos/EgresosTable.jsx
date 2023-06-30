@@ -141,11 +141,22 @@ export default function EgresosTable() {
         // setFiltrado()
         if (filtrado) {
             reloadTable.reload(filtrado)
-             setFiltrado('')
+            //  setFiltrado('')
+            if(borrar == false){
+                setFiltrado('')   
 
+            }
         }
 
     }, [filtrado])
+
+    const borrar = ( id) =>{
+        if(id == false){
+            reloadTable.reload(filtrado)
+            setFiltrado('')   
+
+        }
+    }
 
     const deleteEgresoAxios = (id) => {
         apiDelete(`egresos/${id}`, auth).then(
@@ -351,7 +362,7 @@ export default function EgresosTable() {
             {
                 modal.filtrar.data &&
                 <Modal size="lg" title={"Filtrar gastos"} show={modal.filtrar?.show} handleClose={e => handleClose('filtrar')} >
-                    <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado}  reload={reloadTable}/>
+                    <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable}/>
                 </Modal>
             }
 
