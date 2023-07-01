@@ -14,7 +14,7 @@ import '../../../styles/_TablaGeneral.scss'
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 
 export default function TablaGeneralPaginado(props) {
-    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, filtros, customFilter,resetFilters } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, filtros, customFilter,resetFilters,setResetFilters } = props;
     //para implementar la tabla puedes utilizar los siguientes props
 
     //titulo: titulo de la tabla
@@ -101,9 +101,20 @@ export default function TablaGeneralPaginado(props) {
         try {
             axios(`${URL_DEV}${url}?page=${num ? num : currentPage}&page_size=${numItemsPagina}${filtros}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
                 .then(res => {
+
                     setTotalPages(res.data.data.last_page? res.data.data.last_page : 1)
 
                     if (ProccessData !== undefined) {
+
+                        // if (resetFilter && resetFilters === false) {
+                        //     let aux = customFilter(ProccessData(res.data))
+                        //     setData(aux)
+                        //     setFilterData(aux)
+                        // } else {
+                        //     setData(ProccessData(res.data))
+                        //     setFilterData(ProccessData(res.data))
+                        // }
+
                         setData(ProccessData(res.data))
                         setFilterData(ProccessData(res.data))
 
@@ -214,9 +225,13 @@ export default function TablaGeneralPaginado(props) {
     }
 
     const reloadTable = () => {
-        resetFilter();
+        resetFilter('');
         getData();
         setPaginaActual(0);
+        if (setResetFilters) {
+            setResetFilters(true)
+        }
+        
     }
 
     const resetFilter = () => {

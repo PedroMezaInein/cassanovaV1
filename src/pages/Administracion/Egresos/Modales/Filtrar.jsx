@@ -23,7 +23,7 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import Style from './estilos.module.css'
 
 export default function CrearEgreso(props) {
-    const {opcionesData, reload, handleClose, filtrarTabla,filtrada,setFiltrado} = props
+    const {opcionesData, reload, handleClose, filtrarTabla,filtrada,setFiltrado, borrarTabla} = props
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector((state) => state.authUser.access_token);
 
@@ -41,6 +41,8 @@ export default function CrearEgreso(props) {
         if(opcionesData){
             setOpciones(opcionesData)
         }
+        filtrarTabla('')   
+
     }, [opcionesData])
  
     const [form, setForm] = useState({
@@ -151,6 +153,17 @@ export default function CrearEgreso(props) {
             filtrarTabla(`&identificador=${form.identificador}&fecha_inicio=${changeDateFormat(form.fecha_inicio)}&fecha_fin=${changeDateFormat(form.fecha_fin)}&proveedor=${form.proveedor}&empresa=${form.empresa}&area=${form.area}&subarea=${form.subarea}&cuenta=${form.cuenta}&monto=${form.monto}&factura=${form.factura}&descripcion=${form.descripcion}`)
             // console.log('filtrar tabla')
             handleClose()
+            // borrar(false)
+
+        }
+
+    const borrar = () => {
+        
+            // console.log('filtrar tabla')
+            filtrarTabla('')   
+            borrarTabla(false)
+            handleClose()
+
         }
 
     return (
@@ -403,7 +416,9 @@ export default function CrearEgreso(props) {
                 </div>
                   
             </div>
-
+            <div>
+                <button className={Style.borrarButton}  onClick={borrar}>Borrar</button>
+            </div>
             <div>
                 <button className={Style.sendButton}  onClick={filtrar}>Filtrar</button>
             </div>

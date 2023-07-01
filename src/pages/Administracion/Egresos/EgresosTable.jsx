@@ -145,14 +145,24 @@ export default function EgresosTable() {
         // getProveedores()
 
         // setFiltrado()
-        console.log('recarga de nuevo')
         if (filtrado) {
             reloadTable.reload(filtrado)
-            setFiltrado('')
+            //  setFiltrado('')
+            if(borrar == false){
+                setFiltrado('')   
 
+            }
         }
 
     }, [filtrado])
+
+    const borrar = ( id) =>{
+        if(id == false){
+            reloadTable.reload(filtrado)
+            setFiltrado('')   
+
+        }
+    }
 
     const deleteEgresoAxios = (id) => {
         apiDelete(`egresos/${id}`, auth).then(
@@ -227,18 +237,11 @@ export default function EgresosTable() {
                 openModal('ver', item)
             }
         },
+       
         {
             nombre: 'Adjuntos',
             icono: 'fas fa-paperclip',
             color: 'yellowButton',
-            funcion: (item) => {
-            
-            }
-        },
-        {
-            nombre: 'Factura extranjera',
-            icono: 'fas fa-file-invoice-dollar',
-            color: 'reyButton',
             funcion: (item) => {
                 openModal('facturaExtranjera', item)
             }
@@ -277,7 +280,6 @@ export default function EgresosTable() {
     ]
 
     const openModal = (tipo, data) => {
-        console.log(tipo)
 
         setModal({
             ...modal,
@@ -289,7 +291,6 @@ export default function EgresosTable() {
     }
 
     const handleClose = (tipo) => {
-        console.log(tipo)
         setModal({
             ...modal,
             [tipo]: {
@@ -375,7 +376,7 @@ export default function EgresosTable() {
             {
                 modal.filtrar.data &&
                 <Modal size="lg" title={"Filtrar gastos"} show={modal.filtrar?.show} handleClose={e => handleClose('filtrar')} >
-                    <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado}  reload={reloadTable}/>
+                    <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable}/>
                 </Modal>
             }
 
