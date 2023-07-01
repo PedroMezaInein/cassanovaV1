@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 // import TablaGeneralPaginado from './../../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 import TablaGeneral from './../../../../components/NewTables/TablaGeneral/TablaGeneral'
 
-import { apiPostForm, apiGet, apiPutForm } from './../../../../functions/api'
+import { apiPostForm, apiGet, apiPutForm, apiDelete, catchErrors } from './../../../../functions/api'
 
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
@@ -13,13 +13,12 @@ import j2xParser from 'fast-xml-parser'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3'
 
+import Style from './CrearEgreso.module.css'
+
 export default function Factura(props) {
-    const { opcionesData, data } = props
+    const { opcionesData, egreso, handleClose, reload } = props
     const auth = useSelector((state) => state.authUser.access_token);
     const [reloadTable, setReloadTable] = useState()
-
-    const tipo_factura = 'egresos'
-    console.log(data.id)
 
     const [opciones, setOpciones] = useState({
         cuentas: [],
@@ -48,10 +47,18 @@ export default function Factura(props) {
 
         estatusCompra: '',
         facturaObject: false,
-        factura: false,
+        factura: true,
         response: {},
         facturas: [],
         url_factura:''
+    })
+
+    const [modal, setModal] = useState({
+
+        eliminar: {
+            show: false,
+            data: false
+        },
     })
 
     useEffect(() => {
@@ -88,57 +95,8 @@ export default function Factura(props) {
     //     });
     // };
 
-    // *************** ESTATUS DE COMPRA ***************
+    // *****************************************************
 
-    // const handleSaveEstatus = () => {
-    //     if(true){
-
-    //         Swal.fire({
-    //             title: 'Cargando...',
-    //             allowOutsideClick: false,
-    //             onBeforeOpen: () => {
-    //                 Swal.showLoading()
-    //             }
-    //         }) 
-    
-    //         let newForm = {
-    //             estatusCompra: form.estatusCompra,
-    //         }
-
-    //         apiPutForm(`v2/administracion/${tipo_factura}/estatusCompra/${data.id}`, newForm, auth)
-    //         .then((response)=>{
-    //             Swal.close()
-    //             Swal.fire({
-    //                 icon: 'success',
-    //                 tittle: 'Editar estatus',
-    //                 text: 'Se ha editado correctamente',
-    //                 timer: 2000,
-    //                 timerProgressBar: true,
-    //             })
-    //             // handleClose()
-    //             // if(reload){
-    //             //     reload.reload()
-    //             // }
-    //         }) 
-
-    //         .catch((error)=>{  
-    //             Swal.close()
-    //             Swal.fire({
-    //                 icon: 'error',
-    //                 title: 'Oops...',
-    //                 text: 'Ha ocurrido un error',
-    //             })
-    //         })
-    //     }
-        
-    //     else {
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Oops...',
-    //             text: 'Todos los campos son obligatorios',
-    //         })
-    //     }
-    // }
 
     const onChangeFactura = (e) => {
         const { files } = e.target
@@ -282,6 +240,7 @@ export default function Factura(props) {
         let aux = []
 
         e.target.files.forEach((file, index) => {
+            console.log(file)
             aux.push({
                 name: file.name,
                 file: file,
@@ -302,273 +261,8 @@ export default function Factura(props) {
     }
 
     // *************** AGREGAR ARCHIVOS ***************
+    const addFacturaS3 =  ( ) => {
 
-    const handleSend = () => {
-        Swal.fire({
-            title: '¿Estás seguro?',    
-            text: 'Se creará el gasto',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, crear',
-            cancelButtonText: 'No, cancelar',
-            cancelButtonColor: '#d33',
-            reverseButtons: true
-        }).then((result) => {
-            
-            if (result.value) {
-                Swal.close()
-                Swal.fire({
-                    title: 'Creando gasto',
-                    text: 'Por favor, espere...',
-                    allowOutsideClick: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    },
-                })
-
-                let aux = form
-
-                aux.factura = form.factura ? 'Con factura' : 'Sin factura'
-        
-                try {
-                    apiPostForm('v3/administracion/egresos', form, auth)
-                    .then((response) => {
-                        const {egreso} = response.data
-                        Swal.close()
-                        Swal.fire({
-                            title: 'Gasto creado con éxito',
-                            text: 'Subiendo adjuntos...',
-                            allowOutsideClick: false,
-                            onBeforeOpen: () => {
-                                Swal.showLoading()
-                            },
-                        })
-                        
-                        setForm({
-                            ...form,
-                            egreso
-                        })
-        
-                        if (egreso.factura) {
-                            // Adjunto un XML
-                            if (Object.keys(form.facturaObject).length > 0) {
-                                if (form.facturaItem) {
-                                    //Tiene una factura guardada
-                                    attachFactura(egreso, egreso.factura)
-                                } else {
-                                    //No hay factura generada
-                                    addFacturaS3()
-                                }
-                            } else {
-                                //No adjunto XML
-                                if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
-                                    //El egreso tiene adjuntos
-                                    attachFiles(egreso)
-                                } else {
-                                    //Egreso generado con éxito 
-                                    
-                                }
-                            }
-                            Swal.close()
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Adjuntos subidos con éxito',
-                                text: 'Se subieron los adjuntos con éxito',
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                            // if(reload){
-                            //     reload.reload()
-                            // }
-                            // handleClose()
-                        } else {
-                            // La egreso no es con factura
-                            if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
-                                //La egreso tiene adjuntos
-                                attachFiles(egreso)
-
-                            } else {
-                                //Egreso generado con éxito 
-                                Swal.close()
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Gasto creado con éxito',
-                                    text: 'Se creó el gasto con éxito',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
-                                // if(reload){
-                                //     reload.reload()
-                                // }
-                                // handleClose()
-                            }
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error)
-
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'No se pudo crear el gasto',
-                            icon: 'error',
-                            confirmButtonText: 'Cerrar',
-                        })
-                    })
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-        })
-
-    }
-
-    const addNewFacturaAxios = (files, egreso) => {
-        let aux = form
-        aux.archivos = files
-        apiPostForm(`v2/administracion/facturas`, aux, auth).then(
-            (response) => {
-                const { factura } = response.data
-                setForm({
-                    ...form,
-                    facturaItem: factura,
-                    archivos: files
-                })
-                attachFactura(egreso, factura)
-            }, (error) => { }
-        ).catch((error) => {
-            console.error(error, 'error')
-        })
-    }
-
-    const attachFactura = (egreso, factura) => {
-        let objeto = {
-            dato: data.id,
-            tipo: 'egreso',
-            factura: factura.id
-        }
-        console.log(objeto.dato)
-        console.log(objeto.factura)
-
-
-        apiPutForm(`v2/administracion/facturas/attach`, objeto, auth).then(
-            (response) => {
-                if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
-                    attachFiles(egreso)
-                } else {
-                    Swal.close()
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Gasto creado con éxito',
-                        text: 'Se creó el gasto con éxito',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                }
-            }, (error) => { 
-                Swal.close()
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al adjuntar archivos',
-                    text: 'Ocurrio un error al adjuntar los archivos',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            }
-        ).catch((error) => { 
-            Swal.close()
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al adjuntar archivos',
-                text: 'Ocurrio un error al adjuntar los archivos',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        })
-    }
-
-    const  attachFiles = (egreso) => {
-        apiGet(`v1/constant/admin-proyectos`, auth).then(
-            (response) => {
-                const { alma } = response.data
-                let filePath = `egresos/${egreso.id}/`
-                let aux = []
-                form.adjuntos.pago.files.forEach((file) => {
-                    aux.push(
-                        {
-                            name: `${filePath}pagos/${Math.floor(Date.now() / 1000)}-${file.name}`,
-                            file: file,
-                            tipo: 'pago'
-                        }
-                    )
-                })
-                form.adjuntos.presupuesto.files.forEach((file) => {
-                    aux.push(
-                        {
-                            name: `${filePath}presupuestos/${Math.floor(Date.now() / 1000)}-${file.name}`,
-                            file: file,
-                            tipo: 'presupuesto'
-                        }
-                    )
-                })
-                let auxPromises = aux.map((file) => {
-                    return new Promise((resolve, reject) => {
-                        new S3(alma).uploadFile(file.file.file, file.name)
-                            .then((data) => {
-                                const { location, status } = data
-                                if (status === 204) resolve({ name: file.name, url: location, tipo: file.tipo })
-                                else reject(data)
-                            })
-                            .catch((error) => {
-                                reject(error)
-                            })
-                    })
-                })
-                Promise.all(auxPromises).then(values => { 
-                    attachFilesS3(values, egreso) 
-                }).catch(err => console.error(err))
-            }, (error) => { }
-        ).catch((error) => { 
-            Swal.close()
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al adjuntar archivos',
-                text: 'Ocurrio un error al adjuntar los archivos',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        })
-    }
-
-    const attachFilesS3 =  (files, egreso) => {
-        apiPutForm(`v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, auth).then(
-            (response) => {
-                Swal.close()
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Archivos adjuntados',
-                    text: 'Los archivos se adjuntaron correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                // if(reload){
-                //     reload.reload()
-                // }
-                // handleClose()
-
-            }, (error) => { }
-        ).catch((error) => {  
-            Swal.close()
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al adjuntar archivos',
-                text: 'Ocurrio un error al adjuntar los archivos',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        })
-    }
-    
-    const addFacturaS3 =  (values, egreso) => {
         apiGet(`v1/constant/admin-proyectos`, auth).then(
             (response) => {
                 const { alma } = response.data
@@ -608,63 +302,73 @@ export default function Factura(props) {
         })
     }
 
+    const addNewFacturaAxios = (files, egreso) => {
+        let aux = form
+        aux.archivos = files
 
+        apiPostForm(`v2/administracion/facturas`, aux, auth).then(
+            (response) => {
+                const { factura } = response.data
 
+                setForm({
+                    ...form,
+                    facturaItem: factura,
+                    archivos: files
+                })
+                attachFactura(egreso, factura)
+            }, (error) => { }
+        ).catch((error) => {
+            console.error(error, 'error')
+        })
+    }
 
+    const attachFactura = (egreso, factura) => {
 
-    const handleSaveEstatus = () => {
-        if(true){
+        let objeto = {
+            dato: egreso.id,
+            tipo: 'egreso',
+            factura: factura.id
+        }
 
-            Swal.fire({
-                title: 'Cargando...',
-                allowOutsideClick: false,
-                onBeforeOpen: () => {
-                    Swal.showLoading()
-                }
-            }) 
-    
-            let newForm = {
-                estatusCompra: form.estatusCompra,
-            }
-
-            apiPutForm(`v2/administracion/facturas/attach`, newForm, auth)
-            .then((response)=>{
+        apiPutForm(`v2/administracion/facturas/attach`, objeto, auth).then(
+            (response) => {
+                
                 Swal.close()
                 Swal.fire({
                     icon: 'success',
-                    tittle: 'Editar estatus',
-                    text: 'Se ha editado correctamente',
-                    timer: 2000,
-                    timerProgressBar: true,
+                    title: 'Gasto creado con éxito',
+                    text: 'Se creó el gasto con éxito',
+                    showConfirmButton: false,
+                    timer: 1500
                 })
-                // handleClose()
-                // if(reload){
-                //     reload.reload()
-                // }
-            }) 
-
-            .catch((error)=>{  
+                
+            }, (error) => { 
                 Swal.close()
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops...',
-                    text: 'Ha ocurrido un error',
+                    title: 'Error al adjuntar archivos',
+                    text: 'Ocurrio un error al adjuntar los archivos',
+                    showConfirmButton: false,
+                    timer: 1500
                 })
-            })
-        }
-        
-        else {
+            }
+        ).catch((error) => { 
+            Swal.close()
             Swal.fire({
                 icon: 'error',
-                title: 'Oops...',
-                text: 'Todos los campos son obligatorios',
+                title: 'Error al adjuntar archivos',
+                text: 'Ocurrio un error al adjuntar los archivos',
+                showConfirmButton: false,
+                timer: 1500
             })
-        }
+        })
     }
 
 
+    // ************************************************
 
     const columns = [
+        { nombre: '', identificador: 'acciones', sort: false, stringSearch: false },
         { nombre: 'folio', identificador: 'folio', sort: false, stringSearch: false },
         { nombre: 'estatus', identificador: 'estatus', stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', stringSearch: false },
@@ -677,56 +381,13 @@ export default function Factura(props) {
         // { nombre: 'monto restante', identificador: 'monto_restante', stringSearch: false },
         { nombre: 'adjuntos', identificador: 'adjuntos', stringSearch: false },
     ] 
-      
-    // const proccessData = (datos) => {
-    //     let aux = [];
-    //     console.log(datos.egreso.facturas);
-      
-    //     if (datos.egreso.facturas.length === 0) {
-    //       aux.push({
-    //         folio: 'n/a',
-    //         estatus: datos.egreso.estatus_compra.estatus ? datos.egreso.estatus_compra.estatus : 'n/a',
-    //         fecha: 'n/a',
-    //         serie: 'n/a',
-    //         emisor: 'n/a',
-    //         receptor: 'n/a',
-    //         subtotal: 'n/a',
-    //         total: 'n/a',
-    //         adjuntos: 'n/a'
-    //       });
-    //     } else {
-    //       datos.egreso.facturas.forEach((factura) => {
-    //         let adjuntos = '';
-    //         if (factura.xml.name) {
-    //           adjuntos += 'XML: ' + factura.xml.name;
-    //         }
-    //         if (factura.pdf.name) {
-    //           if (adjuntos !== '') {
-    //             adjuntos += ' | ';
-    //           }
-    //           adjuntos += 'PDF: ' + factura.pdf.name;
-    //         }
-      
-    //         aux.push({
-    //           folio: factura.pivot.egreso_id ? factura.pivot.egreso_id : 'n/a',
-    //           estatus: datos.egreso.estatus_compra.estatus ? datos.egreso.estatus_compra.estatus : 'n/a',
-    //           fecha: factura.fecha ? factura.fecha : 'n/a',
-    //           serie: factura.serie ? factura.serie : 'n/a',
-    //           emisor: factura.nombre_emisor ? factura.nombre_emisor : 'n/a',
-    //           receptor: factura.nombre_receptor ? factura.nombre_receptor : 'n/a',
-    //           subtotal: factura.subtotal ? factura.subtotal : 'n/a',
-    //           total: factura.total ? factura.total : 'n/a',
-    //           adjuntos: adjuntos !== '' ? adjuntos : 'n/a',
-    //         });
-    //       });
-    //     }
-      
-    //     return aux;
-    //   };
+
+    const formatNumber = (num) => {
+        return `${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+    }
 
     const proccessData = (datos) => {
         let aux = [];
-        console.log(datos.egreso.facturas);
 
         if (datos.egreso.facturas.length === 0) { //todos estos valores excepto "estatus" estan dentro del array FACTURAS que esta en el objeto EGRESO. Pregunto si existe FACTURAS
             aux.push({
@@ -745,16 +406,20 @@ export default function Factura(props) {
                 let adjuntos = []; // creo un nuevo array para almacenar los valores de los adjuntos 
                 if (factura.xml.name) {
                     adjuntos.push(
-                        <a href={factura.xml.url} target="_blank" rel="noopener noreferrer">
-                        XML: {factura.xml.name}
-                        </a>
+                        <div style={{width:'100px', marginRight:'2.5rem'}}>
+                            <a style={{width:'90%'}} href={factura.xml.url} target="_blank" rel="noopener noreferrer">
+                                XML: {factura.xml.name}
+                            </a> 
+                        </div>   
                     );
                 }
                 if (factura.pdf.name) {
                     adjuntos.push(
-                        <a href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
-                        PDF: {factura.pdf.name}
-                        </a>
+                        <div style={{width:'100px'}}>
+                            <a style={{width:'90%'}} href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
+                                PDF: {factura.pdf.name}
+                            </a>
+                        </div>
                     );
                 }
     
@@ -765,8 +430,8 @@ export default function Factura(props) {
                 serie: factura.serie ? factura.serie : 'n/a',
                 emisor: factura.nombre_emisor ? factura.nombre_emisor : 'n/a',
                 receptor: factura.nombre_receptor ? factura.nombre_receptor : 'n/a',
-                subtotal: factura.subtotal ? factura.subtotal : 'n/a',
-                total: factura.total ? factura.total : 'n/a',
+                subtotal: factura.subtotal ? '$ '+ formatNumber (factura.subtotal) : 'n/a',
+                total: factura.total ? '$ '+ formatNumber (factura.total) : 'n/a',
                 adjuntos: adjuntos.length > 0 ? adjuntos : 'n/a',
                 });
             });
@@ -774,6 +439,52 @@ export default function Factura(props) {
     
         return aux;
     };
+
+    const deleteEgresoAxios = (id) => {
+
+        // apiDelete(`v2/administracion/egresos/${egreso.id}/facturas/${id}`, auth).then(
+        //     (response) => {
+        //         Swal.fire(
+        //             '¡Eliminado!',
+        //             'El egreso ha sido eliminado.',
+        //             'success'
+        //         )
+        //         if (reloadTable) {
+        //             reloadTable.reload()
+        //         }
+        //     }, (error) => { }
+        // ).catch((error) => { catchErrors(error) })
+    }  
+
+    let acciones = () => {
+        let aux = [
+            {
+                nombre: 'Eliminar',
+                icono: 'fas fa-trash-alt',
+                color: 'redButton',
+                funcion: (item) => {
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "¡No podrás revertir esto!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+
+                        confirmButtonText: 'Sí, bórralo',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            deleteEgresoAxios(item.id)
+                            
+                        }
+                    })
+                }
+            }, 
+        ]
+        return aux
+    }
+
 
     return (
 
@@ -796,20 +507,56 @@ export default function Factura(props) {
                     </div>
             } */}
 
-            <div>
-                <InputLabel>XML de la factura</InputLabel>
-                <div >
+            <div className='row' style={{marginTop:'1rem', marginBottom:'2rem'}}>
+                <div className='col-6'>
+                    <InputLabel>XML de la factura</InputLabel>
+                    <div >
 
+                        <div>
+                            <input
+                                accept="application/xml"
+                                style={{ display: 'none' }}
+                                id="xml"
+                                
+                                type="file"
+                                onChange={onChangeFactura}
+                            />
+                            <label htmlFor="xml" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Button variant="contained" color="primary" component="span">
+                                    Agregar
+                                </Button>
+                            </label>
+                        </div>
+
+                        <div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                {
+                                    form.adjuntos.xml.files.map((item, index) => (
+                                        <div key={index}  style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
+                                            <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'space-between' }}>
+                                                <p>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}<span onClick={() => handleDeleteFile('xml', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span></p>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                            </div>    
+                        </div> 
+
+                    </div>   
+                </div>
+
+                <div className='col-6'>
+                    <InputLabel>PDF de la factura</InputLabel>
                     <div>
                         <input
-                            accept="application/xml"
+                            accept="application/pdf"
                             style={{ display: 'none' }}
-                            id="xml"
+                            id="pdf"
                             
                             type="file"
-                            onChange={onChangeFactura}
+                            onChange={(e) => handleAddFile(e, 'pdf')} 
                         />
-                        <label htmlFor="xml" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <label htmlFor="pdf" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             <Button variant="contained" color="primary" component="span">
                                 Agregar
                             </Button>
@@ -819,71 +566,37 @@ export default function Factura(props) {
                     <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             {
-                                form.adjuntos.xml.files.map((item, index) => (
-                                    <div key={index}  style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
+                                form.adjuntos.pdf.files.map((item, index) => (
+                                    <div key={index} style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
                                         <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'space-between' }}>
-                                            <p>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}<span onClick={() => handleDeleteFile('xml', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span></p>
+                                            <p>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}
+                                            <span onClick={() => handleDeleteFile('pdf', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span>
+                                            </p>
                                         </div>
                                     </div>
                                 ))
                             }
                         </div>    
                     </div> 
-
-                </div>   
-            </div>
-
-            <div>
-                <InputLabel>PDF de la factura</InputLabel>
-                <div>
-                    <input
-                        accept="application/pdf"
-                        style={{ display: 'none' }}
-                        id="pdf"
-                        
-                        type="file"
-                        onChange={(e) => handleAddFile(e, 'pdf')} 
-                    />
-                    <label htmlFor="pdf" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Button variant="contained" color="primary" component="span">
-                            Agregar
-                        </Button>
-                    </label>
                 </div>
 
-                <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        {
-                            form.adjuntos.pdf.files.map((item, index) => (
-                                <div key={index} style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
-                                    <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'space-between' }}>
-                                        <p>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}
-                                        <span onClick={() => handleDeleteFile('pdf', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            ))
-                        }
-                    </div>    
-                </div> 
-
-                <div>
-                    <button onClick={attachFactura}>Enviar</button>
+                <div style={{marginLeft:'85%'}}>
+                    <button className={Style.sendButton}  onClick={addFacturaS3}>Enviar</button>
                 </div>
-                
-            </div>
+                    
+                </div>
+            
 
             <div>
                 <TablaGeneral
                     subtitulo="información general"
-                    url={`v2/administracion/egresos/facturas/${data.id}`}
+                    url={`v2/administracion/egresos/facturas/${egreso.id}`}
                     columnas={columns}
                     numItemsPagina={20}
                     ProccessData={proccessData}
                     // opciones={opciones}
-                    // acciones={acciones}
+                    acciones={acciones()}
                     reload={setReloadTable} 
-                    // filtros={filtrado}
                 />
             </div>
         </div>

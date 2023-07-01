@@ -440,7 +440,7 @@ class PermisosForm extends Component {
         }
     }
 
-    uploadFacturaFiles = async() => {
+    uploadFacturaFiles = async() => { // es addFacturaS3()
         const { at, tipo_factura } = this.props
         const { form } = this.state
         apiGet(`v1/constant/admin-proyectos`, at).then(
@@ -497,6 +497,7 @@ class PermisosForm extends Component {
         console.log('id.data')
         console.log(id)
         const { form } = this.state
+        console.log(form)
         let objeto = {}
         objeto.dato = id
         console.log('objeto.dato')

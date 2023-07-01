@@ -350,9 +350,13 @@ export default function EgresosTable() {
                 <Crear handleClose={e => handleClose('crear')} opcionesData={opcionesData} reload={reloadTable}/> 
             </Modal>
 
-            <Modal size="xl" title={"Facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
-                <Facturas handleClose={e => handleClose('facturas')}  opcionesData={opcionesData} data={modal.facturas.data}/>
-            </Modal> 
+            {
+                modal.facturas.data &&
+                <Modal size="xl" title={"Factur as"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
+                    <Facturas handleClose={e => handleClose('facturas')}  opcionesData={opcionesData} egreso={modal.facturas.data}/>
+                </Modal> 
+            }
+           
 
             {
                 modal.editar?.data &&
@@ -381,13 +385,6 @@ export default function EgresosTable() {
                     <FacturaExtranjera handleClose={e => handleClose('facturaExtranjera')} opcionesData={opcionesData} data={modal.facturaExtranjera.data}/>
                 </Modal>
             }
-
-            {/* {
-                modal.facturas.data &&
-                <Modal size="lg" title={"Facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
-                    <Facturas handleClose={e => handleClose('facturas')} opcionesData={opcionesData} data={modal.facturas.data}/>
-                </Modal>
-            } */}
 
         </>
     )
