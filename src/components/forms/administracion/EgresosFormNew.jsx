@@ -373,6 +373,7 @@ class EgresosFormNew extends Component {
         modal.see = true
         this.setState({ ...this.state, modal })
     }
+    
     onChangeFactura = (e) => {
 
         waitAlert()
@@ -661,6 +662,7 @@ class EgresosFormNew extends Component {
                             // Adjunto un XML
                             if (Object.keys(form.facturaObject).length > 0) {
                                 if (form.facturaItem) {
+                                    debugger
                                     //Tiene una factura guardada
                                     this.attachFactura()
                                 } else {
@@ -1006,6 +1008,8 @@ class EgresosFormNew extends Component {
     render() {
         const { formeditado, form, options, modal } = this.state
         const { type, areas } = this.props
+        
+        console.log(form)
         return (
 
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">

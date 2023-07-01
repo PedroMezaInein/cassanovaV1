@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from './../../../../functions/api';
+import { apiOptions, apiPutForm, apiPostForm, apiGet } from './../../../../functions/api';
 
 import DateFnsUtils from '@date-io/date-fns';
 import Swal from 'sweetalert2'
 import { es } from 'date-fns/locale'
-import axios from 'axios';
 import S3 from 'react-aws-s3'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -17,28 +16,23 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputLabel from '@material-ui/core/InputLabel';
-import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
-import TrashIcon from '@material-ui/icons/DeleteOutline';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import j2xParser from 'fast-xml-parser'
 
 import Style from './CrearEgreso.module.css'
-import EgresosTable from '../EgresosTable';
 
-export default function CrearEgreso(props) {
-    const {opcionesData, reload, handleClose} = props
-    const auth = useSelector((state) => state.authUser.access_token);
+export default function EditarEgreso(props) {
+    const {opcionesData, reload, handleClose, data} = props
+    const auth = useSelector((state) => state.authUser.access_token)
     const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState({
         cuentas: [],
@@ -49,12 +43,117 @@ export default function CrearEgreso(props) {
         tiposPagos: [],
     })
 
+    console.log(data)
+
     useEffect(() => {
         
         if(opcionesData){
             setOpciones(opcionesData)
         }
     }, [opcionesData])
+
+    useEffect(() => {
+        if(opciones.empresas.length > 0){
+            setForm({
+                ...form,
+                cuentas: opciones.empresas.find(empresa => empresa.id === form.empresa).cuentas
+            })
+        }
+    }, [opciones.empresas])
+
+    useEffect(() => {
+        
+        getEgreso()
+        
+    }, [])
+
+    useEffect(() => {
+        if(opciones.empresas.length > 0){
+            setForm({
+                ...form,
+                cuentas: opciones.empresas.find(empresa => empresa.id === data.empresa.id).cuentas
+            })
+        }
+    }, [opciones.empresas])
+
+
+
+    const getEgreso = async () => {
+        // waitAlert()
+        // const { areas } = this.props
+        apiGet(`v2/administracion/egresos/${data.id}`, auth).then(
+            (response) => {
+                const { egreso } = response.data
+                setForm({
+                    ...form,
+                    rfc: egreso.proveedor.rfc,
+                })
+                // const { form, options } = this.state
+                // form.factura = egreso.factura ? 'Con factura' : 'Sin factura'
+                // if (egreso.proveedor) {
+                //     form.proveedor = egreso.proveedor.id.toString()
+                //     form.rfc = egreso.proveedor.rfc
+                // }
+                // if (egreso.empresa) {
+                //     form.empresa = egreso.empresa.id.toString()
+                //     if (egreso.empresa.cuentas) {
+                //         options.cuentas = setOptions(egreso.empresa.cuentas, 'nombre', 'id')
+                //         if (egreso.cuenta) {
+                //             form.cuenta = egreso.cuenta.id.toString()
+                //         }
+                //     }
+                // }
+
+                // if (egreso.area) {
+                //     form.area = egreso.area.id.toString()
+                //     if (egreso.area.subareas) {
+                //         options.subareas = setOptions(egreso.area.subareas, 'nombre', 'id')
+                //     }
+                //     if (egreso.subarea) {
+                //         form.subarea = egreso.subarea.id.toString()
+                //     }
+                // }
+
+                // if (egreso.tipo_pago) {
+                //     form.tipoPago = egreso.tipo_pago ? egreso.tipo_pago.id.toString() : ''
+                // }
+
+                // if (egreso.tipo_impuesto) {
+                //     form.tipoImpuesto = egreso.tipo_impuesto ? egreso.tipo_impuesto.id.toString() : ''
+                // }
+
+                // if (egreso.estatus_compra) {
+                //     form.estatusCompra = egreso.estatus_compra ? egreso.estatus_compra.id.toString() : ''
+                // }
+
+                // if (egreso.id_partidas && egreso.area) {
+                //     form.partida = `${egreso.id_partidas}`
+                // } 
+                // else if (egreso.subarea && areas.length > 0) {
+                //     if (areas.find((area) => area.id_area == egreso.area.id)) {
+                //         areas.find((area) => area.id_area == egreso.area.id).partidas.map((partida) => {
+                //             partida.subpartidas.map((subpartida) => {
+                //                 if (subpartida.id == egreso.subarea.id) {
+                //                     form.partida = `${partida.id}`
+                //                 }
+                //             })
+                //         })
+                //     }
+
+                // }
+
+                // form.total = egreso.monto
+                // form.fecha = new Date(egreso.created_at)
+                // form.descripcion = egreso.descripcion
+                // form.comision = egreso.comision
+                // this.setState({
+                //     ...this.state,
+                //     form,
+                //     options
+                // })
+            }, (error) => { }
+        ).catch((error) => { })
+    }
 
     const [form, setForm] = useState({
         adjuntos: {
@@ -63,35 +162,45 @@ export default function CrearEgreso(props) {
             presupuesto: { files: [], value: '' },
             xml: { files: [], value: '' },
         },
-        area: '',
+        area: data.area.id,
         banco: 0,
-        comision: 0,
+        comision: data.comision,
         correo: '',
-        cuenta: '',
+        cuenta: data.cuenta.id,
         cuentas: [],
         comision: 0,
-        descripcion: '',
-        empresa: '',
-        estatusCompra: 2,
-        factura: false, 
+        descripcion: data.descripcion,
+        empresa: data.empresa.id,
+        estatusCompra: data.estatus_compra.id,
+        factura: data.factura === 1 ? true : false,
         facturaItem: '',
         facturaObject: {},
         fecha: '',
-        id_partidas: "",
+        id_partidas: `${data.id_partidas}`,
         leadId: "",
         nombre: "",
         numCuenta: "",
         partida: '',
-        proveedor: '',
+        proveedor: data.proveedor.id,
+        proveedor_nombre: data.proveedor.razon_social,
         razonSocial: '',
-        rfc: null,
-        subarea: '', 
+        rfc: '',
+        subarea: data.subarea.id, 
         telefono: '',
         tipo: 0,
-        tipoImpuesto: 1,
-        tipoPago: 4,
-        total: '',
+        tipoImpuesto: data.tipo_impuesto.id,
+        tipoPago: data.tipo_pago.id,
+        total: data.total,
     })
+
+    useEffect(() => {
+        if(form.rfc!==''){
+            setForm({
+                ...form,
+                cuentas: opciones.empresas.find(empresa => empresa.id === data.empresa.id).cuentas
+            })
+        }
+    }, [form.rfc])
 
     const handleChangeCheck = () => {
         setForm({
@@ -181,19 +290,8 @@ export default function CrearEgreso(props) {
                             obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']
                         }
                     }
-                    // console.log(obj)
 
                     let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
-
-                    if(empresa === undefined ){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Fromato XML incorrecto',
-                            text: 'En esta factura no somos los receptores',
-                            showConfirmButton: false,
-                            timer: 3000
-                        })
-                    }
                     let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
                     let aux = []
                     files.forEach((file, index) => {
@@ -204,7 +302,8 @@ export default function CrearEgreso(props) {
                             key: index
                         })
                     })
-                    let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
+                    let path = `C:/fakepath/` + aux[0].name
+                    
                     setForm({
                         ...form,
                         fecha: obj.fecha,
@@ -215,7 +314,7 @@ export default function CrearEgreso(props) {
                         empresa_nombre: empresa ? empresa.nombre : null,
                         proveedor: proveedor ? proveedor.id : null,
                         proveedor_nombre: proveedor ? proveedor.name : null,
-                        cuentas: empresa ? opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas : '',
+                        cuentas: opciones.empresas.find((empresa) => empresa.id === empresa.id).cuentas,
                         adjuntos: {
                             ...form.adjuntos,
                             xml: {
@@ -412,7 +511,6 @@ export default function CrearEgreso(props) {
                             })
                     })
                 })
-                
                 Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, egreso) }).catch(err => console.error(err))
             }, (error) => { }
         ).catch((error) => { 
@@ -434,7 +532,6 @@ export default function CrearEgreso(props) {
         apiPostForm(`v2/administracion/facturas`, aux, auth).then(
             (response) => {
                 const { factura } = response.data
-
                 setForm({
                     ...form,
                     facturaItem: factura,
@@ -448,14 +545,11 @@ export default function CrearEgreso(props) {
     }
 
     const attachFactura = (egreso, factura) => {
-        console.log(egreso)
-        console.log(factura)
         let objeto = {
             dato: egreso.id,
             tipo: 'egreso',
             factura: factura.id
         }
-
         apiPutForm(`v2/administracion/facturas/attach`, objeto, auth).then(
             (response) => {
                 if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
@@ -503,11 +597,10 @@ export default function CrearEgreso(props) {
             cancelButtonColor: '#d33',
             reverseButtons: true
         }).then((result) => {
-            
             if (result.value) {
                 Swal.close()
                 Swal.fire({
-                    title: 'Creando gasto',
+                    title: 'Editando gasto',
                     text: 'Por favor, espere...',
                     allowOutsideClick: false,
                     onBeforeOpen: () => {
@@ -520,77 +613,79 @@ export default function CrearEgreso(props) {
                 aux.factura = form.factura ? 'Con factura' : 'Sin factura'
         
                 try {
-                    apiPostForm('v3/administracion/egresos', form, auth)
+                    apiPutForm(`v3/administracion/egresos/${data.id}`, form, auth)
                     .then((response) => {
                         const {egreso} = response.data
                         Swal.close()
                         Swal.fire({
-                            title: 'Gasto creado con éxito',
-                            text: 'Subiendo adjuntos...',
+                            title: 'Gasto editado con éxito',
                             allowOutsideClick: false,
-                            onBeforeOpen: () => {
-                                Swal.showLoading()
-                            },
+                            icon: 'success',
+                            text: 'Se editó el gasto con éxito',
+                            showConfirmButton: false,
+                            timer: 1500
                         })
                         
                         setForm({
                             ...form,
                             egreso
                         })
-                        if (egreso.factura) {
-                            // Adjunto un XML
-                            if (Object.keys(form.facturaObject).length > 0) {
-                                if (form.facturaItem) {
-                                    //Tiene una factura guardada
-                                    attachFactura(egreso, egreso.factura)
-                                } else {
-                                    //No hay factura generada
-                                    addFacturaS3(egreso.id , egreso)
-                                }
-                            } else {
-                                //No adjunto XML
-                                if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
-                                    //El egreso tiene adjuntos
-                                    attachFiles(egreso)
-                                } else {
-                                    //Egreso generado con éxito 
+        
+                        // if (egreso.factura) {
+                        //     if (Object.keys(form.facturaObject).length > 0) {
+                        //         if (form.facturaItem) {
+                        //             //Tiene una factura guardada
+                        //             attachFactura(egreso, egreso.factura)
+                        //         } else {
+                        //             //No hay factura generada
+                        //             addFacturaS3()
+                        //         }
+                        //     } else {
+                        //         //No adjunto XML
+                        //         if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
+                        //             //El egreso tiene adjuntos
+                        //             attachFiles(egreso)
+                        //         } else {
+                        //             //Egreso generado con éxito 
                                     
-                                }
-                            }
-                            Swal.close()
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Adjuntos subidos con éxito',
-                                text: 'Se subieron los adjuntos con éxito',
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                            if(reload){
-                                reload.reload()
-                            }
-                            handleClose()
-                        } else {
-                            // La egreso no es con factura
-                            if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
-                                //La egreso tiene adjuntos
-                                attachFiles(egreso)
+                        //         }
+                        //     }
+                        //     Swal.close()
+                        //     Swal.fire({
+                        //         icon: 'success',
+                        //         title: 'Adjuntos subidos con éxito',
+                        //         text: 'Se subieron los adjuntos con éxito',
+                        //         showConfirmButton: false,
+                        //         timer: 1500
+                        //     })
+                        //     if(reload){
+                        //         reload.reload()
+                        //     }
+                        //     handleClose()
+                        // } else {
+                        //     // La egreso no es con factura
+                        //     if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
+                        //         //La egreso tiene adjuntos
+                        //         attachFiles(egreso)
+                                
+                        //     } else {
+                        //         //Egreso generado con éxito 
+                        //         Swal.close()
+                        //         Swal.fire({
+                        //             icon: 'success',
+                        //             title: 'Gasto creado con éxito',
+                        //             text: 'Se creó el gasto con éxito',
+                        //             showConfirmButton: false,
+                        //             timer: 1500
+                        //         })
+                        //         if(reload){
+                        //             reload.reload()
+                        //         }
+                        //         handleClose()
 
-                            } else {
-                                //Egreso generado con éxito 
-                                Swal.close()
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Gasto creado con éxito',
-                                    text: 'Se creó el gasto con éxito',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
-                                if(reload){
-                                    reload.reload()
-                                }
-                                handleClose()
-                            }
-                        }
+                        //     }
+                        // }
+        
                     })
                     .catch((error) => {
                         console.log(error)
@@ -608,8 +703,8 @@ export default function CrearEgreso(props) {
             }
         })
 
+        
     }
-    console.log(form)
 
     const handleDeleteFile = (tipo, index) => {
         let files = form.adjuntos[tipo].files
@@ -630,7 +725,6 @@ export default function CrearEgreso(props) {
         })
     };
 
-
     return (
         <>
             
@@ -640,7 +734,7 @@ export default function CrearEgreso(props) {
                 >
                     <Typography className='proyect-Subtitulo'>DATOS DE LA FACTURA</Typography>
                 </AccordionSummary>
-                <AccordionDetails> 
+                <AccordionDetails>
                     <div style={{ width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-evenly', marginRight: '10px', flexDirection: 'column' }}>
                             <div>
@@ -649,19 +743,18 @@ export default function CrearEgreso(props) {
                                     <FormControlLabel
                                         control={<Checkbox checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
                                         label="No"
-
+                                        disabled
                                     />
                                     <FormControlLabel
                                         control={<Checkbox checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
                                         label="Si"
-
+                                        disabled
                                     />
                                 </FormGroup>
                             </div>  
-                            
                             {
                                 form.factura ?
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }} hidden>
                                         <div>
                                             <InputLabel>XML de la factura</InputLabel>
                                             <div >
@@ -752,6 +845,7 @@ export default function CrearEgreso(props) {
                                 
                             }
 
+                            
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
@@ -764,7 +858,7 @@ export default function CrearEgreso(props) {
                                             name="proveedor"
                                             options={opciones.proveedores}
                                             getOptionLabel={(option) => option.name}
-                                            style={{ width: 230, paddingRight: '1rem' }}
+                                            style={{ width: 270, paddingRight: '1rem' }}
                                             onChange={(event, value) => handleChangeProveedor(event, value)}
                                             renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
                                             
@@ -799,11 +893,13 @@ export default function CrearEgreso(props) {
                             </div>    
                         </div>
                         
+                        
                     </div>
                 </AccordionDetails>
             </Accordion>
 
-            <Accordion defaultExpanded className='proyect-accordion'>
+
+            <Accordion className='proyect-accordion'>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                 >
@@ -860,8 +956,8 @@ export default function CrearEgreso(props) {
                                     <>
                                         <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
                                         <Select
-                                            value={form.c}
-                                            name="id_partidas"
+                                            value={form.id_partidas}
+                                            name="partida"
                                             onChange={handleChange}
                                             style={{ width: 230, marginRight: '1rem' }}
                                         >
@@ -916,11 +1012,13 @@ export default function CrearEgreso(props) {
 
                         </div>
 
+                        
                     </div>
                 </AccordionDetails>
             </Accordion>
 
-            <Accordion defaultExpanded className='proyect-accordion'>
+
+            <Accordion className='proyect-accordion'>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                 >
@@ -953,14 +1051,6 @@ export default function CrearEgreso(props) {
                             <div>
                                 {
                                     opciones.tiposPagos.length > 0 ?
-                                        // <Autocomplete
-                                        //     name="proveedor"
-                                        //     options={opciones.tiposPagos}
-                                        //     getOptionLabel={(option) => option.name}
-                                        //     style={{ width: 230, paddingRight: '1rem' }}
-                                        //     /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                        //     renderInput={(params) => <TextField {...params} label={'tipo de pago'} variant="outlined" />}
-                                        // />
                                         <div>
                                             <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
 
@@ -980,7 +1070,24 @@ export default function CrearEgreso(props) {
 
                             </div> 
                             <div>
-                              
+                                {
+                                    opciones.estatusCompras.length > 0 ?
+                                        <div>
+                                            <InputLabel id="demo-simple-select-label">Estatus de Compra</InputLabel>
+                                            <Select
+                                                value={form.estatusCompra}
+                                                name="estatusCompra"
+                                                onChange={handleChange}
+                                                style={{ width: 230, marginRight: '1rem' }}
+                                            >
+                                                {opciones.estatusCompras.map((item, index) => (
+                                                    <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </div>
+                                        : null
+                                }
+
                             </div> 
                         </div>
                         
@@ -1029,7 +1136,7 @@ export default function CrearEgreso(props) {
                             </div>
                         </div>
 
-                        <div style={{display: 'flex', justifyContent: 'space-evenly', marginTop: '2rem'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-evenly', marginTop: '2rem'}} hidden>
 
                             <div>
                                 
@@ -1067,7 +1174,7 @@ export default function CrearEgreso(props) {
                                 </div>             
                             </div>
 
-                            <div>
+                            <div hidden>
                                 <InputLabel>Presupuestos</InputLabel>
                                 <div>
                                     <input
@@ -1110,7 +1217,7 @@ export default function CrearEgreso(props) {
             <div>
                 <div className="row justify-content-end">
                     <div className="col-md-4">
-                        <button className={Style.sendButton} onClick={e => handleSend(form)}>Crear</button>
+                        <button className={Style.sendButton} onClick={e => handleSend(form)}>Editar</button>
                     </div>
                 </div>   
             </div>
