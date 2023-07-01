@@ -11,6 +11,7 @@ import Editar from './Modales/EditarGasto'
 import Ver from './Modales/VerEgreso'
 import Filtrar from './Modales/Filtrar'
 import FacturaExtranjera from './Modales/FacturaExtranjera'
+import Facturas from './Modales/Facturas'
 import { setMoneyTable, setDateTable } from '../../../functions/setters'
 
 import Swal from 'sweetalert2'
@@ -40,6 +41,10 @@ export default function EgresosTable() {
             data: null
         },
         facturaExtranjera: {
+            show: false,
+            data: null
+        },
+        facturas: {
             show: false,
             data: null
         }
@@ -127,7 +132,8 @@ export default function EgresosTable() {
 
                 Swal.close()
                 setOpcionesData(aux)
-                    
+                // setProveedoresData(aux);
+  
             }
         )
         
@@ -235,7 +241,7 @@ export default function EgresosTable() {
         {
             nombre: 'Adjuntos',
             icono: 'fas fa-paperclip',
-            color: 'reyButton',
+            color: 'yellowButton',
             funcion: (item) => {
                 openModal('facturaExtranjera', item)
             }
@@ -243,9 +249,9 @@ export default function EgresosTable() {
         {
             nombre: 'Facturas',
             icono: 'fas fa-file-invoice',
-            color: 'reyButton',
+            color: 'perryButton',
             funcion: (item) => {
-
+                openModal('facturas', item)
             }
         },
     ]
@@ -344,6 +350,14 @@ export default function EgresosTable() {
             <Modal size="lg" title={"Nuevo gasto"} show={modal.crear?.show} handleClose={e => handleClose('crear')} >
                 <Crear handleClose={e => handleClose('crear')} opcionesData={opcionesData} reload={reloadTable}/> 
             </Modal>
+
+            {
+                modal.facturas.data &&
+                <Modal size="xl" title={"Factur as"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
+                    <Facturas handleClose={e => handleClose('facturas')}  opcionesData={opcionesData} egreso={modal.facturas.data}/>
+                </Modal> 
+            }
+           
 
             {
                 modal.editar?.data &&

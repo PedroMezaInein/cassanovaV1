@@ -448,6 +448,8 @@ export default function CrearEgreso(props) {
     }
 
     const attachFactura = (egreso, factura) => {
+        console.log(egreso)
+        console.log(factura)
         let objeto = {
             dato: egreso.id,
             tipo: 'egreso',
@@ -607,6 +609,7 @@ export default function CrearEgreso(props) {
         })
 
     }
+    console.log(form)
 
     const handleDeleteFile = (tipo, index) => {
         let files = form.adjuntos[tipo].files
