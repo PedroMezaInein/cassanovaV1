@@ -50,16 +50,24 @@ export default function EgresosTable() {
         }
     })
 
-    // useEffect(() => {
-    //     getProveedores()
-    // }, [filtrado])
-
     useEffect(() => {
         getProveedores()
-        if (reloadTable) {
-            reloadTable.reload()
-        }
     }, [filtrado])
+
+    // useEffect(() => {
+    //     getProveedores()
+    //     // if (reloadTable) {
+    //     //     reloadTable.reload()
+    //     // }
+    //     // if (filtrado) {
+    //     //     reloadTable.reload(filtrado)
+    //     //     //  setFiltrado('')
+    //     //     if(borrar == false){
+    //     //         setFiltrado('')   
+
+    //     //     }
+    //     // }
+    // }, [filtrado])
     
     const getProveedores = () => {
         Swal.fire({
