@@ -290,6 +290,13 @@ export default function EgresosTable() {
     ]
 
     const  exportEgresosAxios = () => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Descargar gasto',
+            text: 'Exportando gastos espere...',
+            showConfirmButton: false,
+            timer: 4000
+        })
         
         apiPostFormResponseBlob(`v3/administracion/egresos/exportar`,{ columnas: filtrado },  auth).then(
             (response) => {
