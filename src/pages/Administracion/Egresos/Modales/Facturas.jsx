@@ -19,7 +19,6 @@ export default function Factura(props) {
     const { opcionesData, egreso, handleClose, reload } = props
     const auth = useSelector((state) => state.authUser.access_token);
     const [reloadTable, setReloadTable] = useState()
-    console.log(egreso)
 
     const [opciones, setOpciones] = useState({
         cuentas: [],
@@ -162,7 +161,6 @@ export default function Factura(props) {
                             obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']
                         }
                     }
-                    console.log(obj)
 
                     let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
                     let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
@@ -239,7 +237,7 @@ export default function Factura(props) {
         let aux = []
 
         e.target.files.forEach((file, index) => {
-            console.log(file)
+
             aux.push({
                 name: file.name,
                 file: file,
@@ -441,7 +439,6 @@ export default function Factura(props) {
     };
 
     const deleteEgresoAxios = (id) => {
-        console.log(egreso)
 
         apiDelete(`v2/administracion/egresos/${egreso.id}/facturas/${id}`, auth).then(
             (response) => {
@@ -476,7 +473,6 @@ export default function Factura(props) {
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            console.log(item)
                             deleteEgresoAxios(item.id)
                             
                         }
