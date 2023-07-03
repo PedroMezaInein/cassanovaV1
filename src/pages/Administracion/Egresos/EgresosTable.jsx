@@ -13,10 +13,11 @@ import Filtrar from './Modales/Filtrar'
 import FacturaExtranjera from './Modales/FacturaExtranjera'
 import Facturas from './Modales/Facturas'
 import { setMoneyTable, setDateTable } from '../../../functions/setters'
+import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 
 import Swal from 'sweetalert2'
 
-import { apiOptions, catchErrors, apiDelete, apiPostForm, apiGet } from './../../../functions/api';
+import { apiOptions, catchErrors, apiDelete, apiPostForm, apiGet,apiPostFormResponseBlob } from './../../../functions/api';
 
 export default function EgresosTable() { 
     const auth = useSelector((state) => state.authUser.access_token);
@@ -282,10 +283,30 @@ export default function EgresosTable() {
             //exportar
             nombre: <div><i className="fas fa-file-export mr-5"></i><span>Exportar</span></div>,
             funcion: (item) => {
+                exportEgresosAxios(item.id)
 
             }
         },
     ]
+
+    const  exportEgresosAxios = () => {
+        
+        apiPostFormResponseBlob(`v3/administracion/egresos/exportar`,{ columnas: filtrado },  auth).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'egresos.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'Ingresos exportados con éxito.'
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
 
     const openModal = (tipo, data) => {
         if(data.factura == 'Sin factura'){
