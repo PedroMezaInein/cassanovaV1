@@ -97,7 +97,6 @@ export default function Factura(props) {
 
     // *****************************************************
 
-
     const onChangeFactura = (e) => {
         const { files } = e.target
         const reader = new FileReader()
@@ -364,7 +363,6 @@ export default function Factura(props) {
         })
     }
 
-
     // ************************************************
 
     const columns = [
@@ -389,19 +387,19 @@ export default function Factura(props) {
     const proccessData = (datos) => {
         let aux = [];
 
-        if (datos.egreso.facturas.length === 0) { //todos estos valores excepto "estatus" estan dentro del array FACTURAS que esta en el objeto EGRESO. Pregunto si existe FACTURAS
-            aux.push({
-                folio: 'n/a',
-                estatus: datos.egreso.estatus_compra.estatus ? datos.egreso.estatus_compra.estatus : 'n/a',
-                fecha: 'n/a',
-                serie: 'n/a',
-                emisor: 'n/a',
-                receptor: 'n/a',
-                subtotal: 'n/a',
-                total: 'n/a',
-                adjuntos: 'n/a'
-            });
-        } else { // dentro de facturas están las propiedades de XML y PDF, cada uno es un objeto
+        // if (datos.egreso.facturas.length === 0) { //todos estos valores excepto "estatus" estan dentro del array FACTURAS que esta en el objeto EGRESO. Pregunto si existe FACTURAS
+        //     aux.push({
+        //         folio: 'n/a',
+        //         estatus: datos.egreso.estatus_compra.estatus ? datos.egreso.estatus_compra.estatus : 'n/a',
+        //         fecha: 'n/a',
+        //         serie: 'n/a',
+        //         emisor: 'n/a',
+        //         receptor: 'n/a',
+        //         subtotal: 'n/a',
+        //         total: 'n/a',
+        //         adjuntos: 'n/a'
+        //     });
+        // } else { // dentro de facturas están las propiedades de XML y PDF, cada uno es un objeto
             datos.egreso.facturas.forEach((factura) => {
                 let adjuntos = []; // creo un nuevo array para almacenar los valores de los adjuntos 
                 if (factura.xml.name) {
@@ -433,27 +431,29 @@ export default function Factura(props) {
                 subtotal: factura.subtotal ? '$ '+ formatNumber (factura.subtotal) : 'n/a',
                 total: factura.total ? '$ '+ formatNumber (factura.total) : 'n/a',
                 adjuntos: adjuntos.length > 0 ? adjuntos : 'n/a',
+                id: factura.id,
+                data: factura,
                 });
             });
-        }
+        // }
     
         return aux;
     };
 
     const deleteEgresoAxios = (id) => {
 
-        // apiDelete(`v2/administracion/egresos/${egreso.id}/facturas/${id}`, auth).then(
-        //     (response) => {
-        //         Swal.fire(
-        //             '¡Eliminado!',
-        //             'El egreso ha sido eliminado.',
-        //             'success'
-        //         )
-        //         if (reloadTable) {
-        //             reloadTable.reload()
-        //         }
-        //     }, (error) => { }
-        // ).catch((error) => { catchErrors(error) })
+        apiDelete(`v2/administracion/egresos/${egreso.id}/facturas/${id}`, auth).then(
+            (response) => {
+                Swal.fire(
+                    '¡Eliminado!',
+                    'El egreso ha sido eliminado.',
+                    'success'
+                )
+                if (reloadTable) {
+                    reloadTable.reload()
+                }
+            }, (error) => { }
+        ).catch((error) => { catchErrors(error) })
     }  
 
     let acciones = () => {
@@ -475,6 +475,7 @@ export default function Factura(props) {
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            console.log(item)
                             deleteEgresoAxios(item.id)
                             
                         }
@@ -484,7 +485,6 @@ export default function Factura(props) {
         ]
         return aux
     }
-
 
     return (
 
@@ -586,7 +586,6 @@ export default function Factura(props) {
                     
                 </div>
             
-
             <div>
                 <TablaGeneral
                     subtitulo="información general"

@@ -280,14 +280,25 @@ export default function EgresosTable() {
     ]
 
     const openModal = (tipo, data) => {
+        if(data.factura == 'Sin factura'){
+            Swal.fire({
+                icon: 'error',
+                title: 'No tiene facura',
+                text: 'El registro es sin factura',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            
+        }else{
+            setModal({
+                ...modal,
+                [tipo]: {
+                    show: true,
+                    data: data
+                }
+            })
+        }
 
-        setModal({
-            ...modal,
-            [tipo]: {
-                show: true,
-                data: data
-            }
-        })
     }
 
     const handleClose = (tipo) => {
@@ -358,7 +369,6 @@ export default function EgresosTable() {
                 </Modal> 
             }
            
-
             {
                 modal.editar?.data &&
                 <Modal size="lg" title={"Editar gasto"} show={modal.editar?.show} handleClose={e => handleClose('editar')} >
