@@ -19,6 +19,7 @@ export default function Factura(props) {
     const { opcionesData, egreso, handleClose, reload } = props
     const auth = useSelector((state) => state.authUser.access_token);
     const [reloadTable, setReloadTable] = useState()
+    console.log(egreso)
 
     const [opciones, setOpciones] = useState({
         cuentas: [],
@@ -54,7 +55,6 @@ export default function Factura(props) {
     })
 
     const [modal, setModal] = useState({
-
         eliminar: {
             show: false,
             data: false
@@ -96,7 +96,6 @@ export default function Factura(props) {
     // };
 
     // *****************************************************
-
 
     const onChangeFactura = (e) => {
         const { files } = e.target
@@ -389,19 +388,19 @@ export default function Factura(props) {
     const proccessData = (datos) => {
         let aux = [];
 
-        if (datos.egreso.facturas.length === 0) { //todos estos valores excepto "estatus" estan dentro del array FACTURAS que esta en el objeto EGRESO. Pregunto si existe FACTURAS
-            aux.push({
-                folio: 'n/a',
-                estatus: datos.egreso.estatus_compra.estatus ? datos.egreso.estatus_compra.estatus : 'n/a',
-                fecha: 'n/a',
-                serie: 'n/a',
-                emisor: 'n/a',
-                receptor: 'n/a',
-                subtotal: 'n/a',
-                total: 'n/a',
-                adjuntos: 'n/a'
-            });
-        } else { // dentro de facturas están las propiedades de XML y PDF, cada uno es un objeto
+        // if (datos.egreso.facturas.length === 0) { //todos estos valores estan dentro del array FACTURAS que esta en el objeto EGRESO. Pregunto si existe FACTURAS
+        //     aux.push({
+        //         folio: 'n/a',
+        //         estatus: 'n/a',
+        //         fecha: 'n/a',
+        //         serie: 'n/a',
+        //         emisor: 'n/a',
+        //         receptor: 'n/a',
+        //         subtotal: 'n/a',
+        //         total: 'n/a',
+        //         adjuntos: 'n/a'
+        //     });
+        // } else { // dentro de facturas están las propiedades de XML y PDF, cada uno es un objeto
             datos.egreso.facturas.forEach((factura) => {
                 let adjuntos = []; // creo un nuevo array para almacenar los valores de los adjuntos 
                 if (factura.xml.name) {
@@ -424,8 +423,8 @@ export default function Factura(props) {
                 }
     
                 aux.push({
-                folio: factura.pivot.egreso_id ? factura.pivot.egreso_id : 'n/a',
-                estatus: datos.egreso.estatus_compra.estatus ? datos.egreso.estatus_compra.estatus : 'n/a',
+                folio: factura.folio ? factura.folio : 'n/a',
+                estatus: factura.status ? factura.status : 'n/a',
                 fecha: factura.fecha ? factura.fecha : 'n/a',
                 serie: factura.serie ? factura.serie : 'n/a',
                 emisor: factura.nombre_emisor ? factura.nombre_emisor : 'n/a',
@@ -433,27 +432,29 @@ export default function Factura(props) {
                 subtotal: factura.subtotal ? '$ '+ formatNumber (factura.subtotal) : 'n/a',
                 total: factura.total ? '$ '+ formatNumber (factura.total) : 'n/a',
                 adjuntos: adjuntos.length > 0 ? adjuntos : 'n/a',
+                
                 });
             });
-        }
+        // }
     
         return aux;
     };
 
     const deleteEgresoAxios = (id) => {
+        console.log(egreso)
 
-        // apiDelete(`v2/administracion/egresos/${egreso.id}/facturas/${id}`, auth).then(
-        //     (response) => {
-        //         Swal.fire(
-        //             '¡Eliminado!',
-        //             'El egreso ha sido eliminado.',
-        //             'success'
-        //         )
-        //         if (reloadTable) {
-        //             reloadTable.reload()
-        //         }
-        //     }, (error) => { }
-        // ).catch((error) => { catchErrors(error) })
+        apiDelete(`v2/administracion/egresos/${egreso.id}/facturas/${id}`, auth).then(
+            (response) => {
+                Swal.fire(
+                    '¡Eliminado!',
+                    'El egreso ha sido eliminado.',
+                    'success'
+                )
+                if (reloadTable) {
+                    reloadTable.reload()
+                }
+            }, (error) => { }
+        ).catch((error) => { catchErrors(error) })
     }  
 
     let acciones = () => {
