@@ -316,7 +316,7 @@ export default function EgresosTable() {
     }
 
     const openModal = (tipo, data) => {
-        if(data.factura == 'Sin factura'){
+        if(data.factura == 'Sin factura' && tipo == 'facturas' ){
             Swal.fire({
                 icon: 'error',
                 title: 'No tiene facura',
