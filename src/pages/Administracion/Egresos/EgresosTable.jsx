@@ -14,6 +14,7 @@ import FacturaExtranjera from './Modales/FacturaExtranjera'
 import Facturas from './Modales/Facturas'
 import { setMoneyTable, setDateTable } from '../../../functions/setters'
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
+import StatusIndicatorGastos from './Modales/StatusIndicatorGastos'
 
 import Swal from 'sweetalert2'
 
@@ -23,6 +24,7 @@ export default function EgresosTable() {
     const auth = useSelector((state) => state.authUser.access_token);
     const [opcionesData, setOpcionesData] = useState()
     const [reloadTable, setReloadTable] = useState()
+    console.log(opcionesData)
 
     const [modal, setModal] = useState({
         ver: {
@@ -199,10 +201,11 @@ export default function EgresosTable() {
         { nombre: 'Monto', identificador: 'monto', stringSearch: false },
         // { nombre: 'Total', identificador: 'total', stringSearch: false },
         { nombre: 'Cuenta', identificador: 'cuenta', stringSearch: false },
-        { nombre: 'Pago', identificador: 'pago', stringSearch: false },
-        { nombre: 'Impuesto', identificador: 'impuesto', stringSearch: false },
+        // { nombre: 'Pago', identificador: 'pago', stringSearch: false },
+        // { nombre: 'Impuesto', identificador: 'impuesto', stringSearch: false },
         // { nombre: 'Estatus', identificador: 'estatusCompra', stringSearch: false },
-        { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false } //quitar
+        { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false }, //quitar
+        { nombre: 'estatus', identificador: 'semaforo', stringSearch: false } //quitar
     ]
 
     const acciones = [
@@ -346,6 +349,17 @@ export default function EgresosTable() {
             }
         })
     }
+
+
+    const createStatusIndicator = (item) => {
+        console.log('createStatusIndicator')
+
+        console.log(item)
+        return (
+            <StatusIndicatorGastos data={item} />
+        )
+
+    }
     
     const formatNumber = (num) => {
         return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
@@ -368,6 +382,7 @@ export default function EgresosTable() {
                 impuesto: dato.tipo_impuesto?.tipo,
                 descripcion: dato.descripcion,
                 factura: dato.factura ? 'Con factura' : 'Sin factura',
+                semaforo: createStatusIndicator(dato),
             })
         }
         )
