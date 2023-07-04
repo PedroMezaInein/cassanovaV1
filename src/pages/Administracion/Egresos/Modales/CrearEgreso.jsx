@@ -155,20 +155,20 @@ export default function CrearEgreso(props) {
                         } else { errores.push('El XML no tiene el UUID') }
                     } else { errores.push('El XML no tiene el UUID') }
                     obj.descripcion = ''
-                    if (keys.includes('cfdi:Conceptos')) {
-                        if (jsonObj['cfdi:Conceptos']['cfdi:Concepto']) {
-                            if (Array.isArray(jsonObj['cfdi:Conceptos']['cfdi:Concepto'])) {
-                                jsonObj['cfdi:Conceptos']['cfdi:Concepto'].forEach((element, index) => {
-                                    if (index) {
-                                        obj.descripcion += ' - '
-                                    }
-                                    obj.descripcion += element['Descripcion']
-                                })
-                            } else {
-                                obj.descripcion += jsonObj['cfdi:Conceptos']['cfdi:Concepto']['Descripcion']
-                            }
-                        }
-                    }
+                    // if (keys.includes('cfdi:Conceptos')) {
+                    //     if (jsonObj['cfdi:Conceptos']['cfdi:Concepto']) {
+                    //         if (Array.isArray(jsonObj['cfdi:Conceptos']['cfdi:Concepto'])) {
+                    //             jsonObj['cfdi:Conceptos']['cfdi:Concepto'].forEach((element, index) => {
+                    //                 if (index) {
+                    //                     obj.descripcion += ' - '
+                    //                 }
+                    //                 obj.descripcion += element['Descripcion']
+                    //             })
+                    //         } else {
+                    //             obj.descripcion += jsonObj['cfdi:Conceptos']['cfdi:Concepto']['Descripcion']
+                    //         }
+                    //     }
+                    // }
                     obj.folio = jsonObj['Folio']
                     obj.serie = jsonObj['Serie']
                     if (keys.includes('cfdi:CfdiRelacionados')) {
