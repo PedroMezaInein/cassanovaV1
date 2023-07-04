@@ -24,7 +24,7 @@ export default function EgresosTable() {
     const auth = useSelector((state) => state.authUser.access_token);
     const [opcionesData, setOpcionesData] = useState()
     const [reloadTable, setReloadTable] = useState()
-    console.log(opcionesData)
+    console.log(proccessData)
 
     const [modal, setModal] = useState({
         ver: {
@@ -353,7 +353,6 @@ export default function EgresosTable() {
 
     const createStatusIndicator = (item) => {
         console.log('createStatusIndicator')
-
         console.log(item)
         return (
             <StatusIndicatorGastos data={item} />
@@ -415,11 +414,11 @@ export default function EgresosTable() {
 
             {
                 modal.facturas.data &&
-                <Modal size="xl" title={"Factur as"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
+                <Modal size="xl" title={"Facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
                     <Facturas handleClose={e => handleClose('facturas')}  opcionesData={opcionesData} egreso={modal.facturas.data}/>
                 </Modal> 
             }
-           
+        
             {
                 modal.editar?.data &&
                 <Modal size="lg" title={"Editar gasto"} show={modal.editar?.show} handleClose={e => handleClose('editar')} >
