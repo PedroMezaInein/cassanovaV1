@@ -92,10 +92,10 @@ export default function EgresosTable() {
                 }
 
                 data.proveedores.map((proveedor) => {
-                    if (proveedor.nombre !== null) {
+                    if (proveedor.razon_social !== null) {
                         aux.proveedores.push({
                             id: proveedor.id,
-                            name: proveedor.nombre,
+                            name: proveedor.razon_social,
                             rfc: proveedor.rfc,
                         })   
                     }  
