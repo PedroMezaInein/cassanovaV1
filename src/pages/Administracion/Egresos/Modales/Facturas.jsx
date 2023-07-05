@@ -279,9 +279,13 @@ export default function Factura(props) {
                                 if (status === 204) resolve({ name: file.name, url: location })
                                 else reject(data)
                             })
+                            
                             .catch((error) => {
                                 reject(error)
                             })
+                            if(reload){
+                                reload.reload()
+                            }
                     })
                 })
                 Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, egreso) }).catch(err => console.error(err))
@@ -312,6 +316,9 @@ export default function Factura(props) {
                     facturaItem: factura,
                     archivos: files
                 })
+                if(reload){
+                    reload.reload()
+                }
                 attachFactura(egreso, factura)
             }, (error) => { }
         ).catch((error) => {
@@ -338,6 +345,9 @@ export default function Factura(props) {
                     showConfirmButton: false,
                     timer: 1500
                 })
+                if (reloadTable) {
+                    reloadTable.reload()
+                }
                 
             }, (error) => { 
                 Swal.close()
@@ -421,7 +431,8 @@ export default function Factura(props) {
     
                 aux.push({
                 folio: factura.folio ? factura.folio : 'n/a',
-                estatus: factura.status ? factura.status : 'n/a',
+                // estatus: factura.status ? factura.status : 'n/a',
+                estatus: 'FACTURADO',
                 fecha: factura.fecha ? factura.fecha : 'n/a',
                 serie: factura.serie ? factura.serie : 'n/a',
                 emisor: factura.nombre_emisor ? factura.nombre_emisor : 'n/a',
@@ -518,8 +529,8 @@ export default function Factura(props) {
                                 type="file"
                                 onChange={onChangeFactura}
                             />
-                            <label htmlFor="xml" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Button variant="contained" color="primary" component="span">
+                            <label htmlFor="xml" >
+                                <Button style={{ marginTop:'-3rem', marginLeft:'150px'}} variant="contained" color="primary" component="span">
                                     Agregar
                                 </Button>
                             </label>
@@ -529,9 +540,9 @@ export default function Factura(props) {
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 {
                                     form.adjuntos.xml.files.map((item, index) => (
-                                        <div key={index}  style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
-                                            <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'space-between' }}>
-                                                <p>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}<span onClick={() => handleDeleteFile('xml', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span></p>
+                                        <div key={index}  style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', width: '160px'}}>
+                                            <div>
+                                                <p style={{ textAlign:'center', color: '#3f51b5', fontWeight:'bold', marginTop:'.6rem'}}>{item.name.length > 15 ? item.name.slice(0, 10) + '...' : item.name}<span onClick={() => handleDeleteFile('xml', index)} style={{ color: 'red', cursor: 'pointer', marginLeft:'.3rem' }}>X</span></p>
                                             </div>
                                         </div>
                                     ))
@@ -553,8 +564,8 @@ export default function Factura(props) {
                             type="file"
                             onChange={(e) => handleAddFile(e, 'pdf')} 
                         />
-                        <label htmlFor="pdf" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Button variant="contained" color="primary" component="span">
+                        <label htmlFor="pdf" >
+                            <Button style={{ marginTop:'-3rem', marginLeft:'150px'}}  variant="contained" color="primary" component="span">
                                 Agregar
                             </Button>
                         </label>
@@ -564,11 +575,12 @@ export default function Factura(props) {
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             {
                                 form.adjuntos.pdf.files.map((item, index) => (
-                                    <div key={index} style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
-                                        <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'space-between' }}>
-                                            <p>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}
-                                            <span onClick={() => handleDeleteFile('pdf', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span>
-                                            </p>
+                                    <div key={index} style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', width: '160px' }}>
+                                        <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'center' }}>
+                                               <p style={{ textAlign:'center', color: '#3f51b5', fontWeight:'bold', marginTop:'.6rem'}}>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}
+                                            <span onClick={() => handleDeleteFile('pdf', index)} style={{ color: 'red', cursor: 'pointer', marginLeft:'.3rem'  }}>X</span>
+                                            </p> 
+                                            
                                         </div>
                                     </div>
                                 ))
@@ -577,7 +589,7 @@ export default function Factura(props) {
                     </div> 
                 </div>
 
-                <div style={{marginLeft:'85%'}}>
+                <div style={{marginLeft:'85%', marginTop:'-2rem'}}>
                     <button className={Style.sendButton}  onClick={addFacturaS3}>Enviar</button>
                 </div>
                     
