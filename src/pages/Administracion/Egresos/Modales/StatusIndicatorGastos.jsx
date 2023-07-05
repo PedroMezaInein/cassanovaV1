@@ -16,9 +16,13 @@ import Cancelada from '@material-ui/icons/BlockOutlined';
 import Eliminada from '@material-ui/icons/DeleteOutline';
 
 export default function StatusIndicator(props) { 
-    const { estatus_compra, estatus_conta, auto1, auto2, estatus_factura, estatus } = props.data
-    console.log(estatus_factura)
+    const { estatus_compra, estatus_conta, auto1, auto2, estatus_factura, estatus, factura, facturas, total, total_facturas} = props.data
+    console.log('empieza')
+    console.log(factura)
     console.log(estatus_compra.estatus)
+    console.log(total)
+    console.log(total_facturas)
+    console.log('termina')
 
     const [modal, setModal] = useState({
         status: {
@@ -57,7 +61,10 @@ export default function StatusIndicator(props) {
                         :
                         <>
                             <div
-                                className={estatus_compra && (estatus_compra.estatus === "Completada" || estatus_compra.estatus === "COMPLETO") ? Style.greenBox : estatus_compra && (estatus_compra.estatus === "CANCELADA" || estatus_compra.estatus === "Cancelada") ? Style.redBox : estatus_compra ? Style.yellowBox: Style.grayBox}
+                                className={
+                                    estatus_compra && (estatus_compra.estatus === "COMPLETO" || estatus_compra.estatus === "COMPLETADA") 
+                                    ? Style.greenBox : estatus_compra && (estatus_compra.estatus === "CANCELADA" || estatus_compra.estatus === "Cancelada") 
+                                    ? Style.redBox : estatus_compra ? Style.yellowBox: Style.grayBox}
                                 title={`Estatus compra: ${estatus_compra ? estatus_compra.estatus : 'Pendiente'}`}
                             >
                                 {
@@ -100,14 +107,28 @@ export default function StatusIndicator(props) {
                                 
                             </div>
                             <div
-                                className={estatus_factura && (estatus_factura.estatus === "Facturado" || estatus_factura.estatus === "FACTURADO") ? Style.greenBox : estatus_factura && (estatus_factura.estatus === "Pendiente de factura" || estatus_factura.estatus === "PENDIENTE DE FACTURA") ? Style.yellowBox : estatus_factura ? Style.yellowBox : Style.grayBox}
-                                title={`Estatus factura: ${estatus_factura ? estatus_factura.estatus : 'Pendiente'}`}
+                                className={factura === 0 ? Style.greenBox : '' || factura === 1 && facturas.length===0 ? Style.redBox : '' || factura === 1 && total === total_facturas ? Style.pinkBox : '' || factura === 1  && total < total_facturas ? Style.grayBox : '' || factura === 1  && total > total_facturas ? Style.yellowBox : '' }
+                                title={`Estatus factura: ${factura === 0 ? 'COMPLETO' : factura === 1 && facturas.length===0  ? 'Falta factura': factura === 1 && total === total_facturas ? 'completo' : factura === 1  && total < total_facturas ? 'completo' : factura === 1  && total > total_facturas ? 'con factura, pero falta monto' : ''}`}
                             >
                                 {
-                                    estatus_factura && estatus_factura.estatus === 'FACTURADO' ?
-                                        <span><DescriptionOutlinedIcon /></span>
-                                        :
-                                        <span><AccessTimeIcon /></span>
+                                    factura === 0 ? 
+                                        <Completada/> 
+                                    :
+                                    factura === 1 && facturas.length === 0 ? 
+                                        <Cancelada/>
+                                    :
+                                    factura === 1 && total === total_facturas ?
+                                        <Completada/> 
+                                    :
+                                    factura === 1  && total < total_facturas ?
+                                        <Completada/> 
+                                    :
+                                    factura === 1  && total > total_facturas ?
+                                        <EnProceso/>
+                                    :
+                                    <span><DescriptionOutlinedIcon /></span>
+                                    //     :
+                                    // <span><AccessTimeIcon /></span>
                                 }
                             </div>
                             <div
@@ -177,7 +198,7 @@ export default function StatusIndicator(props) {
                         <span>
                             Cuentas:
                             <span style={{ fontWeight: 'bold' }}>
-                                {auto2 ? 'Afectadas' : 'sin afectar'}
+                                {auto2 ? 'Afectadas' : 'Afectadas'}
                             </span>
                         </span>
                     </div>
@@ -188,18 +209,19 @@ export default function StatusIndicator(props) {
                     <div>
                         <span>Estatus compras:</span>
                         <span style={{color:'rgba(0, 0, 0, 0.5)'}}> Pendiente <AccessTimeIcon/> / </span>
-                        <span style={{color:'#FFD549'}}>En proceso <EnProceso/> / </span>
+                        <span style={{color:'#FFD549'}}>Pagado, pendiente de factura <EnProceso/> / </span>
                         <span style={{color:'#FFD549'}}>Pagada <Pagada/> / </span>
                         <span style={{color:'#FFD549'}}>En camino <EnCamino/> / </span>
-                        <span style={{color:'#1693A5'}}>Completada <Completada/> / </span>
+                        <span style={{color:'#1693A5'}}>Completo <Completada/> / </span>
                         <span style={{color:'rgba(242, 108, 79, 0.85)'}}>CANCELADA <Cancelada/></span>
                     </div>
                     <br></br>
+        
                     <div>
-                        <span>Estatus contabilidad:</span>
-                        <span style={{color:'rgba(0, 0, 0, 0.5)'}}> Pendiente <AccessTimeIcon/> / </span> 
-                        <span style={{color:'#1693A5'}}> Pagado <Pagada/> / </span>
-                        <span style={{color:'rgba(242, 108, 79, 0.85)'}}>Rechazado <Cancelada/> </span>
+                        <span>Estatus facturas:</span>
+                        <span style={{color:'#FFD549'}}>Con factura, pero monto faltante <EnProceso/> / </span>
+                        <span style={{color:'#1693A5'}}>Completo <Completada/> / </span>
+                        <span style={{color:'rgba(242, 108, 79, 0.85)'}}>sin factura <Cancelada/></span>
                     </div>
                 </div>
             </Modal> 

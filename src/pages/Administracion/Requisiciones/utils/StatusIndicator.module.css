@@ -45,3 +45,7 @@
 .redBox{
     background-color: rgba(242, 108, 79, 0.85);
 }
+
+.pinkBox{
+    background-color: pink;
+}
