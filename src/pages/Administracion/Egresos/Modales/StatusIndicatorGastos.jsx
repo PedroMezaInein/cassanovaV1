@@ -107,7 +107,8 @@ export default function StatusIndicator(props) {
                                 
                             </div>
                             <div
-                                className={factura === 0 ? Style.greenBox : '' || factura === 1 && facturas.length===0 ? Style.redBox : '' || factura === 1 && total === total_facturas ? Style.pinkBox : '' || factura === 1  && total < total_facturas ? Style.grayBox : '' || factura === 1  && total > total_facturas ? Style.yellowBox : '' }
+                                className={factura === 0 ? Style.greenBox : '' || factura === 1 && facturas.length===0 ? Style.redBox : '' || factura === 1 && total === total_facturas ? Style.greenBox : '' || factura === 1  && total < total_facturas ? Style.greenBox : '' || factura === 1  && total > total_facturas ? Style.yellowBox : '' }
+
                                 title={`Estatus factura: ${factura === 0 ? 'COMPLETO' : factura === 1 && facturas.length===0  ? 'Falta factura': factura === 1 && total === total_facturas ? 'completo' : factura === 1  && total < total_facturas ? 'completo' : factura === 1  && total > total_facturas ? 'con factura, pero falta monto' : ''}`}
                             >
                                 {
