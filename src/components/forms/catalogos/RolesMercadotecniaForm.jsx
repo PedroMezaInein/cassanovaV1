@@ -38,7 +38,7 @@ class RolesMercadotecniaForm extends Component {
                             messageinc = "Incorrecto. Ingresa el nombre del rol." />
                     </div>
                     <div className="col-md-6">
-                        <CircleColor circlesize = { 23 } width = "auto" onChange = { this.handleChangeColor }
+                        <CircleColor circlesize = { 25 } width = "auto" onChange = { this.handleChangeColor }
                             placeholder = "SELECCIONA EL COLOR DEL ROL" colors = { COLORS } classlabel = "text-center"
                             classname = "d-flex justify-content-center" requirevalidation = { 1 }
                             messageinc = "Incorrecto. Selecciona el color." value = { this.state.color } />

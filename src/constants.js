@@ -27,7 +27,8 @@ export const MAIN_FRONT = process.env.NODE_ENV === 'production' ? 'https://inein
 export const LEADS_FRONT = process.env.NODE_ENV === 'production' ? 'https://leads.inein.com.mx' : 'http://localhost:3001'
 // export const MI_PROYECTO_FRONT = process.env.NODE_ENV === 'production' ? 'https://mi-proyecto.inein.com.mx' : 'http://localhost:3000'
 
-export const COLORS = ["#E53935", "#CB4335", "#AB47BC", "#7D3C98", "#C15994", "#2471A3", "#2E86C1", "#42A5F5", "#4DD0E1", "#17A589", "#229954", "#28B463", "#9CCC65", "#FFC42C", "#D4AC0D", "#FF7043", "#D68910", "#CA6F1E", "#9F6A57", "#707B7C", "black"];
+export const COLORS = ["#E53935", "#CB4335", "#AB47BC", "#7D3C98", "#C15994", "#2471A3", "#2E86C1", "#42A5F5", "#4DD0E1", "#17A589", "#229954", "#28B463", "#9CCC65", "#FFC42C", "#D4AC0D", "#FF7043", "#D68910", "#CA6F1E", "#9F6A57", "#707B7C", "black",
+ '#78909C','#eb7b59','#ff0092', '#db93d7','#cf7aca','#ffddff','#930041','#683970','#00ad89','#e7803b','#3f6e00','#9966a0','#6a54fc','#578edb','#c18c96','#ff897b','#1a67a0','#b22946' ];
 
 //Expresiones Regulares
 
