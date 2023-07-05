@@ -372,8 +372,8 @@ class App extends Component{
 
                     {/*  ANCHOR Routes for proyectos */}
 
-                    <Route path = "/proyectos/proyectos" exact component = { Proyectos } />
-                    <Route path="/proyectos/proyectos/nuevo" exact component={ProyectosNuevo } />
+                    <Route path = "/proyectos/proyectos/nuevo" exact component = { Proyectos } />
+                    <Route path="/proyectos/proyectos/" exact component={ProyectosNuevo } />
                     
                     <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
                     <Route path = "/proyectos/proyectos/single/:id" exact component ={ SingleProyecto } />
