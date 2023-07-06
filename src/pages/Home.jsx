@@ -1460,14 +1460,13 @@ class Home extends Component{
                             </Card.Body>
                         </Card>
                         </Col>
-                        <Col key={1}>
+                        {/* <Col key={1}>
                         <Card style={{ textAlign:'center' }}>
                             <Card.Body style={{ textAlign:'center' }}>
                             <Card.Title>VEHÍCULOS</Card.Title>
                             <Card.Img style={{ width: '8rem' }} variant="top" src="https://admin-proyectos-aws.s3.us-east-2.amazonaws.com/images/camioneta.png" />
 
                             <Card.Text>
-                            {/* <div className="card-toolbar" id="dropdown-calendario"> */}
                             {
                                     <DropdownButton 
                                         title="Solicitar Vehículo"
@@ -1489,12 +1488,11 @@ class Home extends Component{
                                        
                                     </DropdownButton>
                                 }
-                            {/* </div> */}
                               
                             </Card.Text>
                             </Card.Body>
                         </Card>
-                        </Col>
+                        </Col> */}
                     </Row>
                    
                 </Container>
