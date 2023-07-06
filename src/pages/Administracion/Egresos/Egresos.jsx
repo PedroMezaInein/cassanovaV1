@@ -88,17 +88,25 @@ class Egresos extends Component {
             allCuentas: []
         },
         filters: {},
-        key: 'gastos'
+        key: 'gastos',
+        acceso: '',
+        eliminar: '',
     }
 
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
+        // const { PerEgreso } = this.props
+
         const egresos = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
+
+        this.state.accesos = egresos.read ? egresos.read : 0
+        this.state.eliminar = egresos.delete ?  egresos.delete : 0
+
         if (!egresos)
             history.push('/')
         this.getOptionsAxios()
@@ -807,15 +815,19 @@ class Egresos extends Component {
         })
     }
     render() {
-        const { form, options, egreso, modal, filters, key } = this.state
+        const { form, options, egreso, modal, filters, key ,accesos,eliminar} = this.state
         const { access_token } = this.props.authUser
-        const { areas } = this.props
+        const { areas  } = this.props
+    
         const tabs = [ 'r. compras', 'r. contabilidad', 'requisiciones']
 
         return (
             <Layout active='administracion'  {...this.props}>
+                
+                <Tabs id = "tabAdministracion" defaultActiveKey ={ accesos == 1 ? "gastos" : "requisiciones"}  activeKey ={ accesos == 1 ? key : "requisiciones"}  onSelect = {(value) => {this.controlledTab(value)}}>
+                { 
 
-                <Tabs id = "tabAdministracion" defaultActiveKey = "gastos" activeKey = {key} onSelect = {(value) => {this.controlledTab(value)}}>
+                accesos == 1 ?
 
                     <Tab eventKey = { 'gastos' } title = { 'gastos' }>
 
@@ -835,8 +847,12 @@ class Egresos extends Component {
                             exportar_boton={true}
                             onClickExport={() => { this.exportEgresosAxios() }}
                         />  */}
-                        <EgresosTable />
+
+                           <EgresosTable eliminar={eliminar} />
+                          
                     </Tab>
+                    :  ''
+                }
 
                     <Tab eventKey="requisiciones" title="requisiciones">
                         <Requisiciones/>
@@ -873,7 +889,7 @@ class Egresos extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser, areas: state.opciones.areas } }
+const mapStateToProps = state => { return { authUser: state.authUser, areas: state.opciones.areas ,accesos:state.accesos } }
 const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Egresos);
