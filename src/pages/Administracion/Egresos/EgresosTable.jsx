@@ -20,10 +20,11 @@ import Swal from 'sweetalert2'
 
 import { apiOptions, catchErrors, apiDelete, apiPostForm, apiGet,apiPostFormResponseBlob } from './../../../functions/api';
 
-export default function EgresosTable() { 
+export default function EgresosTable(props) { 
     const auth = useSelector((state) => state.authUser.access_token);
     const [opcionesData, setOpcionesData] = useState()
     const [reloadTable, setReloadTable] = useState()
+    const {eliminar } = props
 
     const [modal, setModal] = useState({
         ver: {
@@ -217,11 +218,13 @@ export default function EgresosTable() {
 
             }
         },
+
         {
             nombre: 'Eliminar',
             icono: 'fas fa-trash-alt',
             color: 'redButton',
             funcion: (item) => {
+                eliminar == 1 ?
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: "¡No podrás revertir esto!",
@@ -238,6 +241,15 @@ export default function EgresosTable() {
                         
                     }
                 })
+                :   
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No tienes permiso',
+                    text: 'Lo sentimos no tienes permiso para borrar...',
+                    showConfirmButton: false,
+                    timer: 4000
+                })
+                
             }
         },
         {
