@@ -43,7 +43,6 @@ export default function EditarEgreso(props) {
         tiposPagos: [],
     })
 
-
     useEffect(() => {
         
         if(opcionesData){
@@ -74,8 +73,6 @@ export default function EditarEgreso(props) {
             })
         }
     }, [opciones.empresas])
-
-
 
     const getEgreso = async () => {
         // waitAlert()
@@ -610,7 +607,7 @@ export default function EditarEgreso(props) {
                 let aux = form
 
                 aux.factura = form.factura ? 'Con factura' : 'Sin factura'
-        
+                console.log(form)
                 try {
                     apiPutForm(`v3/administracion/egresos/${data.id}`, form, auth)
                     .then((response) => {
@@ -624,12 +621,15 @@ export default function EditarEgreso(props) {
                             showConfirmButton: false,
                             timer: 1500
                         })
-                        
+                           
                         setForm({
                             ...form,
                             egreso
                         })
-        
+                        if(reload){
+                            reload.reload()
+                        }
+                        handleClose()
                         // if (egreso.factura) {
                         //     if (Object.keys(form.facturaObject).length > 0) {
                         //         if (form.facturaItem) {
@@ -691,7 +691,7 @@ export default function EditarEgreso(props) {
 
                         Swal.fire({
                             title: 'Error',
-                            text: 'No se pudo crear el gasto',
+                            text: 'No se pudo editar el gasto',
                             icon: 'error',
                             confirmButtonText: 'Cerrar',
                         })
@@ -702,7 +702,6 @@ export default function EditarEgreso(props) {
             }
         })
 
-        
     }
 
     const handleDeleteFile = (tipo, index) => {
@@ -742,12 +741,12 @@ export default function EditarEgreso(props) {
                                     <FormControlLabel
                                         control={<Checkbox checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
                                         label="No"
-                                        disabled
+                                        
                                     />
                                     <FormControlLabel
                                         control={<Checkbox checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
                                         label="Si"
-                                        disabled
+                                        
                                     />
                                 </FormGroup>
                             </div>  
@@ -844,7 +843,6 @@ export default function EditarEgreso(props) {
                                 
                             }
 
-                            
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
@@ -892,11 +890,9 @@ export default function EditarEgreso(props) {
                             </div>    
                         </div>
                         
-                        
                     </div>
                 </AccordionDetails>
             </Accordion>
-
 
             <Accordion className='proyect-accordion'>
                 <AccordionSummary
@@ -1011,11 +1007,9 @@ export default function EditarEgreso(props) {
 
                         </div>
 
-                        
                     </div>
                 </AccordionDetails>
             </Accordion>
-
 
             <Accordion className='proyect-accordion'>
                 <AccordionSummary
