@@ -607,7 +607,6 @@ export default function EditarEgreso(props) {
                 let aux = form
 
                 aux.factura = form.factura ? 'Con factura' : 'Sin factura'
-                console.log(form)
                 try {
                     apiPutForm(`v3/administracion/egresos/${data.id}`, form, auth)
                     .then((response) => {
