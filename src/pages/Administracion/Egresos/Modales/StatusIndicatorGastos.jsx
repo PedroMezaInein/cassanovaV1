@@ -17,13 +17,7 @@ import Eliminada from '@material-ui/icons/DeleteOutline';
 
 export default function StatusIndicator(props) { 
     const { estatus_compra, estatus_conta, auto1, auto2, estatus_factura, estatus, factura, facturas, total, total_facturas} = props.data
-    console.log('empieza')
-    console.log(factura)
-    console.log(estatus_compra.estatus)
-    console.log(total)
-    console.log(total_facturas)
-    console.log('termina')
-
+    
     const [modal, setModal] = useState({
         status: {
             data: false,

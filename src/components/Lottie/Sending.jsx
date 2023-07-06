@@ -8,6 +8,7 @@ import * as Abeja from '../../assets/animate/abeja.json'
 import * as pride from '../../assets/animate/17maylgbt.json'
 import * as Biodiversidad from '../../assets/animate/biodiversidad.json'
 import * as prideLoader from '../../assets/animate/pride-loader.json'
+import * as spiderman from '../../assets/animate/spiderman.json'
 import Lottie from 'react-lottie';
 
 class Sending extends Component{
@@ -15,7 +16,7 @@ class Sending extends Component{
         const defaultOptions = {
             loop: true,
             autoplay: true, 
-            animationData: new Date().getMonth() === 11 ? animationData2.default : prideLoader.default,
+            animationData: new Date().getMonth() === 11 ? animationData2.default : spiderman.default,
             rendererSettings: {
                 preserveAspectRatio: 'xMidYMid slice'
             }
