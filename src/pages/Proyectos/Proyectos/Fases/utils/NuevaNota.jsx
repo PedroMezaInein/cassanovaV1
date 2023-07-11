@@ -194,7 +194,7 @@ export default function NuevaNota(props) {
         <div className={Style.nueva_nota}>
 
             <div className='row'>
-                <div className='col-xl-6 col-md-6 col-sm-6 col-xs-12'>
+                <div className='col-xl-3 col-md-3 col-sm-3 col-xs-6'>
                     <InputLabel>Fecha</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <Grid>
@@ -213,34 +213,45 @@ export default function NuevaNota(props) {
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    {/* <InputLabel>Fecha</InputLabel>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <Grid container justifyContent="space-around">
-                            <KeyboardDatePicker
-                                className={Style.nuevaRequisicion_fecha}
-                                // margin="normal"
-                                id="date-picker-dialog"
-                                label="fecha"
-                                format="dd/MM/yyyy"
-                                name='fecha'
-                                // value={selectedDate}
-                                value={form.fecha !=='' ? form.fecha : null}
-                                onChange={e=>handleChangeFecha(e, 'fecha')}
-                                error={errores.fecha ? true : false}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            /> 
-                        </Grid>
-                    </MuiPickersUtilsProvider> */}
+                </div>
+                <div className={`col-xl-3 col-md-3 col-sm-3 col-6 ${Style.nuevaRequisicion_fecha}`}>
+                    <TextField
+                        // className="text"
+                        id="standard-multiline-static"
+                        label="No. Personal"
+                        value={form.nota}
+                        name='nota'
+                        onChange={handleChange}
+                        multiline
+                        rows={2}
+                        error={errores.nota ? true : false}
+                        // defaultValue="Default Value"
+                    />
+                </div>
+                
+                <div className={`col-xl-3 col-md-3 col-sm-3 col-6 ${Style.nuevaRequisicion_fecha}`}>
+                    <TextField
+                        // className="text"
+                        id="standard-multiline-static"
+                        label="Platica de seguridad (tema)"
+                        value={form.nota}
+                        name='nota'
+                        onChange={handleChange}
+                        multiline
+                        rows={2}
+                        error={errores.nota ? true : false}
+                        // defaultValue="Default Value"
+                    />
                 </div>
             
-                {/* <div className={`col-xl-6 ${Style.proveedor}`}> */}
-                <div className={`col-xl-6 col-md-6 col-sm-6 col-12 ${Style.prov}`}>
+            </div>
+
+            <div className='row'>
+                <div className={`col-xl-6 col-md-6 col-sm-6 col-6 ${Style.prov}`}>
                     <>  
                         <InputLabel>proveedor</InputLabel>
                         <Select
-                            className={Style.proveedor}
+                           Style="width: 250px;"
                             name="proveedor"
                             value={form.proveedor}
                             onChange={handleChange}
@@ -254,27 +265,27 @@ export default function NuevaNota(props) {
                         </Select>
                     </> 
                 </div>
+                <div className={`col-xl-6 col-md-6 col-sm-6 col-6 `}>
+                    <InputLabel>Tipo nota</InputLabel>
+
+                    <Select Style="width: 250px;"
+                            name="tipo_nota"
+                            value={form.tipo_nota}
+                            onChange={handleChange}
+                            error={errores.tipo_nota ? true : false}
+                        >
+                            
+                        <option value="someOption">Some option</option>
+                        <option value="otherOption">Other option</option>
+                    </Select>
+                </div>
             </div>
 
             <div className='row'>
-                <div className={`col-xl-6 col-md-6 col-sm-6 col-12 ${Style.nuevaRequisicion_fecha}`}>
-                    <TextField
-                        // className={Style.nuevaRequisicion_fecha}
-                        // className="text"
-                        id="standard-multiline-static"
-                        label="tipo de nota"
-                        value={form.tipo_nota}
-                        name='tipo_nota'
-                        onChange={handleChange}
-                        multiline
-                        rows={2}
-                        error={errores.tipo_nota ? true : false}
-                        // defaultValue="Default Value"
-                    />
-                </div>
 
-                <div className={`col-xl-6 col-md-6 col-sm-6 col-12 ${Style.nuevaRequisicion_fecha}`}>
+                <div className={`col-xl-12 col-md-12 col-sm-12 col-12`}>
                     <TextField
+                        Style="width: 600px;"
                         // className="text"
                         id="standard-multiline-static"
                         label="nota"
