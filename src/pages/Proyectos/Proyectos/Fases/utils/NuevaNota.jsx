@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Swal from 'sweetalert2'
+import S3 from 'react-aws-s3';
 
 // MATERIAL UI
 import Grid from '@material-ui/core/Grid';
@@ -13,14 +14,14 @@ import Select from '@material-ui/core/Select';
 
 import Style from './../../../../../styles/_nuevaNotaObra.module.css'
 
-import { apiPostForm } from '../../../../../functions/api';
+import { apiPostForm, apiGet, apiPutForm } from '../../../../../functions/api';
 
 export default function NuevaNota(props) { 
     const { proyecto, reload, opciones, handleClose } = props
     const auth = useSelector(state => state.authUser);
 
     const [form, setForm] = useState({ 
-        fecha:'',
+        hora:'',
         num_personal: '',
         tema: '',
         proveedor:'',
@@ -33,6 +34,13 @@ export default function NuevaNota(props) {
         cancelado: 'cancelado',
         concluido: 'concluido',
         acarreos: 'acarreos',
+        adjuntos: {
+            adjuntos: {
+                value: '',
+                placeholder: 'Adjunto',
+                files: []
+            }
+        }
     });
     console.log(form)
 
@@ -41,8 +49,8 @@ export default function NuevaNota(props) {
     const validateForm = () => {
         let validar = true
         let error = {}
-        if(form.fecha === ''){
-            error.fecha = "Seleccione una fecha"
+        if(form.hora === ''){
+            error.hora = "Seleccione una hora"
             validar = false
         }
         if(form.tipo_nota === ''){
@@ -95,6 +103,94 @@ export default function NuevaNota(props) {
         setForm({
             ...form,
             adjunto: e.target.files[0]
+            // adjuntos: e.target.files[0]
+
+        })
+    }
+
+    const getNotas = async (proyecto) => {
+        apiGet(`v1/proyectos/nota-bitacora?proyecto=${proyecto.id}`, auth.access_token).then(
+            (response) => {
+                Swal.close()
+                const { proyecto } = response.data
+                let { notas } = this.state
+                notas = proyecto.notas
+                setForm({ 
+                    ...form, notas })
+            }, (error) => { }
+            ).catch((error) => { 
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al adjuntar archivos',
+                    text: 'Ocurrio un error al adjuntar los archivos',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+    }
+
+    const addFilesToNota = async(values, nota) => {
+        apiPutForm(`v2/proyectos/nota-bitacora/${nota.id}/files`, { archivos: values }, auth.access_token ).then(
+            (response) => {
+                this.getNotas(proyecto)
+                setForm({
+                    ...form
+                })
+                // this.setState({ ...this.state, form: this.clearForm(), activeNota: 'notas' })
+                Swal.fire({
+                    title: 'Nota de obra',
+                    text: 'nota creada correctamente',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+                getNotas(proyecto)
+            }, (error) => { }
+        ).catch((error) => { 
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al adjuntar archivos',
+                text: 'Ocurrio un error al adjuntar los archivos',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        })
+    }
+
+    const addFilesToS3 = async(nota) => {
+        
+        let auxPromises = []
+        apiGet(`v1/constant/admin-proyectos`, auth.access_token)
+        .then(
+            (response) => {
+                const { alma } = response.data
+                let urlPath = `proyectos/${proyecto.id}/notas/${nota.id}/`
+                auxPromises  = form.adjuntos.adjuntos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${urlPath}${Math.floor(Date.now() / 1000)}-${file.file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.file.name, url: location})
+                                else reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { addFilesToNota(values, nota) })
+                .catch(err => console.error(err))
+            }, 
+            (error) => { }
+        ).catch((error) => { 
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al adjuntar archivos',
+                text: 'Ocurrio un error al adjuntar los archivos',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
         })
     }
 
@@ -117,7 +213,7 @@ export default function NuevaNota(props) {
                     proveedor: form.proveedor,
                     notas: form.nota,
                     tipo_nota: form.tipo_nota,
-                    fecha:  formatDate(form.fecha),
+                    hora:  formatDate(form.hora),
                     adjunto: form.adjunto,
                     num_personal: form.num_personal,
                     tema: form.tema,
@@ -142,11 +238,16 @@ export default function NuevaNota(props) {
                 apiPostForm(`v2/proyectos/nota-bitacora/${proyecto.id}`, dataForm, auth.access_token)
                 .then(
                     (response) => {
+                        console.log(response)
+                        const nota = response.data
+
                         Swal.close()
 
+                        addFilesToS3(nota)
+
                         Swal.fire({
-                            title: 'Solicitud de Compra',
-                            text: 'Solicitud de Compra creada correctamente',
+                            title: 'Nota de obra',
+                            text: 'nota creada correctamente',
                             icon: 'success',
                             timer: 2000,
                             showConfirmButton: false
@@ -160,8 +261,8 @@ export default function NuevaNota(props) {
                     (error) => {
                         Swal.close()
                         Swal.fire({
-                            title: 'Solicitud de Compra',
-                            text: 'Error al crear la Solicitud de Compra',
+                            title: 'Nota',
+                            text: 'Error al crear la Nota de obra',
                             icon: 'error',
                             timer: 2000,
                             showConfirmButton: false
@@ -170,8 +271,8 @@ export default function NuevaNota(props) {
                 ).catch((error) => {
                     Swal.close()
                     Swal.fire({
-                        title: 'Solicitud de Compra',
-                        text: 'Error al crear la Solicitud de Compra',
+                        title: 'Nota',
+                        text: 'Error al crear la Nota de obra',
                         icon: 'error',
                         timer: 2000,
                         showConfirmButton: false
@@ -180,8 +281,8 @@ export default function NuevaNota(props) {
             } catch (error) {
                 Swal.close()
                 Swal.fire({
-                    title: 'Solicitud de Compra',
-                    text: 'Error al crear la Solicitud de Compra',
+                    title: 'Nota',
+                    text: 'Error al crear la Nota de obra',
                     icon: 'error',
                     timer: 2000,
                     showConfirmButton: false
@@ -206,18 +307,18 @@ export default function NuevaNota(props) {
 
             <div className='row'>
                 <div className='col-xl-3 col-md-3 col-sm-3 col-xs-6'>
-                    <InputLabel>Fecha</InputLabel>
+                    <InputLabel>fecha</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <Grid>
                                 <KeyboardDatePicker
                                     className={Style.nuevaRequisicion_fecha}
                                     format="dd/MM/yyyy"
-                                    name='fecha'
-                                    value={form.fecha !=='' ? form.fecha : null}
-                                    onChange={e=>handleChangeFecha(e,'fecha')}
-                                    // defaultValue={state.fecha}
+                                    name='hora'
+                                    value={form.hora !=='' ? form.hora : null}
+                                    onChange={e=>handleChangeFecha(e,'hora')}
+                                    // defaultValue={state.hora}
                                     placeholder="dd/mm/yyyy"
-                                    error={errores.fecha ? true : false}
+                                    error={errores.hora ? true : false}
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
