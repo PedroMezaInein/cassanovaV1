@@ -21,11 +21,20 @@ export default function NuevaNota(props) {
 
     const [form, setForm] = useState({ 
         fecha:'',
+        num_personal: '',
+        tema: '',
         proveedor:'',
         tipo_nota: '',
         nota: '',
-        adjunto: ''
+        adjunto: '',
+        urgente: 'urgente',
+        normal: 'normal',
+        paro_actividades: 'paro de actividades',
+        cancelado: 'cancelado',
+        concluido: 'concluido',
+        acarreos: 'acarreos',
     });
+    console.log(form)
 
     const [errores, setErrores] = useState({})
 
@@ -110,6 +119,8 @@ export default function NuevaNota(props) {
                     tipo_nota: form.tipo_nota,
                     fecha:  formatDate(form.fecha),
                     adjunto: form.adjunto,
+                    num_personal: form.num_personal,
+                    tema: form.tema,
                 }
 
                 let aux = Object.keys(newForm)
@@ -219,8 +230,8 @@ export default function NuevaNota(props) {
                         // className="text"
                         id="standard-multiline-static"
                         label="No. Personal"
-                        value={form.nota}
-                        name='nota'
+                        value={form.num_personal}
+                        name='num_personal'
                         onChange={handleChange}
                         multiline
                         rows={2}
@@ -234,8 +245,8 @@ export default function NuevaNota(props) {
                         // className="text"
                         id="standard-multiline-static"
                         label="Platica de seguridad (tema)"
-                        value={form.nota}
-                        name='nota'
+                        value={form.tema}
+                        name='tema'
                         onChange={handleChange}
                         multiline
                         rows={2}
@@ -251,7 +262,7 @@ export default function NuevaNota(props) {
                     <>  
                         <InputLabel>proveedor</InputLabel>
                         <Select
-                           Style="width: 250px;"
+                           Style="width: 180px;"
                             name="proveedor"
                             value={form.proveedor}
                             onChange={handleChange}
@@ -268,15 +279,20 @@ export default function NuevaNota(props) {
                 <div className={`col-xl-6 col-md-6 col-sm-6 col-6 `}>
                     <InputLabel>Tipo nota</InputLabel>
 
-                    <Select Style="width: 250px;"
+                    <Select Style="width: 180px;"
                             name="tipo_nota"
                             value={form.tipo_nota}
                             onChange={handleChange}
                             error={errores.tipo_nota ? true : false}
                         >
                             
-                        <option value="someOption">Some option</option>
-                        <option value="otherOption">Other option</option>
+                        <MenuItem value={form.urgente}>{form.urgente}</MenuItem>
+                        <MenuItem value={form.normal}>{form.normal}</MenuItem>
+                        <MenuItem value={form.paro_actividades}>{form.paro_actividades}</MenuItem>
+                        <MenuItem value={form.cancelado}>{form.cancelado}</MenuItem>
+                        <MenuItem value={form.concluido}>{form.concluido}</MenuItem>
+                        <MenuItem value={form.acarreos}>{form.acarreos}</MenuItem>
+
                     </Select>
                 </div>
             </div>
