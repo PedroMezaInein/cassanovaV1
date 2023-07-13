@@ -304,7 +304,7 @@ export default function Notas(props) {
                 listaNotas(notas)
             }
 
-            <Modal size="md" title={"Nueva nota"} show={modal.crear.show} handleClose={handleClose('crear')}>
+            <Modal size="lg" title={"Nueva nota"} show={modal.crear.show} handleClose={handleClose('crear')}>
                 <NuevaNota handleClose={handleClose('crear')} reload={reloadTable} opciones={opciones} proyecto={proyecto}/>
             </Modal>
             <Modal size="lg" title={"ver nota"} show={modal.ver.show} handleClose={handleClose('ver')}>

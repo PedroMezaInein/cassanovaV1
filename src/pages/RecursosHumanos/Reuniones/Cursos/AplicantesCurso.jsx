@@ -113,7 +113,7 @@ export default function AplicantesCurso(props) {
                                         :
                                         <td className='btn-aprobacion'>
                                             <button className='btn-danger' onClick={e=>{handleAprobar(e, aplicante, false)}}>Declinar</button>    
-                                            <button className='btn-success' onClick={e=>{handleAprobar(e, aplicante, true)}}>Aprovar</button>
+                                            <button className='btn-success' onClick={e=>{handleAprobar(e, aplicante, true)}}>Aprobar</button>
                                         </td>
                                     }
                                 </tr>
