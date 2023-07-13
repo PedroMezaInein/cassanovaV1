@@ -15,7 +15,7 @@ class Login extends Component{
                     <div className="login-container order-2 order-lg-1 d-flex flex-center flex-row-fluid px-7 pt-lg-0 pb-lg-0 pt-4 pb-6"  style ={ { backgroundImage: "url('/bg-3.jpg')" } }>
                         <div className="login-content d-flex flex-column pt-lg-0 align-items-center" style={{flexFlow:'column nowrap'}}>
                             <div className="login-logo pb-xl-20 pb-15">
-                                <a href="https://inein.mx/" target="_blank" rel="noopener noreferrer">
+                                {/* <a href="https://inein.mx/" target="_blank" rel="noopener noreferrer">
                                     <img src="/inein-negro.png" className="max-h-img" alt="INEIN"/>
                                 </a>
                                 <a href="https://infraestructuramedica.mx/" target="_blank" rel="noopener noreferrer">
@@ -23,7 +23,9 @@ class Login extends Component{
                                 </a>
                                 <a href="https://www.rocco.mx/" target="_blank" rel="noopener noreferrer">
                                     <img src="/Rocco_negro.png" className="max-h-img" alt="ROCCO"/>
-                                </a>
+                                </a> */}
+
+                                CASSANOVA
                             </div>
                             <div className="login-form text-center">
                                 <LoginForm { ...this.props} />

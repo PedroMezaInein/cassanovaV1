@@ -24,7 +24,11 @@ Instalar las dependecias necesarias via __npm__ o __yarn__
 >
 > yarn start
 
+## Ejecución para netlify para subir cambios
 
+> npm run build
+>
+> netlify deploy
 
 ## Creadores
 
