@@ -1,6 +1,6 @@
 ## `PLATAFORMA ADMINISTRATIVA`
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/c94fe1d6-0bfb-4cc1-a0cc-bf3451e776f6/deploy-status)](https://app.netlify.com/sites/admin-proyectos/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/2799d390-958b-4eb4-9f69-b7ff16a42e37/deploy-status)](https://app.netlify.com/sites/cassanovav1/deploys)
 
 Aplicación desarrollada para la administración de proyectos para las diferentes empresas.
 
