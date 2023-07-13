@@ -299,6 +299,7 @@ class NotasObra extends Component {
     }
     render() {
         const { activeNota, notas, form, formeditado } = this.state
+        console.log(form)
         const { proyecto, options } = this.props
         return (
             <>

@@ -3,38 +3,19 @@ import { useSelector } from "react-redux";
 import 'date-fns';
 import Swal from 'sweetalert2'
 
-// MATERIAL UI
-import Grid from '@material-ui/core/Grid';
-import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider,KeyboardTimePicker,KeyboardDatePicker } from '@material-ui/pickers';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-
-import AdjuntosObra from './AdjuntosObra'
 import NuevaNota from './NuevaNota'
 import VerNotaObra from './VerNotaObra'
+import VerBitacora from './VerBitacora'
 
-import PresupuestoViejo from './../../../../../components/forms/presupuesto/PresupuestoForm'
 import { apiGet, apiPostForm, apiDelete } from '../../../../../functions/api';
 import { Modal } from './../../../../../components/singles'
 import Table from './../../../../../components/NewTables/TablaGeneral/TablaGeneral'
-import { setOptions } from './../../../../../functions/setters'
-import { NotasObra } from './../../../../../components/forms'
 
 export default function Notas(props) { 
     const { proyecto, reload, opciones } = props
     const auth = useSelector(state => state.authUser);
     const [reloadTable, setReloadTable] = useState()
-
-    const [form, setForm] = useState({ 
-        fecha:'',
-        proveedor:'',
-        tipo_nota: '',
-        nota: '',
-        adjunto: ''
-    });
+    console.log(proyecto)
 
     const [modal, setModal] = useState({
 
@@ -52,9 +33,13 @@ export default function Notas(props) {
             data: false
         },
 
+        verBitacora: {
+            show: false,
+            data: false
+        },
+
     })
 
-    const [errores, setErrores] = useState({})
     const [notas, setNotas] = useState([])
 
     useEffect(() => {
@@ -67,6 +52,24 @@ export default function Notas(props) {
         { nombre: 'tipo de nota', identificador: 'tipo_nota', sort: false, stringSearch: false},
         { nombre: 'Nota', identificador: 'nota', sort: false, stringSearch: false},
     ]
+
+    // const generarBitacoraAxios = async () => {
+    //     waitAlert()
+    //     const { at } = this.props
+    //     const { proyecto } = this.props
+    //     await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, { headers: setSingleHeader(at) }).then(
+    //         (response) => {
+    //             const { refresh } = this.props
+    //             const { proyecto } = response.data
+    //             doneAlert('PDF GENERADO CON ÉXITO')
+    //             window.open(proyecto.bitacora, '_blank').focus();
+    //             refresh(proyecto.id)
+    //         }, (error) => { printResponseErrorAlert(error) }
+    //     ).catch((error) => {
+    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+    //         console.error(error, 'error')
+    //     })
+    // }
 
     const handleOpen = [
         {
@@ -81,7 +84,49 @@ export default function Notas(props) {
                 })
             }
         },
+        {
+            nombre: 'generar bitácora (pdf)',
+            icono: 'fas fa-trash',
+            color: 'redButton',
+            funcion: (item) => {
+                Swal.fire({
+                    title: 'bitácora',
+                    text: '¿Deseas generar bitácora?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Si',
+                    cancelButtonText: 'No',
+                }).then((result) => {
+                    apiGet(`v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, auth.access_token)
+                    if (reloadTable) {
+                        reloadTable.reload()
+                    }
+
+                    handleClose()
+
+                    Swal.fire(
+                        'La bitácora se ha generado con éxito!',
+                        'success'
+                    )
+                });
+            }
+        },
     ]
+
+    if (proyecto.bitacora) {
+        handleOpen.push({
+            nombre: 'ver bitácora',
+            funcion: (item) => {
+            setModal({
+                ...modal,
+                verBitacora: {
+                    show: true,
+                    data: item
+                }
+            })
+            }
+        });
+    }
 
     let handleClose = (tipo) => () => {
         setModal({
@@ -160,119 +205,7 @@ export default function Notas(props) {
             aux=aux.reverse()
             return aux
     }
-
-    const validateForm = () => {
-        let validar = true
-        let error = {}
-        if(form.fecha === ''){
-            error.fecha = "Seleccione una fecha"
-            validar = false
-        }
-        if(form.tipo_nota === ''){
-            error.tipo_nota = "Indique el tipo de nota"
-            validar = false
-        }
-        if(form.proveedor === ''){
-            error.proveedor = "Seleccione un proveedor"
-            validar = false
-        }
-        if(form.nota === ''){
-            error.nota = "Escriba una nota"
-            validar = false
-        }
-        
-        setErrores(error)
-        return validar
-    }
-
-    const handleChangeFecha = (date, tipo) => {
-        setForm({
-            ...form,
-            [tipo]: new Date(date)
-        })
-    };
-
-    const handleChange = (e) => {
-        setForm({ 
-            ...form, 
-            [e.target.name]: e.target.value })
-    };
-
-    const handleSend = () => {
-        
-        if (validateForm()) {
-            Swal.fire({
-                title: 'Cargando...',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading()
-                }
-            })
-
-            let newform = {
-                proveedor: {value:form.proveedor},
-                notas: form.nota,
-                tipo_nota: form.tipo_nota,
-                fecha: form.fecha,
-                adjuntos: form.adjunto,
-            }
-
-            try {
-                apiPostForm(`v2/proyectos/nota-bitacora/${proyecto.id}`, newform, auth.access_token).then(
-                    (response) => {
-                        Swal.close()
-
-                        Swal.fire({
-                            title: 'Solicitud de Compra',
-                            text: 'Solicitud de Compra creada correctamente',
-                            icon: 'success',
-                            timer: 2000,
-                            showConfirmButton: false
-                        })
-                    },
-                    (error) => {
-                        Swal.close()
-                        Swal.fire({
-                            title: 'Solicitud de Compra',
-                            text: 'Error al crear la Solicitud de Compra',
-                            icon: 'error',
-                            timer: 2000,
-                            showConfirmButton: false
-                        })
-                    }
-                ).catch((error) => {
-                    Swal.close()
-                    Swal.fire({
-                        title: 'Solicitud de Compra',
-                        text: 'Error al crear la Solicitud de Compra',
-                        icon: 'error',
-                        timer: 2000,
-                        showConfirmButton: false
-                    })
-                })    
-            } catch (error) {
-                Swal.close()
-                Swal.fire({
-                    title: 'Solicitud de Compra',
-                    text: 'Error al crear la Solicitud de Compra',
-                    icon: 'error',
-                    timer: 2000,
-                    showConfirmButton: false
-                })
-            }
-            
-        } else {
-            Swal.fire({
-                title: 'Faltan campos por llenar',
-                text: 'Favor de llenar todos los campos',
-                icon: 'warning',
-                timer: 2000,
-                showConfirmButton: false
-
-            })
-        } 
-    }
-
+    
     const getNotas = () => {
         apiGet(`v1/proyectos/nota-bitacora?proyecto=${proyecto.id}`, auth.access_token)
         .then((response) => {
@@ -280,7 +213,7 @@ export default function Notas(props) {
         })
     }
 
-    const listaNotas = (data) => {
+    const listaNotas = () => {
         return (
             <>
                 <Table
@@ -310,6 +243,16 @@ export default function Notas(props) {
             <Modal size="lg" title={"ver nota"} show={modal.ver.show} handleClose={handleClose('ver')}>
                 <VerNotaObra data={modal.ver.data} verNotaObra={true}/>
             </Modal>
+            {
+                proyecto.bitacora ?
+                    <Modal size="lg" title={"bitácora"} show={modal.verBitacora.show} href={proyecto.bitacora} handleClose={handleClose('verBitacora')}>
+                        <VerBitacora handleClose={handleClose('verBitacora')} data={modal.ver.data} proyecto={proyecto}/>
+                    </Modal>
+                    // <Dropdown.Item className="text-hover-primary dropdown-primary" href={proyecto.bitacora} tag={Link} target='_blank' rel="noopener noreferrer">
+                    //     {setNaviIcon('las la-search icon-lg', 'VER PDF BITÁCORA DE OBRA')}
+                    // </Dropdown.Item>
+                    : <></>
+            }
         </>
         
     )

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Swal from 'sweetalert2'
+import S3 from 'react-aws-s3';
+import { es } from 'date-fns/locale'
 
 // MATERIAL UI
 import Grid from '@material-ui/core/Grid';
@@ -13,14 +15,14 @@ import Select from '@material-ui/core/Select';
 
 import Style from './../../../../../styles/_nuevaNotaObra.module.css'
 
-import { apiPostForm } from '../../../../../functions/api';
+import { apiPostForm, apiGet, apiPutForm } from '../../../../../functions/api';
 
 export default function NuevaNota(props) { 
     const { proyecto, reload, opciones, handleClose } = props
     const auth = useSelector(state => state.authUser);
 
     const [form, setForm] = useState({ 
-        fecha:'',
+        hora:'',
         num_personal: '',
         tema: '',
         proveedor:'',
@@ -33,6 +35,13 @@ export default function NuevaNota(props) {
         cancelado: 'cancelado',
         concluido: 'concluido',
         acarreos: 'acarreos',
+        adjuntos: {
+            adjuntos: {
+                value: '',
+                placeholder: 'Adjunto',
+                files: []
+            }
+        }
     });
     console.log(form)
 
@@ -41,8 +50,8 @@ export default function NuevaNota(props) {
     const validateForm = () => {
         let validar = true
         let error = {}
-        if(form.fecha === ''){
-            error.fecha = "Seleccione una fecha"
+        if(form.hora === ''){
+            error.hora = "Seleccione una hora"
             validar = false
         }
         if(form.tipo_nota === ''){
@@ -79,25 +88,124 @@ export default function NuevaNota(props) {
             [e.target.name]: e.target.value })
     };
 
-    function formatDate(date) {
-        var year = date.getFullYear();
-    
-        var month = (1 + date.getMonth()).toString();
-        month = month.length > 1 ? month : '0' + month;
-    
-        var day = date.getDate().toString();
-        day = day.length > 1 ? day : '0' + day;
-        
-        return year + '/' + month + '/' + day;
+    const handleChangeAdjuntos = (files, item) => {
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        setForm({ ...form })
     }
 
     const handleFile = (e) => {
         setForm({
             ...form,
             adjunto: e.target.files[0]
+            // adjuntos: e.target.files[0]
+
         })
     }
 
+    // const getNotas = async (proyecto) => {
+    //     apiGet(`v1/proyectos/nota-bitacora?proyecto=${proyecto.id}`, auth.access_token).then(
+    //         (response) => {
+    //             Swal.close()
+    //             const { proyecto } = response.data
+    //             let { notas } = this.state
+    //             notas = proyecto.notas
+    //             setForm({ 
+    //                 ...form, notas })
+    //         }, (error) => { }
+    //         ).catch((error) => { 
+    //             Swal.close()
+    //             Swal.fire({
+    //                 icon: 'error',
+    //                 title: 'Error al adjuntar archivos',
+    //                 text: 'Ocurrio un error al adjuntar los archivos',
+    //                 showConfirmButton: false,
+    //                 timer: 1500
+    //             })
+    //         })
+    // }
+
+    console.log('holaaaa')
+
+    console.log('tercera en cargar', 'addFilesToNota')
+    // const addFilesToNota = async(values, nota) => {
+    //     console.log('hola')
+    //     apiPutForm(`v2/proyectos/nota-bitacora/${nota.id}/files`, { archivos: values }, auth.access_token ).then(
+    //         (response) => {
+    //             getNotas(proyecto)
+    //             setForm({
+    //                 ...form
+    //             })
+    //             // this.setState({ ...this.state, form: this.clearForm(), activeNota: 'notas' })
+    //             Swal.fire({
+    //                 title: 'Nota de obra',
+    //                 text: 'nota creada correctamente',
+    //                 icon: 'success',
+    //                 timer: 2000,
+    //                 showConfirmButton: false
+    //             })
+    //             getNotas(proyecto)
+    //         }, (error) => { }
+    //     ).catch((error) => { 
+    //         Swal.close()
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: 'Error al adjuntar archivos',
+    //             text: 'Ocurrio un error al adjuntar los archivos',
+    //             showConfirmButton: false,
+    //             timer: 1500
+    //         })
+    //     })
+    // }
+
+    console.log('2da en cargar', 'addFilesToS3')
+    // const addFilesToS3 = async(nota) => {
+    //     console.log('addFilesToS3')
+    //     let auxPromises = []
+    //     apiGet(`v1/constant/admin-proyectos`, auth.access_token)
+    //     .then(
+    //         (response) => {
+    //             const { alma } = response.data
+    //             let urlPath = `proyectos/${proyecto.id}/notas/${nota.id}/`
+    //             auxPromises  = form.adjuntos.adjuntos.files.map((file) => {
+    //                 return new Promise((resolve, reject) => {
+    //                     new S3(alma).uploadFile(file.file, `${urlPath}${Math.floor(Date.now() / 1000)}-${file.file.name}`)
+    //                         .then((data) =>{
+    //                             const { location,status } = data
+    //                             if(status === 204) resolve({ name: file.file.name, url: location})
+    //                             else reject(data)
+    //                         }).catch(err => reject(err))
+    //                 })
+    //             })
+    //             Promise.all(auxPromises).then(values => { addFilesToNota(values, nota) })
+    //             .catch(err => console.error(err))
+    //         }, 
+    //         (error) => { }
+    //     ).catch((error) => { 
+    //         Swal.close()
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: 'Error al adjuntar archivos',
+    //             text: 'Ocurrio un error al adjuntar los archivos',
+    //             showConfirmButton: false,
+    //             timer: 1500
+    //         })
+
+    //     })
+    // }
+
+    console.log('primera en cargar', 'handleSend')
     const handleSend = () => {
         
         if (validateForm()) {
@@ -117,7 +225,7 @@ export default function NuevaNota(props) {
                     proveedor: form.proveedor,
                     notas: form.nota,
                     tipo_nota: form.tipo_nota,
-                    fecha:  formatDate(form.fecha),
+                    hora: new Date(form.hora).toLocaleTimeString(),
                     adjunto: form.adjunto,
                     num_personal: form.num_personal,
                     tema: form.tema,
@@ -136,17 +244,22 @@ export default function NuevaNota(props) {
                 })
 
                 dataForm.append(`files_name_notaObra[]`, 'notaObra')
-                dataForm.append(`files_notaObra[]`, form.adjunto)
+                dataForm.append(`files_notaObra[]`, form.adjuntos)
                 dataForm.append('adjuntos[]', "notaObra")
 
                 apiPostForm(`v2/proyectos/nota-bitacora/${proyecto.id}`, dataForm, auth.access_token)
                 .then(
                     (response) => {
+                        console.log(response)
+                        const nota = response.data
+
                         Swal.close()
 
+                        // addFilesToS3(nota)
+
                         Swal.fire({
-                            title: 'Solicitud de Compra',
-                            text: 'Solicitud de Compra creada correctamente',
+                            title: 'Nota de obra',
+                            text: 'nota creada correctamente',
                             icon: 'success',
                             timer: 2000,
                             showConfirmButton: false
@@ -160,8 +273,8 @@ export default function NuevaNota(props) {
                     (error) => {
                         Swal.close()
                         Swal.fire({
-                            title: 'Solicitud de Compra',
-                            text: 'Error al crear la Solicitud de Compra',
+                            title: 'Nota',
+                            text: 'Error al crear la Nota de obra',
                             icon: 'error',
                             timer: 2000,
                             showConfirmButton: false
@@ -170,8 +283,8 @@ export default function NuevaNota(props) {
                 ).catch((error) => {
                     Swal.close()
                     Swal.fire({
-                        title: 'Solicitud de Compra',
-                        text: 'Error al crear la Solicitud de Compra',
+                        title: 'Nota',
+                        text: 'Error al crear la Nota de obra',
                         icon: 'error',
                         timer: 2000,
                         showConfirmButton: false
@@ -180,8 +293,8 @@ export default function NuevaNota(props) {
             } catch (error) {
                 Swal.close()
                 Swal.fire({
-                    title: 'Solicitud de Compra',
-                    text: 'Error al crear la Solicitud de Compra',
+                    title: 'Nota',
+                    text: 'Error al crear la Nota de obra',
                     icon: 'error',
                     timer: 2000,
                     showConfirmButton: false
@@ -206,25 +319,23 @@ export default function NuevaNota(props) {
 
             <div className='row'>
                 <div className='col-xl-3 col-md-3 col-sm-3 col-xs-6'>
-                    <InputLabel>Fecha</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <Grid>
-                                <KeyboardDatePicker
-                                    className={Style.nuevaRequisicion_fecha}
-                                    format="dd/MM/yyyy"
-                                    name='fecha'
-                                    value={form.fecha !=='' ? form.fecha : null}
-                                    onChange={e=>handleChangeFecha(e,'fecha')}
-                                    // defaultValue={state.fecha}
-                                    placeholder="dd/mm/yyyy"
-                                    error={errores.fecha ? true : false}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-                </div>
+                    <InputLabel>Hora inicio</InputLabel>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <Grid container >
+                            <KeyboardTimePicker
+                                className={Style.nuevaRequisicion_fecha}
+                                name='hora'
+                                value={form.hora !=='' ? form.hora : null}
+                                onChange={e=>handleChangeFecha(e,'hora')}
+                                error={errores.hora ? true : false}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
+                </div>   
+                
                 <div className={`col-xl-3 col-md-3 col-sm-3 col-6 ${Style.nuevaRequisicion_fecha}`}>
                     <TextField
                         // className="text"
@@ -323,6 +434,8 @@ export default function NuevaNota(props) {
                     <div error={errores.adjunto ? true : false}></div>
                     <div>
                         {form.adjunto.name ? <div className='file-name' >{form.adjunto.name}</div> : null}
+                        {/* {form.adjunto.name ? <div className='file-name' >{'hola'}</div> : null} */}
+
                     </div>
                 </div>
             
