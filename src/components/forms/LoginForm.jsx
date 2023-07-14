@@ -252,9 +252,9 @@ class LoginForm extends React.Component {
                     <Tab.Pane eventKey="login">
                         <Form className = 'form fv-plugins-bootstrap fv-plugins-framework'  noValidate="novalidate" id="form-login"
                             onSubmit = { (e) => { e.preventDefault(); validateAlert(this.handleSubmit, e, 'form-login') } }>
-                            <div className="pb-5 pb-lg-15 text-center">
+                            {/* <div className="pb-5 pb-lg-15 text-center">
                                 <h3 className="font-weight-bolder font-size-h2 font-size-h1-lg text-im">INICIAR SESIÓN</h3>
-                            </div>
+                            </div> */}
                             <InputLEmail name = 'email' value = { form.email } placeholder = 'INGRESA TU CORREO ELECRÓNICO'
                                 onChange = { this.handleChange } error = { error } requirevalidation = { 1 }
                                 letterCase = { false } patterns={EMAIL} />
