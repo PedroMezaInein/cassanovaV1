@@ -1253,21 +1253,7 @@ class Empleados extends Component {
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey={localStorage.getItem('activeKeyTabColaboradores')} activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     {
-                        departamento.departamentos[0].nombre !== "COMPRAS" &&
-                        <Tab eventKey="administrativo" title="Administrativo">
-                    {/* <NewTable
-                    columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
-                            subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
-                            url = '/rh/colaboradores/add'
-                            mostrar_acciones = { true }
-                            exportar_boton = { true }
-                            onClickExport = { () => this.exportRHAxios() }
-                            actions = {  () => this.setEmpleados() }
-                            accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado }
-                            urlRender = { `${URL_DEV}v2/rh/empleados?type=admin` } idTable = 'empleados_admin_table'
-                            cardTable = 'cardTable_admin' cardTableHeader = 'cardTableHeader_admin'
-                            cardBody = 'cardBody_admin' isTab = { true } 
-                     /> */}
+                        <Tab eventKey="administrativo" title="Administrativo">                
                         <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
                             subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
                             url = '/rh/colaboradores/add' mostrar_acciones = { true } exportar_boton = { true }
