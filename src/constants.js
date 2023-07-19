@@ -13,17 +13,17 @@ export const IM_DORADO = '#bdab71'
 
 export const PROD_LINK = 'https://cassanovaappi.xyz/api/'
 export const DEV_LINK = 'http://localhost:8000/api/'
-export const FRONT_LINK = process.env.NODE_ENV === 'production' ? 'https://cassanovav1.netlify.app/' : 'localhost:3000/';
+export const FRONT_LINK = process.env.NODE_ENV === 'production' ? 'https://admin.cassanova.mx/' : 'localhost:3000/';
 //export const DEV_LINK = 'https://apiapp1.inein.com.mx/api/'
 
 export const URL_DEV = process.env.NODE_ENV === 'production' ? PROD_LINK : DEV_LINK
 
-export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://cassanovaappi.xyz' : 'http://127.0.0.1:8000'
+export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://cassanovaappi.xyz' : 'hhttp://127.0.0.1:8000/'
 //export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://cassanovaappi.xyz' : 'https://apiapp1.inein.com.mx'
 
 export const PUSHER_OBJECT = { broadcaster: 'pusher', key: '112ff49dfbf7dccb6934', cluster: 'us2', forceTLS: false }
 
-export const MAIN_FRONT = process.env.NODE_ENV === 'production' ? 'https://cassanovav1.netlify.app/' : 'http://localhost:3000'
+export const MAIN_FRONT = process.env.NODE_ENV === 'production' ? 'https://admin.cassanova.mx/' : 'http://localhost:3000'
 export const LEADS_FRONT = process.env.NODE_ENV === 'production' ? 'https://leads.inein.com.mx' : 'http://localhost:3001'
 // export const MI_PROYECTO_FRONT = process.env.NODE_ENV === 'production' ? 'https://mi-proyecto.inein.com.mx' : 'http://localhost:3000'
 
