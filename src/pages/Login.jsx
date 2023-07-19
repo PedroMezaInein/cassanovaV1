@@ -16,7 +16,7 @@ class Login extends Component{
                         <div className="login-content d-flex flex-column pt-lg-0 align-items-center" style={{flexFlow:'column nowrap'}} >
                             <div className="login-logo pb-xl-20 pb-15" style={{ textAlign:"center"}} >
                               
-                            <img src="/logo_cassanova.png" className="" style={{ width:"50%" }} alt="CASSANOVA"/>
+                            <img src="/logo_casa.png" className="" style={{ width:"50%" }} alt="CASSANOVA"/>
 
                             </div>
                             <div className="login-form text-center" >
@@ -25,7 +25,7 @@ class Login extends Component{
                         </div>
                     </div>
                     <div className="login-aside order-1 order-lg-2 bgi-no-repeat d-none d-md-block"  >
-                        <div className="login-conteiner bgi-no-repeat" style ={ { backgroundImage: "url('/cassanova.png')",  backgroundRepeat: 'no-repeat',marginLeft:"x" ,  backgroundPosition: 'center'} }>
+                        <div className="login-conteiner bgi-no-repeat" style ={ { backgroundImage: "url('/fondo_casa.jpg')",  backgroundRepeat: 'no-repeat',marginLeft:"x" ,  backgroundPosition: 'center'} }>
                         {/* <img src="/cassanova.png" className="" style={{ width:"50%" }} alt="CASSANOVA"/> */}
 
                         </div>
