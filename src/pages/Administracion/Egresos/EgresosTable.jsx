@@ -205,6 +205,7 @@ export default function EgresosTable(props) {
         // { nombre: 'Impuesto', identificador: 'impuesto', stringSearch: false },
         // { nombre: 'Estatus', identificador: 'estatusCompra', stringSearch: false },
         { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false }, //quitar
+        { nombre: 'id requisicion', identificador: 'id_requisicion', stringSearch: false }, //quitar
         { nombre: 'estatus', identificador: 'semaforo', stringSearch: false } //quitar
     ]
 
@@ -390,6 +391,7 @@ export default function EgresosTable(props) {
                 descripcion: dato.descripcion,
                 factura: dato.factura ? 'Con factura' : 'Sin factura',
                 semaforo: createStatusIndicator(dato),
+                id_requisicion: dato.id_requisiciones ? dato.id_requisiciones : 's/n',
             })
         }
         )

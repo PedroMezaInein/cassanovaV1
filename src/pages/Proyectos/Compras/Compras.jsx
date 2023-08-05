@@ -20,6 +20,9 @@ import { SelectSearchGray, CalendarDaySwal, InputGray, DoubleSelectSearchGray } 
 import { setOptions, setOptionsWithLabel, setSelectOptions, setTextTable, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, 
     setNaviIcon, setCustomeDescripcionReactDom, setDateTableReactDom } from '../../../functions/setters'
 import S3 from 'react-aws-s3';
+
+import ComprasTable from './ComprasTable'
+
 class Compras extends Component {
     state = {
         modal: {
@@ -853,10 +856,10 @@ class Compras extends Component {
 
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTable
+                {/* <NewTable
                     tableName = 'compras'
                     subtitle = 'Listado de compras'
-                    title = 'Compras'
+                    title = 'Comprassssss'
                     mostrar_boton = { true }
                     abrir_modal = { false }
                     accessToken = { access_token }
@@ -866,9 +869,12 @@ class Compras extends Component {
                     urlRender = {`${URL_DEV}v3/proyectos/compra`} 
                     filterClick = { this.openModalFiltros }
                     exportar_boton = { true}
-                    onClickExport = { () => this.exportComprasAxios() } />
+                    onClickExport = { () => this.exportComprasAxios() } 
+                />*/}
+                <ComprasTable/> 
+
                 <Modal size="xl" title="Facturas" show={modal.facturas} handleClose={this.handleClose} >
-                    <FacturasFormTable at = { access_token } tipo_factura='compras' id={compra.id} dato={compra} reloadTable = {this.reloadTableFacturas}/>
+                   <FacturasFormTable at = { access_token } tipo_factura='compras' id={compra.id} dato={compra} reloadTable = {this.reloadTableFacturas}/>
                 </Modal>
                 <Modal size="xl" title="Adjuntos" show={modal.adjuntos} handleClose={this.handleClose} >
                     <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />

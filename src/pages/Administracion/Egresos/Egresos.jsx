@@ -106,7 +106,6 @@ class Egresos extends Component {
 
         this.state.accesos = egresos.read ? egresos.read : 0
         this.state.eliminar = egresos.delete ?  egresos.delete : 0
-
         if (!egresos)
             history.push('/')
         this.getOptionsAxios()
@@ -830,26 +829,7 @@ class Egresos extends Component {
                 accesos == 1 ?
 
                     <Tab eventKey = { 'gastos' } title = { 'gastos' }>
-
-                        {/* <NewTable
-                            tableName='egresos'
-                            // tableName='gastos'
-                            subtitle='Listado de gastos'
-                            title='Gastos'
-                            mostrar_boton={true}
-                            abrir_modal={false} 
-                            accessToken={access_token}
-                            columns={EGRESOS_COLUMNS}
-                            setter={this.setEgresos}
-                            url='/administracion/egresos/add'
-                            urlRender={`${URL_DEV}v3/administracion/egreso`}
-                            filterClick={this.openModalFiltros}
-                            exportar_boton={true}
-                            onClickExport={() => { this.exportEgresosAxios() }}
-                        />  */}
-
-                           <EgresosTable eliminar={eliminar} />
-                          
+                         <EgresosTable eliminar={eliminar} />                      
                     </Tab>
                     :  ''
                 }
@@ -857,15 +837,21 @@ class Egresos extends Component {
                     <Tab eventKey="requisiciones" title="requisiciones">
                         <Requisiciones/>
                     </Tab>
+                { 
+                    accesos == 1 ?
 
                     <Tab eventKey="requisición compras" title="requisición compras">
                         <RequisicionCompras/>
                     </Tab>
-
+                    :  ''
+                }
+                { 
+                    accesos == 1 ?
                     <Tab eventKey="requisición contabilidad" title="requisición contabilidad">
                         <RequisicionContabilidad/>
                     </Tab>
-
+                   :  ''
+                }
                 </Tabs>
 
                 <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose} >

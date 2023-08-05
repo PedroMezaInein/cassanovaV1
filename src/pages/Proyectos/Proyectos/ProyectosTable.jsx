@@ -5,11 +5,14 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 
 import Layout from '../../../components/layout/layout'
-import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
+import TablaGeneralPaginado from './../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 import { ordenamiento, setOptions } from '../../../functions/setters'
 import { URL_DEV } from '../../../constants'
 import { Modal } from '../../../components/singles'
 import { setSingleHeader } from '../../../functions/routers';
+
+import CrearProyecto from './CrearProyecto'
+import FiltrosProyectos from './FiltrosProyectos'
 
 import AddIcon from '@material-ui/icons/Add';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -19,32 +22,82 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 export default function ProyectosTable() { 
     const userAuth = useSelector((state) => state.authUser);
     const[opciones, setOpciones] = useState(false)
+    const [filtrado, setFiltrado] = useState('') 
+    const [reloadTable, setReloadTable] = useState()
+
     let prop = {
         pathname: '/proyectos/proyectos/',
     }
 
     const [modal, setModal] = useState({
-        nuevo: false,
+        crear: {
+            show: false,
+            data: null
+        },
+        filtrar: {
+            show: false,
+            data: null
+        }, 
     })
     
     useEffect(() => {
         getOptionsEmpresas()
     }, []);
 
+    useEffect(() => {
+        // getProveedores()
+        // setFiltrado()
+        if (filtrado) {
+            reloadTable.reload(filtrado)
+            //  setFiltrado('')
+            if(borrar == false){
+                setFiltrado('')   
+
+            }
+        }
+    }, [filtrado])
+
+    const borrar = ( id) =>{
+        if(id == false){
+            reloadTable.reload(filtrado)
+            setFiltrado('')   
+        }
+    }
+
+    const openModal = (tipo, data) => {
+        setModal({
+            ...modal,
+            [tipo]: {
+                show: true,
+                data: data
+            }
+        })
+    }
+
+    const handleClose = (tipo) => {
+        setModal({
+            ...modal,
+            [tipo]: {
+                show: false,
+                data: null
+            }
+        })
+    }
+
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         /* { nombre: 'T. Proyecto', identificador: 'tipoProyecto', sort: true, stringSearch: true }, */
         /* { nombre: 'F. incio', identificador: 'FInicio', sort: true, stringSearch: false },
         { nombre: 'F. fin', identificador: 'FFin', sort: true, stringSearch: false }, */
-        { nombre: 'Nombre', identificador: 'nombre', sort: true, stringSearch: true },
+        { nombre: 'Nombre', identificador: 'nombre', sort: false, stringSearch: false },
         { nombre : 'Fases', identificador: 'fases', sort: false, stringSearch: false},
-        /* { nombre: 'Cliente', identificador: 'cliente', sort: true, stringSearch: true }, */
-        { nombre: 'Dirección', identificador: 'direccion', sort: true, stringSearch: true },
-        /* { nombre: 'Contacto', identificador: 'contacto', sort: false, stringSearch: true }, */
-        { nombre: 'Empresa', identificador: 'empresa', sort: true, stringSearch: true },
-        /* { nombre: 'F. Inicio', identificador: 'fechaInicio', sort: true, stringSearch: true },
-        { nombre: 'F. Fin', identificador: 'fechaFin', sort: true, stringSearch: true }, */
-        { nombre: 'Descripción', identificador: 'descripcion_view', sort: true, stringSearch: true },
+        /* { nombre: 'Cliente', identificador: 'cliente', sort: false, stringSearch: false }, */
+        { nombre: 'Dirección', identificador: 'direccion', sort: false, stringSearch: false },
+        /* { nombre: 'Contacto', identificador: 'contacto', sort: false, stringSearch: false }, */
+        { nombre: 'Empresa', identificador: 'empresa', sort: false, stringSearch: false },
+        /* { nombre: 'F. Inicio', identificador: 'fechaInicio', sort: false, stringSearch: false },
+        { nombre: 'F. Fin', identificador: 'fechaFin', sort: false, stringSearch: false }, */
+        { nombre: 'Descripción', identificador: 'descripcion_view', sort: false, stringSearch: false },
     ]
 
     const createAcciones = () => {
@@ -219,7 +272,7 @@ export default function ProyectosTable() {
     const opcionesbtn = [
         {
             nombre: <div><AddIcon />Agregar</div>,
-            funcion: () => {
+            funcion: (item) => {
                 /* Swal.fire({
                     title: 'Nuevo',
                     text: '¿Desea crear un nuevo registro?',
@@ -231,7 +284,15 @@ export default function ProyectosTable() {
                     if (result.isConfirmed) {
                     }
                 }); */
+                // openModal('crear', item)
                 window.location.replace('/proyectos/proyectos/add')
+            }
+        },
+        {
+            //filtrar
+            nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
+            funcion: (item) => {
+                openModal('filtrar', item)
             }
         },
         {
@@ -278,12 +339,27 @@ export default function ProyectosTable() {
         <>
             <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='proyectos' >
                 { opciones &&
-                    <Tabla
-                    titulo="Proyectos" columnas={columnas} url="proyectos/project" opciones={opcionesbtn} acciones={createAcciones()} numItemsPagina={20} ProccessData={ProccessData}
+                    <TablaGeneralPaginado
+                        titulo="Proyectos" 
+                        columnas={columnas} 
+                        url="proyectos/project" 
+                        opciones={opcionesbtn} 
+                        acciones={createAcciones()} 
+                        numItemsPagina={20} 
+                        ProccessData={ProccessData}
+                        filtros={filtrado}
+                        reload={setReloadTable} 
                     />
                 }
             </Layout>
 
+            <Modal size="lg" title={"crear proyectos"} show={modal.crear.show} handleClose={e => handleClose('crear')} >
+                    <CrearProyecto handleClose={e => handleClose('crear')} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable}/>
+            </Modal>
+
+            <Modal size="lg" title={"Filtrar proyectos"} show={modal.filtrar?.show} handleClose={e => handleClose('filtrar')} >
+                    <FiltrosProyectos handleClose={e => handleClose('filtrar')} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable}/>
+            </Modal>
             {/* <Modal size="xl" show={modal.nuevo} title='Información del proyecto' handleClose={() => setModal({ ...modal, nuevo: false })}>
                 <ProyectosForm />
             </Modal> */}

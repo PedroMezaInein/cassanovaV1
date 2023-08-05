@@ -16,11 +16,11 @@ import Select from '@material-ui/core/Select';
 import Style from './../../../../../styles/_nuevaNotaObra.module.css'
 
 import { apiPostForm, apiGet, apiPutForm } from '../../../../../functions/api';
+import ItemSlider from './../../../../../components/singles/ItemSlider'
 
 export default function NuevaNota(props) { 
-    const { proyecto, reload, opciones, handleClose } = props
+    const { proyecto, reload, opciones, handleClose, arrayNotas } = props
     const auth = useSelector(state => state.authUser);
-
     const [form, setForm] = useState({ 
         hora:'',
         num_personal: '',
@@ -29,6 +29,7 @@ export default function NuevaNota(props) {
         tipo_nota: '',
         nota: '',
         adjunto: '',
+        notas: [],
         urgente: 'urgente',
         normal: 'normal',
         paro_actividades: 'paro de actividades',
@@ -43,7 +44,6 @@ export default function NuevaNota(props) {
             }
         }
     });
-    console.log(form)
 
     const [errores, setErrores] = useState({})
 
@@ -66,10 +66,10 @@ export default function NuevaNota(props) {
             error.nota = "Escriba una nota"
             validar = false
         }
-        if(form.adjunto === ''){
-            error.adjunto = "egregue un adjunto"
-            validar = false
-        }
+        // if(form.adjunto === ''){
+        //     error.adjunto = "egregue un adjunto"
+        //     validar = false
+        // }
         
         setErrores(error)
         return validar
@@ -88,7 +88,7 @@ export default function NuevaNota(props) {
             [e.target.name]: e.target.value })
     };
 
-    const handleChangeAdjuntos = (files, item) => {
+    const handleChangeFiles = (files, item) => {
         let aux = []
         for (let counter = 0; counter < files.length; counter++) {
             aux.push(
@@ -102,110 +102,105 @@ export default function NuevaNota(props) {
         }
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
-        setForm({ ...form })
-    }
-
-    const handleFile = (e) => {
         setForm({
             ...form,
-            adjunto: e.target.files[0]
-            // adjuntos: e.target.files[0]
+            form
+        })
+    }
+
+    const getNotas = async (proyecto) => {
+        apiGet(`v1/proyectos/nota-bitacora?proyecto=${proyecto.id}`, auth.access_token).then(
+            (response) => {
+                Swal.close()
+                const { proyecto } = response.data
+                let { notas } = form
+
+                notas = proyecto.notas
+                setForm({ 
+                    ...form, notas })
+            }, (error) => { }
+            ).catch((error) => { 
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al adjuntar archivos',
+                    text: 'Ocurrio un error al adjuntar los archivos',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+    }
+
+    const addFilesToNota = async(values, nota) => {
+        
+        apiPutForm(`v2/proyectos/nota-bitacora/${nota.nota.id}/files`, { archivos: values }, auth.access_token ).then(
+            (response) => {
+                getNotas(proyecto)
+                setForm({
+                    ...form
+                })
+                // this.setState({ ...this.state, form: this.clearForm(), activeNota: 'notas' })
+                Swal.fire({
+                    title: 'Nota de obra',
+                    text: 'nota creada correctamente',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    handleClose()
+                    if (reload) {
+                        reload.reload()
+                    }
+                    // arrayNotas()
+                })
+                getNotas(proyecto)
+            }, (error) => { }
+        ).catch((error) => { 
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al adjuntar archivos',
+                text: 'Ocurrio un error al adjuntar los archivos',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        })
+    }
+
+    const addFilesToS3 = async(nota) => {
+        let auxPromises = []
+        apiGet(`v1/constant/admin-proyectos`, auth.access_token)
+        .then(
+            (response) => {
+                const { alma } = response.data
+                let urlPath = `proyectos/${proyecto.id}/notas/${nota.id}/`
+                auxPromises  = form.adjuntos.adjuntos.files.map((file) => {
+                    return new Promise((resolve, reject) => {
+                        new S3(alma).uploadFile(file.file, `${urlPath}${Math.floor(Date.now() / 1000)}-${file.file.name}`)
+                            .then((data) =>{
+                                const { location,status } = data
+                                if(status === 204) resolve({ name: file.file.name, url: location})
+                                else reject(data)
+                            }).catch(err => reject(err))
+                    })
+                })
+                Promise.all(auxPromises).then(values => { addFilesToNota(values, nota) })
+                .catch(err => console.error(err))
+            }, 
+            (error) => { }
+        ).catch((error) => { 
+            Swal.close()
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al adjuntar archivos',
+                text: 'Ocurrio un error al adjuntar los archivos',
+                showConfirmButton: false,
+                timer: 1500
+            })
 
         })
     }
 
-    // const getNotas = async (proyecto) => {
-    //     apiGet(`v1/proyectos/nota-bitacora?proyecto=${proyecto.id}`, auth.access_token).then(
-    //         (response) => {
-    //             Swal.close()
-    //             const { proyecto } = response.data
-    //             let { notas } = this.state
-    //             notas = proyecto.notas
-    //             setForm({ 
-    //                 ...form, notas })
-    //         }, (error) => { }
-    //         ).catch((error) => { 
-    //             Swal.close()
-    //             Swal.fire({
-    //                 icon: 'error',
-    //                 title: 'Error al adjuntar archivos',
-    //                 text: 'Ocurrio un error al adjuntar los archivos',
-    //                 showConfirmButton: false,
-    //                 timer: 1500
-    //             })
-    //         })
-    // }
-
-    console.log('holaaaa')
-
-    console.log('tercera en cargar', 'addFilesToNota')
-    // const addFilesToNota = async(values, nota) => {
-    //     console.log('hola')
-    //     apiPutForm(`v2/proyectos/nota-bitacora/${nota.id}/files`, { archivos: values }, auth.access_token ).then(
-    //         (response) => {
-    //             getNotas(proyecto)
-    //             setForm({
-    //                 ...form
-    //             })
-    //             // this.setState({ ...this.state, form: this.clearForm(), activeNota: 'notas' })
-    //             Swal.fire({
-    //                 title: 'Nota de obra',
-    //                 text: 'nota creada correctamente',
-    //                 icon: 'success',
-    //                 timer: 2000,
-    //                 showConfirmButton: false
-    //             })
-    //             getNotas(proyecto)
-    //         }, (error) => { }
-    //     ).catch((error) => { 
-    //         Swal.close()
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Error al adjuntar archivos',
-    //             text: 'Ocurrio un error al adjuntar los archivos',
-    //             showConfirmButton: false,
-    //             timer: 1500
-    //         })
-    //     })
-    // }
-
-    console.log('2da en cargar', 'addFilesToS3')
-    // const addFilesToS3 = async(nota) => {
-    //     console.log('addFilesToS3')
-    //     let auxPromises = []
-    //     apiGet(`v1/constant/admin-proyectos`, auth.access_token)
-    //     .then(
-    //         (response) => {
-    //             const { alma } = response.data
-    //             let urlPath = `proyectos/${proyecto.id}/notas/${nota.id}/`
-    //             auxPromises  = form.adjuntos.adjuntos.files.map((file) => {
-    //                 return new Promise((resolve, reject) => {
-    //                     new S3(alma).uploadFile(file.file, `${urlPath}${Math.floor(Date.now() / 1000)}-${file.file.name}`)
-    //                         .then((data) =>{
-    //                             const { location,status } = data
-    //                             if(status === 204) resolve({ name: file.file.name, url: location})
-    //                             else reject(data)
-    //                         }).catch(err => reject(err))
-    //                 })
-    //             })
-    //             Promise.all(auxPromises).then(values => { addFilesToNota(values, nota) })
-    //             .catch(err => console.error(err))
-    //         }, 
-    //         (error) => { }
-    //     ).catch((error) => { 
-    //         Swal.close()
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Error al adjuntar archivos',
-    //             text: 'Ocurrio un error al adjuntar los archivos',
-    //             showConfirmButton: false,
-    //             timer: 1500
-    //         })
-
-    //     })
-    // }
-
-    console.log('primera en cargar', 'handleSend')
     const handleSend = () => {
         
         if (validateForm()) {
@@ -250,12 +245,11 @@ export default function NuevaNota(props) {
                 apiPostForm(`v2/proyectos/nota-bitacora/${proyecto.id}`, dataForm, auth.access_token)
                 .then(
                     (response) => {
-                        console.log(response)
                         const nota = response.data
 
                         Swal.close()
 
-                        // addFilesToS3(nota)
+                        addFilesToS3(nota)
 
                         Swal.fire({
                             title: 'Nota de obra',
@@ -264,10 +258,10 @@ export default function NuevaNota(props) {
                             timer: 2000,
                             showConfirmButton: false
                         }).then(() => {
+                            handleClose()
                             if (reload) {
                                 reload.reload()
                             }
-                            handleClose()
                         })
                     },
                     (error) => {
@@ -318,12 +312,13 @@ export default function NuevaNota(props) {
         <div className={Style.nueva_nota}>
 
             <div className='row'>
-                <div className='col-xl-3 col-md-3 col-sm-3 col-xs-6'>
+                <div className='col-xl-4 col-md-4 col-sm-4 col-4' style={{marginTop: '1rem'}}>
                     <InputLabel>Hora inicio</InputLabel>
                     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                         <Grid container >
                             <KeyboardTimePicker
-                                className={Style.nuevaRequisicion_fecha}
+                                // Style="width: 120px;"
+                                className={Style.hora}
                                 name='hora'
                                 value={form.hora !=='' ? form.hora : null}
                                 onChange={e=>handleChangeFecha(e,'hora')}
@@ -336,26 +331,11 @@ export default function NuevaNota(props) {
                     </MuiPickersUtilsProvider>
                 </div>   
                 
-                <div className={`col-xl-3 col-md-3 col-sm-3 col-6 ${Style.nuevaRequisicion_fecha}`}>
+                <div className={`col-xl-4 col-md-4 col-sm-4 col-4 ${Style.tema}`}>
                     <TextField
-                        // className="text"
+                        className={Style.tema}
                         id="standard-multiline-static"
-                        label="No. Personal"
-                        value={form.num_personal}
-                        name='num_personal'
-                        onChange={handleChange}
-                        multiline
-                        rows={2}
-                        error={errores.nota ? true : false}
-                        // defaultValue="Default Value"
-                    />
-                </div>
-                
-                <div className={`col-xl-3 col-md-3 col-sm-3 col-6 ${Style.nuevaRequisicion_fecha}`}>
-                    <TextField
-                        // className="text"
-                        id="standard-multiline-static"
-                        label="Platica de seguridad (tema)"
+                        label="(tema)"
                         value={form.tema}
                         name='tema'
                         onChange={handleChange}
@@ -365,15 +345,30 @@ export default function NuevaNota(props) {
                         // defaultValue="Default Value"
                     />
                 </div>
+
+                <div className={`col-xl-4 col-md-4 col-sm-4 col-4 ${Style.personal}`} style={{marginTop:'1rem'}}>
+                    <TextField
+                        className={Style.personal}
+                        type="number"
+                        id="standard-multiline-static"
+                        label="No. Personal"
+                        value={form.num_personal}
+                        name='num_personal'
+                        onChange={handleChange}
+                        // multiline
+                        rows={2}
+                        error={errores.nota ? true : false}
+                    />
+                </div>
             
             </div>
 
-            <div className='row'>
-                <div className={`col-xl-6 col-md-6 col-sm-6 col-6 ${Style.prov}`}>
+            <div className='row' style={{marginTop: '2rem'}}>
+                <div className={`col-xl-4 col-md-5 col-sm-5 col-5 ${Style.prov}`}>
                     <>  
                         <InputLabel>proveedor</InputLabel>
                         <Select
-                           Style="width: 180px;"
+                            className={Style.proveedor}
                             name="proveedor"
                             value={form.proveedor}
                             onChange={handleChange}
@@ -387,24 +382,29 @@ export default function NuevaNota(props) {
                         </Select>
                     </> 
                 </div>
-                <div className={`col-xl-6 col-md-6 col-sm-6 col-6 `}>
-                    <InputLabel>Tipo nota</InputLabel>
 
-                    <Select Style="width: 180px;"
+                <div className={`col-xl-4 col-md-2 col-sm-2 col-2 ${Style.prov}`}></div>
+
+                <div className='col-xl-4 col-md-5 col-sm-5 col-5'>
+                    <div /*style={{marginLeft:'3.3rem'}}*/>
+                        <InputLabel style={{marginLeft:'10%'}}>Tipo nota</InputLabel>
+                        <Select 
+                            // Style="width: 90%;"
+                            className={Style.tipo_nota}
                             name="tipo_nota"
                             value={form.tipo_nota}
                             onChange={handleChange}
                             error={errores.tipo_nota ? true : false}
                         >
-                            
-                        <MenuItem value={form.urgente}>{form.urgente}</MenuItem>
-                        <MenuItem value={form.normal}>{form.normal}</MenuItem>
-                        <MenuItem value={form.paro_actividades}>{form.paro_actividades}</MenuItem>
-                        <MenuItem value={form.cancelado}>{form.cancelado}</MenuItem>
-                        <MenuItem value={form.concluido}>{form.concluido}</MenuItem>
-                        <MenuItem value={form.acarreos}>{form.acarreos}</MenuItem>
-
-                    </Select>
+                                
+                            <MenuItem value={form.urgente}>{form.urgente}</MenuItem>
+                            <MenuItem value={form.normal}>{form.normal}</MenuItem>
+                            <MenuItem value={form.paro_actividades}>{form.paro_actividades}</MenuItem>
+                            <MenuItem value={form.cancelado}>{form.cancelado}</MenuItem>
+                            <MenuItem value={form.concluido}>{form.concluido}</MenuItem>
+                            <MenuItem value={form.acarreos}>{form.acarreos}</MenuItem>
+                        </Select>
+                    </div>
                 </div>
             </div>
 
@@ -412,8 +412,7 @@ export default function NuevaNota(props) {
 
                 <div className={`col-xl-12 col-md-12 col-sm-12 col-12`}>
                     <TextField
-                        Style="width: 600px;"
-                        // className="text"
+                        className={Style.nota}
                         id="standard-multiline-static"
                         label="nota"
                         value={form.nota}
@@ -422,24 +421,28 @@ export default function NuevaNota(props) {
                         multiline
                         rows={2}
                         error={errores.nota ? true : false}
-                        // defaultValue="Default Value"
                     />
                 </div>
             </div>
 
             <div className='row'>
-                <div style={{ marginLeft: '0rem' }} className={`col-xl-8 col-md-8 col-sm-6 col-xs-12 ${Style.file}`}>
-                    <label htmlFor="fileObra">Seleccionar archivo</label>
+                <div style={{ marginLeft: '0rem', marginTop: '2rem'}} className={`col-xl-8 col-md-9 col-sm-9 col-12`}>
+                    {/* <label htmlFor="fileObra">Seleccionar archivo</label>
                     <input type="file" id='fileObra' name="file" onChange={handleFile} />
                     <div error={errores.adjunto ? true : false}></div>
                     <div>
                         {form.adjunto.name ? <div className='file-name' >{form.adjunto.name}</div> : null}
-                        {/* {form.adjunto.name ? <div className='file-name' >{'hola'}</div> : null} */}
+                    </div> */}
 
-                    </div>
+                    <ItemSlider
+                        items={form.adjuntos.adjuntos.files}
+                        item='adjuntos'
+                        handleChange={handleChangeFiles}
+                        multiple={true}
+                    />
                 </div>
             
-                <div className='col-xl-4 col-md-4 col-sm-6 col-xs-12'>
+                <div className={`col-xl-4 col-md-3 col-sm-3 col-12 ${Style.enviar}`}>
                     <button className={Style.sendButton} onClick={handleSend}>Crear</button>
                 </div>
             </div>

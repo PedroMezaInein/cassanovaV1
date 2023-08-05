@@ -4,7 +4,8 @@ import Swal from 'sweetalert2'
 
 import { Modal } from '../../../components/singles'
 
-import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
+import TablaGeneralPaginado from '../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
+import FiltrarRequisicionesContabilidad from './FiltrarRequisicionesContabilidad'
 
 import Convertir from './Modales/Convertir'
 import Editar from './Modales/Editar'
@@ -12,16 +13,22 @@ import Adjuntos from './Modales/Adjuntos'
 import Ver from './Modales/Ver'
 import Crear from './../../../components/forms/administracion/NuevaRequisicion'
 
-import { apiOptions } from '../../../functions/api'
+import { apiOptions, apiPutForm } from '../../../functions/api'
 import { setOptions } from '../../../functions/setters'
 
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import StatusIndicator from './utils/StatusIndicator'
+import Autorizado from '@material-ui/icons/AssignmentTurnedInOutlined';
 
 // import Layout from '../../../components/layout/layout'
 
 export default function RequisicionContabilidad() { 
     const userAuth = useSelector((state) => state.authUser);
+    const [filtrado, setFiltrado] = useState('') 
+    const [reloadTable, setReloadTable] = useState()
+    const [opcionesApi, setOpcionesApi] = useState(false)
+    const [estatusCompras, setEstatusCompras] = useState(false)
+
     const [modal, setModal] = useState({
         convertir: {
             show: false,
@@ -43,10 +50,35 @@ export default function RequisicionContabilidad() {
             show: false,
             data: false
         },
+        filtrar: {
+            show: false,
+            data: false
+        },
+        autorizar: {
+            show: false,
+            data: false
+        }
     })
-    const [reloadTable, setReloadTable] = useState()
-    const [opcionesApi, setOpcionesApi] = useState(false)
-    const [estatusCompras, setEstatusCompras] = useState(false)
+
+    useEffect(() => {
+        if (filtrado) {
+            reloadTable.reload(filtrado)
+            //  setFiltrado('')
+            if(borrar == false){
+                setFiltrado('')   
+
+            }
+        }
+
+    }, [filtrado])
+
+    const borrar = ( id) =>{
+        if(id == false){
+            reloadTable.reload(filtrado)
+            setFiltrado('')   
+
+        }
+    }
 
     useEffect(() => {
         getOpciones()
@@ -74,11 +106,24 @@ export default function RequisicionContabilidad() {
 
     const opciones = [
         {
-            nombre: 'Solicitar nueva Requisicion',
+            nombre: <div><i className="fas fa-plus mr-5"></i><span>Nuevo</span></div>,
             funcion: (item) => {
                 setModal({
                     ...modal,
                     crear: {
+                        show: true,
+                        data: item
+                    }
+                })
+            }
+        },
+        {
+            //filtrar
+            nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
+            funcion: (item) => {
+                setModal({
+                    ...modal,
+                    filtrar: {
                         show: true,
                         data: item
                     }
@@ -94,7 +139,7 @@ export default function RequisicionContabilidad() {
 
     let ProccessData = (data) => {
         let aux = []
-        data.Requisiciones.map((item, index) => {
+        data.data.data.map((item, index) => {
             aux.push({
                 id: item.id,
                 acciones: createAcciones(),
@@ -135,7 +180,7 @@ export default function RequisicionContabilidad() {
                 fecha_entrega: item.fecha_entrega ? item.fecha_entrega : null,
             })
         })
-        aux = aux.reverse()
+        // aux = aux.reverse()
         return aux
 
     }
@@ -239,6 +284,153 @@ export default function RequisicionContabilidad() {
                     })
                 }
             },
+            {
+                nombre: 'Autorizar',
+                color: 'perryButton',
+                icono: 'fas fa-check',
+                funcion: (item) => {
+                    if (userAuth.user.tipo.tipo === 'Administrador') {
+                        if (!item.estatus) {
+                            Swal.fire({
+                                title: '¿Estas seguro?',
+                                text: "¡No podrás revertir esto!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                cancelButtonText: 'Cancelar',
+                                confirmButtonText: 'Si, autorizar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire({
+                                        title: 'autorizando',
+                                        text: 'Espere un momento...',
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        allowEnterKey: false,
+                                        showConfirmButton: false,
+                                        onOpen: () => {
+                                            Swal.showLoading()
+                                        }
+                                    })
+                                    try {
+                                        apiPutForm(`requisicion/${item.id}/autorizar`, { aprobado: 1 }, userAuth.access_token).then(result => {
+                                            Swal.close()
+                                            Swal.fire(
+                                                '¡Autorizado!',
+                                                'El presupuesto ha sido Autorizado.',
+                                                'success'
+                                            )
+                                            setTimeout(() => {
+                                                Swal.fire({
+                                                    title: 'Presupuesto aprobado',
+                                                    text: 'El presupuesto fue aprobado exitosamente.',
+                                                    icon: 'success',
+                                                    confirmButtonColor: '#3085d6',
+                                                    confirmButtonText: 'Ok'
+                                                });
+                                            }, 2000);
+                                            if (reloadTable) {
+                                                reloadTable.reload()
+                                            }
+
+                                        })
+                                    } catch (error) {
+                                        Swal.close()
+                                        Swal.fire(
+                                            '¡Error!',
+                                            'El presupuesto no ha sido Autorizado.',
+                                            'error'
+                                        )
+
+                                    }
+
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                title: 'Presupuesto ya autorizado',
+                                text: "¡El presupuesto ya ha sido autorizado!",
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Ok'
+                            })
+                        }
+
+                    } else {
+                        Swal.fire({
+                            title: '¡No tienes permisos!',
+                            text: "¡No tienes permisos para aprobar el presupuesto!",
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Ok'
+                        })
+                    }
+                }
+            },
+            // {
+            //     nombre: 'Autorizar',
+            //     color: 'perryButton',
+            //     icono: 'fas fa-check',
+            //     funcion: (item) => {
+            //         if (userAuth.user.tipo.tipo === 'Administrador') {
+            //             Swal.fire({
+            //                 title: '¿Estas seguro?',
+            //                 text: "¡No podrás revertir esto!",
+            //                 icon: 'warning',
+            //                 showCancelButton: true,
+            //                 confirmButtonColor: '#3085d6',
+            //                 cancelButtonColor: '#d33',
+            //                 cancelButtonText: 'Cancelar',
+            //                 confirmButtonText: 'Si, autorizar'
+            //             }).then((result) => {
+            //                 if (result.isConfirmed) {
+            //                     Swal.fire({
+            //                         title: 'autorizando',
+            //                         text: 'Espere un momento...',
+            //                         allowOutsideClick: false,
+            //                         allowEscapeKey: false,
+            //                         allowEnterKey: false,
+            //                         showConfirmButton: false,
+            //                         onOpen: () => {
+            //                             Swal.showLoading()
+            //                         }
+            //                     })
+            //                     try {
+            //                         apiPutForm(`requisicion/${item.id}/autorizar`, { aprobado: 1 }, userAuth.access_token).then(result => {
+            //                             Swal.close()
+            //                             Swal.fire(
+            //                                 '¡Autorizado!',
+            //                                 'Ha sido Autorizado correctamente',
+            //                                 'success'
+            //                             )
+            //                             if (reloadTable) {
+            //                                 reloadTable.reload()
+            //                             }
+
+            //                         })
+            //                     } catch (error) {
+            //                         Swal.close()
+            //                         Swal.fire(
+            //                             '¡Error!',
+            //                             'No ha sido Autorizado.',
+            //                             'error'
+            //                         )
+            //                     }
+            //                 }
+            //             })
+            //         } else {
+            //             Swal.fire({
+            //                 title: '¡No tienes permisos!',
+            //                 text: "¡No tienes permisos para aprobar el presupuesto!",
+            //                 icon: 'error',
+            //                 confirmButtonColor: '#3085d6',
+            //                 confirmButtonText: 'Ok'
+            //             })
+            //         }
+            //     }
+            // },
+            
         ]
         return aux
     }
@@ -292,7 +484,7 @@ export default function RequisicionContabilidad() {
         <>
             {/* <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'> */}
             <>
-                <TablaGeneral 
+                <TablaGeneralPaginado 
                     titulo='Gasto' 
                     columnas={columnas} 
                     url='requisicion/admin' 
@@ -301,6 +493,7 @@ export default function RequisicionContabilidad() {
                     acciones={createAcciones()} 
                     opciones={opciones} 
                     reload={setReloadTable} 
+                    filtros={filtrado}
                 />
             </>
             {/* </Layout> */}
@@ -313,7 +506,7 @@ export default function RequisicionContabilidad() {
                 </Modal>
 
                 <Modal size="xl" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
-                            <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
+                    <Editar data={modal.editar.data} handleClose={handleClose('editar')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
                 </Modal>
 
                 <Modal size="lg" title={"Nueva requisición"} show={modal.crear.show} handleClose={handleClose('crear')}>
@@ -326,6 +519,10 @@ export default function RequisicionContabilidad() {
 
                 <Modal size="xl" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
                     <Ver data={modal.ver.data} />
+                </Modal>
+
+                <Modal size="lg" title={"filtrar"} show={modal.filtrar.show} handleClose={handleClose('filtrar')}>
+                    <FiltrarRequisicionesContabilidad data={modal.filtrar.data} handleClose={handleClose('filtrar')} opciones={opcionesApi} filtrarTabla={setFiltrado} borrarTabla={borrar} estatusCompras={estatusCompras} />
                 </Modal>
                 </>
                 : null

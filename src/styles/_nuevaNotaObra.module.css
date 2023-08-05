@@ -3,24 +3,39 @@
 }
 
 .nueva_nota{
-    margin-top: 2rem;
-    margin-left: 2rem;
+    margin-top: 1rem;
+    margin-left: 7rem;
 }
 
-.nuevaRequisicion_fecha{
-    width: 150px;
-    /* display: flex;
-    justify-content: center; */
+.hora{
+    width: 60%;
+}
+
+.tema{
+
+}
+
+.personal{
+    width: 60%;
+    display: flex;
+    justify-content: center;
 }
 
 .proveedor{
-    width: 150px;
-    /* display: flex;
-    justify-content: center; */
+    width: 70%;
+}
+
+.tipo_nota{
+    width: 70%;
+    margin-left: 10%;
+}
+
+.nota{
+    width: 94%;
 }
 
 .sendButton {
-    margin-top: 1rem;
+    margin-top: 11rem;
     width: 7rem;
     height: 2.5rem;
     background: #FFD549;
@@ -88,17 +103,95 @@
     border-radius: 5px;
 }
 
+@media (min-width: 1200px) {
+}
+
+@media (max-width: 1199px) and (min-width: 992px){
+}
+
+@media (max-width: 991px) and (min-width: 768px){ 
+    .nueva_nota{
+        margin-left: 2.5rem;
+    }
+
+    .hora{
+        width: 80%
+    }
+
+    .personal{
+        width: 80%
+    }
+
+    .proveedor{
+        width: 100%
+    }
+
+    .tipo_nota{
+        width: 100%;
+        margin-left: -8%;
+    }
+
+    .nota{
+        width: 97%;
+    }
+}
+
+@media(max-width: 767px) and (min-width: 576px){
+    .nueva_nota{
+        margin-left: 2rem;
+    }
+
+    .hora{
+        width: 80%;
+    }
+
+    .personal{
+        width: 80%;
+    }
+
+    .proveedor{
+        width: 100%
+    }
+
+    .tipo_nota{
+        width: 100%;
+        margin-left: -8%;
+    }
+
+    .nota{
+        width: 97%;
+    }
+}
+
 @media (max-width: 575px){
     .nueva_nota{
-        text-align: center;
-        margin-top: .5rem;
+        margin-left: 3rem;
     }
 
-    .nuevaRequisicion_fecha{
-        margin-bottom: .5rem;
+    .hora{
+        width: 100%;
     }
 
-    .prov{
-        margin-top: 1rem;
+    .personal{
+        width: 80%;
+    }
+
+    .proveedor{
+        width: 100%
+    }
+
+    .tipo_nota{
+        width: 100%;
+        margin-left: -8%;
+    }
+
+    .nota{
+        width: 97%;
+    }
+
+    .enviar{
+        margin-top: -8rem;
+        display: flex;
+        justify-content: end;
     }
 }

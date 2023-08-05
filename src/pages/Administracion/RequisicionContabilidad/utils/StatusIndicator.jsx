@@ -14,9 +14,10 @@ import EnCamino from '@material-ui/icons/LocalShippingOutlined';
 import Completada from '@material-ui/icons/AssignmentTurnedInOutlined';
 import Cancelada from '@material-ui/icons/BlockOutlined';
 import Eliminada from '@material-ui/icons/DeleteOutline';
+import Administracion from '@material-ui/icons/SupervisorAccount';
 
 export default function StatusIndicator(props) { 
-    const { estatus_compra, estatus_conta, auto1, auto2, estatus_factura, estatus } = props.data
+    const { estatus_compra, estatus_conta, auto1, auto2,auto3, estatus_factura, estatus } = props.data
     const [modal, setModal] = useState({
         status: {
             data: false,
@@ -41,20 +42,20 @@ export default function StatusIndicator(props) {
         <>
             <div className={Style.container} onClick={openModal}>
                 {
-                    estatus && estatus.id === 15 && estatus_compra && estatus_compra.id === 15 && estatus_conta && estatus_conta.id === 15 ?
-                        <>
+                    estatus && estatus.id === 12 && estatus_compra && estatus_compra.id === 12 && estatus_conta && estatus_conta.id === 12?
+                    <>
                             <span
                                 className={Style.containerEliminado}
                                 title={`Gasto Eliminado`}
                             >
-                                <Eliminada /> Gasto Eliminado
+                                <Eliminada /> Gasto Eliminado / cancelado
 
                             </span>
                         </>
                         :
                         <>
                             <div
-                                className={estatus_compra && (estatus_compra.estatus === "Completada" || estatus_compra.estatus === "COMPLETADA") ? Style.greenBox : estatus_compra && (estatus_compra.estatus === "CANCELADA" || estatus_compra.estatus === "Cancelada") ? Style.redBox : estatus_compra ? Style.yellowBox: Style.grayBox}
+                                className={estatus_conta && estatus_conta.id === 20 ? Style.greenBox : estatus_compra && (estatus_compra.estatus === "Completada" || estatus_compra.estatus === "COMPLETADA") ? Style.greenBox : estatus_compra && (estatus_compra.estatus === "CANCELADA" || estatus_compra.estatus === "Cancelada") ? Style.redBox : estatus_compra ? Style.yellowBox: Style.grayBox}
                                 title={`Estatus compra: ${estatus_compra ? estatus_compra.estatus : 'Pendiente'}`}
                             >
                                 {
@@ -72,6 +73,9 @@ export default function StatusIndicator(props) {
                                     :
                                     estatus_compra && estatus_compra.estatus === 'CANCELADA' ?
                                     <Cancelada/>
+                                    :
+                                    estatus_conta && estatus_conta.id === 20 ? 
+                                    <Administracion />
                                     :
                                     <span><AccessTimeIcon/></span>
                                 }
@@ -101,6 +105,17 @@ export default function StatusIndicator(props) {
                                     <span><AccessTimeIcon/></span>
                                 }
                                 
+                            </div>
+                            <div
+                                className={auto3 ? Style.greenBox : Style.grayBox}
+                                title={`Estatus autorización admin: ${auto3 ? 'Autorizado' : 'Pendiente'}`}
+                            >
+                                {
+                                    auto3 ? 
+                                    <span><DoneIcon/></span>
+                                    : 
+                                    <span><AccessTimeIcon/></span>
+                                }
                             </div>
                             <div
                                 className={estatus_factura && (estatus_factura.estatus === "Facturado" || estatus_factura.estatus === "FACTURADO") ? Style.greenBox : estatus_factura && (estatus_factura.estatus === "Pendiente de factura" || estatus_factura.estatus === "PENDIENTE DE FACTURA") ? Style.yellowBox : estatus_factura ? Style.yellowBox : Style.grayBox}
@@ -201,14 +216,16 @@ export default function StatusIndicator(props) {
                         <span style={{color:'#FFD549'}}>Pagada <Pagada/> / </span>
                         <span style={{color:'#FFD549'}}>En camino <EnCamino/> / </span>
                         <span style={{color:'#1693A5'}}>Completada <Completada/> / </span>
-                        <span style={{color:'rgba(242, 108, 79, 0.85)'}}>CANCELADA <Cancelada/></span>
+                        <span style={{color:'rgba(242, 108, 79, 0.85)'}}>CANCELADA <Cancelada/> / </span>
+                        <span style={{color:'rgba(58, 137, 201, 1)'}}>ANÁLISIS ADMINISTRACIÓN <Administracion/> </span>
                     </div>
                     <br></br>
                     <div>
                         <span>Estatus contabilidad:</span>
                         <span style={{color:'rgba(0, 0, 0, 0.5)'}}> Pendiente <AccessTimeIcon/> / </span> 
                         <span style={{color:'#1693A5'}}> Pagado <Pagada/> / </span>
-                        <span style={{color:'rgba(242, 108, 79, 0.85)'}}>Rechazado <Cancelada/> </span>
+                        <span style={{color:'rgba(242, 108, 79, 0.85)'}}>Rechazado <Cancelada/> / </span>
+                        <span style={{color:'rgba(58, 137, 201, 1)'}}>ANÁLISIS ADMINISTRACIÓN <Administracion/> </span>
                     </div>
                 </div>
             </Modal> 

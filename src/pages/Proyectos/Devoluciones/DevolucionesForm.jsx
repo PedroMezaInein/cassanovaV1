@@ -35,8 +35,9 @@ class DevolucionesForm extends Component {
             //Fin factura
             tipoAdjunto: 'presupuesto',
             tipoImpuesto: 0,
-            tipoPago: 0,
-            estatusCompra: 0,
+            estatusCompra: 2,
+            tipoPago : 0,
+            
             fecha: new Date(),
             adjuntos: {
                 factura: {
@@ -390,9 +391,9 @@ class DevolucionesForm extends Component {
                     form.area = devolucion.area.id.toString()
                     options['subareas'] = setOptions(devolucion.area.subareas, 'nombre', 'id')
                 }
-                form.tipoPago = devolucion.tipo_pago ? devolucion.tipo_pago.id : 0
-                form.tipoImpuesto = devolucion.tipo_impuesto ? devolucion.tipo_impuesto.id : 0
-                form.estatusCompra = devolucion.estatus_compra ? devolucion.estatus_compra.id : 0
+                form.tipoPago = devolucion.tipo_pago ? devolucion.tipo_pago.id : 4
+                form.tipoImpuesto = devolucion.tipo_impuesto ? devolucion.tipo_impuesto.id : 1
+                form.estatusCompra = 2
                 form.total = devolucion.monto
                 form.fecha = new Date(devolucion.created_at)
                 form.descripcion = devolucion.descripcion

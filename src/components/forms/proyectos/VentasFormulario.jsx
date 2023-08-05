@@ -1039,13 +1039,13 @@ class VentasFormulario extends Component {
                                     messageinc = "Incorrecto. Selecciona el tipo de impuesto"  formeditado = { formeditado } 
                                     requirevalidation = { 1 }/>
                             </div>
-                            <div className="col-md-4">
+                            {/* <div className="col-md-4">
                                 <SelectSearchGray options = { options.estatusCompras } placeholder = 'Selecciona el estatus de la compra' 
                                     value = { form.estatusCompra } onChange = { (value) => { this.updateSelect(value, 'estatusCompra') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "flaticon2-time" 
                                     messageinc = "Incorrecto. Selecciona el estatus de la compra"  formeditado = { formeditado } 
                                     requirevalidation = { 1 }/>
-                            </div>
+                            </div> */}
                             
                             <div className="col-md-12">
                                 <div className="separator separator-dashed mt-1 mb-2" />

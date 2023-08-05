@@ -1003,13 +1003,13 @@ class IngresosFormulario extends Component {
                                     withicon = { 1 } iconclass = "far fa-credit-card" messageinc = "Selecciona la cuenta" 
                                     formeditado = { formeditado } requirevalidation = { 1 }/>
                             </div>
-                            <div className="col-md-6">
+                            {/* <div className="col-md-6">
                                 <SelectSearchGray options = { options.estatusCompras } placeholder = 'Selecciona el estatus de la compra' 
                                     value = { form.estatusCompra } onChange = { (value) => { this.updateSelect(value, 'estatusCompra') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "flaticon2-time" 
                                     messageinc = "Selecciona el estatus de la compra"  formeditado = { formeditado } 
                                     requirevalidation = { 1 }/>
-                            </div>
+                            </div> */}
                             <div className="col-md-12">
                                 <div className="separator separator-dashed mt-1 mb-2" />
                             </div>

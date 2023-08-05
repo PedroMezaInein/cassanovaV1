@@ -42,6 +42,7 @@ export default function EditarEgreso(props) {
         tiposImpuestos: [],
         tiposPagos: [],
     })
+    console.log(data)
 
     useEffect(() => {
         
@@ -180,7 +181,7 @@ export default function EditarEgreso(props) {
         proveedor: data.proveedor.id,
         proveedor_nombre: data.proveedor.razon_social,
         razonSocial: '',
-        rfc: '',
+        rfc: data.proveedor.length > 0 ? data.proveedor.rfc : '',
         subarea: data.subarea.id, 
         telefono: '',
         tipo: 0,
@@ -188,9 +189,15 @@ export default function EditarEgreso(props) {
         tipoPago: data.tipo_pago.id,
         total: data.total,
     })
+    console.log(form)
 
     useEffect(() => {
         if(form.rfc!==''){
+            console.log(form.rfc)
+
+            console.log(opciones.empresas)
+
+            console.log(opciones.cuentas)
             setForm({
                 ...form,
                 cuentas: opciones.empresas.find(empresa => empresa.id === data.empresa.id).cuentas
@@ -827,7 +834,7 @@ export default function EditarEgreso(props) {
                                                 
                                             </div>
                                         </div>
-                                        <div>
+                                        {/* <div>
                                         <InputLabel>RFC</InputLabel>
                                             <TextField
                                                 variant="outlined"
@@ -836,11 +843,22 @@ export default function EditarEgreso(props) {
                                                 onChange={handleChange}
                                             />
 
-                                        </div>
+                                        </div> */}
                                     </div>
                                     : null
                                 
                             }
+
+                            <div style={{marginLeft:'69%'}}>
+                                <InputLabel>RFC</InputLabel>
+                                <TextField
+                                    style={{width:'105%'}}
+                                    variant="outlined"
+                                    name="rfc"
+                                    value={form.rfc ? form.rfc : ''}
+                                    onChange={handleChange}
+                                />
+                            </div>
 
                         </div>
 

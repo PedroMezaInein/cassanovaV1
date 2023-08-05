@@ -18,11 +18,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import {  printResponseErrorAlert } from '../../../../functions/alert'
 
 import Swal from 'sweetalert2'
 
 import Style from './AprobarSolicitud.module.css'
-
 
 import j2xParser from 'fast-xml-parser'
 
@@ -64,6 +64,7 @@ export default function Convertir(props) {
         conta: data.conta,
         factura: data.factura,
         empresa: "",
+        labelPorveedor: data.proveedor ? opciones.proveedores.find(proveedor => proveedor.value == data.proveedor).name : 'Proveedor',
         labelCuenta: data.cuenta ? data.cuenta.nombre : 'cuenta',
         fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
     })
@@ -121,6 +122,7 @@ export default function Convertir(props) {
                                         Swal.showLoading()
                                     }
                                 })
+
                                 let newForm = {
                                     id_departamento: form.departamento,
                                     id_gasto: form.tipoGasto,
@@ -145,7 +147,8 @@ export default function Convertir(props) {
                                     autorizacion_conta: true,
                                     fecha_entrega: form.fecha_entrega,
                                 }
-                                apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
+                                apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token)
+                                  .then(
                                     (response) => {
                                         Swal.close()
                                         handleClose('convertir')
@@ -159,6 +162,7 @@ export default function Convertir(props) {
                                                 Swal.showLoading()
                                             }
                                         })
+
                                         if (form.factura && file.factura && file.factura !== '' && file.xml && file.xml !== '') {
                                             let archivo = new FormData();
                                             let aux = [...file.xml, ...file.factura]
@@ -195,7 +199,39 @@ export default function Convertir(props) {
                                                 })
                                             }
                                         }
-                                    }, (error) => { }
+                                    }, (error) => { 
+                                        // printResponseErrorAlert(error)
+                                        // Swal.close()
+                                        Swal.fire({
+                                            title: 'Oops...',
+                                            text: error.response.data.message,
+                                            icon: 'warning',
+                                            showCancelButton: false,
+                                            confirmButtonColor: '#3085d6',
+                                            // cancelButtonColor: '#d33',
+                                            // cancelButtonText: 'Cancelar',
+                                            confirmButtonText: 'Aceptar'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                Swal.fire({
+                                                    title: 'Enviando',
+                                                    text: 'Espere un momento...',
+                                                    allowOutsideClick: false,
+                                                    allowEscapeKey: false,
+                                                    allowEnterKey: false,
+                                                    showConfirmButton: false,
+                                                    onOpen: () => {
+                                                        handleClose('convertir')
+                                                        if (reload) {
+                                                            reload.reload()
+                                                        }
+                                                        Swal.showLoading()
+                                                    }
+                                                })
+                                           
+                                            }
+                                        })
+                                    }
                                 ).catch((error) => {
                                     Swal.close()
                                     Swal.fire({
@@ -502,6 +538,16 @@ export default function Convertir(props) {
         }
     }
 
+    const handleChangeProveedor = (e, value) => {
+        if (value && value.name) {
+            setForm({
+                ...form,
+                proveedor: value.value,
+                labelPorveedor: opciones.proveedores.find(proveedor => proveedor.value == value.value).name
+            })
+        }
+    }
+
     return (
         <>
             <div>
@@ -601,6 +647,26 @@ export default function Convertir(props) {
                             </Grid>
                         </MuiPickersUtilsProvider>
                     </div>
+
+                    <div>
+                    <InputLabel >Fecha de entrega</InputLabel>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <Grid container >
+                            <KeyboardDatePicker
+
+                                format="dd/MM/yyyy"
+                                name="fecha_entrega"
+                                value={form.fecha_entrega !== '' ? form.fecha_entrega : null}
+                                placeholder="dd/mm/yyyy"
+                                onChange={e => handleChangeFecha(e, 'fecha_entrega')}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                            /* error={errores.fecha_entrega ? true : false} */
+                            />
+                        </Grid>
+                    </MuiPickersUtilsProvider>
+                </div>
 
                     <div>
                         <TextField
@@ -841,6 +907,61 @@ export default function Convertir(props) {
                     </div>
 
                     <div>
+                    {
+                        estatusCompras ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Estatus de entrega</InputLabel>
+                                <Select
+                                    name="id_estatus"
+                                    value={form.id_estatus}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                    error={errores.id_estatus ? true : false}
+                                >
+                                    {estatusCompras.map((item, index) => {
+                                        if (item.nivel === 1) {
+                                            return <MenuItem key={index} value={item.id}>{item.estatus}</MenuItem>
+                                        }
+                                    })}
+                                </Select>
+                            </>
+                            : null
+                    }
+
+                </div>
+
+                    <div>
+                    {
+                        opciones ?
+                            <>
+                                {/* <InputLabel id="demo-simple-select-label">Proveedor</InputLabel>
+                                <Select
+                                    name="proveedor"
+                                    value={form.proveedor}
+                                    onChange={handleChange}
+                                    className={classes.textField}
+                                    error={errores.proveedor ? true : false}
+                                >
+                                    {opciones.proveedores.map((item, index) => (
+                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                    ))}
+
+                                </Select> */}
+                                <Autocomplete
+                                    name="proveedor"
+                                    options={opciones.proveedores}
+                                    getOptionLabel={(option) => option.name}
+                                    style={{ width: 230, paddingRight: '1rem' }}
+                                    onChange={(event, value) => handleChangeProveedor(event, value)}
+                                    renderInput={(params) => <TextField {...params} label={form.labelPorveedor} variant="outlined" />}
+                                />
+                            </>
+                            : null
+                    }
+
+                </div>
+
+                    {/* <div>
                         {
                             opciones ?
                                 <>
@@ -850,7 +971,6 @@ export default function Convertir(props) {
                                         value={form.proveedor}
                                         onChange={handleChange}
                                         className={classes.textField}
-                                        disabled
                                     >
                                         {opciones.proveedores.map((item, index) => (
                                             <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
@@ -860,7 +980,7 @@ export default function Convertir(props) {
                                 </>
                                 : null
                         }
-                    </div>
+                    </div> */}
 
                     <div>
                         <TextField

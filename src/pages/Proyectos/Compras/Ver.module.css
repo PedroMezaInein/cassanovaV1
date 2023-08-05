@@ -1,0 +1,10 @@
+.compra{
+    padding-top: 1rem;
+    margin-left: -.3rem !important;
+}
+
+.compra span{
+    color: #315694;
+    font-size: 12px;
+    font-weight: bold;
+}

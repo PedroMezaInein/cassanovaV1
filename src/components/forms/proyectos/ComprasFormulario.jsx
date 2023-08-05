@@ -375,6 +375,7 @@ class ComprasFormulario extends Component {
 
     editCompraAxios = async() => {
         const { dato, at } = this.props
+        console.log(dato)
         const { form } = this.state
         apiPutForm(`v2/proyectos/compras/${dato.id}`, form, at).then(
             (response) => {

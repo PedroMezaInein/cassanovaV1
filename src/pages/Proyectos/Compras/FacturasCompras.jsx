@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react"
 import { useSelector } from 'react-redux';
 
 // import TablaGeneralPaginado from './../../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
-import TablaGeneral from './../../../../components/NewTables/TablaGeneral/TablaGeneral'
+import TablaGeneral from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 
-import { apiPostForm, apiGet, apiPutForm, apiDelete, catchErrors } from './../../../../functions/api'
+import { apiPostForm, apiGet, apiPutForm, apiDelete, catchErrors } from './../../../functions/api'
 
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
@@ -13,10 +13,10 @@ import j2xParser from 'fast-xml-parser'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3'
 
-import Style from './CrearEgreso.module.css'
+import Style from './../../Administracion/Egresos/Modales/CrearEgreso.module.css'
 
 export default function Factura(props) {
-    const { opcionesData, egreso, handleClose, reload } = props
+    const { opcionesData, handleClose, reload, compra } = props
     const auth = useSelector((state) => state.authUser.access_token);
     const [reloadTable, setReloadTable] = useState()
 
@@ -263,7 +263,7 @@ export default function Factura(props) {
         apiGet(`v1/constant/admin-proyectos`, auth).then(
             (response) => {
                 const { alma } = response.data
-                let filePath = `facturas/egresos/`
+                let filePath = `facturas/compras/`
                 let aux = []
                 form.adjuntos.xml.files.forEach((file) => {
                     aux.push(file)
@@ -288,7 +288,7 @@ export default function Factura(props) {
                             }
                     })
                 })
-                Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, egreso) }).catch(err => console.error(err))
+                Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, compra) }).catch(err => console.error(err))
             }, (error) => { }
         ).catch((error) => { 
             Swal.close()
@@ -303,7 +303,7 @@ export default function Factura(props) {
         })
     }
 
-    const addNewFacturaAxios = (files, egreso) => {
+    const addNewFacturaAxios = (files, compra) => {
         let aux = form
         aux.archivos = files
 
@@ -319,18 +319,18 @@ export default function Factura(props) {
                 if(reload){
                     reload.reload()
                 }
-                attachFactura(egreso, factura)
+                attachFactura(compra, factura)
             }, (error) => { }
         ).catch((error) => {
             console.error(error, 'error')
         })
     }
 
-    const attachFactura = (egreso, factura) => {
+    const attachFactura = (compra, factura) => {
 
         let objeto = {
-            dato: egreso.id,
-            tipo: 'egreso',
+            dato: compra.id,
+            tipo: 'compra',
             factura: factura.id
         }
 
@@ -408,26 +408,9 @@ export default function Factura(props) {
         //         adjuntos: 'n/a'
         //     });
         // } else { // dentro de facturas están las propiedades de XML y PDF, cada uno es un objeto
-            datos.egreso.facturas.forEach((factura) => {
+        console.log(datos.compra)
+            datos.compra.facturas.forEach((factura) => {
                 let adjuntos = []; // creo un nuevo array para almacenar los valores de los adjuntos 
-                if (factura.xml.name) {
-                    adjuntos.push(
-                        <div style={{width:'100px', marginRight:'2.5rem'}}>
-                            <a style={{width:'90%'}} href={factura.xml.url} target="_blank" rel="noopener noreferrer">
-                                XML: {factura.xml.name}
-                            </a> 
-                        </div>   
-                    );
-                }
-                if (factura.pdf.name) {
-                    adjuntos.push(
-                        <div style={{width:'100px'}}>
-                            <a style={{width:'90%'}} href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
-                                PDF: {factura.pdf.name}
-                            </a>
-                        </div>
-                    );
-                }
     
                 aux.push({
                 folio: factura.folio ? factura.folio : 'n/a',
@@ -451,11 +434,11 @@ export default function Factura(props) {
 
     const deleteEgresoAxios = (id) => {
 
-        apiDelete(`v2/administracion/egresos/${egreso.id}/facturas/${id}`, auth).then(
+        apiDelete(`v2/proyectos/compras/${compra.id}/facturas/${id}`, auth).then(
             (response) => {
                 Swal.fire(
                     '¡Eliminado!',
-                    'El egreso ha sido eliminado.',
+                    'la compra ha sido eliminado.',
                     'success'
                 )
                 if (reloadTable) {
@@ -598,7 +581,7 @@ export default function Factura(props) {
             <div>
                 <TablaGeneral
                     subtitulo="información general"
-                    url={`v2/administracion/egresos/facturas/${egreso.id}`}
+                    url={`v2/proyectos/compras/facturas/${compra.id}`}
                     columnas={columns}
                     numItemsPagina={20}
                     ProccessData={proccessData}

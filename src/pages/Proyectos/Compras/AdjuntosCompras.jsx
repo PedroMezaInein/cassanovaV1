@@ -10,10 +10,9 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { apiPutForm, apiGet, apiPostForm } from '../../../../functions/api'
-import CarruselAdjuntos from './CarruselAdjuntos'
-
-import './../../../../styles/_adjuntosRequisicion.scss'
+import { apiGet, apiPostForm, apiPutForm } from './../../../functions/api'
+import CarruselAdjuntosCompras from './CarruselAdjuntosCompras'
+import style from './CarruselCompras.module.scss'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -60,9 +59,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function FacturaExtranjera(props) {
+export default function AdjuntosCompras (props) {
     const { data, Gastos } = props
-    console.log(Gastos)
 
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
@@ -89,14 +87,18 @@ export default function FacturaExtranjera(props) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    console.log('hola')
 
     const getAdjuntos = () => {
         try {
-            apiGet(`v2/administracion/egresos/adjuntos/${props.data.id}`, authUser)
+            apiGet(`v2/proyectos/compras/adjuntos/${data.id}`, authUser)
                 .then(res => {
-                    let adjunAux = res.data.egreso.facturas_pdf
-                    let adjunPagos = res.data.egreso.pagos
-                    let adjunPresupuesto = res.data.egreso.presupuestos
+                    console.log('res')
+                    console.log(res)
+
+                    let adjunAux = res.data.compra.facturas_pdf
+                    let adjunPagos = res.data.compra.pagos
+                    let adjunPresupuesto = res.data.compra.presupuestos
 
                     Swal.close()
                     let aux = {
@@ -200,7 +202,7 @@ export default function FacturaExtranjera(props) {
             data.append('tipo', activeTab)
 
             try {
-                apiPostForm(`v2/administracion/egresos/${props.data.id}/archivos/s3`, data, authUser)
+                apiPostForm(`v2/proyectos/compras/${props.data.id}/archivos/s3`, data, authUser)
                     .then(res => {
                         Swal.close()
                         Swal.fire({
@@ -252,14 +254,14 @@ export default function FacturaExtranjera(props) {
         
         return (
             <>
-                <div className='adjuntos_send'>
-                    <div className="file">
+                <div className={style.adjuntos_send}>
+                    <div className={style.file}>
 
-                    {/* <label htmlFor="file">Seleccionar archivo(s)</label>
-                    <input type="file" id='file' name="file" onChange={handleFile} />
-                        <div>
-                            {state.solicitud.name ? <div className='file-name'>{state.solicitud.name}</div> : null}
-                        </div> */}
+                        {/* <label htmlFor="file">Seleccionar archivo(s)</label>
+                        <input type="file" id='file' name="file" onChange={handleFile} />
+                            <div>
+                                {state.solicitud.name ? <div className='file-name'>{state.solicitud.name}</div> : null}
+                            </div> */}
 
                         <label htmlFor="file">Selecciona la factura</label>
                         <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
@@ -282,7 +284,7 @@ export default function FacturaExtranjera(props) {
             <>
                 {
                     adjuntos && adjuntos[tab] && adjuntos[tab].length > 0 ?
-                        <CarruselAdjuntos data={adjuntos[tab]} id={data.id} getAdjuntos={getAdjuntos} />
+                        <CarruselAdjuntosCompras data={adjuntos[tab]} id={data.id} getAdjuntos={getAdjuntos} />
                         :
                         <div className="no-adjuntos">
                             <p>No hay archivos adjuntos</p>

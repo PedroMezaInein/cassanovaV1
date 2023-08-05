@@ -51,7 +51,7 @@ class Layout extends Component {
     componentDidMount() {
         const { pathname } = this.props.location
         let textoArray = pathname.split('/')
-        let texto = 'Cassanova'
+        let texto = 'Administrador de proyectos'
         textoArray.forEach((element) => { if(element){ texto = texto + ' / ' + element } })
         this.setState({ ...this.state, title: texto })
         this.getUserChecador()

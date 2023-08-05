@@ -1,15 +1,18 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useSelector } from 'react-redux';
 
 import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
+import TablaGeneralPaginado from './../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 import { REQUISICIONES } from '../../../constants'
 import { Modal } from '../../../components/singles'
+import { apiDelete } from './../../../functions/api'
 import Adjuntos from '../../Administracion/RequisicionCompras/Modales/Adjuntos'
 import NuevaRequisicion from '../../../components/forms/administracion/NuevaRequisicion'
 import VerRequisicion from '../../../components/forms/administracion/VerRequisicion'
 import {EditarRequisicion} from '../../../components/forms/administracion/EditarRequisicion'
+import FiltrarRequisiciones from '../../../components/forms/administracion/FiltrarRequisiciones'
 
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import StatusIndicator from './utils/StatusIndicator'
@@ -29,7 +32,10 @@ function Requisiciones () {
             show: false,
             data: false
         },
-
+        filtrar: {
+            show: false,
+            data: null
+        },
         adjuntos: {
             show: false,
             data: false
@@ -38,11 +44,35 @@ function Requisiciones () {
             show: false,
             data: false
         },
+        cancelar: {
+            show: false,
+            data: false
+        },
 
     })
 
-
     useOptionsArea()
+
+    useEffect(() => {
+        if (filtrado) {
+            reloadTable.reload(filtrado)
+            //  setFiltrado('')
+            if(borrar == false){
+                setFiltrado('')   
+
+            }
+        }
+
+    }, [filtrado])
+
+    const borrar = ( id) =>{
+        if(id == false){
+            reloadTable.reload(filtrado)
+            setFiltrado('')   
+
+        }
+    }
+    const [filtrado, setFiltrado] = useState('') 
 
     let prop = {
         pathname: '/administracion/requisicion',
@@ -57,10 +87,10 @@ function Requisiciones () {
     const proccessData = (datos) => {
         
         let aux = []
-            datos.Requisiciones.map((result) => {
-                aux.push(
+        datos.data.data.map((result) => {
+            aux.push(
                     {
-                        acciones: acciones(),
+                        // acciones: acciones(),
                         orden_compra: result.orden_compra,
                         solicitante: result.solicitante.name,
                         fecha: result.fecha,
@@ -76,7 +106,7 @@ function Requisiciones () {
                     }
                 )
             })
-            aux=aux.reverse()
+            // aux=aux.reverse()
             return aux
     }
 
@@ -84,10 +114,32 @@ function Requisiciones () {
         var dArr = dateStr.split("-");  // ex input: "2010-01-18"
         return dArr[2] + "/" + dArr[1] + "/" + dArr[0]/* .substring(2) */; //ex output: "18/01/10"
     }
+
+    const openModal = (tipo, data) => {
+        if(data.factura == 'Sin factura' && tipo == 'facturas' ){
+            Swal.fire({
+                icon: 'error',
+                title: 'No tiene facura',
+                text: 'El registro es sin factura',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            
+        }else{
+            setModal({
+                ...modal,
+                [tipo]: {
+                    show: true,
+                    data: data
+                }
+            })
+        }
+
+    }
     
     const handleOpen = [
         {
-            nombre: 'Nueva Requisición',
+            nombre: <div><i className="fas fa-plus mr-5"></i><span>Nuevo</span></div>,
             funcion: (item) => { 
                 setModal({
                     ...modal,
@@ -98,8 +150,20 @@ function Requisiciones () {
                 })
             }
         },
+        {
+            //filtrar
+            nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
+            funcion: (item) => {
+                setModal({
+                    ...modal,
+                    filtrar: {
+                        show: true,
+                        data: item
+                    }
+                })
+            }
+        },
     ]
-
 
     let handleClose = (tipo) => () => {
         setModal({
@@ -111,8 +175,7 @@ function Requisiciones () {
         })
     }
 
-    let acciones = () => {
-        let aux = [
+    const acciones = [
             {
                 nombre: 'Editar',
                 icono: 'fas fa-edit',
@@ -128,7 +191,7 @@ function Requisiciones () {
                 
                 }
             },  
-           
+        
             {
                 nombre: 'Adjuntos',
                 icono: 'fas fa-paperclip',
@@ -157,24 +220,70 @@ function Requisiciones () {
                     })
                 }
             }, 
-        ]
-        return aux
-    }
+            {
+                nombre: 'Cancelar',
+                color: 'redButton',
+                icono: 'fas fa-trash-alt',
+                funcion: (item) => {
+                    // if (userAuth.user.tipo.tipo === 'Administrador') {
+                        Swal.fire({
+                            title: '¿Estas seguro?',
+                            text: "¡No podrás revertir esto!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonText: 'Si, Cancelar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    apiDelete(`requisicion/${item.id}/cancelar`, userAuth.access_token).then(result => {
+                                        if (reloadTable) {
+                                            reloadTable.reload()
+                                        }
+                                        Swal.fire({
+                                            title: 'Cancelado!',
+                                            text: 'La requisición se ha cancelado',
+                                            icon: 'success',
+                                            confirmButtonColor: '#3085d6',
+                                            confirmButtonText: 'Ok',
+                                            timer: 2000
+                                        })
+                                    })
+                                } catch (error) {
 
+                                }
+                            }
+                        })
+                    // } else {
+                    //     Swal.fire({
+                    //         title: '¡No tienes permisos!',
+                    //         text: "¡No tienes permisos para eliminar el presupuesto!",
+                    //         icon: 'error',
+                    //         confirmButtonColor: '#3085d6',
+                    //         confirmButtonText: 'Ok'
+                    //     })
+                    // }
+                }
+            },
+        ]
+    
     return (
         <>
             {/* <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='administracion'> */}
-                <Tabla
-                    titulo="Requisición" 
-                    columnas={REQUISICIONES}
-                    url={'requisicion'}  
-                    numItemsPagina={12}
-                    ProccessData={proccessData}
-                    opciones={handleOpen}
-                    acciones={acciones()}
-                    reload={setReloadTable}
-                    >
-                </Tabla>
+             <TablaGeneralPaginado
+                titulo="Requisición"
+                subtitulo="listado de gastos"
+                url={'requisicion'}
+                columnas={REQUISICIONES}
+                numItemsPagina={50}
+                ProccessData={proccessData}
+                opciones={handleOpen}
+                acciones={acciones}
+                reload={setReloadTable} 
+                filtros={filtrado}
+            />
             {/* </Layout> */}
 
             <Modal size="lg" title={"Nueva requisición"} show={modal.crear.show} handleClose={handleClose('crear')}>
@@ -192,7 +301,11 @@ function Requisiciones () {
             <Modal size="md" title={"ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
                 <VerRequisicion data={modal.ver.data} verRequisicion={true}/>
             </Modal>
-            
+
+            <Modal size="lg" title={"Filtrar gastos"} show={modal.filtrar.show}  handleClose={handleClose('filtrar')} >
+                <FiltrarRequisiciones handleClose={e => handleClose('filtrar')} filtrarTabla={setFiltrado} borrarTabla={borrar} reload={reloadTable}/>
+            </Modal>
+
         </>
     )
     

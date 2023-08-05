@@ -16,7 +16,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-
+import {  printResponseErrorAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
 
 import Style from './AprobarSolicitud.module.css'
@@ -190,7 +190,43 @@ export default function Convertir(props) {
                                     timer: 2000,
                                     timerProgressBar: true,
                                 })
-                            }, (error) => { }
+                            }, (error) => { 
+
+                                Swal.fire({
+                                    // icon: 'error',
+                                    title: 'Oops...',
+                                    text: error.response.data.message,
+                                    icon: 'warning',
+                                    showCancelButton: false,
+                                    confirmButtonColor: '#3085d6',
+                                    // cancelButtonColor: '#d33',
+                                    // cancelButtonText: 'Cancelar',
+                                    confirmButtonText: 'Aceptar'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        Swal.fire({
+                                            title: 'Enviando',
+                                            text: 'Espere un momento...',
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                            allowEnterKey: false,
+                                            showConfirmButton: false,
+                                            onOpen: () => {
+                                                handleClose('convertir')
+                                                if (reload) {
+                                                    reload.reload()
+                                                }
+                                                Swal.showLoading()
+                                            }
+                                        })
+                                   
+                                    }
+                                })
+                                   
+                                    // console.log(error.response.data.message)
+                                    // printResponseErrorAlert(error)
+                                    // handleClose('convertir')
+                            }
                         ).catch((error) => {
                             Swal.close()
                             Swal.fire({
@@ -220,8 +256,6 @@ export default function Convertir(props) {
             )
         }
 
-        
-        
     }
 
     const handleAprueba = (e) => {
@@ -278,7 +312,6 @@ export default function Convertir(props) {
             data.append(`files_requisicion[]`, file)
             data.append('adjuntos[]', "requisicion")
             data.append('tipo', 'Cotizaciones')
-
 
             try {
                 apiPostForm(`requisicion/${props.data.id}/archivos/s3`, data, auth.access_token)

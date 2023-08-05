@@ -12,9 +12,9 @@ export default function VerNotaObra ({ data }) {
 
                         <div>
                             <span style={{ color: '#315694', fontWeight: 'bold'}}>
-                                Fecha:
+                                hora:
                             </span>
-                            <p>{` ${data.fecha}`}</p>
+                            <p>{` ${data.hora}`}</p>
                         </div>
 
                         <div>
@@ -22,6 +22,20 @@ export default function VerNotaObra ({ data }) {
                                 tipo de nota:
                             </span>
                             <p>{`${data.tipo_nota}`}</p>
+                        </div>
+
+                        <div>
+                            <span style={{ color: '#315694', fontWeight: 'bold'}}>
+                                tema:
+                            </span>
+                            <p>{`${data.tema}`}</p>
+                        </div>
+
+                        <div>
+                            <span style={{ color: '#315694', fontWeight: 'bold'}}>
+                                número de personal:
+                            </span>
+                            <p>{`${data.num_personal}`}</p>
                         </div>
 
                         <div>

@@ -238,6 +238,7 @@ class EmpleadosForm extends Component {
                                                 messageinc="Incorrecto. Ingresa el nombre del contacto de emergencia."
                                             />
                                         </div>
+
                                         <div className="col-md-2">
                                             <InputPhoneGray withformgroup={0} requirevalidation={0} formeditado={formeditado} placeholder="TELÉFONO DE EMERGENCIA" name="telefono_emergencia" value={form.telefono_emergencia}
                                                 onChange={onChange} iconclass={"fas fa-mobile-alt"} patterns={TEL} messageinc="Incorrecto. Ingresa el número de teléfono." thousandseparator={false} prefix={''}
@@ -256,6 +257,46 @@ class EmpleadosForm extends Component {
                                                 onChange={this.nuevoUpdateDepartamento} iconclass="fas fa-layer-group" requirevalidation={0} messageinc="Incorrecto. Selecciona el(los) departamento(s)"
                                             />
                                         </div>
+                                        
+
+
+
+
+
+
+
+
+
+
+
+                                        {/* <div className="col-md-12"> */}
+                                            <div className="col-md-3">
+                                                <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange}
+                                                    name="nombre_emergencia2" value={form.nombre_emergencia2} placeholder="CONTACTO DE EMERGENCIA" iconclass={"fas fa-user-circle"}
+                                                    messageinc="Incorrecto. Ingresa el nombre del contacto de emergencia."
+                                                />
+                                            </div>
+
+                                            <div className="col-md-2">
+                                                <InputPhoneGray withformgroup={0} requirevalidation={0} formeditado={formeditado} placeholder="TELÉFONO DE EMERGENCIA" name="telefono_emergencia2" value={form.telefono_emergencia2}
+                                                    onChange={onChange} iconclass={"fas fa-mobile-alt"} patterns={TEL} messageinc="Incorrecto. Ingresa el número de teléfono." thousandseparator={false} prefix={''}
+                                                />
+                                            </div>
+                                        {/* </div> */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                         <div className="col-md-12">
                                             <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange}
                                                 name="domicilio" type="text" value={form.domicilio} placeholder="DOMICILIO" iconclass="fas fa-map-marker-alt" messageinc="Incorrecto. Ingresa el domicilio."

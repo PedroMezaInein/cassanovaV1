@@ -71,8 +71,6 @@ class IngresoFormNew extends Component {
     render() {
         const { type, ingreso } = this.state
         const { history, authUser: { access_token }, ingresos } = this.props
-        console.log('history', history)
-        console.log('ingreso', ingreso)
         return (
             <Layout active='administracion'  {...this.props}>
                 <Card className="card-custom">

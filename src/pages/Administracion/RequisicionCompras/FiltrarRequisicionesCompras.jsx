@@ -12,34 +12,28 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
-import Style from './NuevaRequisicion.module.css'
-import './../../../styles/_nuevaRequisicion.scss'
+import Style from './../../../components/forms/administracion/NuevaRequisicion.module.css'
 
-export default function NuevaRequisicion(props) {
-    const {handleClose, reload} = props
+export default function FiltrarRequisicionesCompras(props) {
+    const { handleClose, reload, opciones, estatusCompras, filtrarTabla, borrarTabla } = props
     const user = useSelector(state => state.authUser)
     const departamento = useSelector(state => state.authUser.departamento)
     const departamentos = useSelector(state => state.opciones.areas)
     const presupuestos = useSelector(state => state.opciones.presupuestos)
     const [state, setState] = useState({
-        solicitante: user.user.id,
+        orden_compra: '',
+        solicitante: '',
         fecha:'',
         departamento: departamento.departamentos[0].id,
-        tipo_gasto: '', //partida
-        descripcion: '',
-        solicitud: '',
-        presupuesto: '',
+        tipoGasto: '', //partida
+        tipoPago: '',
+        monto: '',
+        estatus: '',
     });
     
     const [errores, setErrores] = useState({})
-
-    const handleFile = (e) => {
-        setState({
-            ...state,
-            solicitud: e.target.files[0]
-        })
-    }
 
     const handleChange = (event) => {
         // name son los diferentes tipos de atributos (departamento, fecha...)
@@ -57,34 +51,6 @@ export default function NuevaRequisicion(props) {
         })
     };
 
-    const validateForm = () => {
-        let validar = true
-        let error = {}
-        if(state.departamento === ''){
-            error.departamento = "Seleccione un departamento"
-            validar = false
-        }
-        if(state.tipo_gasto === ''){
-            error.tipo_gasto = "Seleccione el tipo de gasto"
-            validar = false
-        }
-        if(state.descripcion === ''){
-            error.descripcion = "Escriba una descripcion"
-            validar = false
-        }
-        if (state.presupuesto === '') {
-            error.presupuesto = "Seleccione un presupuesto"
-            validar = false
-        }
-        if (state.fecha === '' || state.fecha === null) {
-            error.fecha = "Seleccione una fecha"
-            validar = false
-        }
-        
-        setErrores(error)
-        return validar
-    }
-
     function formatDate(date) {
         var year = date.getFullYear();
       
@@ -98,7 +64,8 @@ export default function NuevaRequisicion(props) {
       }
 
     const enviar = () =>{
-        if(validateForm()){
+        // if(validateForm()){
+        if(true){
 
             Swal.fire({
                 title: 'Cargando...',
@@ -135,6 +102,7 @@ export default function NuevaRequisicion(props) {
                 dataForm.append(`files_name_requisicion[]`, 'requisicion01')
                 dataForm.append(`files_requisicion[]`, state.solicitud)
                 dataForm.append('adjuntos[]', "requisicion")
+
 
                 apiPostForm('requisicion', dataForm, user.access_token)
                     .then((data) => {
@@ -205,27 +173,69 @@ export default function NuevaRequisicion(props) {
         })
     }
 
-    const itemsPresupuesto = presupuestos.map((item, index) => ( item.id_area !== state.departamento ?
-        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-        : ''
-    ));
+    const handleMoney = (e) => {
+        setState({
+            ...state,
+            monto: e
+        })
+    }
+
+    const borrar = () => {
+        filtrarTabla('')   
+        borrarTabla(false)
+        handleClose()
+    }
 
     return (
         <>
             <div className={Style.container}>
-                <div style={{marginLeft:'2.5rem'}}>
+                <div style={{marginLeft:'2rem'}}>
+
+                    <div>
+                        <TextField
+                            label="N. Orden de compra"
+                            name='orden_compra'
+                            style={{width:'125px'}}
+                            defaultValue={state.orden_compra}
+                            // className={classes.textField}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            onChange={handleChange}
+                        />
+                    </div>
 
                     <div>
                         <TextField 
-                            className={Style.select}
+                            style={{width:'125px'}}
                             label="Solicitante"
                             type="text"
                             defaultValue={user.user.name}
                             InputLabelProps={{
                             shrink: true,
                             }}
-                            disabled
                         />
+                    </div>
+
+                    <div className={Style.nuevaRequisicion}>
+                        <InputLabel error={errores.fecha ?true: false}>Fecha</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid>
+                                <KeyboardDatePicker
+                                    style={{width:'125px'}}
+                                    // className={Style.select}
+                                    format="dd/MM/yyyy"
+                                    name='fecha'
+                                    value={state.fecha !=='' ? state.fecha : null}
+                                    onChange={e=>handleChangeFecha(e,'fecha')}
+                                    // defaultValue={state.fecha}
+                                    placeholder="dd/mm/yyyy"
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
                     </div>
                     
                     <div >
@@ -233,7 +243,8 @@ export default function NuevaRequisicion(props) {
                             <>
                                 <InputLabel>Departamento</InputLabel>
                                 <Select
-                                    className={Style.select}
+                                    style={{width:'125px'}}
+                                    // className={Style.select}
                                     value={state.departamento}
                                     name="departamento"
                                     onChange={handleChangeDepartamento}
@@ -249,16 +260,20 @@ export default function NuevaRequisicion(props) {
                         }
                     </div>
 
-                    <div>  
-                        {departamentos.length > 0 && state.departamento !== ''?
+                </div>
+
+                <div className={Style.nuevaRequisicion_segundoBloque}>
+                    
+                    <div>
+                        {departamentos.length > 0 && state.departamento !== '' ?
                             <>
-                                <InputLabel>Tipo de Gasto</InputLabel>
+                                <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
                                 <Select
-                                    className={Style.select}
-                                    value={state.tipo_gasto}
-                                    name="tipo_gasto"
+                                    style={{width:'125px'}}
+                                    value={state.tipoGasto}
+                                    name="tipoGasto"
                                     onChange={handleChange}
-                                    error={errores.tipo_gasto ? true : false}
+                                    // className={classes.textField}
                                 >
                                     {departamentos.find(item => item.id_area == state.departamento).partidas.map((item, index) => (
                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -270,98 +285,88 @@ export default function NuevaRequisicion(props) {
                         }
                     </div>
 
-                </div>
+                    <div>
+                        {
+                            opciones ?
+                                <>
+                                    <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
+                                    <Select
+                                        style={{width:'125px'}}
+                                        name="tipoPago"
+                                        value={state.tipoPago}
+                                        onChange={handleChange}
+                                        // className={classes.textField}
+                                        error={errores.tipoPago ? true : false}
+                                    >
+                                        {opciones.tiposPagos.map((item, index) => (
+                                            <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+                                        ))}
 
-                <div className={Style.nuevaRequisicion_segundoBloque}>
-                    <div className={Style.nuevaRequisicion}>
-                        {presupuestos.length > 0 && state.departamento !== '' ?
-                            <>
-                                <InputLabel>Presupuesto</InputLabel>
-                                <Select
-                                    className={Style.select}
-                                    value={state.presupuesto}
-                                    name="presupuesto"
-                                    onChange={handleChange}
-                                    error={errores.presupuesto ? true : false}
-                                >
-                                    {
-                                    presupuestos.map((item, index) => ( 
-                                        item.rel.map((item2, index2) => (
-                                            item2.id_area == state.departamento ? 
-                                            <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                            : <></>
-                                        ))
-                                        
-                                    ))
-                                    }
-                                    {/* {itemsPresupuesto} */}
-                                </Select>
-                            </>
+                                    </Select>
+                                </>
                             : null
                         }
-                    </div>
-                    
-                    <div className={Style.nuevaRequisicion}>
-                        <InputLabel error={errores.fecha ?true: false}>Fecha</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                            <Grid>
-                                <KeyboardDatePicker
-                                    className={Style.select}
-                                    format="dd/MM/yyyy"
-                                    name='fecha'
-                                    value={state.fecha !=='' ? state.fecha : null}
-                                    onChange={e=>handleChangeFecha(e,'fecha')}
-                                    // defaultValue={state.fecha}
-                                    placeholder="dd/mm/yyyy"
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
+
                     </div>
 
                     <div>
-                        <TextField
-                            className={Style.select}
-                            label="Descripcion"
-                            placeholder="Deja una descripción"
-                            onChange={handleChange}
-                            margin="normal"
-                            name='descripcion'
-                            defaultValue={state.descripcion}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            multiline
-                            error={errores.descripcion ? true : false}
+                        <CurrencyTextField
+                            style={{width:'125px'}}
+                            label="monto solicitado"
+                            variant="standard"
+                            value={state.monto}
+                            currencySymbol="$"
+                            outputFormat="number"
+                            onChange={(event, value) => handleMoney(value)}
+                            error={errores.monto ? true : false}
                         />
                     </div>
+
+                    <div>
+                        {
+                            estatusCompras ?
+                                <>
+                                    <InputLabel id="demo-simple-select-label">Estatus de entrega</InputLabel>
+                                    <Select
+                                        style={{width:'125px'}}
+                                        name="estatus"
+                                        value={state.estatus}
+                                        onChange={handleChange}
+                                        // className={classes.textField}
+                                        error={errores.estatus ? true : false}
+                                    >
+                                        {estatusCompras.map((item, index) => {
+                                            if (item.nivel === 1) {
+                                                return <MenuItem key={index} value={item.id}>{item.estatus}</MenuItem>
+                                            }
+                                        })}
+                                    </Select>
+                                </>
+                            : null
+                        }
+
+                    </div>
+                        
                 </div>
 
             </div>
 
-            <div>
-                <div className={Style.file}>
-                    {/* <p id='adjuntos'>Agregar archivos
-                        <input className='nuevaRequisicion_adjunto_input' type='file' onChange={handleFile}></input>
-                    </p> */}
-                    <label htmlFor="file">Seleccionar archivo(s)</label>
-                    <input type="file" id='file' name="file" onChange={handleFile} />
-                    <div>
-                        {state.solicitud.name ? <div className='file-name'>{state.solicitud.name}</div> : null}
-                    </div>
-                    
-                </div>
-
+            <div style={{marginTop:'3rem'}}>
                 <div className="row justify-content-end mt-n18" >
                     <div className="col-md-4">
+                        <button className={Style.borrarButton}  onClick={borrar}>Borrar</button>
+                    </div>
+
+                    <div className="col-md-3"></div>
+
+                    <div className="col-md-3">
                         <button className={Style.sendButton} onClick={enviar}>Agregar</button>
                     </div>
                 </div>
-
+                
             </div>
         </>
         
+
     );  
 }

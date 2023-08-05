@@ -16,8 +16,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Style from './NuevaRequisicion.module.css'
 import './../../../styles/_nuevaRequisicion.scss'
 
-export default function NuevaRequisicion(props) {
-    const {handleClose, reload} = props
+export default function FiltrarRequisiciones(props) {
+    const {handleClose, reload, filtrarTabla, borrarTabla } = props
     const user = useSelector(state => state.authUser)
     const departamento = useSelector(state => state.authUser.departamento)
     const departamentos = useSelector(state => state.opciones.areas)
@@ -33,13 +33,6 @@ export default function NuevaRequisicion(props) {
     });
     
     const [errores, setErrores] = useState({})
-
-    const handleFile = (e) => {
-        setState({
-            ...state,
-            solicitud: e.target.files[0]
-        })
-    }
 
     const handleChange = (event) => {
         // name son los diferentes tipos de atributos (departamento, fecha...)
@@ -57,48 +50,28 @@ export default function NuevaRequisicion(props) {
         })
     };
 
-    const validateForm = () => {
-        let validar = true
-        let error = {}
-        if(state.departamento === ''){
-            error.departamento = "Seleccione un departamento"
-            validar = false
-        }
-        if(state.tipo_gasto === ''){
-            error.tipo_gasto = "Seleccione el tipo de gasto"
-            validar = false
-        }
-        if(state.descripcion === ''){
-            error.descripcion = "Escriba una descripcion"
-            validar = false
-        }
-        if (state.presupuesto === '') {
-            error.presupuesto = "Seleccione un presupuesto"
-            validar = false
-        }
-        if (state.fecha === '' || state.fecha === null) {
-            error.fecha = "Seleccione una fecha"
-            validar = false
-        }
-        
-        setErrores(error)
-        return validar
-    }
-
     function formatDate(date) {
         var year = date.getFullYear();
-      
+
         var month = (1 + date.getMonth()).toString();
         month = month.length > 1 ? month : '0' + month;
-      
+    
         var day = date.getDate().toString();
         day = day.length > 1 ? day : '0' + day;
         
         return year + '/' + month + '/' + day;
-      }
+    }
+
+    const borrar = () => {
+        filtrarTabla('')   
+        borrarTabla(false)
+        handleClose()
+    }
 
     const enviar = () =>{
-        if(validateForm()){
+        // if(validateForm()){
+        if(true){
+
 
             Swal.fire({
                 title: 'Cargando...',
@@ -135,6 +108,7 @@ export default function NuevaRequisicion(props) {
                 dataForm.append(`files_name_requisicion[]`, 'requisicion01')
                 dataForm.append(`files_requisicion[]`, state.solicitud)
                 dataForm.append('adjuntos[]', "requisicion")
+
 
                 apiPostForm('requisicion', dataForm, user.access_token)
                     .then((data) => {
@@ -205,29 +179,11 @@ export default function NuevaRequisicion(props) {
         })
     }
 
-    const itemsPresupuesto = presupuestos.map((item, index) => ( item.id_area !== state.departamento ?
-        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-        : ''
-    ));
-
     return (
         <>
             <div className={Style.container}>
                 <div style={{marginLeft:'2.5rem'}}>
 
-                    <div>
-                        <TextField 
-                            className={Style.select}
-                            label="Solicitante"
-                            type="text"
-                            defaultValue={user.user.name}
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                            disabled
-                        />
-                    </div>
-                    
                     <div >
                         {departamentos.length > 0 ?
                             <>
@@ -237,7 +193,7 @@ export default function NuevaRequisicion(props) {
                                     value={state.departamento}
                                     name="departamento"
                                     onChange={handleChangeDepartamento}
-                                    disabled={user.user.tipo.id ==1 ? false : true}
+                                    // disabled={user.user.tipo.id ==1 ? false : true}
                                 >
                                     {departamentos.map((item, index) => (
                                         <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
@@ -258,7 +214,6 @@ export default function NuevaRequisicion(props) {
                                     value={state.tipo_gasto}
                                     name="tipo_gasto"
                                     onChange={handleChange}
-                                    error={errores.tipo_gasto ? true : false}
                                 >
                                     {departamentos.find(item => item.id_area == state.departamento).partidas.map((item, index) => (
                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -274,7 +229,7 @@ export default function NuevaRequisicion(props) {
 
                 <div className={Style.nuevaRequisicion_segundoBloque}>
                     <div className={Style.nuevaRequisicion}>
-                        {presupuestos.length > 0 && state.departamento !== '' ?
+                        {presupuestos.length > 0 ?
                             <>
                                 <InputLabel>Presupuesto</InputLabel>
                                 <Select
@@ -282,19 +237,11 @@ export default function NuevaRequisicion(props) {
                                     value={state.presupuesto}
                                     name="presupuesto"
                                     onChange={handleChange}
-                                    error={errores.presupuesto ? true : false}
                                 >
-                                    {
-                                    presupuestos.map((item, index) => ( 
-                                        item.rel.map((item2, index2) => (
-                                            item2.id_area == state.departamento ? 
-                                            <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                            : <></>
-                                        ))
-                                        
-                                    ))
-                                    }
-                                    {/* {itemsPresupuesto} */}
+                                    {presupuestos.map((item, index) => ( item.id_area == state.departamento ? 
+                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                        : <></>
+                                    ))}
                                 </Select>
                             </>
                             : null
@@ -334,34 +281,39 @@ export default function NuevaRequisicion(props) {
                                 shrink: true,
                             }}
                             multiline
-                            error={errores.descripcion ? true : false}
                         />
                     </div>
                 </div>
 
             </div>
 
-            <div>
-                <div className={Style.file}>
-                    {/* <p id='adjuntos'>Agregar archivos
-                        <input className='nuevaRequisicion_adjunto_input' type='file' onChange={handleFile}></input>
-                    </p> */}
+            <div style={{marginTop:'3rem'}}>
+                {/* <div className={Style.file}>
+                    
                     <label htmlFor="file">Seleccionar archivo(s)</label>
                     <input type="file" id='file' name="file" onChange={handleFile} />
                     <div>
                         {state.solicitud.name ? <div className='file-name'>{state.solicitud.name}</div> : null}
                     </div>
                     
-                </div>
+                </div> */}
 
                 <div className="row justify-content-end mt-n18" >
                     <div className="col-md-4">
+                        <button className={Style.borrarButton}  onClick={borrar}>Borrar</button>
+                    </div>
+
+                    <div className="col-md-3"></div>
+
+                    <div className="col-md-3">
                         <button className={Style.sendButton} onClick={enviar}>Agregar</button>
                     </div>
                 </div>
 
+                
             </div>
         </>
         
+
     );  
 }

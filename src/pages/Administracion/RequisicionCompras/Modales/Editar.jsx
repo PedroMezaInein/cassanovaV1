@@ -15,6 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import {  printResponseErrorAlert } from '../../../../functions/alert'
 
 import Swal from 'sweetalert2'
 
@@ -148,7 +149,9 @@ export default function Editar(props) {
                                         timer: 2000,
                                         timerProgressBar: true,
                                     })
-                                }, (error) => { }
+                                }, (error) => { 
+                                    printResponseErrorAlert(error)
+                                }
                             ).catch((error) => {
                                 Swal.close()
                                 Swal.fire({
@@ -250,8 +253,6 @@ export default function Editar(props) {
             }
         }
 
-        
-       
     }
 
     const validateForm = () => {
@@ -350,7 +351,6 @@ export default function Editar(props) {
             data.append(`files_requisicion[]`, file)
             data.append('adjuntos[]', "requisicion")
             data.append('tipo', 'Cotizaciones')
-
 
             try {
                 apiPostForm(`requisicion/${props.data.id}/archivos/s3`, data, auth.access_token)
@@ -651,12 +651,9 @@ export default function Editar(props) {
                     </div>
                 </div>
 
-                
-
             </div>
             <div>
                
-
                 <div className="row justify-content-end">
                     <div className="col-md-4">
                         <button className={Style.sendButton} onClick={handleSave}>Guardar</button>
@@ -664,7 +661,6 @@ export default function Editar(props) {
                 </div>   
             </div>
 
-            
         </>
         )
         

@@ -5,17 +5,16 @@ import Swal from 'sweetalert2'
 
 import NuevaNota from './NuevaNota'
 import VerNotaObra from './VerNotaObra'
-import VerBitacora from './VerBitacora'
 
-import { apiGet, apiPostForm, apiDelete } from '../../../../../functions/api';
+import { apiGet, apiDelete } from '../../../../../functions/api';
 import { Modal } from './../../../../../components/singles'
 import Table from './../../../../../components/NewTables/TablaGeneral/TablaGeneral'
 
+
 export default function Notas(props) { 
-    const { proyecto, reload, opciones } = props
+    const { proyecto, opciones } = props
     const auth = useSelector(state => state.authUser);
     const [reloadTable, setReloadTable] = useState()
-    console.log(proyecto)
 
     const [modal, setModal] = useState({
 
@@ -48,28 +47,11 @@ export default function Notas(props) {
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones', sort: false, stringSearch: false},
-        { nombre: 'fecha', identificador: 'fecha', sort: false, stringSearch: false},
+        { nombre: 'tema', identificador: 'tema', sort: false, stringSearch: false},
+        { nombre: 'hora', identificador: 'hora', sort: false, stringSearch: false},
         { nombre: 'tipo de nota', identificador: 'tipo_nota', sort: false, stringSearch: false},
         { nombre: 'Nota', identificador: 'nota', sort: false, stringSearch: false},
     ]
-
-    // const generarBitacoraAxios = async () => {
-    //     waitAlert()
-    //     const { at } = this.props
-    //     const { proyecto } = this.props
-    //     await axios.get(`${URL_DEV}v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, { headers: setSingleHeader(at) }).then(
-    //         (response) => {
-    //             const { refresh } = this.props
-    //             const { proyecto } = response.data
-    //             doneAlert('PDF GENERADO CON ÉXITO')
-    //             window.open(proyecto.bitacora, '_blank').focus();
-    //             refresh(proyecto.id)
-    //         }, (error) => { printResponseErrorAlert(error) }
-    //     ).catch((error) => {
-    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-    //         console.error(error, 'error')
-    //     })
-    // }
 
     const handleOpen = [
         {
@@ -84,8 +66,40 @@ export default function Notas(props) {
                 })
             }
         },
-        {
-            nombre: 'generar bitácora (pdf)',
+        // {
+        //     nombre: 'generar bitácora (pdf)',
+        //     icono: 'fas fa-trash',
+        //     color: 'redButton',
+        //     funcion: (item) => {
+        //         Swal.fire({
+        //             title: 'bitácora',
+        //             text: '¿Deseas generar bitácora?',
+        //             icon: 'question',
+        //             showCancelButton: true,
+        //             cancelButtonText: 'No',
+        //             confirmButtonText: 'Si',
+        //         }).then((result) => {
+        //             if (result.isConfirmed) {
+        //                 apiGet(`v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, auth.access_token)
+        //                 if (reloadTable) {
+        //                     reloadTable.reload()
+        //                 }
+
+        //                 handleClose()
+
+        //                 Swal.fire(
+        //                     'La bitácora se ha generado con éxito!',
+        //                     'success'
+        //                 )
+        //             }
+        //         });
+        //     }
+        // },
+    ]
+
+    if (notas.length >= 1) {
+        handleOpen.push({
+        nombre: 'generar bitácora (pdf)',
             icono: 'fas fa-trash',
             color: 'redButton',
             funcion: (item) => {
@@ -94,39 +108,35 @@ export default function Notas(props) {
                     text: '¿Deseas generar bitácora?',
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonText: 'Si',
                     cancelButtonText: 'No',
+                    confirmButtonText: 'Si',
                 }).then((result) => {
-                    apiGet(`v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, auth.access_token)
-                    if (reloadTable) {
-                        reloadTable.reload()
+                    if (result.isConfirmed) {
+                        apiGet(`v1/proyectos/nota-bitacora/pdf?proyecto=${proyecto.id}`, auth.access_token)
+                        if (reloadTable) {
+                            reloadTable.reload()
+                        }
+
+                        handleClose()
+
+                        Swal.fire(
+                            'La bitácora se ha generado con éxito!',
+                            'success'
+                        )
                     }
-
-                    handleClose()
-
-                    Swal.fire(
-                        'La bitácora se ha generado con éxito!',
-                        'success'
-                    )
                 });
             }
-        },
-    ]
+        })
+    }       
 
     if (proyecto.bitacora) {
         handleOpen.push({
             nombre: 'ver bitácora',
             funcion: (item) => {
-            setModal({
-                ...modal,
-                verBitacora: {
-                    show: true,
-                    data: item
-                }
-            })
+                window.open(proyecto.bitacora, '_blank');
             }
         });
-    }
+    }        
 
     let handleClose = (tipo) => () => {
         setModal({
@@ -165,20 +175,23 @@ export default function Notas(props) {
                         text: "¡No podrás revertir esto!",
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
+                        confirmButtonColor: '#3085d6',
                         confirmButtonText: '¡Sí, bórralo!'
                     }).then((result) => {
-                        apiDelete(`v1/proyectos/nota-bitacora/${item.id}?proyecto=${proyecto.id}`, auth.access_token)
-                        if (reloadTable) {
-                            reloadTable.reload()
-                        }
+                        if (result.isConfirmed) {
+                            apiDelete(`v1/proyectos/nota-bitacora/${item.id}?proyecto=${proyecto.id}`, auth.access_token)
+                            if (reloadTable) {
+                                reloadTable.reload()
+                            }
                             handleClose()
-                                Swal.fire(
-                                    '¡Eliminado!',
-                                    'El registro ha sido eliminado.',
-                                    'success'
-                                )
+                            getNotas()
+                            Swal.fire(
+                                '¡Eliminado!',
+                                'El registro ha sido eliminado.',
+                                'success'
+                            )
+                        }
                     })
                 }
             }, 
@@ -187,18 +200,19 @@ export default function Notas(props) {
     }
 
     const proccessData = (datos) => {
-        
         let aux = []
             datos.proyecto.notas.map((result) => {
                 aux.push(
                     {
                         acciones: acciones(),
-                        fecha: result.fecha,
-                        nota: result.notas,
-                        tipo_nota: result.tipo_nota,
-                        proveedor: result.proveedor.razon_social,
+                        hora: result.hora ? result.hora : 's/a' ,
+                        nota: result.notas ? result.notas : 's/a',
+                        tipo_nota: result.tipo_nota ? result.tipo_nota : 's/a',
+                        proveedor: result.proveedor.razon_social ? result.proveedor.razon_social : 's/a',
                         id: result.id,
-                        url: result.adjuntos.length > 0 ? result.adjuntos[0].url : ''
+                        url: result.adjuntos.length > 0 ? result.adjuntos[0].url : '',
+                        tema: result.tema ? result.tema : 's/a',
+                        num_personal: result.personas ? result.personas : 's/a',
                     }
                 )
             })
@@ -238,21 +252,11 @@ export default function Notas(props) {
             }
 
             <Modal size="lg" title={"Nueva nota"} show={modal.crear.show} handleClose={handleClose('crear')}>
-                <NuevaNota handleClose={handleClose('crear')} reload={reloadTable} opciones={opciones} proyecto={proyecto}/>
+                <NuevaNota handleClose={handleClose('crear')} reload={reloadTable} opciones={opciones} proyecto={proyecto} arrayNotas={notas}/>
             </Modal>
             <Modal size="lg" title={"ver nota"} show={modal.ver.show} handleClose={handleClose('ver')}>
                 <VerNotaObra data={modal.ver.data} verNotaObra={true}/>
             </Modal>
-            {
-                proyecto.bitacora ?
-                    <Modal size="lg" title={"bitácora"} show={modal.verBitacora.show} href={proyecto.bitacora} handleClose={handleClose('verBitacora')}>
-                        <VerBitacora handleClose={handleClose('verBitacora')} data={modal.ver.data} proyecto={proyecto}/>
-                    </Modal>
-                    // <Dropdown.Item className="text-hover-primary dropdown-primary" href={proyecto.bitacora} tag={Link} target='_blank' rel="noopener noreferrer">
-                    //     {setNaviIcon('las la-search icon-lg', 'VER PDF BITÁCORA DE OBRA')}
-                    // </Dropdown.Item>
-                    : <></>
-            }
         </>
         
     )

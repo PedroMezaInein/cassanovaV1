@@ -49,6 +49,8 @@ class Empleados extends Component {
             nss: '',
             nombre_emergencia: '',
             telefono_emergencia: '',
+            nombre_emergencia2: '',
+            telefono_emergencia2: '',
             banco: '',
             cuenta: '',
             clabe: '',
@@ -514,6 +516,12 @@ class Empleados extends Component {
                                 { 'name': 'Teléfono', 'text': colaborador.telefono_emergencia ? colaborador.telefono_emergencia : 'Sin definir' }
                             ],'120px', this.doubleClick, colaborador, 'nombre_emergencia'
                         ),
+                        nombre_emergencia2:setArrayTableReactDom(
+                            [
+                                { 'name': 'Nombre', 'text': colaborador.nombre_emergencia2 ? colaborador.nombre_emergencia2 : 'Sin definir' },
+                                { 'name': 'Teléfono', 'text': colaborador.telefono_emergencia2 ? colaborador.telefono_emergencia2 : 'Sin definir' }
+                            ],'120px', this.doubleClick, colaborador, 'nombre_emergencia2'
+                        ),
                         vacaciones_tomadas: setTextTableReactDom(colaborador.vacaciones_disponibles, this.doubleClick, colaborador, 'vacaciones_disponibles', 'text-center'),
                         id: colaborador.id
                     }
@@ -553,6 +561,12 @@ class Empleados extends Component {
                                 { 'name': 'Teléfono', 'text': colaborador.telefono_emergencia ? colaborador.telefono_emergencia : 'Sin definir' }
                             ],'120px', this.doubleClick, colaborador, 'nombre_emergencia'
                         ),
+                        nombre_emergencia2:setArrayTableReactDom(
+                            [
+                                { 'name': 'Nombre', 'text': colaborador.nombre_emergencia2 ? colaborador.nombre_emergencia2 : 'Sin definir' },
+                                { 'name': 'Teléfono', 'text': colaborador.telefono_emergencia2 ? colaborador.telefono_emergencia2 : 'Sin definir' }
+                            ],'120px', this.doubleClick, colaborador, 'nombre_emergencia2'
+                        ),
                         vacaciones_tomadas: setTextTableReactDom(colaborador.vacaciones_disponibles, this.doubleClick, colaborador, 'vacaciones_disponibles', 'text-center'),
                         id: colaborador.id
                     }
@@ -575,6 +589,10 @@ class Empleados extends Component {
             case 'nombre_emergencia':
                 form.nombre_emergencia = data.nombre_emergencia
                 form.telefono_emergencia = data.telefono_emergencia
+                break
+            case 'nombre_emergencia2':
+                form.nombre_emergencia2 = data.nombre_emergencia2
+                form.telefono_emergencia2 = data.telefono_emergencia2
                 break
             default:
                 form[tipo] = data[tipo]
@@ -601,6 +619,19 @@ class Empleados extends Component {
                         
                         <InputPhoneGray withicon={1} iconclass="fas fa-mobile-alt" name="telefono_emergencia" value={form.telefono_emergencia} 
                             onChange = { (e) => { this.onChangeSwal(e.target.value, 'telefono_emergencia')} }
+                            patterns={TEL} thousandseparator={false} prefix=''  swal = { true } 
+                        />
+                    </>
+                }
+                 {
+                    tipo === 'nombre_emergencia2' &&
+                    <>
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } placeholder="NOMBRE DEL CONTACTO DE EMERGENCIA 2"
+                            requirevalidation = { 0 }  value = { form.nombre_emergencia2 } name = { 'nombre_emergencia2' } letterCase = { false }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
+                        
+                        <InputPhoneGray withicon={1} iconclass="fas fa-mobile-alt" name="telefono_emergencia2" value={form.telefono_emergencia2} 
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'telefono_emergencia2')} }
                             patterns={TEL} thousandseparator={false} prefix=''  swal = { true } 
                         />
                     </>
@@ -855,6 +886,9 @@ class Empleados extends Component {
             break
             case 'nombre_emergencia':
                 value = { nombre: form.nombre_emergencia, telefono: form.telefono_emergencia }
+            break;
+            case 'nombre_emergencia2':
+                value = { nombre: form.nombre_emergencia2, telefono: form.telefono_emergencia2 }
             break;
             default:
                 value = form[tipo]
@@ -1249,11 +1283,26 @@ class Empleados extends Component {
     render() {
         const { modal, form, key, adjuntos, data, empleado, formContrato, formeditado } = this.state
         const { access_token, departamento } = this.props.authUser
+
         return (
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey={localStorage.getItem('activeKeyTabColaboradores')} activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     {
-                        <Tab eventKey="administrativo" title="Administrativo">                
+                        departamento.departamentos[0].nombre !== "COMPRAS" &&
+                        <Tab eventKey="administrativo" title="Administrativo">
+                    {/* <NewTable
+                    columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
+                            subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
+                            url = '/rh/colaboradores/add'
+                            mostrar_acciones = { true }
+                            exportar_boton = { true }
+                            onClickExport = { () => this.exportRHAxios() }
+                            actions = {  () => this.setEmpleados() }
+                            accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado }
+                            urlRender = { `${URL_DEV}v2/rh/empleados?type=admin` } idTable = 'empleados_admin_table'
+                            cardTable = 'cardTable_admin' cardTableHeader = 'cardTableHeader_admin'
+                            cardBody = 'cardBody_admin' isTab = { true } 
+                     /> */}
                         <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
                             subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
                             url = '/rh/colaboradores/add' mostrar_acciones = { true } exportar_boton = { true }

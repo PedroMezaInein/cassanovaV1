@@ -359,7 +359,7 @@ class DevolucionesForm extends Component {
                                             required
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    {/* <div className="col-md-4">
                                         <Select 
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -372,7 +372,7 @@ class DevolucionesForm extends Component {
                                             required
                                             iconclass={"flaticon2-time"}
                                         />
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
