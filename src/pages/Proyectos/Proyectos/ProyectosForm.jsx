@@ -36,7 +36,7 @@ class ProyectosForm extends Component {
             fechaInicio: new Date(),
             fechaFin: new Date(),
             estatus:'',
-            fase1: false,
+            fase1: true,
             fase2: false,
             fase3: false,
             fase1_relacionado: false,
@@ -47,7 +47,7 @@ class ProyectosForm extends Component {
             semana: '',
             nombre: '',
             cliente: '',
-            contacto: '',
+            contacto: 'Cassanova',
             numeroContacto: '',
             empresa: '',
             cp: '',
@@ -64,7 +64,7 @@ class ProyectosForm extends Component {
             tipoProyecto:'',
             ciudad: '',
             sucursal: '',
-            m2:'',
+            m2:'0',
             costo: 0.0,
             adjuntos: {
                 image: {
