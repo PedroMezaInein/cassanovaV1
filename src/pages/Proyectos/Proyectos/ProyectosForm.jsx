@@ -677,10 +677,11 @@ class ProyectosForm extends Component {
             (response) => {
                 const { proyecto } = response.data
                 const { history } = this.props
-                createAlertSA2WithClose(
-                    '¡FELICIDADES CREASTE EL PROYECTO!', '¿DESEAS CREAR LA CAJA CHICA?',
-                    () => this.addCajaChicaAxios(proyecto), history, '/proyectos/proyectos'
-                )
+                history.push({ pathname: '/proyectos/proyectos' });
+                // createAlertSA2WithClose(
+                //     '¡FELICIDADES CREASTE EL PROYECTO!', '¿DESEAS CREAR LA CAJA CHICA?',
+                //     () => this.addCajaChicaAxios(proyecto), history, '/proyectos/proyectos'
+                // )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -764,10 +765,12 @@ class ProyectosForm extends Component {
             (response) => {
                 const { proyecto } = response.data
                 const { history } = this.props
-                createAlertSA2WithClose(
-                    '¡FELICIDADES CREASTE EL PROYECTO!', '¿DESEAS CREAR LA CAJA CHICA?',
-                    () => this.addCajaChicaAxios(proyecto), history, '/proyectos/proyectos'
-                )
+                history.push({ pathname: '/proyectos/proyectos' });
+
+                // createAlertSA2WithClose(
+                //     '¡FELICIDADES CREASTE EL PROYECTO!', '¿DESEAS CREAR LA CAJA CHICA?',
+                //     () => this.addCajaChicaAxios(proyecto), history, '/proyectos/proyectos'
+                // )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

@@ -882,12 +882,12 @@ class VentasFormulario extends Component {
                                     withicon = { 1 } iconclass = "far fa-folder-open" messageinc = "Incorrecto. Selecciona el proyecto" 
                                     formeditado = { formeditado }/>
                             </div>
-                            <div className="col-md-4">
+                            {/* <div className="col-md-4">
                                 <SelectSearchGrayTrue options = { options.tickets } placeholder = 'Selecciona el ticket' 
                                     value = { form.tickets } onChange = { (value) => { this.updateSelect(value, 'tickets') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "fas fa-file-signature" 
                                     formeditado = { formeditado } requirevalidation = { 0 }/>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="d-flex justify-content-between border-top mt-3 pt-3">
                             <div className="mr-2"></div>
@@ -1063,12 +1063,12 @@ class VentasFormulario extends Component {
                                     name = "total" value = { form.total } onChange = { this.onChange } placeholder = "MONTO" 
                                     iconclass = 'fas fa-money-check-alt' messageinc = "Incorrecto. ingresa el monto de la venta" />
                             </div>
-                            <div className="col-md-4">
+                            {/* <div className="col-md-4">
                                 <SelectSearchGrayTrue options = { options.contratos } placeholder = 'Selecciona el contrato' 
                                     value = { form.contrato } onChange = { (value) => { this.updateSelect(value, 'contrato') } } 
                                     withtaglabel = { 1 } withtextlabel = { 1 } withicon = { 1 } iconclass = "fas fa-file-signature" 
                                     formeditado = { formeditado } requirevalidation = { 0 }/>
-                            </div>
+                            </div> */}
                             {
                                 type !== 'edit' ?
                                     <div className="col-md-12">
