@@ -12,6 +12,9 @@ import Ver from './Modales/VerEgreso'
 import Filtrar from './Modales/Filtrar'
 import FacturaExtranjera from './Modales/FacturaExtranjera'
 import Facturas from './Modales/Facturas'
+import DoneAllIcon from '@material-ui/icons/DoneAll';
+import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
+
 import { setMoneyTable, setDateTable } from '../../../functions/setters'
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 import StatusIndicatorGastos from './Modales/StatusIndicatorGastos'
@@ -195,7 +198,7 @@ export default function EgresosTable(props) {
         { nombre: 'ID', identificador: 'id', stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', stringSearch: false },
         { nombre: 'Proveedor', identificador: 'proveedor', stringSearch: false },
-        { nombre: 'Factura', identificador: 'factura', stringSearch: false },
+        { nombre: 'Factura', identificador: 'factura', orderable: false },
         { nombre: 'Área', identificador: 'area', stringSearch: false },
         { nombre: 'Sub-Área', identificador: 'subarea', stringSearch: false },
         { nombre: 'Monto', identificador: 'monto', stringSearch: false },
@@ -389,7 +392,8 @@ export default function EgresosTable(props) {
                 pago: dato.tipo_pago?.tipo,
                 impuesto: dato.tipo_impuesto?.tipo,
                 descripcion: dato.descripcion,
-                factura: dato.factura ? 'Con factura' : 'Sin factura',
+                // factura: dato.factura ? 'Con factura' : 'Sin factura',
+                factura:label(dato),
                 semaforo: createStatusIndicator(dato),
                 id_requisicion: dato.id_requisiciones ? dato.id_requisiciones : 's/n',
             })
@@ -397,6 +401,26 @@ export default function EgresosTable(props) {
         )
         return aux
     }
+
+    const label = (dato) => {  
+       
+        return(
+          
+            <div   title={`${ dato.factura == 1 ? 'Con factura': 'Sin factura'}`}  >
+            {
+                  dato.factura ?
+                  dato.facturas.length > 0 ?
+                    <span   style={{ color: 'green' }}><DoneAllIcon/></span>
+                    :
+                    <span   style={{ color: 'red' }}><DoneAllIcon/></span>
+
+                : 
+                <span><DescriptionOutlinedIcon/></span>
+            }
+          </div>
+        )
+    
+}
 
     function reformatDate(dateStr) {
         var dArr = dateStr.split("-");  // ex input: "2010-01-18"
