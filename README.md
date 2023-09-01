@@ -8,7 +8,6 @@ Proyecto desarrollado con `React Js`
 
 ## Instalación
 
-Descargar el repositorio en [Github](https://github.com/OmarAbaroa/reactjs-app1)
 
 > git clone git@github.com:OmarAbaroa/reactjs-app1.git
 
