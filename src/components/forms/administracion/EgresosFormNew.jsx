@@ -19,7 +19,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import SelectMUI from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
-
 class EgresosFormNew extends Component {
 
     state = {
@@ -662,7 +661,7 @@ class EgresosFormNew extends Component {
                             // Adjunto un XML
                             if (Object.keys(form.facturaObject).length > 0) {
                                 if (form.facturaItem) {
-                                    debugger
+                                    // debugger
                                     //Tiene una factura guardada
                                     this.attachFactura()
                                 } else {

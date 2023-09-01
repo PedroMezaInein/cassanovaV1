@@ -4,6 +4,11 @@ import { Form } from 'react-bootstrap'
 import { RFC, DATE } from '../../../constants'
 import {openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
+import InputLabel from '@material-ui/core/InputLabel';
+import SelectMUI from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import { setOptions } from './../../../functions/setters'
+
 class DevolucionesForm extends Component {
     
     updateProyecto = value => {
@@ -100,8 +105,15 @@ class DevolucionesForm extends Component {
         onChange(e)
     }
 
+    handleChangeArea = (e) => {
+        this.updateSelect(`${e.target.value}`, e.target.name)
+    }
+
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, sendFactura, formeditado, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, sendFactura, formeditado, comprasArray, ...props } = this.props
+        console.log(form)
+        console.log(options)
+        console.log(comprasArray)
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -272,6 +284,7 @@ class DevolucionesForm extends Component {
                                             patterns={DATE}
                                         />
                                     </div>
+
                                     <div className={form.area.length ?'col-md-4':'col-md-6'}>
                                         <SelectSearch 
                                             formeditado={formeditado}
@@ -284,6 +297,7 @@ class DevolucionesForm extends Component {
                                             messageinc="Incorrecto. Selecciona el área"
                                         />
                                     </div>
+                              
                                     {
                                         form.area ?
                                             <div className="col-md-4">
@@ -484,3 +498,394 @@ class DevolucionesForm extends Component {
 }
 
 export default DevolucionesForm
+
+// import React, { useState, useEffect } from 'react';
+// import { useSelector } from 'react-redux';
+
+// import InputLabel from '@material-ui/core/InputLabel';
+// import Autocomplete from '@material-ui/lab/Autocomplete';
+// import TextField from '@material-ui/core/TextField';
+// import Select from '@material-ui/core/Select';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import Accordion from '@material-ui/core/Accordion';
+// import AccordionDetails from '@material-ui/core/AccordionDetails';
+// import AccordionSummary from '@material-ui/core/AccordionSummary';
+// import Typography from '@material-ui/core/Typography';
+// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+// import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+// import Grid from '@material-ui/core/Grid';
+// import { es } from 'date-fns/locale'
+// import DateFnsUtils from '@date-io/date-fns';
+// import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+// import FormGroup from '@material-ui/core/FormGroup';
+// import Swal from 'sweetalert2'
+
+// import { apiOptions } from './../../../functions/api'
+
+// export default function CrearDevoluciones (props) {
+//     const { options } = props
+//     console.log(options)
+//     const auth = useSelector((state) => state.authUser.access_token);
+//     const departamentos = useSelector(state => state.opciones.compras)
+
+//     const [form, setForm] = useState({
+//         proveedor: '',
+//         proyecto: '',
+//         empresa: '',
+//         area: '',
+//         partida: '',
+//         subarea: '',
+//         descripcion: '',
+//         tiposImpuestos: '',
+//         tipoPago: '',
+//         monto: '',
+//         comision: '',
+//     })
+//     console.log(form)
+//     console.log(options)
+
+//     const handleChangeOpciones = (e, value, fieldName) => {
+//         if (value && value.name) {
+//             setForm({
+//                 ...form,
+//                 [fieldName]: value.data.id,
+//                 [fieldName + '_nombre']: value.name,
+//             });
+//         } else if (value === null) {
+//             setForm({
+//                 ...form,
+//                 [fieldName]: null,
+//                 [fieldName + '_nombre']: null,
+//             });
+//         }
+//     }
+
+//     const handleChangeInt = (e) => {
+//         const name = e.target.name;
+//         const value = e.target.value;
+    
+//         setForm({
+//             ...form,
+//             [name]: parseInt(value), // Convertir el valor a entero aquí
+//         })
+//     }
+
+//     const handleChangeFecha = (date, tipo) => {
+//         setForm({
+//             ...form,
+//             [tipo]: new Date(date)
+//         })
+//     };
+
+//     const handleChangeAreas=(e)=>{
+//         const name = e.target.name;
+//         const value = e.target.value;
+
+//         setForm({
+//             ...form,
+//             [name]: parseInt(value),
+//             // [e.target.name]:e.target.value,
+//             partida: '',
+//             // subarea: ''
+//         })
+//     }
+
+//     const handleChange=(e)=>{
+//         const name = e.target.name;
+//         const value = e.target.value;
+
+//         setForm({
+//             ...form,
+//             [name]: value,
+//         })
+//     }
+
+//     const handleChangePagos = (e, value, fieldName) => {
+//         if (value && value.name) {
+//             setForm({
+//                 ...form,
+//                 [fieldName]: value.value,
+//                 [fieldName + '_nombre']: value.name,
+//             });
+//         } else if (value === null) {
+//             setForm({
+//                 ...form,
+//                 [fieldName]: null,
+//                 [fieldName + '_nombre']: null,
+//             });
+//         }
+//     }
+
+//     const handleChangeMonto = (e) => {
+//         setForm({
+//             ...form,
+//             monto: e,
+//         })
+//     }
+
+//     const handleChangeComision = (e) => {
+//         setForm({
+//             ...form,
+//             comision: e,
+//         })
+//     }
+
+//     return (
+//         <>
+//             <Accordion defaultExpanded className='proyect-accordion'>
+//                 <AccordionSummary
+//                         expandIcon={<ExpandMoreIcon />}
+//                     >
+//                         <Typography className='proyect-Subtitulo'>DATOS DE LA FACTURA</Typography>
+//                 </AccordionSummary>
+
+//                 <AccordionDetails> 
+
+//                     <div>
+//                         {options.proveedores ? (
+//                             <div>
+//                             <InputLabel>Proveedor</InputLabel>
+//                             <Autocomplete
+//                                 name="proveedor"
+//                                 options={options.proveedores}
+//                                 getOptionLabel={(option) => option.name}
+//                                 style={{ width: 230, paddingRight: '1rem' }}
+//                                 onChange={(event, value) => handleChangeOpciones(event, value, 'proveedor')}
+//                                 renderInput={(params) => (
+//                                 <TextField
+//                                     {...params}
+//                                     variant="outlined"
+//                                     label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'}
+//                                 />
+//                                 )}
+//                             />
+//                             </div>
+//                         ) : (
+//                             <></>
+//                         )}
+//                     </div>
+
+//                     <div>
+//                         {
+//                             options.proyectos ?
+//                                 <div> 
+//                                     <InputLabel>proyecto</InputLabel>
+//                                     <Autocomplete
+//                                         name="proyecto"
+//                                         options={options.proyectos}
+//                                         getOptionLabel={(option) => option.name}
+//                                         style={{ width: 230, paddingRight: '1rem' }}
+//                                         onChange={(event, value) => handleChangeOpciones(event, value, 'proyecto')}
+//                                         renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proyecto_nombre ? form.proyecto_nombre : 'proyecto'} />}
+//                                     />
+//                                 </div>    
+//                             : <></>
+//                         }
+//                     </div>  
+
+//                     <div>
+//                         {
+//                             options.empresas ?
+//                                 <div>
+//                                     <InputLabel>Empresa</InputLabel>
+//                                     <Select
+//                                         name="empresa"
+//                                         value={form.empresa}
+//                                         onChange={handleChangeInt}
+//                                         style={{ width: 200, paddingRight: '1rem' }}
+//                                     >
+//                                         {
+//                                             options.empresas.map((item, index) => (
+//                                                 <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
+//                                             ))
+//                                         }
+//                                     </Select>
+//                                 </div>
+//                             : null
+//                         }
+//                     </div>  
+//                 </AccordionDetails>
+//             </Accordion>
+
+//             <Accordion defaultExpanded className='proyect-accordion'>
+//                 <AccordionSummary
+//                         expandIcon={<ExpandMoreIcon />}
+//                     >
+//                         <Typography className='proyect-Subtitulo'>DATOS DE LA FACTURA</Typography>
+//                 </AccordionSummary>
+
+//                 <AccordionDetails> 
+//                     <div>
+//                         <InputLabel >Fecha de la compra</InputLabel>
+//                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+//                             <Grid container >
+//                                 <KeyboardDatePicker
+
+//                                     format="dd/MM/yyyy"
+//                                     name="fecha"
+//                                     value={form.fecha !== '' ? form.fecha : null}
+//                                     placeholder="dd/mm/yyyy"
+//                                     onChange={e => handleChangeFecha(e, 'fecha')} 
+//                                     KeyboardButtonProps={{
+//                                         'aria-label': 'change date',
+//                                     }}
+//                                     // error={errores.fecha ? true : false}
+//                                 />
+//                             </Grid>
+//                         </MuiPickersUtilsProvider>
+//                     </div>    
+
+//                     <div>
+//                         {departamentos.length > 0 ?
+//                             <>
+//                                 <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
+//                                 <Select
+//                                     value={form.area}
+//                                     name="area"
+//                                     onChange={handleChangeAreas}
+//                                     style={{ width: 230, marginRight: '1rem' }}
+//                                     // error={errores.area ? true : false}
+//                                 >
+//                                     {departamentos.map((item, index) => (
+//                                         <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+//                                     ))}
+
+//                                 </Select>
+//                             </>
+//                             : null
+//                         }
+
+//                     </div>
+
+//                     <div>
+//                         {departamentos.length > 0 && form.area !== '' ?
+//                             <>
+//                                 <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
+//                                 <Select
+//                                     value={form.partida}
+//                                     name="partida"
+//                                     onChange={handleChangeInt}
+//                                     style={{ width: 230, marginRight: '1rem' }}
+//                                     // error={errores.partida ? true : false}
+//                                 >
+//                                     {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
+//                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+//                                     ))}
+
+//                                 </Select>
+//                             </>
+//                             : null
+//                         }
+//                     </div>
+
+//                     <div>
+//                         {departamentos.length && form.partida !== '' ?
+//                             <>
+//                                 <InputLabel id="demo-simple-select-label">Tipo de Subgasto</InputLabel>
+//                                 <Select
+//                                     name="subarea"
+//                                     onChange={handleChangeInt}
+//                                     value={form.subarea}
+//                                     style={{ width: 230, marginRight: '1rem' }}
+//                                     // error={errores.subarea ? true : false}
+//                                 >
+//                                     {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
+//                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+//                                     ))}
+
+//                                 </Select>
+//                             </>
+//                             : null
+//                         }
+//                     </div>  
+
+//                     <div style={{marginTop: '1rem'}}>
+//                         <TextField
+//                             name='descripcion'
+//                             label="Descripción"
+//                             type="text"
+//                             defaultValue={form.descripcion}
+//                             onChange={handleChange}
+//                             InputLabelProps={{
+//                                 shrink: true,
+//                             }}
+//                             multiline
+//                             style={{ width: '150px', height: 100 }}
+//                             // error={errores.descripcion ? true : false}
+//                         />
+//                     </div>
+//                 </AccordionDetails>
+//             </Accordion>
+
+//             <Accordion defaultExpanded className='proyect-accordion'>
+//                 <AccordionSummary
+//                         expandIcon={<ExpandMoreIcon />}
+//                     >
+//                         <Typography className='proyect-Subtitulo'>DATOS DE LA FACTURA</Typography>
+//                 </AccordionSummary>
+
+//                 <AccordionDetails> 
+//                     <div>
+//                         {
+//                             options.tiposImpuestos ?
+//                             <div>    
+//                                 <InputLabel>Tipo de impuesto</InputLabel>
+//                                 <Autocomplete
+//                                     name="tiposImpuestos"
+//                                     options={options.tiposImpuestos}
+//                                     getOptionLabel={(option) => option.name}
+//                                     style={{ width: 230, paddingRight: '1rem' }}
+//                                     onChange={(event, value) => handleChangePagos(event, value, 'tiposImpuestos')}
+//                                     // onChange={(event, value) => handleChangeImpuestos(event, value)}
+//                                     renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.impuesto_nombre ? form.impuesto_nombre : 'tiposImpuestos'} />}                            
+//                                 />
+//                             </div>    
+//                                 : <></>
+//                         }
+//                     </div>
+
+//                     <div>
+//                         {
+//                             options.tiposImpuestos ?
+//                             <div>    
+//                                 <InputLabel>Tipo de pago</InputLabel>
+//                                 <Autocomplete
+//                                     name="tipoPago"
+//                                     options={options.tiposPagos}
+//                                     getOptionLabel={(option) => option.name}
+//                                     style={{ width: 230, paddingRight: '1rem' }}
+//                                     onChange={(event, value) => handleChangePagos(event, value, 'tipoPago')}
+//                                     renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.impuesto_nombre ? form.impuesto_nombre : 'tipoPago'} />}                            
+//                                 />
+//                             </div>    
+//                                 : <></>
+//                         }
+//                     </div>
+
+//                     <div>
+//                         <CurrencyTextField
+//                             label="monto"
+//                             variant="standard"
+//                             value={form.monto} 
+//                             currencySymbol="$"
+//                             outputFormat="number"
+//                             onChange={(event, value) => handleChangeMonto(value)} 
+                            
+//                             // error={errores.monto ? true : false}
+//                         />
+//                     </div>
+//                     <div>
+//                         <CurrencyTextField
+//                             label="comision"
+//                             variant="standard"
+//                             value={form.comision} 
+//                             currencySymbol="$"
+//                             outputFormat="number"
+//                             onChange={(event, value) => handleChangeComision(value)} 
+//                         />
+//                     </div>
+//                 </AccordionDetails>
+//             </Accordion>
+//         </>
+//     )
+// }

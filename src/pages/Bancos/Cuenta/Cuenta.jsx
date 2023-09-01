@@ -178,6 +178,7 @@ class Cuenta extends Component {
                 nombre: renderToString(setTextTableCenter(cuenta.nombre, '180px')),
                 numero: renderToString(setTextTable(cuenta.numero)),
                 balance: renderToString(setMoneyTable(cuenta.balance)),
+                global: renderToString(setMoneyTable(cuenta.balance2)),                
                 descripcion: setTextTableReactDom(cuenta.descripcion !== null ? cuenta.descripcion :'', this.doubleClick, cuenta, 'descripcion', 'text-justify'),
                 banco: renderToString(setTextTableCenter(cuenta.banco ? cuenta.banco.nombre : '')),
                 tipo: renderToString(setTextTableCenter(cuenta.tipo ? cuenta.tipo.tipo : '')),

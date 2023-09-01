@@ -19,7 +19,8 @@ import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import TablaGeneralPaginado from './../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 import Swal from 'sweetalert2'
 
-import { apiOptions, catchErrors, apiDelete } from './../../../functions/api';
+import { apiOptions, catchErrors, apiDelete, apiPostFormResponseBlob } from './../../../functions/api';
+import { printResponseErrorAlert, doneAlert } from './../../../functions/alert';
 
 export default function ComprasTable() { 
     const auth = useSelector((state) => state.authUser.access_token);
@@ -193,6 +194,32 @@ export default function ComprasTable() {
     //     });
     // } 
 
+    const  exportEgresosAxios = () => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Descargar compra',
+            text: 'Exportando compras espere...',
+            showConfirmButton: false,
+            timer: 4000
+        })
+        
+        apiPostFormResponseBlob(`v3/proyectos/compra/exportar`,{ columnas: [] },  auth).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'compras.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(
+                    response.data.message !== undefined ? 
+                        response.data.message 
+                    : 'compras exportadas con éxito.'
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => { catchErrors(error) })
+    }
+
     const opciones = [
         {
             nombre: <div><i className="fas fa-plus mr-5"></i><span>Nuevo</span></div>,
@@ -205,6 +232,14 @@ export default function ComprasTable() {
             nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
             funcion: (item) => {
                 openModal('filtrar', item)
+            }
+        },
+        {
+            //exportar
+            nombre: <div><i className="fas fa-file-export mr-5"></i><span>Exportar</span></div>,
+            funcion: (item) => {
+                exportEgresosAxios(item.id)
+
             }
         },
     ]
@@ -316,7 +351,7 @@ export default function ComprasTable() {
                 Swal.close()
                 setOpcionesData(aux)
                 // setProveedoresData(aux);
-  
+
             }
         )
     }
@@ -343,8 +378,7 @@ export default function ComprasTable() {
                 impuesto: dato.tipo_impuesto.tipo ? dato.tipo_impuesto.tipo : 's/i',
                 descripcion: dato.descripcion ? dato.descripcion : 's/i',
                 // factura: dato.factura ? 'Con factura' : 'Sin factura',
-                factura:label(dato),
-                
+                factura:label(dato),  
             })
         }
         )
@@ -352,23 +386,18 @@ export default function ComprasTable() {
     }
 
     const label = (dato) => {  
-       
-            return(
-              
-                <div   title={`${ dato.factura == 1 ? 'Con factura': 'Sin factura'}`}  >
+        return(
+    
+            <div   title={`${ dato.factura == 1 ? 'Con factura': 'Sin factura'}`}  >
                 {
-                      dato.factura ?
-                      dato.facturas.length > 0 ?
-                        <span   style={{ color: 'green' }}><DoneAllIcon/></span>
-                        :
-                        <span   style={{ color: 'red' }}><DoneAllIcon/></span>
-
-                    : 
-                    <span><DescriptionOutlinedIcon/></span>
+                    dato.factura ?
+                        dato.facturas.length > 0 ?
+                            <span   style={{ color: 'green' }}><DoneAllIcon/></span>
+                        : <span   style={{ color: 'red' }}><DoneAllIcon/></span>
+                    : <span><DescriptionOutlinedIcon/></span>
                 }
-              </div>
-            )
-        
+            </div>
+        )
     }
 
     return (
@@ -388,7 +417,7 @@ export default function ComprasTable() {
             />
 
             <Modal size="lg" title={"Nueva compra"} show={modal.crear?.show} handleClose={e => handleClose('crear')} >
-                <CrearCompras handleClose={e => handleClose('crear')} reload={reloadTable} opcionesData={opcionesData}/> 
+                <CrearCompras handleClose={e => handleClose('crear')} reload={reloadTable} opcionesData={opcionesData} getProveedores={getProveedores}/> 
             </Modal>
 
             {

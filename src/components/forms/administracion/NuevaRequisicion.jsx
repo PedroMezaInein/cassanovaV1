@@ -22,6 +22,7 @@ export default function NuevaRequisicion(props) {
     const departamento = useSelector(state => state.authUser.departamento)
     const departamentos = useSelector(state => state.opciones.areas)
     const presupuestos = useSelector(state => state.opciones.presupuestos)
+
     const [state, setState] = useState({
         solicitante: user.user.id,
         fecha:'',
@@ -197,13 +198,26 @@ export default function NuevaRequisicion(props) {
         }
     }
 
-    const handleChangeDepartamento = (e) => {
+    const handleChangeDepartamento = (event) => {
+        let name = event.target.name; // aquí declaro en que componente realizaré el cambio, extrayendo el nombre dinámico de este, ya sea de un imput, un select etc
+        let value = parseInt(event.target.value, 10); // Aquí almaceno el valor ingresado convirtiendólo a entero
         setState({
             ...state,
-            [e.target.name]: e.target.value,
+            [name]: value, //Aquí asigno el nombre con el valor, por ejemplo si cambio de departamento digo que [departamento] : 82
             tipo_gasto: null,
-        })
-    }
+
+        });
+    };
+    
+    
+
+    // const handleChangeDepartamento = (e) => {
+    //     setState({
+    //         ...state,
+    //         [e.target.name]: e.target.value,
+    //         tipo_gasto: null,
+    //     })
+    // }
 
     const itemsPresupuesto = presupuestos.map((item, index) => ( item.id_area !== state.departamento ?
         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -274,6 +288,33 @@ export default function NuevaRequisicion(props) {
 
                 <div className={Style.nuevaRequisicion_segundoBloque}>
                     <div className={Style.nuevaRequisicion}>
+                        {presupuestos.length > 0 && state.departamento !== '' ? (
+                            <>
+                                <InputLabel>Presupuesto</InputLabel>
+                                <Select
+                                    className={Style.select}
+                                    value={state.presupuesto}
+                                    name="presupuesto"
+                                    onChange={handleChange}
+                                    error={errores.presupuesto ? true : false}
+                                >
+                                {
+                                    presupuestos
+                                        .filter(presupuesto => presupuesto.rel.some(item => item.id_area === state.departamento))
+                                        .map((presupuesto, index) => (
+                                            // Usamos map solo para los objetos que pasaron el filtro anterior
+                                            <MenuItem key={index} value={presupuesto.id}>
+                                                {presupuesto.nombre}
+                                            </MenuItem>
+                                        ))
+                                }
+                                </Select>
+                            </>
+                        ) : null}
+                    </div>
+
+
+                    {/* <div className={Style.nuevaRequisicion}>
                         {presupuestos.length > 0 && state.departamento !== '' ?
                             <>
                                 <InputLabel>Presupuesto</InputLabel>
@@ -284,6 +325,14 @@ export default function NuevaRequisicion(props) {
                                     onChange={handleChange}
                                     error={errores.presupuesto ? true : false}
                                 >
+                                {
+                                    presupuestos.map((item, index) => (
+                                        item.filter(item.rel.some(item2 => item2.id_area == state.departamento ? 
+                                            <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                        ))
+                                    ))
+                                }
+                                    
                                     {
                                     presupuestos.map((item, index) => ( 
                                         item.rel.map((item2, index2) => (
@@ -294,13 +343,17 @@ export default function NuevaRequisicion(props) {
                                         
                                     ))
                                     }
-                                    {/* {itemsPresupuesto} */}
+                                 
                                 </Select>
                             </>
                             : null
                         }
-                    </div>
-                    
+                    </div> */}
+                       {/* {presupuestos.map((item, index) => ( item.id_area == state.departamento ? 
+                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                        : <></>
+                                    ))} */}
+                                    {/* {itemsPresupuesto} */}
                     <div className={Style.nuevaRequisicion}>
                         <InputLabel error={errores.fecha ?true: false}>Fecha</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>

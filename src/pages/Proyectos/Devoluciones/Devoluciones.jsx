@@ -19,6 +19,7 @@ import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import $ from "jquery";
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import DevolucionesTable from './DevolucionesTable'
 class Devoluciones extends Component {
     state = {
         // modal: false,
@@ -1095,10 +1096,20 @@ class Devoluciones extends Component {
 
     render() {
         const {modalDelete, modalFacturas, modalAdjuntos, form, options, facturas, devolucion, modalSee, modalFacturaExtranjera } = this.state
+        const {comprasArray} = this.props
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTableServerRender columns = { DEVOLUCIONES_COLUMNS } title = 'Devoluciones' subtitle = 'Listado de devoluciones' url = '/proyectos/devoluciones/add'
-                    mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'devoluciones' exportar_boton = { true }
+                {/* <NewTableServerRender 
+                    columns = { DEVOLUCIONES_COLUMNS } 
+                    options={options} 
+                    title = 'Devoluciones' 
+                    subtitle = 'Listado de devoluciones' 
+                    url = '/proyectos/devoluciones/add'
+                    mostrar_boton = { true } 
+                    abrir_modal = { false } 
+                    mostrar_acciones = { true } 
+                    idTable = 'devoluciones' 
+                    exportar_boton = { true }
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
@@ -1107,9 +1118,18 @@ class Devoluciones extends Component {
                         'see': { function: this.openModalSee },
                         'facturaExtranjera': { function: this.openFacturaExtranjera}
                     }}
-                    onClickExport = { () => this.exportDevolucionesAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setDevoluciones }
-                    urlRender = { `${URL_DEV}v1/proyectos/devoluciones`} validateFactura = { true } tipo_validacion = 'devoluciones' cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+                    onClickExport = { () => this.exportDevolucionesAxios() } 
+                    accessToken = { this.props.authUser.access_token } 
+                    setter = { this.setDevoluciones }
+                    urlRender = { `${URL_DEV}v1/proyectos/devoluciones`} 
+                    validateFactura = { true } 
+                    tipo_validacion = 'devoluciones' 
+                    cardTable = 'cardTable'
+                    cardTableHeader = 'cardTableHeader' 
+                    cardBody = 'cardBody' 
+                /> */}
+                <DevolucionesTable options={options}/>
+                
                 <ModalDelete title = "¿Estás seguro que deseas eliminar la devolución?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
                     onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteDevolucionAxios() }} />
                 <Modal size = "xl" title = "Facturas" show = { modalFacturas } handleClose = { this.handleCloseFacturas } >
@@ -1167,7 +1187,7 @@ class Devoluciones extends Component {
     }
 }
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapStateToProps = state => { return { authUser: state.authUser, comprasArray: state.opciones.compras} }
 const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Devoluciones);

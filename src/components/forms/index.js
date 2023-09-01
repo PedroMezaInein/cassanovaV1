@@ -15,6 +15,8 @@ import egresosForm from './administracion/EgresosForm'
 import proveedorForm from './administracion/ProveedorForm'
 import contratoForm from './administracion/ContratoForm'
 import generadorcontratoForm from './proyectos/ContratoForm'
+// STICKY
+import BuscarLead from '../forms/paginaWeb/stickyOptions/BuscarLead'
 
 import areasForm from './catalogos/AreaForm'
 import servicioForm from './catalogos/ServicioForm'
@@ -166,6 +168,34 @@ import PagoImpuestosForm from './recursoshumanos/PagoImpuestosForm'
 import repseForm from './recursoshumanos/RepseForm'
 import RepseFormulario from './recursoshumanos/RepseFormulario'
 
+///crm
+
+// INFO
+import AgendarCitaForm from '../forms/info/AgendarCitaForm'
+import CotizacionesDiseño from '../forms/info/CotizacionesDiseño'
+import PresupuestoDiseñoCRMForm from '../forms/info/PresupuestoDiseñoCRMForm'
+import HistorialCotizacionesDiseño from '../forms/info/HistorialCotizacionesDiseño'
+import FilterCotizaciones from '../forms/info/filters/FilterCotizaciones'
+import InformacionGeneralEdit from '../forms/info/InformacionGeneralEdit'
+import HistorialContactoInfo from '../forms/info/HistorialContactoInfo'
+import HistorialContactoForm from './HistorialContactoForm'
+import FormProveedoresRh from './FormProveedoresRh'
+import AgendaLlamada from '../forms/paginaWeb/AgendaLlamada'
+import InformacionGeneral from '../forms/paginaWeb/InformacionGeneral'
+import HistorialSolicitudes from './facturacion/HistorialSolicitudes'
+
+import FormFilterTickets from './FormFilterTickets'
+import TableMantenimiento from './TableMantenimiento'
+import TablePresupuestos from './TablePresupuestos'
+import TableTickets from './TableTickets'
+import ShowFile from './ShowFile'
+
+// COTIZACIÓN ACPETADA
+import CotizacionAceptada from './cotizacionAceptada/CotizacionAceptada'
+import ModificarOrdenCompra from './cotizacionAceptada/ModificarOrdenCompra'
+import InfoCotizacionAceptada from './cotizacionAceptada/InfoCotizacionAceptada'
+
+///
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
 export const PermisosForm = permisosForm
@@ -280,5 +310,8 @@ export { NewTag, TagColorForm, CartasCalidadForm, EtiquetasForm, FormEstadoResul
     InfoProyecto, EditProyectoForm, ClienteCPModal, NotasObra, Avances, Adjuntos, ComentariosProyectos, PresupuestosProyecto, PresupuestoList, FilterPresupuestos, PresupuestoAnswer,
     HistorialPresupuestosProyecto, FormSolicitudFactura, HistorialSolicitudesFacturaProyectos, 
     PresupuestoAceptado, TimelinePresupuestos, FormVentasSolicitudFactura, VentasList, ComprasList, LicenciasEquiposForm, LicenciasForm,RHLicenciasForm, RHEquiposForm, HistorialVacaciones, PrestacionesForm, PrestacionesEgresos, PrestacionesRHList,
-    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew, IngresosFormulario, VentasFormulario, AddEvent, PagoImpuestosForm,RepseFormulario
+    CalendarioPagosForm, EgresosCalendarioPagos, ComprasFormulario, EgresosFormNew, IngresosFormulario, VentasFormulario, AddEvent, PagoImpuestosForm,RepseFormulario,BuscarLead,
+    HistorialContactoForm,AgendaLlamada,FormProveedoresRh,InformacionGeneral,CotizacionAceptada,ModificarOrdenCompra,InfoCotizacionAceptada,CotizacionesDiseño,HistorialContactoInfo,
+    HistorialSolicitudes, InformacionGeneralEdit,FormFilterTickets,TableMantenimiento,TablePresupuestos,TableTickets,ShowFile
+
 }

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from './../../../../functions/api';
+import { apiPutForm, apiPostForm, apiGet } from './../../../../functions/api';
+import CrearProveedor from './../../../Proyectos/Compras/CrearProveedor'
+import { Modal } from './../../../../components/singles'
 
 import DateFnsUtils from '@date-io/date-fns';
 import Swal from 'sweetalert2'
 import { es } from 'date-fns/locale'
-import axios from 'axios';
 import S3 from 'react-aws-s3'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -17,30 +18,42 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputLabel from '@material-ui/core/InputLabel';
-import SaveIcon from '@material-ui/icons/Save';
 import Button from '@material-ui/core/Button';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
-import TrashIcon from '@material-ui/icons/DeleteOutline';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import j2xParser from 'fast-xml-parser'
 
 import Style from './CrearEgreso.module.css'
-import EgresosTable from '../EgresosTable';
 
 export default function CrearEgreso(props) {
-    const {opcionesData, reload, handleClose} = props
+    const {opcionesData, reload, handleClose, getProveedores} = props
     const auth = useSelector((state) => state.authUser.access_token);
     const departamentos = useSelector(state => state.opciones.areas)
+    const [nuevoProveedor, setNuevoProveedor] = useState(false)
     const [errores, setErrores] = useState({})
+
+    const [proveedorSelect, setProveedorSelect] = useState({
+        preSelect: false,
+        id:null,
+        name: null,
+    })
+
+    useEffect(() => {
+        if(proveedorSelect.preSelect){
+            let data = {
+                ...proveedorSelect
+            }
+            handleChangeProveedor('', data)
+        }
+    }, [proveedorSelect])
+
     const [opciones, setOpciones] = useState({
         cuentas: [],
         empresas: [],
@@ -195,7 +208,25 @@ export default function CrearEgreso(props) {
                             timer: 3000
                         })
                     }
+
                     let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
+
+                    if(!proveedor){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No existe el proveedor',
+                            text: 'No existe el proveedor, favor de crearlo..',
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+                        setNuevoProveedor(true)
+
+                    }else{
+                        form.proveedor = proveedor.id.toString()
+                        form.contrato = ''
+                        // options.contratos = setOptions(proveedor.contratos, 'nombre', 'id')
+                    }
+
                     let aux = []
                     files.forEach((file, index) => {
                         aux.push({
@@ -304,6 +335,19 @@ export default function CrearEgreso(props) {
                 [tipo]: {files: aux, value: path}
             }
         })
+    }
+
+    const agregarProveedor = () => {
+        setNuevoProveedor(true)
+    }
+
+    const handleCloseProveedor = () => {
+        setNuevoProveedor(false)
+        setForm({
+            ...form,
+            proveedor: nuevoProveedor.id, // Establecer el proveedor recién creado
+            proveedor_nombre: nuevoProveedor.name,
+        });
     }
 
     const attachFilesS3 =  (files, egreso) => {
@@ -429,7 +473,6 @@ export default function CrearEgreso(props) {
         })
     }
 
-
     const addNewFacturaAxios = (files, egreso) => {
         let aux = form
         aux.archivos = files
@@ -493,17 +536,41 @@ export default function CrearEgreso(props) {
         })
     }
 
+    // const handleDeleteFile = (tipo, index) => {
+    //     let files = form.adjuntos[tipo].files
+    //     files.splice(index, 1)
+    //     setForm({
+    //         ...form,
+    //         adjuntos: {
+    //             ...form.adjuntos,
+    //             [tipo]: {files: [...files], value: ''}
+    //         }
+    //     })
+    // }
+
     const handleDeleteFile = (tipo, index) => {
-        let files = form.adjuntos[tipo].files
-        files.splice(index, 1)
-        setForm({
-            ...form,
+        let files = form.adjuntos[tipo].files;
+        files.splice(index, 1);
+
+        // Check if all XML files are deleted
+        const allXmlFilesDeleted = tipo === 'xml' && files.length === 0;
+
+        //LIMPIA LOS CAMPOS DEL FORMULARIO QUE YA HABIAN SIDO LLENADOS POR UNA FACTURA
+        setForm((prevForm) => ({
+            ...prevForm,
             adjuntos: {
-                ...form.adjuntos,
-                [tipo]: {files: [...files], value: ''}
-            }
-        })
-    }
+                ...prevForm.adjuntos,
+                [tipo]: { files: [...files], value: '' },
+            },
+            rfc: allXmlFilesDeleted ? '' : prevForm.rfc, // Clear rfc field if all XML files deleted
+            empresa: allXmlFilesDeleted ? '' : prevForm.empresa, 
+            descripcion: allXmlFilesDeleted ? '' : prevForm.descripcion, 
+            fecha: allXmlFilesDeleted ? '' : prevForm.fecha, 
+            total: allXmlFilesDeleted ? '' : prevForm.total, 
+            facturaObject: allXmlFilesDeleted ? '' : prevForm.facturaObject, 
+        }));
+    };
+
 
     const handleChangeFecha = (date, tipo) => {
         setForm({
@@ -847,7 +914,18 @@ export default function CrearEgreso(props) {
                                         : null
                                 }
                                 
-                            </div>   
+                            </div> 
+
+                            {
+                                form.factura ? 
+                                    <></> :
+                                        <div className={`${Style.agregarProveedor}`}>
+                                            <Button variant="contained" color="primary" component="span" onClick={agregarProveedor}> 
+                                                Agregar proveedor
+                                            </Button>
+                                        </div>
+                            }
+
                             <div>
                                 {
                                     opciones.empresas.length > 0 ?
@@ -1208,6 +1286,10 @@ export default function CrearEgreso(props) {
                     </div>
                 </div>   
             </div>
+
+            <Modal size="md" title={"agregar proveedor"} handleClose={handleCloseProveedor} show={nuevoProveedor}>
+                <CrearProveedor data={form} setProveedorSelect={setProveedorSelect} handleClose={handleCloseProveedor} getProveedores={getProveedores} departamentos={departamentos} reload={reload} handleCloseRecarga={setNuevoProveedor} auth={auth}/>
+            </Modal>
         
         </>
     )

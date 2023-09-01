@@ -1,10 +1,13 @@
-import { Message, Done, Sending, Robot404, UserWarning, CommonLottie, PendingPayment } from '../components/Lottie/'
+import { Message, Done, Sending, Robot404, UserWarning, CommonLottie, PendingPayment , Plane,  SocialMedia, Confirmation,
+     ContactUs, ScheduleAppointment, RelacionesPublicas, DeleteUser, TimeManagement, CalendarDate } from '../components/Lottie'
+
 import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Trash, UploadingFile } from '../assets/animate'
 import { ItemSlider } from '../components/singles'
 import NumberFormat from 'react-number-format'
+// import { MAIN_FRONT } from '../constants'
 
 const MySwal = withReactContent(Swal)
 
@@ -407,46 +410,46 @@ export function questionAlertWithLottie(title, text, lottie, buttons, actions, b
 }
 // btn-renovar-lic-confirm
 
-export function questionAlertY(title, text, action, cancel) {
-    MySwal.fire({
-        title: title,
-        text: text,
-        //icon: "question",
-        //iconHtml: <CommonLottie animationData = { QuestionBoy } />,
-        html: <div>
-            {/* <div className="row mx-0 justify-content-center">
-                <div className="col-md-8">
-                    <CommonLottie animationData = { QuestionBoy } />
-                </div>
-            </div> */}
-            <div className="row row-paddingless form-group-marginless">
-                <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins">
-                    {text}
-                </div>
-            </div>
-        </div>,
-        showCancelButton: true,
-        confirmButtonText: "SI",
-        cancelButtonText: "NO",
-        reverseButtons: true,
-        customClass: {
-            icon: 'icono',
-            title:'text-uppercase',
-            content: text?text:'d-none',
-            confirmButton: 'btn-light-success-sweetalert2',
-            cancelButton:'btn-light-gray-sweetalert2',
-            htmlContainer:'d-contents'
-        }
-    }).then((result) => {
-        if(cancel){
-            if(result.dismiss)
-                cancel()
-        }
-        if (result.value) {
-            action()
-        }
-    })
-}
+// export function questionAlertY(title, text, action, cancel) {
+//     MySwal.fire({
+//         title: title,
+//         text: text,
+//         //icon: "question",
+//         //iconHtml: <CommonLottie animationData = { QuestionBoy } />,
+//         html: <div>
+//             {/* <div className="row mx-0 justify-content-center">
+//                 <div className="col-md-8">
+//                     <CommonLottie animationData = { QuestionBoy } />
+//                 </div>
+//             </div> */}
+//             <div className="row row-paddingless form-group-marginless">
+//                 <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins">
+//                     {text}
+//                 </div>
+//             </div>
+//         </div>,
+//         showCancelButton: true,
+//         confirmButtonText: "SI",
+//         cancelButtonText: "NO",
+//         reverseButtons: true,
+//         customClass: {
+//             icon: 'icono',
+//             title:'text-uppercase',
+//             content: text?text:'d-none',
+//             confirmButton: 'btn-light-success-sweetalert2',
+//             cancelButton:'btn-light-gray-sweetalert2',
+//             htmlContainer:'d-contents'
+//         }
+//     }).then((result) => {
+//         if(cancel){
+//             if(result.dismiss)
+//                 cancel()
+//         }
+//         if (result.value) {
+//             action()
+//         }
+//     })
+// }
 export function questionAlert2(title, text, action, html, dismiss) {
     MySwal.fire({
         title: title,
@@ -557,15 +560,6 @@ export function validateAlert2(success, e, name, tipo, enviar) {
     
 }
 
-export function messageAlert(text) {
-    MySwal.fire({
-        title: text,
-        text:'VUELVE A INTENTARLO',
-        icon: "warning",
-        confirmButtonColor:'#B5B5C3'
-    })
-}
-
 export const printResponseErrorAlert = (error) => {
     Swal.close()
     setTimeout(function(){ 
@@ -623,4 +617,498 @@ export function htmlLottieTimer(html) {
         html: html,
         timer: 8000
     });
+}
+
+export function solicitudLlamadaAlert(text, action) {
+    MySwal.fire({
+        html: <div>
+            <CommonLottie animationData = { ContactUs } />
+            <div className="col-md-12 font-weight-light text-center font-size-lg">
+                <div className="font-weight-bolder mb-3">{text}</div>
+                ¿ESTÁS SEGURO QUE DESEAS ENVIAR EL CORREO DE <span className="solicitud-llamada-text">SOLICITUD DE LLAMADA</span>?
+            </div>
+        </div>,
+        showCancelButton: true,
+        confirmButtonText: "SI, ENVIAR",
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+        customClass: {
+            icon:'justify-content-center',
+            title:'d-none',
+            htmlContainer:'m-0',
+            confirmButton:'solicitud-llamada-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert'
+        }
+    }).then((result) => {
+        if (result.value) {
+            action()
+        }
+    })
+}
+
+export function confirmarCita(title, form, lead, action, e, name) {
+    let fecha = new Date(form.fecha)
+    let months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+    let days = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18','19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
+    fecha = days[fecha.getDate()]  + "/" + months[fecha.getMonth()] + "/" + fecha.getFullYear()
+    
+    function reunion(){
+        switch (form.lugar) {
+            case 'presencial':
+                switch (form.cita_empresa) {
+                    case 'si_empresa':
+                        return lead?lead.empresa.name:""
+                    case 'no_empresa':
+                        return form.ubicacion
+                    default:
+                        break;
+                }
+            break;
+            case 'remota':
+                return form.url
+            default:
+            break;
+        }
+    }
+    
+    function reunionPR(){
+        switch (form.lugar) {
+            case 'presencial':
+                return 'LA CITA ES PRESENCIAL EN:'
+            case 'remota':
+                return 'URL DE LA CITA REMOTA:'
+            default:
+            break;
+        }
+    }
+    function correos(){
+        var temp = "";
+        var array = form.correos
+        if(array.length ===0){
+            temp='-'
+        }else{
+            for(var i= 0; i < array.length; i++) {
+                if(array.length === 1){
+                    temp += array[i];
+                }else{
+                    temp += '&#8226 ' + array[i] + '<br>';
+                }
+            }
+        }
+        return temp
+    }
+
+    MySwal.fire({
+        html: <div>
+            <div className="col-md-10 mx-auto"><CommonLottie animationData = { ScheduleAppointment } /></div>
+            <div className="col-md-12 font-weight-light text-center font-size-lg">
+                <div className="font-weight-bolder mb-3">¡NO PODRÁS REVERTIR ESTO!</div>
+                {title}
+            </div>
+            {
+                form.agendarCita ?
+                    <div className="font-size-13px">
+                        <div className="separator separator-dashed my-4 border-alert-cita"></div>
+                        <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 mt-3">
+                            <div className="col-md-6 font-weight-bold pr-1">NOMBRE DE LA REUNIÓN:</div>
+                            <div className="col-md-6 font-weight-light pl-1">{form.titulo ? form.titulo : '-'}</div>
+                        </div>
+                        <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
+                            <div className="col-md-6 font-weight-bold pr-1">{reunionPR()}</div>
+                            <div className="col-md-6 font-weight-light pl-1">{reunion()}</div>
+                        </div>
+                        <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
+                            <div className="col-md-6 font-weight-bold pr-1">FECHA:</div>
+                            <div className="col-md-6 font-weight-light pl-1">{fecha}</div>
+                        </div>
+                        <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
+                            <div className="col-md-6 font-weight-bold pr-1">HORA DE INICIO:</div>
+                            <div className="col-md-6 font-weight-light pl-1">{form.hora_inicio}:{form.minuto_inicio}</div>
+                        </div>
+                        <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
+                            <div className="col-md-6 font-weight-bold pr-1">HORA FINAL:</div>
+                            <div className="col-md-6 font-weight-light pl-1">{form.hora_final}:{form.minuto_final}</div>
+                        </div>
+                        <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center">
+                            <div className="col-md-6 font-weight-bold pr-1">Correo(s):</div>
+                            <div className="col-md-6 font-weight-light pl-1">{correos()}</div>
+                        </div>
+                    </div>
+                    : form.agendarLlamada ?
+                        <>
+                            <div className="separator separator-dashed my-4 border-alert-cita"></div>
+                            <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 mt-3 font-size-13px">
+                                <div className="col-md-4 font-weight-bold pr-1">FECHA:</div>
+                                <div className="col-md-3 font-weight-light pl-1">{fecha}</div>
+                            </div>
+                            <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 font-size-13px">
+                                <div className="col-md-4 font-weight-bold pr-1">HORA DE INICIO:</div>
+                                <div className="col-md-3 font-weight-light pl-1">{form.hora_inicio}:{form.minuto_inicio}</div>
+                            </div>
+                            <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center font-size-13px">
+                                <div className="col-md-4 font-weight-bold pr-1">HORA FINAL:</div>
+                                <div className="col-md-3 font-weight-light pl-1">{form.hora_final}:{form.minuto_final}</div>
+                            </div>
+                        </>
+                        :
+                        <>
+                            <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 mt-3 font-size-13px">
+                                <div className="col-md-4 font-weight-bold pr-1">FECHA:</div>
+                                <div className="col-md-3 font-weight-light pl-1 text-center">{fecha}</div>
+                            </div>
+                            <div className="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 font-size-13px">
+                                <div className="col-md-4 font-weight-bold pr-1">HORA:</div>
+                                <div className="col-md-3 font-weight-light pl-1 text-center">{form.hora}:{form.minuto}</div>
+                            </div>
+                        </>
+            }
+        </div>,
+        showCancelButton: true,
+        confirmButtonText: "SI, ENVIAR",
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+        customClass: {
+            icon:'justify-content-center',
+            htmlContainer:'m-0',
+            confirmButton:'cita-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert'
+        },
+    }).then((result) => {
+        var elementsInvalid = document.getElementById(name).getElementsByClassName("is-invalid");
+        if (elementsInvalid.length === 0) {
+            if (result.value) {
+                action()
+            }
+        } else {
+            Swal.fire({
+                title: '¡LO SENTIMOS!',
+                text: 'Llena todos los campos requeridos',
+                icon: 'warning',
+                customClass: {
+                    actions: 'd-none',
+                    icon:'justify-content-center'
+                },
+                timer: 2500,
+            })
+        }
+    })
+}
+
+export function questionAlertY(title, text, action, cancel) {
+    MySwal.fire({
+        title: title,
+        text: text,
+        html: <div>
+            <div className="row row-paddingless form-group-marginless">
+                <div className="col-md-12 font-weight-light text-center font-size-lg font-family-poppins">
+                    {text}
+                </div>
+            </div>
+        </div>,
+        showCancelButton: true,
+        confirmButtonText: "SI",
+        cancelButtonText: "NO",
+        reverseButtons: true,
+        customClass: {
+            icon: 'icono',
+            title:'text-uppercase',
+            content: text?text:'d-none',
+            confirmButton: 'btn-light-success-sweetalert2',
+            cancelButton:'btn-light-gray-sweetalert2',
+            htmlContainer:'d-contents'
+        }
+    }).then((result) => {
+        if(cancel){
+            if(result.dismiss)
+                cancel()
+        }
+        if (result.value) {
+            action()
+        }
+    })
+}
+
+export function relacionesPublicasAlert(text, action) {
+    MySwal.fire({
+        html: <div>
+            <div className="col-md-10 mx-auto">
+                <CommonLottie animationData = { RelacionesPublicas } />
+            </div>
+            <div className="col-md-12 font-weight-light text-center font-size-lg mt-5">
+                <div className="font-weight-bolder mb-5">{text}</div>
+                MOVERÁS ESTE LEAD A <span className="relaciones-publicas-text">RELACIONES PÚBLICAS</span>
+            </div>
+        </div>,
+        showCancelButton: true,
+        confirmButtonText: "MOVER LEAD",
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+        customClass: {
+            icon:'justify-content-center',
+            title:'d-none',
+            htmlContainer:'m-0',
+            confirmButton:'relaciones-publicas-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert',
+            actions: 'mt-5',
+        }
+    }).then((result) => {
+        if (result.value) {
+            action()
+        }
+    })
+}
+export function leadDuplicadoAlert(alert_text ,text, confirm_btn, action) {
+    MySwal.fire({
+        html: <div>
+            <div className="col-md-10 mx-auto">
+                <CommonLottie animationData = { DeleteUser } />
+            </div>
+            <div className="col-md-12 font-weight-light text-center font-size-lg mt-5">
+                <div className="font-weight-bolder mb-5">{alert_text}</div>
+                {text} <span className="delete-user-text">DUPLICADO</span>
+            </div>
+        </div>,
+        showCancelButton: true,
+        confirmButtonText: `${confirm_btn}`,
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+        customClass: {
+            icon:'justify-content-center',
+            title:'d-none',
+            htmlContainer:'m-0',
+            confirmButton:'delete-user-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert',
+            actions: 'mt-5',
+        }
+    }).then((result) => {
+        if (result.value) {
+            action()
+        }
+    })
+}
+export function steps(action) {
+    const steps = ['1', '2']
+    const textQuestion = ['¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?', '¿DESEAS ENVIAR EL CUESTIONARIO DE PROYECTO?']
+    const swalQueueStep = Swal.mixin({
+        confirmButtonText: 'SIGUIENTE',
+        cancelButtonText: 'REGRESAR',
+        progressSteps: steps,
+        input: 'radio',
+        inputOptions: {
+            SI: 'SI',
+            NO: 'NO'
+        },
+        inputAttributes: {
+            required: true
+        },    
+        reverseButtons: true,
+        customClass: {
+            validationMessage:'width-content-validation',
+            title:'mt-4',
+            actions:'m-0',
+            input: 'my-7'
+        },
+        inputValidator: (value) => {
+            if (!value) {
+                return 'NECESITAS ELEGIR UNA OPCIÓN'
+            }
+        }
+    })
+    async function backAndForth () {
+        const values = []
+        let currentStep
+        for (currentStep = 0; currentStep < steps.length;) {
+            const result = await swalQueueStep.fire({
+                title: textQuestion[currentStep],
+                inputValue: values[currentStep],
+                showCancelButton: currentStep > 0,
+                currentProgressStep: currentStep
+            })
+            if (result.value) {
+                values[currentStep] = result.value
+                currentStep++
+            } else if (result.dismiss === 'cancel') {
+                currentStep--
+            } else {
+            break
+            }
+        }
+        if (currentStep === steps.length) {
+            Swal.fire({
+                title: '¿ESTÁS SEGURO DE TUS RESPUESTAS?',
+                html: `
+                    <div class="form-group row row-paddingless form-group-marginless mt-4">
+                        <div class="col-md-12 font-weight-light text-center font-size-lg">
+                            ¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?
+                            <div class="font-weight-boldest">${values[0]}</div>
+                        </div>
+                    </div>
+                    <div class="row row-paddingless form-group-marginless">
+                        <div class="col-md-12 font-weight-light text-center font-size-lg">
+                            ¿DESEAS ENVIAR EL CUESTIONARIO DE PROYECTO?
+                            <div class="font-weight-boldest">${values[1]}</div>
+                        </div>
+                    </div>
+                `,
+                confirmButtonText: 'ENVIAR',
+            }).then((result) => {
+                if (result.value) {
+                    action(values)
+                }
+            })
+        }
+        
+    }
+    backAndForth()
+}
+
+export function detenerLeadAlert(text, action) {
+    MySwal.fire({
+        html: <div>
+            <div className="col-md-8 mx-auto">
+                <CommonLottie animationData = { TimeManagement } />
+            </div>
+            <div className="col-md-12 font-weight-light text-center font-size-lg mt-5">
+                <div className="font-weight-bolder mb-5">{text}</div>
+                MOVERÁS ESTE LEAD A <span className="detenidos-text">DETENIDOS</span>
+            </div>
+        </div>,
+        showCancelButton: true,
+        confirmButtonText: "MOVER LEAD",
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+        customClass: {
+            icon:'justify-content-center',
+            title:'d-none',
+            htmlContainer:'m-0',
+            confirmButton:'detenidos-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert',
+            actions: 'mt-5',
+        }
+    }).then((result) => {
+        if (result.value) {
+            action()
+        }
+    })
+}
+export function messageAlert(text) {
+    MySwal.fire({
+        title: text,
+        text:'VUELVE A INTENTARLO',
+        icon: "warning",
+        confirmButtonColor:'#B5B5C3'
+    })
+}
+
+export function solicitarCita(nombreLead, action) {
+    MySwal.fire({
+        html: <div>
+            <div className="col-md-10 mx-auto">
+                <CommonLottie animationData = { CalendarDate } />
+            </div>
+            <div className="col-md-12 font-weight-light text-center font-size-lg mt-5">
+                <div className="font-weight-bolder mb-5">¡NO PODRÁS REVERTIR ESTO!</div>
+                ¿ESTÁS SEGURO QUE DESEAS SOLICITAR UNA CITA CON <span className="solicitar-cita-text">{nombreLead}</span> ?
+            </div>
+        </div>,
+        showCancelButton: true,
+        confirmButtonText: 'SI, SOLICITAR CITA',
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+        customClass: {
+            icon:'justify-content-center',
+            title:'d-none',
+            htmlContainer:'m-0',
+            confirmButton:'solicitar-cita-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert',
+            actions: 'mt-5',
+        }
+    }).then((result) => {
+        if (result.value) {
+            action()
+        }
+    })
+}
+export function createCajaChicaAlert(html, action, cancel) {
+    MySwal.fire({
+        html: html,
+        showCancelButton: true,
+        confirmButtonText: 'ENVIAR',
+        cancelButtonText: 'CANCELAR',
+        reverseButtons: true,
+        customClass: {
+            icon:'justify-content-center',
+            title:'d-none',
+            htmlContainer:'m-0',
+            confirmButton:'caja-chica-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert',
+            actions: 'mt-3',
+        }
+    }).then((result) => {
+        if(result.dismiss)
+            cancel()
+        else
+            if (result.value) {
+                action()
+            }
+    })
+}
+
+export function questionSendMail(html, action, dismiss) {
+    MySwal.fire({
+        html: html,
+        showCancelButton: true,
+        confirmButtonText: "ENVIAR",
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+        customClass: {
+            icon:'justify-content-center',
+            title:'d-none',
+            htmlContainer:'m-0',
+            confirmButton:'question-mail-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert',
+            actions: 'm-0',
+        }
+    }).then((result) => {
+        if(result.dismiss){
+            if( typeof dismiss === 'function')
+                dismiss()
+        }
+        if (result.value) {
+            action()
+        }
+    })
+}
+
+export function originChangeAlert(new_origen, action) {
+    MySwal.fire({
+        html: <div>
+            <div className="row mx-0 justify-content-center">
+                <div className="col-md-8">
+                    <CommonLottie animationData = { SocialMedia } />
+                </div>
+            </div>
+            <div className="row row-paddingless form-group-marginless mt-6">
+                <div className="col-md-12 font-weight-light text-center font-size-lg">
+                    ¿ESTÁS SEGURO QUE DESEAS CAMBIAR EL ORIGEN A <span className="font-weight-bold border-bottom">{new_origen}</span>?
+                </div>
+            </div>
+        </div>,
+        showCancelButton: true,
+        confirmButtonText: "SI, CAMBIAR",
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+        customClass: {
+            icon:'justify-content-center',
+            title:'d-none',
+            htmlContainer:'m-0',
+            confirmButton:'origin-confirm btn_custom-alert',
+            cancelButton:'btn-cancel-alert'
+            
+        }
+    }).then((result) => {
+        if (result.value) {
+            action()
+        }
+    })
 }

@@ -5,7 +5,7 @@ import S3 from 'react-aws-s3'
 import { Tabs, Tab } from 'react-bootstrap'
 import Swal from 'sweetalert2'
 import { Modal } from '../../../components/singles'
-import { Update } from '../../../components/Lottie'
+import { Update,Sending } from '../../../components/Lottie'
 import Layout from '../../../components/layout/layout'
 import { EgresosCard } from '../../../components/cards'
 import { EngresosFilters } from '../../../components/filters'
@@ -23,14 +23,18 @@ import RequisicionCompras from './../RequisicionCompras/RequisicionCompras'
 import RequisicionContabilidad from './../RequisicionContabilidad/RequisicionContabilidad'
 import { Requisiciones } from './../Requisiciones/Requisiciones'
 import EgresosTable from './EgresosTable'
-
 import NewTable from './../../../components/NewTables/NewTable'
 import TablaPaginado from './../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
 import { connect } from 'react-redux'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal)
 
 class Egresos extends Component {
     state = {
+        // accesos: '',
+
         modal: {
             see: false,
             facturas: false,
@@ -89,11 +93,11 @@ class Egresos extends Component {
         },
         filters: {},
         key: 'gastos',
-        acceso: '',
         eliminar: '',
     }
 
     componentDidMount() {
+
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
@@ -122,6 +126,7 @@ class Egresos extends Component {
                 this.getEgresoAxios(id)
             }
         }
+
     }
 
     getOptionsAxios = async () => {
@@ -140,9 +145,12 @@ class Egresos extends Component {
                 options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
                 options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
                 options.allCuentas = setOptionsWithLabel(cuentas, 'nombre', 'id')
-                Swal.close()
+
                 this.setState({ ...this.state, data, options })
+                Swal.close()
+
             }, (error) => { printResponseErrorAlert(error) }
+
         ).catch((error) => { catchErrors(error) })
     }
     async getEgresoAxios(id) {
@@ -814,45 +822,48 @@ class Egresos extends Component {
         })
     }
     render() {
-        const { form, options, egreso, modal, filters, key ,accesos,eliminar} = this.state
+        const { form, options, egreso, modal, filters, key, accesos,eliminar} = this.state
         const { access_token } = this.props.authUser
         const { areas  } = this.props
-    
-        const tabs = [ 'r. compras', 'r. contabilidad', 'requisiciones']
+        const tabs =  [ 'r. compras', 'r. contabilidad', 'requisiciones'] 
+       
+        // key=  accesos == 1 ?  'gastos' :  'requisiciones'
 
+// console.log(key)
         return (
             <Layout active='administracion'  {...this.props}>
-                
-                <Tabs id = "tabAdministracion" defaultActiveKey ={ accesos == 1 ? "gastos" : "requisiciones"}  activeKey ={ accesos == 1 ? key : "requisiciones"}  onSelect = {(value) => {this.controlledTab(value)}}>
+                {/* <></> */}
+                {/* <Tabs id = "tabAdministracion" defaultActiveKey ={ accesos == 1 ? "gastos" : "requisiciones"}  activeKey ={ accesos == 1 ? key : "requisiciones"}  onSelect = {(value) => {this.controlledTab(value)}}> */}
+                  {/* <Tabs id = "tabAdministracion"   activeKey ={  accesos == 1 ? key : "requisiciones"}  onSelect = {(value) => {this.controlledTab(value)}}> */}
+             
                 { 
+                this.state.accesos == 1 ?
+                    <Tabs id = "tabAdministracion" defaultActiveKey ="gastos"  activeKey ={ key}  onSelect = {(value) => {this.controlledTab(value)}}> 
+                        <Tab eventKey = { 'gastos' } title = { 'gastos' }>
+                            <EgresosTable eliminar={eliminar} />                      
+                        </Tab>    
+                        <Tab eventKey="requisiciones" title="requisiciones">
+                            <Requisiciones/>
+                        </Tab>
+                        <Tab eventKey="requisición compras" title="requisición compras">
+                            <RequisicionCompras/>
+                        </Tab>
+                        <Tab eventKey="requisición contabilidad" title="requisición contabilidad">
+                            <RequisicionContabilidad/>
+                        </Tab>
+                    
+                    </Tabs>
 
-                accesos == 1 ?
+                    :  
+                    <Tabs id = "tabAdministracion" defaultActiveKey ="requisiciones"  activeKey ="requisiciones"  onSelect = {(value) => {this.controlledTab(value)}}>   
+                    
+                        <Tab eventKey="requisiciones" title="requisiciones">
+                            <Requisiciones/>
+                        </Tab>
+                    
+                    </Tabs>            
 
-                    <Tab eventKey = { 'gastos' } title = { 'gastos' }>
-                         <EgresosTable eliminar={eliminar} />                      
-                    </Tab>
-                    :  ''
                 }
-
-                    <Tab eventKey="requisiciones" title="requisiciones">
-                        <Requisiciones/>
-                    </Tab>
-                { 
-                    accesos == 1 ?
-
-                    <Tab eventKey="requisición compras" title="requisición compras">
-                        <RequisicionCompras/>
-                    </Tab>
-                    :  ''
-                }
-                { 
-                    accesos == 1 ?
-                    <Tab eventKey="requisición contabilidad" title="requisición contabilidad">
-                        <RequisicionContabilidad/>
-                    </Tab>
-                   :  ''
-                }
-                </Tabs>
 
                 <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose} >
                     <FacturasFormTable at = { access_token } tipo_factura='egresos' id={egreso.id} dato={egreso} reloadTable = {this.reloadTableFacturas}/>
@@ -871,6 +882,7 @@ class Egresos extends Component {
                     <EngresosFilters at={access_token} sendFilters={this.sendFilters} filters={filters} options={options} setOptions={this.setOptionsArray} areas={areas} />
                 </Modal>
             </Layout>
+                        
         )
     }
 }

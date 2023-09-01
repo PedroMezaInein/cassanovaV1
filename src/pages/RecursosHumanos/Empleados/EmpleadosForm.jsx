@@ -34,6 +34,8 @@ class EmpleadosForm extends Component {
             estado_civil: '',
             nombre_emergencia: '',
             telefono_emergencia: '',
+            nombre_emergencia2: '',
+            telefono_emergencia2: '',
             email_personal: '',
             email_empresarial: '',
             domicilio: '',
@@ -140,6 +142,8 @@ class EmpleadosForm extends Component {
                         form.nss = empleado.nss
                         form.nombre_emergencia = empleado.nombre_emergencia
                         form.telefono_emergencia = empleado.telefono_emergencia
+                        form.nombre_emergencia2 = empleado.nombre_emergencia2
+                        form.telefono_emergencia2 = empleado.telefono_emergencia2
                         form.banco = empleado.banco
                         form.cuenta = empleado.cuenta
                         form.clabe = empleado.clabe

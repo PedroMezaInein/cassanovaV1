@@ -42,7 +42,6 @@ export default function EditarEgreso(props) {
         tiposImpuestos: [],
         tiposPagos: [],
     })
-    console.log(data)
 
     useEffect(() => {
         
@@ -61,19 +60,25 @@ export default function EditarEgreso(props) {
     }, [opciones.empresas])
 
     useEffect(() => {
+          if(opciones.empresas.length > 0){
+            setForm({
+                ...form,
+                cuentas: opciones.empresas.find(empresa => empresa.id === form.empresa).cuentas
+            })
+        }
         
         getEgreso()
         
-    }, [])
-
-    useEffect(() => {
-        if(opciones.empresas.length > 0){
-            setForm({
-                ...form,
-                cuentas: opciones.empresas.find(empresa => empresa.id === data.empresa.id).cuentas
-            })
-        }
     }, [opciones.empresas])
+
+    // useEffect(() => {
+    //     if(opciones.empresas.length > 0){
+    //         setForm({
+    //             ...form,
+    //             cuentas: opciones.empresas.find(empresa => empresa.id === data.empresa.id).cuentas
+    //         })
+    //     }
+    // }, [opciones.empresas])
 
     const getEgreso = async () => {
         // waitAlert()
@@ -85,69 +90,7 @@ export default function EditarEgreso(props) {
                     ...form,
                     rfc: egreso.proveedor.rfc,
                 })
-                // const { form, options } = this.state
-                // form.factura = egreso.factura ? 'Con factura' : 'Sin factura'
-                // if (egreso.proveedor) {
-                //     form.proveedor = egreso.proveedor.id.toString()
-                //     form.rfc = egreso.proveedor.rfc
-                // }
-                // if (egreso.empresa) {
-                //     form.empresa = egreso.empresa.id.toString()
-                //     if (egreso.empresa.cuentas) {
-                //         options.cuentas = setOptions(egreso.empresa.cuentas, 'nombre', 'id')
-                //         if (egreso.cuenta) {
-                //             form.cuenta = egreso.cuenta.id.toString()
-                //         }
-                //     }
-                // }
-
-                // if (egreso.area) {
-                //     form.area = egreso.area.id.toString()
-                //     if (egreso.area.subareas) {
-                //         options.subareas = setOptions(egreso.area.subareas, 'nombre', 'id')
-                //     }
-                //     if (egreso.subarea) {
-                //         form.subarea = egreso.subarea.id.toString()
-                //     }
-                // }
-
-                // if (egreso.tipo_pago) {
-                //     form.tipoPago = egreso.tipo_pago ? egreso.tipo_pago.id.toString() : ''
-                // }
-
-                // if (egreso.tipo_impuesto) {
-                //     form.tipoImpuesto = egreso.tipo_impuesto ? egreso.tipo_impuesto.id.toString() : ''
-                // }
-
-                // if (egreso.estatus_compra) {
-                //     form.estatusCompra = egreso.estatus_compra ? egreso.estatus_compra.id.toString() : ''
-                // }
-
-                // if (egreso.id_partidas && egreso.area) {
-                //     form.partida = `${egreso.id_partidas}`
-                // } 
-                // else if (egreso.subarea && areas.length > 0) {
-                //     if (areas.find((area) => area.id_area == egreso.area.id)) {
-                //         areas.find((area) => area.id_area == egreso.area.id).partidas.map((partida) => {
-                //             partida.subpartidas.map((subpartida) => {
-                //                 if (subpartida.id == egreso.subarea.id) {
-                //                     form.partida = `${partida.id}`
-                //                 }
-                //             })
-                //         })
-                //     }
-
-                // }
-
-                // form.total = egreso.monto
-                // form.fecha = new Date(egreso.created_at)
-                // form.descripcion = egreso.descripcion
-                // form.comision = egreso.comision
-                // this.setState({
-                //     ...this.state,
-                //     form,
-                //     options
-                // })
+         
             }, (error) => { }
         ).catch((error) => { })
     }
@@ -159,11 +102,11 @@ export default function EditarEgreso(props) {
             presupuesto: { files: [], value: '' },
             xml: { files: [], value: '' },
         },
-        area: data.area.id,
+        area : data.area ?  data.area.id : '',
         banco: 0,
         comision: data.comision,
         correo: '',
-        cuenta: data.cuenta.id,
+        cuenta: data.cuenta ? data.cuenta.id : '',
         cuentas: [],
         comision: 0,
         descripcion: data.descripcion,
@@ -173,35 +116,42 @@ export default function EditarEgreso(props) {
         facturaItem: '',
         facturaObject: {},
         fecha: new Date(data.created_at) ,
-        id_partidas: `${data.id_partidas}`,
+        // id_partidas: `${data.id_partidas}`,
         leadId: "",
         nombre: "",
         numCuenta: "",
-        partida: '',
+        id_partidas: data.id_partidas ? data.id_partidas : '',
         proveedor: data.proveedor.id,
         proveedor_nombre: data.proveedor.razon_social,
         razonSocial: '',
         rfc: data.proveedor.length > 0 ? data.proveedor.rfc : '',
-        subarea: data.subarea.id, 
+        subarea: data.subarea ? data.subarea.id : '',
         telefono: '',
         tipo: 0,
         tipoImpuesto: data.tipo_impuesto.id,
         tipoPago: data.tipo_pago.id,
         total: data.total,
     })
-    console.log(form)
 
     useEffect(() => {
-        if(form.rfc!==''){
-            console.log(form.rfc)
-
-            console.log(opciones.empresas)
-
-            console.log(opciones.cuentas)
-            setForm({
-                ...form,
-                cuentas: opciones.empresas.find(empresa => empresa.id === data.empresa.id).cuentas
-            })
+        if(form.rfc!==''){       
+            // console.log( opciones.empresas)
+            if(opciones.empresas){
+                setForm({
+                    ...form,
+                    cuentas: opciones.empresas.find(empresa => empresa.id === data.empresa.id).cuentas
+                })
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Espere ....',
+                    text: 'Se estan cargando las empresas',
+                    showConfirmButton: false,
+                    timer: 3000
+                })
+                
+            }
+     
         }
     }, [form.rfc])
 
@@ -213,6 +163,7 @@ export default function EditarEgreso(props) {
     };
 
     const handleChange = (e) => {
+
         if(e.target.name === 'empresa'){
             setForm({
                 ...form,
@@ -710,6 +661,15 @@ export default function EditarEgreso(props) {
 
     }
 
+    const handleChangeAreas=(e)=>{
+        setForm({
+            ...form,
+            [e.target.name]:e.target.value,
+            id_partidas: '',
+            subarea: ''
+        })
+    }
+
     const handleDeleteFile = (tipo, index) => {
         let files = form.adjuntos[tipo].files
         files.splice(index, 1)
@@ -949,7 +909,7 @@ export default function EditarEgreso(props) {
                                         <Select
                                             value={form.area}
                                             name="area"
-                                            onChange={handleChange}
+                                            onChange={handleChangeAreas}
                                             style={{ width: 230, marginRight: '1rem' }}
                                         >
                                             {departamentos.map((item, index) => (
@@ -969,11 +929,11 @@ export default function EditarEgreso(props) {
                                         <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
                                         <Select
                                             value={form.id_partidas}
-                                            name="partida"
+                                            name="id_partidas"
                                             onChange={handleChange}
                                             style={{ width: 230, marginRight: '1rem' }}
                                         >
-                                            {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
+                                          {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
                                                 <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                             ))}
 

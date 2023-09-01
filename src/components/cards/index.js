@@ -55,6 +55,17 @@ import proximasCaducarCard from './Usuarios/Tareas/ProximasCaducarCard'
 import pagosCard from './Mercadotecnia/Pagos/PagosCard'
 
 //-------------------------------------------------------
+import UltimosIngresos1 from "./UltimosIngresos";
+import SinContacto1 from "./SinContacto";
+import UltimosContactados1 from "./UltimosContactados";
+import InformacionProyecto1 from "./InformacionProyecto";
+import ContratarCard1 from "./ContratarCard";
+
+export const UltimosIngresos = UltimosIngresos1
+export const SinContacto = SinContacto1
+export const UltimosContactados = UltimosContactados1
+export const InformacionProyecto = InformacionProyecto1
+export const ContratarCard = ContratarCard1
 
 //Usuarios
 export const UsuarioCard = usuarioCard

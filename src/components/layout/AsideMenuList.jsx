@@ -45,7 +45,7 @@ class AsideMenuList extends Component{
             case 'Autorizar solicitudes':
             case 'Encuesta':
 
-                return `${LEADS_FRONT}${url}?tag=${access_token}`               
+                return `${LEADS_FRONT}${url}`               
             default:
                 return url;
         }
@@ -66,13 +66,13 @@ class AsideMenuList extends Component{
                                         <SVG src={toAbsoluteUrl(modulo.icon)}/>
                                     </span>
                                     {
-                                        modulo.url ? 
-                                            modulo.url === '/mi-proyecto' || modulo.url === '/te-escuchamos' || modulo.url === '/comunicados' || modulo.url === '/reporte' ||
-                                            modulo.url === '/vacaciones-permisos' ||  modulo.url === '/encuestas/clima-laboral' ? 
-                                            <span className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</span>
-                                            : 
-                                            ''
-                                        : 
+                                        // modulo.url ? 
+                                        //     modulo.url === '/mi-proyecto' || modulo.url === '/te-escuchamos' || modulo.url === '/comunicados' || modulo.url === '/reporte' ||
+                                        //     modulo.url === '/vacaciones-permisos' ||  modulo.url === '/encuestas/clima-laboral' ? 
+                                        //     <span className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</span>
+                                        //     : 
+                                        //     ''
+                                        // : 
                                         <span className="menu-text menu-link text-uppercase" to={modulo.url}>{modulo.name}</span>
 
                                     }

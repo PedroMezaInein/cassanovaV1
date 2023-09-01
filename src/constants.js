@@ -106,11 +106,13 @@ export const CUENTAS_COLUMNS = [
     { Header: 'Empresa principal', accessor: 'principal' },
     { Header: 'Banco', accessor: 'banco' },
     { Header: 'Número de cuenta', accessor: 'numero' },
-    { Header: 'Balance', accessor: 'balance' },
+    { Header: 'Balance Global', accessor: 'global' },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
     { Header: 'Tipo', accessor: 'tipo' },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },    
-    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true },
+    { Header: 'Balance', accessor: 'balance' },
+
 ]
 
 export const EDOS_CUENTAS_COLUMNS = [
@@ -616,11 +618,13 @@ export const UTILIDADES_COLUMNS = [
 
 export const FLUJOS_COLUMNS = [
     { Header: 'Cuenta', accessor: 'cuenta' },
-    { Header: 'Ingresos', accessor: 'ingresos' },
-    { Header: 'Egresos', accessor: 'egresos' },
     { Header: 'Ventas', accessor: 'ventas' },
+    { Header: 'Ingresos', accessor: 'ingresos' },
+    { Header: 'Devolucion', accessor: 'devolucion' },
+    { Header: 'Traspasos destino', accessor: 'traspasos_destino' },
+    { Header: 'Egresos', accessor: 'egresos' },
     { Header: 'Compras', accessor: 'compras' },
-    { Header: 'Traspasos', accessor: 'traspasos' },
+    { Header: 'Traspasos origen', accessor: 'traspasos_origen' },
     { Header: 'Total', accessor: 'total' }
 ]
 
@@ -1016,4 +1020,31 @@ export const REQUISICIONES = [
     { nombre: 'Tiempo estimado', identificador: 'tiempo_estimado', sort: true, stringSearch: false },
     { nombre: 'Estatus', identificador: 'semaforo', sort: false, stringSearch: false},
     
+]
+
+export const DIRECTORIO_COLUMN = [
+    { Header: 'Nombre', accessor: 'empleado', customRender: true },
+    { Header: 'Correo', accessor: 'correo', customRender: true },
+    { Header: 'Telefono Personal', accessor: 'telefono', customRender: true },
+    // { Header: 'Nombre de contacto', accessor: 'nocontacto', customRender: true },
+    // { Header: 'Telefono Emergencia', accessor: 'telefonocontacto', customRender: true },
+    { Header: 'Departamento', accessor: 'departamento', customRender: true },
+]
+
+export const SOLICITAR_VACACIONES_COLUMNS = [
+    { Header: 'opciones', accessor: 'actions', customRender: true },
+    { Header: 'nombre', accessor: 'empleado', customRender: true },
+    { Header: 'fecha solicitud', accessor: 'fecha_create', customRender: true },
+    { Header: 'fecha inicio', accessor: 'fecha_inicio', customRender: true },
+    { Header: 'fecha fin', accessor: 'fecha_fin', customRender: true },
+    { Header: 'estado', accessor: 'estado', customRender: true },
+]
+
+export const SOLICITAR_PERMISOS_COLUMNS = [
+    { Header: 'opciones', accessor: 'actions', customRender: true },
+    { Header: 'nombre', accessor: 'empleado', customRender: true },
+    { Header: 'fecha inicio', accessor: 'fecha_inicio', customRender: true },
+    { Header: 'fecha fin', accessor: 'fecha_fin', customRender: true },
+    { Header: 'estado', accessor: 'estado', customRender: true },
+    { Header : 'comentario', accessor: 'comentario', customRender: true}
 ]

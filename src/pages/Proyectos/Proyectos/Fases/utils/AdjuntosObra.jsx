@@ -131,7 +131,7 @@ export default function AdjuntosObra(props) {
 
     const handleFile = (e) => {
         let aux = e.target.files
-        debugger
+        // debugger
         setAdjuntos({
             ...adjuntos,
             [activeTab]: [e.target.files[0]]

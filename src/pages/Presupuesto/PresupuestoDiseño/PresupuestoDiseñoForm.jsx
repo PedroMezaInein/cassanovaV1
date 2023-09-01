@@ -37,6 +37,11 @@ class PresupuestoDiseñoForm extends Component {
             concepto2: '30',
             concepto3: '10',
             desglose: [],
+            diviza_pesos: true,
+            acabados: true,
+            mobiliario: true,
+            obra_civil: true,
+            precio_dolar: 0,
             MontoIngenerias: [],
             MontoEsquemas: [],
             conceptos: [
@@ -441,7 +446,7 @@ class PresupuestoDiseñoForm extends Component {
         const { form } = this.state
 
         form.pdf = pdf
-
+    
         await axios.post(`${URL_DEV}presupuestos-diseño`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { presupuesto } = response.data
@@ -769,6 +774,9 @@ class PresupuestoDiseñoForm extends Component {
 
         if(type === 'radio'){
             if(name === 'si_desglose' || name === 'si_renders')
+                form[name] = value === "true" ? true : false
+
+                if(name === 'diviza_pesos' )
                 form[name] = value === "true" ? true : false
         }
 

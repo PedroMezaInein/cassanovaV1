@@ -97,7 +97,7 @@ class Flujos extends Component {
     traspasosSuma = (array) => {
         let aux = 0
         array.map((element) => {
-            aux = aux + (element.traspasos_destino_count - element.traspasos_origen_count);
+            aux =(element.traspasos_destino_count - element.traspasos_origen_count);
             return false
         })
         return aux
@@ -110,14 +110,21 @@ class Flujos extends Component {
                 egresos: renderToString(setMoneyTable(this.arraySuma(flujos, 'egresos_count'))),
                 ventas: renderToString(setMoneyTable(this.arraySuma(flujos, 'ventas_count'))),
                 compras: renderToString(setMoneyTable(this.arraySuma(flujos, 'compras_count'))),
-                traspasos: renderToString(setMoneyTable(this.traspasosSuma(flujos))),
+                devolucion: renderToString(setMoneyTable(this.arraySuma(flujos, 'devoluciones_count'))),
+                traspasos_destino: renderToString(setMoneyTable(this.arraySuma(flujos, 'traspasos_destino_count'))),
+                traspasos_origen: renderToString(setMoneyTable(this.arraySuma(flujos, 'traspasos_origen_count'))),
+
                 total: renderToString(
                     setMoneyTable(
                         this.arraySuma(flujos, 'ingresos_count') +
-                        this.arraySuma(flujos, 'ventas_count') -
+                        this.arraySuma(flujos, 'ventas_count') +
+                        this.arraySuma(flujos, 'devoluciones_count') +
+                        this.arraySuma(flujos, 'traspasos_destino_count') -
                         this.arraySuma(flujos, 'egresos_count') -
-                        this.arraySuma(flujos, 'compras_count') +
-                        this.traspasosSuma(flujos)
+                        this.arraySuma(flujos, 'compras_count') -
+                        this.arraySuma(flujos, 'traspasos_origen_count') 
+
+                        // this.traspasosSuma(flujos)
                     )
                 ),
                 cuenta: renderToString(setTextTable('Total')),
@@ -130,14 +137,19 @@ class Flujos extends Component {
                 egresos: renderToString(setMoneyTable(flujo.egresos_count)),
                 ventas: renderToString(setMoneyTable(flujo.ventas_count)),
                 compras: renderToString(setMoneyTable(flujo.compras_count)),
-                traspasos: renderToString(setMoneyTable(flujo.traspasos_destino_count - flujo.traspasos_origen_count)),
+                devolucion: renderToString(setMoneyTable(flujo.devoluciones_count)),
+                traspasos_origen: renderToString(setMoneyTable(flujo.traspasos_origen_count)),
+                traspasos_destino: renderToString(setMoneyTable(flujo.traspasos_destino_count)),
+
                 total: renderToString(
                     setMoneyTable(
-                        flujo.ingresos_count +
-                        flujo.ventas_count -
-                        flujo.egresos_count -
-                        flujo.compras_count +
-                        flujo.traspasos_destino_count - flujo.traspasos_origen_count
+                        (flujo.ingresos_count +
+                        flujo.ventas_count +
+                        flujo.devoluciones_count +
+                        flujo.traspasos_destino_count) - 
+                        (flujo.egresos_count +
+                        flujo.compras_count +                        
+                        flujo.traspasos_origen_count)
                     )
                 ),
                 cuenta: renderToString(setTextTableCenter(flujo.nombre)),

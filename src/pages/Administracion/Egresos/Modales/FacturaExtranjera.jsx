@@ -62,7 +62,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FacturaExtranjera(props) {
     const { data, Gastos } = props
-    console.log(Gastos)
 
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();

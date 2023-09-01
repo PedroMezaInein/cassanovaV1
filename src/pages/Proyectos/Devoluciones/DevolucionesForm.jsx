@@ -25,6 +25,7 @@ class DevolucionesForm extends Component {
             empresa: '',
             cuenta: '',
             area: '',
+            partida: '',
             subarea: '',
             comision: 0,
             solicitud: '',
@@ -582,6 +583,7 @@ class DevolucionesForm extends Component {
     
     render() {
         const { title, form, options, solicitud, data, formeditado } = this.state
+        const {comprasArray} = this.props
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Card className="card-custom">
@@ -604,6 +606,7 @@ class DevolucionesForm extends Component {
                             onSubmit={this.onSubmit}
                             formeditado={formeditado}
                             className="px-3"
+                            comprasArray={comprasArray}
                         >
                             {
                                 solicitud ?
@@ -620,7 +623,8 @@ class DevolucionesForm extends Component {
 
 const mapStateToProps = state => {
     return {
-        authUser: state.authUser
+        authUser: state.authUser,
+        comprasArray: state.opciones.compras
     }
 }
 

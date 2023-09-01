@@ -1,0 +1,52 @@
+.activo{
+    color: green;
+}
+
+.inactivo{
+    color: red;
+}
+
+.swal2-popup .swal2-icon {
+    margin: auto !important;
+}
+
+// .dropdown{
+//     display: none!important;
+// }
+
+.btn-aceptar{
+    width: 6.5rem;
+    height: 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    // background-color: #cae18d;
+    background-color: #8bdfd3;
+    margin-right: 0.5rem;
+    color: white;
+    font-weight: 500;
+}
+
+.btn-aceptar:hover{
+    width: 7rem;
+    height: 2.5rem;
+    // background-color: #99cb6a;
+    background-color: #33998a;
+}
+
+.btn-rechazar{
+    width: 6.5rem;
+    height: 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: #f1664d;
+    // background-color: #ffe38c;
+    color: white;
+    font-weight: 500;
+}
+
+.btn-rechazar:hover{
+    width: 7rem;
+    height: 2.5rem;
+    background-color: #df5946;
+    // background-color: #f3be5a;
+}

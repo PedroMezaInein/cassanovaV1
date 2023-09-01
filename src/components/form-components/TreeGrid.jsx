@@ -97,6 +97,7 @@ export default class App extends React.Component {
 	}
 	rowDataBound(args) {
 		let header = getObject('header', args.data)
+
 		switch (header) {
 			case 'INGRESOS':
 				colorHeader(args, '#E8E6FC', '#948FD8', '#D4D2F6')

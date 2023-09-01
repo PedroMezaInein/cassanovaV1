@@ -87,14 +87,11 @@ export default function AdjuntosCompras (props) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    console.log('hola')
 
     const getAdjuntos = () => {
         try {
             apiGet(`v2/proyectos/compras/adjuntos/${data.id}`, authUser)
                 .then(res => {
-                    console.log('res')
-                    console.log(res)
 
                     let adjunAux = res.data.compra.facturas_pdf
                     let adjunPagos = res.data.compra.pagos
@@ -200,9 +197,8 @@ export default function AdjuntosCompras (props) {
             data.append(`files_${activeTab}[]`, form[activeTab][0])
             data.append('adjuntos[]', activeTab)
             data.append('tipo', activeTab)
-
             try {
-                apiPostForm(`v2/proyectos/compras/${props.data.id}/archivos/s3`, data, authUser)
+                apiPostForm(`v2/proyectos/compras/${props.data.id}/archivos/adjuntos/s3`, data, authUser)
                     .then(res => {
                         Swal.close()
                         Swal.fire({

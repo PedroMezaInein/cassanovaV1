@@ -21,7 +21,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 
 export default function ProyectosTable() { 
     const userAuth = useSelector((state) => state.authUser);
-    const[opciones, setOpciones] = useState(false)
+    const [opciones, setOpciones] = useState(false)
     const [filtrado, setFiltrado] = useState('') 
     const [reloadTable, setReloadTable] = useState()
 
@@ -284,8 +284,8 @@ export default function ProyectosTable() {
                     if (result.isConfirmed) {
                     }
                 }); */
-                // openModal('crear', item)
-                window.location.replace('/proyectos/proyectos/add')
+                openModal('crear', item)
+                // window.location.replace('/proyectos/proyectos/add')
             }
         },
         {
@@ -354,11 +354,11 @@ export default function ProyectosTable() {
             </Layout>
 
             <Modal size="lg" title={"crear proyectos"} show={modal.crear.show} handleClose={e => handleClose('crear')} >
-                    <CrearProyecto handleClose={e => handleClose('crear')} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable}/>
+                    <CrearProyecto handleClose={e => handleClose('crear')} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable} options={opciones}/>
             </Modal>
 
             <Modal size="lg" title={"Filtrar proyectos"} show={modal.filtrar?.show} handleClose={e => handleClose('filtrar')} >
-                    <FiltrosProyectos handleClose={e => handleClose('filtrar')} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable}/>
+                    <FiltrosProyectos handleClose={e => handleClose('filtrar')} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable} options={opciones}/>
             </Modal>
             {/* <Modal size="xl" show={modal.nuevo} title='Información del proyecto' handleClose={() => setModal({ ...modal, nuevo: false })}>
                 <ProyectosForm />

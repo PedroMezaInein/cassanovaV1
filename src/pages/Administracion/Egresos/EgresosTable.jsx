@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { Modal } from './../../../components/singles'
 
-import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
 import TablaGeneralPaginado from './../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 
 import Crear from './Modales/CrearEgreso'
@@ -15,18 +14,22 @@ import Facturas from './Modales/Facturas'
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 
-import { setMoneyTable, setDateTable } from '../../../functions/setters'
-import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
+import { setDateTable } from '../../../functions/setters'
+import { printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+
+import { setMoneyTable } from '../../../functions/setters'
+
 import StatusIndicatorGastos from './Modales/StatusIndicatorGastos'
 
 import Swal from 'sweetalert2'
 
-import { apiOptions, catchErrors, apiDelete, apiPostForm, apiGet,apiPostFormResponseBlob } from './../../../functions/api';
+import { apiOptions, catchErrors, apiDelete, apiPostFormResponseBlob } from './../../../functions/api';
 
 export default function EgresosTable(props) { 
     const auth = useSelector((state) => state.authUser.access_token);
     const [opcionesData, setOpcionesData] = useState()
     const [reloadTable, setReloadTable] = useState()
+
     const {eliminar } = props
 
     const [modal, setModal] = useState({
@@ -59,21 +62,6 @@ export default function EgresosTable(props) {
     useEffect(() => {
         getProveedores()
     }, [filtrado])
-
-    // useEffect(() => {
-    //     getProveedores()
-    //     // if (reloadTable) {
-    //     //     reloadTable.reload()
-    //     // }
-    //     // if (filtrado) {
-    //     //     reloadTable.reload(filtrado)
-    //     //     //  setFiltrado('')
-    //     //     if(borrar == false){
-    //     //         setFiltrado('')   
-
-    //     //     }
-    //     // }
-    // }, [filtrado])
     
     const getProveedores = () => {
         Swal.fire({
@@ -147,7 +135,6 @@ export default function EgresosTable(props) {
                 Swal.close()
                 setOpcionesData(aux)
                 // setProveedoresData(aux);
-  
             }
         )
         
@@ -156,25 +143,18 @@ export default function EgresosTable(props) {
     const [filtrado, setFiltrado] = useState('') 
 
     useEffect(() => {
-        // getProveedores()
-
-        // setFiltrado()
         if (filtrado) {
             reloadTable.reload(filtrado)
-            //  setFiltrado('')
             if(borrar == false){
                 setFiltrado('')   
-
             }
         }
-
     }, [filtrado])
 
     const borrar = ( id) =>{
         if(id == false){
             reloadTable.reload(filtrado)
             setFiltrado('')   
-
         }
     }
 
@@ -200,15 +180,19 @@ export default function EgresosTable(props) {
         { nombre: 'Proveedor', identificador: 'proveedor', stringSearch: false },
         { nombre: 'Factura', identificador: 'factura', orderable: false },
         { nombre: 'Área', identificador: 'area', stringSearch: false },
+        { nombre: 'partida', identificador: 'partida', stringSearch: false },
         { nombre: 'Sub-Área', identificador: 'subarea', stringSearch: false },
         { nombre: 'Monto', identificador: 'monto', stringSearch: false },
-        // { nombre: 'Total', identificador: 'total', stringSearch: false },
         { nombre: 'Cuenta', identificador: 'cuenta', stringSearch: false },
+
+        { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false }, //quitar
+        { nombre: 'id requisicion', identificador: 'id_requisicion', stringSearch: false }, //quitar
+
         // { nombre: 'Pago', identificador: 'pago', stringSearch: false },
         // { nombre: 'Impuesto', identificador: 'impuesto', stringSearch: false },
         // { nombre: 'Estatus', identificador: 'estatusCompra', stringSearch: false },
         { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false }, //quitar
-        { nombre: 'id requisicion', identificador: 'id_requisicion', stringSearch: false }, //quitar
+
         { nombre: 'estatus', identificador: 'semaforo', stringSearch: false } //quitar
     ]
 
@@ -219,7 +203,6 @@ export default function EgresosTable(props) {
             color: 'blueButton',
             funcion: (item) => {
                 openModal('editar', item)
-
             }
         },
 
@@ -264,7 +247,7 @@ export default function EgresosTable(props) {
                 openModal('ver', item)
             }
         },
-       
+    
         {
             nombre: 'Adjuntos',
             icono: 'fas fa-paperclip',
@@ -291,18 +274,15 @@ export default function EgresosTable(props) {
             }
         },
         {
-            //filtrar
             nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
             funcion: (item) => {
                 openModal('filtrar', item)
             }
         },
         {
-            //exportar
             nombre: <div><i className="fas fa-file-export mr-5"></i><span>Exportar</span></div>,
             funcion: (item) => {
                 exportEgresosAxios(item.id)
-
             }
         },
     ]
@@ -366,10 +346,11 @@ export default function EgresosTable(props) {
     }
 
     const createStatusIndicator = (item) => {
-        return (
-            <StatusIndicatorGastos data={item} />
-        )
-
+        const createStatusIndicator = (item) => {
+            return (
+                <StatusIndicatorGastos data={item} />
+            )
+        }
     }
     
     const formatNumber = (num) => {
@@ -381,21 +362,23 @@ export default function EgresosTable(props) {
         datos.data.data.map((dato) => {
             aux.push({
                 data: dato,
-                id: dato.id,
-                fecha: setDateTable(dato.created_at),
-                monto: formatNumber(dato.monto),
-                // total: formatNumber(dato.total),
-                area: dato.area.nombre,
-                subarea: dato.subarea.nombre,
-                proveedor: dato.proveedor?.razon_social,
-                cuenta: dato.cuenta?.nombre,
-                pago: dato.tipo_pago?.tipo,
-                impuesto: dato.tipo_impuesto?.tipo,
-                descripcion: dato.descripcion,
+                id: dato.id ? dato.id : '',
+                fecha: dato.created_at ? setDateTable(dato.created_at) : '',
+                monto: dato.monto ? formatNumber(dato.monto) : '',
+                area: dato.area ? dato.area.nombre : '',
+                partida: dato.partidas ? dato.partidas.nombre : '',
+                subarea: dato.subarea ? dato.subarea.nombre : '',
+                proveedor: dato.proveedor ? dato.proveedor.razon_social : '',
+                cuenta: dato.cuenta ? dato.cuenta.nombre : '',
+                pago: dato.tipo_pago ? dato.tipo_pago.tipo : '',
+                impuesto: dato.tipo_impuesto ? dato.tipo_impuesto.tipo : '',
+                descripcion: dato.descripcion ? dato.descripcion : '',
                 // factura: dato.factura ? 'Con factura' : 'Sin factura',
-                factura:label(dato),
                 semaforo: createStatusIndicator(dato),
+                factura:label(dato),  
+
                 id_requisicion: dato.id_requisiciones ? dato.id_requisiciones : 's/n',
+
             })
         }
         )
@@ -403,28 +386,18 @@ export default function EgresosTable(props) {
     }
 
     const label = (dato) => {  
-       
         return(
-          
-            <div   title={`${ dato.factura == 1 ? 'Con factura': 'Sin factura'}`}  >
-            {
-                  dato.factura ?
-                  dato.facturas.length > 0 ?
-                    <span   style={{ color: 'green' }}><DoneAllIcon/></span>
-                    :
-                    <span   style={{ color: 'red' }}><DoneAllIcon/></span>
-
-                : 
-                <span><DescriptionOutlinedIcon/></span>
-            }
-          </div>
-        )
     
-}
-
-    function reformatDate(dateStr) {
-        var dArr = dateStr.split("-");  // ex input: "2010-01-18"
-        return dArr[2] + "/" + dArr[1] + "/" + dArr[0]/* .substring(2) */; //ex output: "18/01/10"
+            <div   title={`${ dato.factura == 1 ? 'Con factura': 'Sin factura'}`}  >
+                {
+                    dato.factura ?
+                        dato.facturas.length > 0 ?
+                            <span   style={{ color: 'green' }}><DoneAllIcon/></span>
+                        : <span   style={{ color: 'red' }}><DoneAllIcon/></span>
+                    : <span><DescriptionOutlinedIcon/></span>
+                }
+            </div>
+        )
     }
 
     return (
@@ -443,7 +416,7 @@ export default function EgresosTable(props) {
             />
 
             <Modal size="lg" title={"Nuevo gasto"} show={modal.crear?.show} handleClose={e => handleClose('crear')} >
-                <Crear handleClose={e => handleClose('crear')} opcionesData={opcionesData} reload={reloadTable}/> 
+                <Crear getProveedores={getProveedores} handleClose={e => handleClose('crear')} opcionesData={opcionesData} reload={reloadTable}/> 
             </Modal>
 
             {
@@ -480,7 +453,6 @@ export default function EgresosTable(props) {
                     <FacturaExtranjera handleClose={e => handleClose('facturaExtranjera')} opcionesData={opcionesData} data={modal.facturaExtranjera.data}/>
                 </Modal>
             }
-
         </>
     )
 

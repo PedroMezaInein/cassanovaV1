@@ -53,17 +53,17 @@ export default function EditProyect(props) {
     const departamentos = useSelector(state => state.opciones.departamentos)
     const classes = useStyles();
     const [form, setForm] = useState({
-        nombre:proyecto.nombre,
-        fechaInicio: proyecto.fecha_inicio,
-        fechaFin: proyecto.fecha_fin,
-        empresa: { name: proyecto.empresa.name, label: proyecto.empresa.name, value: parseInt(proyecto.empresa.id) },
-        tipo: proyecto.tipo_proyecto_id,
-        sucursal: proyecto.sucursal,
-        ciudad: proyecto.ciudad,
+        nombre:proyecto.nombre ? proyecto.nombre : '',
+        fechaInicio: proyecto.fecha_inicio ? proyecto.fecha_inicio : '',
+        fechaFin: proyecto.fecha_fin ? proyecto.fecha_fin : '',
+        empresa: proyecto.empresa ? { name: proyecto.empresa.name, label: proyecto.empresa.name, value: parseInt(proyecto.empresa.id) } : '',
+        tipo: proyecto.tipo_proyecto ? proyecto.tipo_proyecto.id : '',
+        sucursal: proyecto.sucursal ? proyecto.sucursal : '',
+        ciudad: proyecto.ciudad ? proyecto.ciudad : '',
         ubicacion: proyecto.ubicacion ? proyecto.ubicacion : '',
-        m2: proyecto.m2,
-        costo: proyecto.costo,
-        descripcion: proyecto.descripcion,
+        m2: proyecto.m2 ? proyecto.m2 : '',
+        costo: proyecto.costo ? proyecto.costo : '',
+        descripcion: proyecto.descripcion ? proyecto.descripcion : '',
         fase1: proyecto.fase1 === 1 ? true : false,
         fase2: proyecto.fase2 === 1 ? true : false,
         fase3: proyecto.fase3 === 1 ? true : false,
@@ -71,10 +71,11 @@ export default function EditProyect(props) {
         numero_contacto: proyecto.numero_contacto,
         correos: proyecto.contactos.map(contacto => contacto.correo),
         clientes: proyecto.clientes,
-        cliente_id: proyecto.cliente_id,
+        cliente_id: proyecto.pivot ? proyecto.pivot.cliente_id : '',
         fases: [],
         responsable: proyecto.responsable ? proyecto.responsable.empleado_id : '',
     })
+
     const [responsable, setResponsable] = useState({
         responsable: '',
         id_responsable: '',
@@ -92,8 +93,6 @@ export default function EditProyect(props) {
         { value: 'fase2', name: 'Fase 2', label: 'Fase 2' },
         { value: 'fase3', name: 'Fase 3', label: 'Fase 3' },
     ]
-
-    console.log(dataResponsable)
 
     const [opciones, setOpciones] = useState(false)
 
@@ -332,7 +331,6 @@ export default function EditProyect(props) {
             correos: form.correos,
 
         }
-        
 
         try {
             axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}`, newForm, { headers: setSingleHeader(user.access_token) })

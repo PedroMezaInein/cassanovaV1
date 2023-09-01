@@ -105,11 +105,13 @@ class CalendarioProyectos extends Component {
         })
     }
     getContentCalendarAxios = async (mes, año, fase) => {
+        console.log('primero carga aqui')
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}&fase=${fase}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos } = response.data
                 let { colorProyecto } = this.state
+                console.log(response.data)
                 proyectos.forEach((proyecto) => {
                     let esigual = false
                     let colorexistente = ''
@@ -475,7 +477,6 @@ class CalendarioProyectos extends Component {
         return form
     }
     
-    
     render() {
         const { mes, año, fase, proyectos, dias, modal, proyecto, form, tipo, usuarios } = this.state
         return (
@@ -545,7 +546,7 @@ class CalendarioProyectos extends Component {
                                     id = "calendario-proyectos">
                                     <thead className="text-center">
                                         <tr>
-                                            <th className="font-weight-bolder border-0">PROYECTO</th>
+                                            <th className="font-weight-bolder border-0">PROYECTOS</th>
                                             {
                                                 [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
                                                     return (<th className="border-top-0" key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)

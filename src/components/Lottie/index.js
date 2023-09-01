@@ -20,6 +20,15 @@ import MoneyTransaction from './MoneyTransaction'
 import CommonLottie from './CommonLottie'
 import PendingPayment from './PendingPayment'
 import Budget from './Budget'
+import * as CalendarDate from './assets/calendar-date.json'
+import * as ContactUs from './assets/contact-us.json'
+import * as DeleteUser from './assets/delete-user.json'
+import * as RelacionesPublicas from './assets/relaciones-publicas.json'
+import * as ScheduleAppointment from './assets/schedule-appointment.json'
+import * as SocialMedia from './assets/social-media.json'
+import * as TimeManagement from './assets/time-management.json'
+import * as Email from './assets/Email.json'
+import * as SearchNotFound from './assets/search-not-found.json'
 
 export const Sending = sending
 export const Done = done
@@ -38,4 +47,5 @@ export const Build = build
 export const Robot404 = robot404
 export const Update = update
 export const UserWarning = userWarning
-export { Panel, MoneyTransaction, CommonLottie, PendingPayment, Budget }
+export { Panel, MoneyTransaction, CommonLottie, PendingPayment, Budget ,CalendarDate, ContactUs, DeleteUser,RelacionesPublicas,ScheduleAppointment,SocialMedia,
+        TimeManagement, Email,SearchNotFound }

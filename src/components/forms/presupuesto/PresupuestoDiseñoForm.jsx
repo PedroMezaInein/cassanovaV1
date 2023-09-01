@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Col, Row, Nav, Tab } from 'react-bootstrap'
-import { SelectSearch, Button, Input, InputSinText, InputNumber, InputMoney, CalendarDay, OptionsCheckboxHeaders,OptionsCheckbox} from '../../form-components'
+import { SelectSearch, Button, Input, InputSinText, InputNumber, InputMoney, CalendarDay, OptionsCheckboxHeaders,OptionsCheckbox,InputNumberGray} from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import { Calendar } from 'react-date-range'
@@ -98,6 +98,14 @@ class PresupuestoDiseñoForm extends Component {
 
         });
         onChangeCheckboxes(aux, 'desglose')
+    }
+    
+    onChanges = (value, name) => {
+        const { form } = this.props
+        console.log(value)
+        console.log(name)
+        form[name] = value
+        this.setState({ ...this.state, form })
     }
 
     render() {
@@ -237,6 +245,47 @@ class PresupuestoDiseñoForm extends Component {
                                                 :''
                                             }
                                         </div>
+                                        
+                                        <div className="col-md-6 col-xxl-4">
+                                                <div>
+                                                    <label className="col-form-label text-dark-75 font-weight-bold font-size-lg">Tipo de cambio</label>
+                                                    <div className="radio-inline">
+                                                        <label className="radio">
+                                                            <input type="radio" name='diviza_pesos' value={true} onChange={onChange} checked={form.diviza_pesos === true ? true : false} />MXN
+                                                            <span></span>
+                                                        </label>
+                                                        <label className="radio">
+                                                            <input type="radio" name='diviza_pesos' value={false} onChange={onChange} checked={form.diviza_pesos === false ? true : false} />USD
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-12 pt-5 d-xxl-none">
+                                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                            </div>
+                                            {
+                                                !form.diviza_pesos &&
+                                                <div className="col-md-6 col-xxl-4">
+                                                    <InputNumberGray
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
+                                                        withicon={1}
+                                                        withformgroup={0}
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        placeholder="Precio por dolar"
+                                                        value={form.precio_dolar}
+                                                        iconclass={"fas fa-dollar-sign"}
+                                                        thousandseparator={true}
+                                                        onChange={onChange}
+                                                        name="precio_dolar"
+                                                    />
+                                                </div>
+                                            }
+
                                     </Col>
                                 </Row>
                                 <div className="form-group row form-group-marginless">

@@ -1062,7 +1062,7 @@ export function getFases(){
     return [
         { name: 'Fase 1', value: '1', label: 'Fase 1' },
         { name: 'Fase 2', value: '2', label: 'Fase 2' },
-        { name: 'Fase 3', value: '3', label: 'Fase 3' },
+        // { name: 'Fase 3', value: '3', label: 'Fase 3' },
         { name: 'Todas', value: 'todas', label: 'Todas' }
     ]
 }
@@ -1244,4 +1244,52 @@ export function printTableCP (key, cliente) {
             </tr>
         </tbody>
     )
+}
+
+export function setContactoIcon(contacto){
+    if(contacto)
+        if(contacto.tipo_contacto)
+            if(contacto.tipo_contacto.tipo){
+                switch(contacto.tipo_contacto.tipo){
+                    case 'Llamada':
+                        return(<i className={contacto.success ? "fas fa-phone-volume text-success icon-16px" : "fas fa-phone-volume text-danger icon-16px"} />);
+                    case 'Correo':
+                        return(<i className={contacto.success ? "fas fa-envelope text-success icon-16px" : "fas fa-envelope text-danger icon-16px"} />);
+                    case 'VIDEO LLAMADA':
+                        return(<i className={contacto.success ? "fas fa-video text-success icon-16px" : "fas fa-video text-danger icon-16px"} />);
+                    case 'Whatsapp':
+                        return(<i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"} />);
+                    case 'TAWK TO ADS':
+                        return(<i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"} />);
+                    case 'REUNIÓN PRESENCIAL':
+                        return(<i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"} />);
+                    case 'Visita':
+                        return(<i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"} />);
+                    case 'TAWK TO ORGANICO':
+                        return(<i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"} />);
+                    default:
+                        return(<i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"} />);
+                }
+            }
+    return ''
+}
+
+export function setDate(date) {
+    return (
+        <Moment format="DD/MM/YYYY">
+            {date}
+        </Moment>
+    )
+}
+
+export function setEsquema(text) {
+    let esquema = ''
+    if(text === 'esquema_1'){
+        esquema = 'Esquema 1'
+    }else if(text === 'esquema_2'){
+        esquema = 'Esquema 2'
+    }else{
+        esquema = 'Esquema 3'
+    }
+    return esquema
 }

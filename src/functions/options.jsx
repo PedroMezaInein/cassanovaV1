@@ -47,3 +47,40 @@ export function transformOptions (options){
     });
     return options
 }
+
+export function getEstados (){
+    return [
+        { name: "Aguascalientes", value: "Aguascalientes", label: "Aguascalientes" },
+        { name: "Baja California", value: "Baja California", label: "Baja California" },
+        { name: "Baja California Sur", value: "Baja California Sur", label: "Baja California Sur" },
+        { name: "Campeche", value: "Campeche", label: "Campeche" },
+        { name: "Chiapas", value: "Chiapas", label: "Chiapas" },
+        { name: "Chihuahua", value: "Chihuahua", label: "Chihuahua" },
+        { name: "Ciudad de México", value: "Ciudad de México", label: "Ciudad de México" },
+        { name: "Coahuila", value: "Coahuila", label: "Coahuila" },
+        { name: "Colima", value: "Colima", label: "Colima" },
+        { name: "Durango", value: "Durango", label: "Durango" },
+        { name: "Estado de México", value: "Estado de México", label: "Estado de México" },
+        { name: "Guanajuato", value: "Guanajuato", label: "Guanajuato" },
+        { name: "Guerrero", value: "Guerrero", label: "Guerrero" },
+        { name: "Hidalgo", value: "Hidalgo", label: "Hidalgo" },
+        { name: "Jalisco", value: "Jalisco", label: "Jalisco" },
+        { name: "Michoacán", value: "Michoacán", label: "Michoacán" },
+        { name: "Morelos", value: "Morelos", label: "Morelos" },
+        { name: "Nayarit", value: "Nayarit", label: "Nayarit" },
+        { name: "Nuevo León", value: "Nuevo León", label: "Nuevo León" },
+        { name: "Oaxaca", value: "Oaxaca", label: "Oaxaca" },
+        { name: "Puebla", value: "Puebla", label: "Puebla" },
+        { name: "Querétaro", value: "Querétaro", label: "Querétaro" },
+        { name: "Quintana Roo", value: "Quintana Roo" },
+        { name: "San Luis Potosí", value: "San Luis Potosí" },
+        { name: "Sinaloa", value: "Sinaloa", label: "Sinaloa" },
+        { name: "Sonora", value: "Sonora", label: "Sonora" },
+        { name: "Tabasco", value: "Tabasco", label: "Tabasco" },
+        { name: "Tamaulipas", value: "Tamaulipas", label: "Tamaulipas" },
+        { name: "Tlaxcala", value: "Tlaxcala", label: "Tlaxcala" },
+        { name: "Veracruz", value: "Veracruz", label: "Veracruz" },
+        { name: "Yucatán", value: "Yucatán", label: "Yucatán" },
+        { name: "Zacatecas", value: "Zacatecas", label: "Zacatecas" },
+    ]
+}

@@ -1,0 +1,107 @@
+.crear_proyecto{
+    margin-top: -5rem;
+}
+
+.crear_primerParte{
+    margin-top: 1rem;
+    margin-left: 3rem;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.crear_segundaParte{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 3rem;
+}
+
+.crear_tercerParte{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 3rem;
+}
+
+.crear_cuartaParte{
+    display: flex;
+    flex-direction: row;
+    gap: 20px; 
+    justify-content: space-evenly;
+}
+
+.crear_quintaParte{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.crear_sextaParte{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.botones{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.sendButton {
+    margin-top: 1rem;
+    width: 7rem;
+    height: 2.5rem;
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.sendButton:hover {
+    background: #FFD549;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+
+}
+
+.sendButton:active {
+    background: #FFD549;
+    color: white;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    transform: translateY(4px);
+}
+
+.borrarButton{
+    margin-top: 1rem;
+    position: absolute;
+    width: 7rem;
+    height: 2.5rem;
+    /* margin-left: 80%; */
+    background: #c95a5a;
+    /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
+    color:#e1f0ff;
+    border: none;
+    border-radius: 40% 5%;
+}
+
+.borrarButton:hover {
+    background: #ff4949;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+
+}
+
+.borrarButton:active {
+    background: #ff4949;
+    color: white;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    transform: translateY(4px);
+}
+
+.filtrar_proyecto{
+    /* margin-top: -2rem; */
+}

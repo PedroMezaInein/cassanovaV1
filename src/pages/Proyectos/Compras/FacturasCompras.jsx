@@ -161,40 +161,53 @@ export default function Factura(props) {
                             obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']
                         }
                     }
-
                     let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
-                    let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
-                    let aux = []
-                    files.forEach((file, index) => {
-                        aux.push({
-                            name: file.name,
-                            file: file,
-                            url: URL.createObjectURL(file),
-                            key: index
+
+                    if(!empresa ){
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Fromato Sin empresa',
+                            text: 'La factura no tiene la empresa receptora registrada',
+                            showConfirmButton: false,
+                            timer: 2000
                         })
-                    })
-                    let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
-                    
-                    setForm({
-                        ...form,
-                        fecha: obj.fecha,
-                        rfc: obj.rfc_emisor,
-                        total: obj.total,
-                        descripcion: obj.descripcion,
-                        empresa: empresa ? empresa.id : null,
-                        empresa_nombre: empresa ? empresa.nombre : null,
-                        proveedor: proveedor ? proveedor.id : null,
-                        proveedor_nombre: proveedor ? proveedor.name : null,
-                        cuentas: opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas,
-                        adjuntos: {
-                            ...form.adjuntos,
-                            xml: {
-                                files: aux, 
-                                value: path
-                            }
-                        },
-                        facturaObject: obj
-                    })
+                    }else {
+                        let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
+                            let aux = []
+                            files.forEach((file, index) => {
+                                aux.push({
+                                    name: file.name,
+                                    file: file,
+                                    url: URL.createObjectURL(file),
+                                    key: index
+                                })
+                            })
+                            let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
+                        
+                            setForm({
+                                ...form,
+                                fecha: obj.fecha,
+                                rfc: obj.rfc_emisor,
+                                total: obj.total,
+                                descripcion: obj.descripcion,
+                                empresa: empresa ? empresa.id : null,
+                                empresa_nombre: empresa ? empresa.nombre : null,
+                                proveedor: proveedor ? proveedor.id : null,
+                                proveedor_nombre: proveedor ? proveedor.name : null,
+                                cuentas: empresa ? opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas : null,
+                                adjuntos: {
+                                    ...form.adjuntos,
+                                    xml: {
+                                        files: aux, 
+                                        value: path
+                                    }
+                                },
+                                facturaObject: obj
+                            })
+
+                    } 
+
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -408,9 +421,26 @@ export default function Factura(props) {
         //         adjuntos: 'n/a'
         //     });
         // } else { // dentro de facturas están las propiedades de XML y PDF, cada uno es un objeto
-        console.log(datos.compra)
             datos.compra.facturas.forEach((factura) => {
                 let adjuntos = []; // creo un nuevo array para almacenar los valores de los adjuntos 
+                if (factura.xml.name) {
+                    adjuntos.push(
+                        <div style={{width:'100px', marginRight:'2.5rem'}}>
+                            <a style={{width:'90%'}} href={factura.xml.url} target="_blank" rel="noopener noreferrer">
+                                XML: {factura.xml.name}
+                            </a> 
+                        </div>   
+                    );
+                }
+                if (factura.pdf.name) {
+                    adjuntos.push(
+                        <div style={{width:'100px'}}>
+                            <a style={{width:'90%'}} href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
+                                PDF: {factura.pdf.name}
+                            </a>
+                        </div>
+                    );
+                }
     
                 aux.push({
                 folio: factura.folio ? factura.folio : 'n/a',

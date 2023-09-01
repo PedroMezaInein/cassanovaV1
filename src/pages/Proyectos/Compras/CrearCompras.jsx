@@ -24,19 +24,34 @@ import { es } from 'date-fns/locale'
 import DateFnsUtils from '@date-io/date-fns';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
-import { apiOptions, catchErrors, apiDelete, apiPostForm, apiGet,apiPostFormResponseBlob, apiPutForm} from './../../../functions/api';
-import useOptionsArea from './../../../hooks/useOptionsArea'
+import { apiPostForm, apiGet, apiPutForm} from './../../../functions/api';
+import CrearProveedor from './CrearProveedor'
 import Style from './../../Administracion/Egresos/Modales/CrearEgreso.module.css'
+import { Modal } from './../../../components/singles'
 
 export default function CrearCompras(props) {
 
-    const { opcionesData, handleClose, reload } = props
+    const { opcionesData, handleClose, reload, getProveedores } = props
     const departamento = useSelector(state => state.authUser.departamento)
     const departamentos = useSelector(state => state.opciones.compras)
     const proyectos = useSelector(state => state.opciones.proyectos)
     const [errores, setErrores] = useState({})
-
     const auth = useSelector((state) => state.authUser.access_token);
+
+    const [proveedorSelect, setProveedorSelect] = useState({
+        preSelect: false,
+        id:null,
+        name: null,
+    })
+
+    useEffect(() => {
+        if(proveedorSelect.preSelect){
+            let data = {
+                ...proveedorSelect
+            }
+            handleChangeProveedor('', data)
+        }
+    }, [proveedorSelect]) //cuando proveedorSelect tenga cualquier modificacion, lo que esta dentro de useEffect se ejecuta
 
     const [form, setForm] = useState({
         adjuntos: {
@@ -87,6 +102,21 @@ export default function CrearCompras(props) {
         tiposPagos: [],
     })
 
+    const[nuevoProveedor, setNuevoProveedor] = useState(false)
+
+    const handleCloseProveedor = () => {
+        setNuevoProveedor(false)
+        setForm({
+            ...form,
+            proveedor: nuevoProveedor.id, // Establecer el proveedor recién creado
+            proveedor_nombre: nuevoProveedor.name,
+        });
+    }
+
+    const agregarProveedor = () => {
+        setNuevoProveedor(true)
+    }
+
     useEffect(() => {
         
         if(opcionesData){
@@ -102,16 +132,27 @@ export default function CrearCompras(props) {
     };
 
     const handleDeleteFile = (tipo, index) => {
-        let files = form.adjuntos[tipo].files
-        files.splice(index, 1)
-        setForm({
-            ...form,
+        let files = form.adjuntos[tipo].files;
+        files.splice(index, 1);
+
+        // Check if all XML files are deleted
+        const allXmlFilesDeleted = tipo === 'xml' && files.length === 0;
+
+        //LIMPIA LOS CAMPOS DEL FORMULARIO QUE YA HABIAN SIDO LLENADOS POR UNA FACTURA
+        setForm((prevForm) => ({
+            ...prevForm,
             adjuntos: {
-                ...form.adjuntos,
-                [tipo]: {files: [...files], value: ''}
-            }
-        })
-    }
+                ...prevForm.adjuntos,
+                [tipo]: { files: [...files], value: '' },
+            },
+            rfc: allXmlFilesDeleted ? '' : prevForm.rfc, // Clear rfc field if all XML files deleted
+            empresa: allXmlFilesDeleted ? '' : prevForm.empresa, 
+            descripcion: allXmlFilesDeleted ? '' : prevForm.descripcion, 
+            fecha: allXmlFilesDeleted ? '' : prevForm.fecha, 
+            total: allXmlFilesDeleted ? '' : prevForm.total, 
+            facturaObject: allXmlFilesDeleted ? '' : prevForm.facturaObject, 
+        }));
+    };
 
     const handleChange = (e) => {
         if(e.target.name === 'empresa'){
@@ -134,8 +175,8 @@ export default function CrearCompras(props) {
             ...form,
             [e.target.name]:e.target.value,
             partida: ''
-            })
-        }
+        })
+    }
 
     const handleAddFile = (e, tipo) => {
         let aux = []
@@ -166,10 +207,12 @@ export default function CrearCompras(props) {
         if (files[0].type === 'text/xml') {
             reader.onload = (event) => {
                 const text = (event.target.result)
+
                 let jsonObj = j2xParser.parse(text, {
                     ignoreAttributes: false,
                     attributeNamePrefix: ''
                 })
+
                 if (jsonObj['cfdi:Comprobante']) {
                     jsonObj = jsonObj['cfdi:Comprobante']
                     const keys = Object.keys(jsonObj)
@@ -238,6 +281,23 @@ export default function CrearCompras(props) {
                         })
                     }
                     let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
+
+                    if(!proveedor){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No existe el proveedor',
+                            text: 'No existe el proveedor, favor de crearlo..',
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+                        setNuevoProveedor(true)
+
+                    }else{
+                        form.proveedor = proveedor.id.toString()
+                        form.contrato = ''
+                        // options.contratos = setOptions(proveedor.contratos, 'nombre', 'id')
+                    }
+                
                     let aux = []
                     files.forEach((file, index) => {
                         aux.push({
@@ -531,7 +591,7 @@ export default function CrearCompras(props) {
                 showConfirmButton: false,
                 timer: 1500
             })
-         })
+        })
     }
 
     const validateForm = () => {
@@ -708,7 +768,7 @@ export default function CrearCompras(props) {
                 text: 'Favor de llenar todos los campos',
                 icon: 'info',
                 showConfirmButton: false,
-                timer: 2000,
+                timer: 1500,
             })
         }
     }
@@ -732,6 +792,7 @@ export default function CrearCompras(props) {
             }
         })
     }
+    console.log(departamentos)
 
     return(
         <>
@@ -846,6 +907,7 @@ export default function CrearCompras(props) {
                                                 name="rfc"
                                                 value={form.rfc ? form.rfc : ''}
                                                 onChange={handleChange}
+                                                style={{ width: 150, paddingRight: '1rem' }}
                                             />
 
                                         </div>
@@ -859,22 +921,32 @@ export default function CrearCompras(props) {
                             <div>
                                 {
                                     opciones.proveedores.length > 0 ?
-                                    <div>    
-                                        <InputLabel error={errores.proveedor ? true : false}>Proveedor</InputLabel>
-                                        <Autocomplete
-                                            name="proveedor"
-                                            options={opciones.proveedores}
-                                            getOptionLabel={(option) => option.name}
-                                            style={{ width: 230, paddingRight: '1rem' }}
-                                            onChange={(event, value) => handleChangeProveedor(event, value)}
-                                            renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
-                                            error={errores.proveedor ? true : false}
-                                            
-                                        />
-                                    </div>    
-                                        : <></>
+                                        <div>    
+                                            <InputLabel error={errores.proveedor ? true : false}>Proveedor</InputLabel>
+                                            <Autocomplete
+                                                name="proveedor"
+                                                options={opciones.proveedores}
+                                                getOptionLabel={(option) => option.name}
+                                                style={{ width: 150, paddingRight: '1rem' }}
+                                                onChange={(event, value) => handleChangeProveedor(event, value)}
+                                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
+                                                error={errores.proveedor ? true : false}
+                                            />
+                                        </div>    
+                                    : <></>
                                 }
                             </div>  
+
+                            {
+                                form.factura ? 
+                                    <></> :
+                                        <div className={`${Style.agregarProveedor}`}>
+                                            <Button variant="contained" color="primary" component="span" onClick={agregarProveedor}> 
+                                                Agregar proveedor
+                                            </Button>
+                                        </div>
+                            }
+                            
 
                             <div>
                                 {
@@ -885,36 +957,14 @@ export default function CrearCompras(props) {
                                             name="proyecto"
                                             options={proyectos}
                                             getOptionLabel={(option) => option.nombre}
-                                            style={{ width: 230, paddingRight: '1rem' }}
+                                            style={{ width: 150, paddingRight: '1rem' }}
                                             onChange={(event, value) => handleChangeProyecto(event, value)}
                                             renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proyecto_nombre ? form.proyecto_nombre : 'proyecto'} />}
                                         />
                                     </div>    
                                         : <></>
                                 }
-                            </div>  
-
-                            {/* <div>
-                                {
-                                    proyectos.length > 0 ?
-                                        <div>
-                                            <InputLabel>proyecto</InputLabel>
-                                            <Select
-                                                name="proyecto"
-                                                value={form.proyecto}
-                                                onChange={handleChange}
-                                                style={{ width: 200, paddingRight: '1rem' }}
-                                            >
-                                                {
-                                                    proyectos.map((item, index) => (
-                                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </div>
-                                    : null
-                                }
-                            </div>   */}
+                            </div> 
 
                             <div>
                                 {
@@ -925,7 +975,7 @@ export default function CrearCompras(props) {
                                                 name="empresa"
                                                 value={form.empresa}
                                                 onChange={handleChange}
-                                                style={{ width: 200, paddingRight: '1rem' }}
+                                                style={{ width: 150, paddingRight: '1rem' }}
                                                 error={errores.empresa ? true : false}
                                             >
                                                 {
@@ -965,6 +1015,7 @@ export default function CrearCompras(props) {
                                             value={form.fecha !== '' ? form.fecha : null}
                                             placeholder="dd/mm/yyyy"
                                             onChange={e => handleChangeFecha(e, 'fecha')} 
+                                            style={{ width: 150, marginRight: '1rem' }}
                                             KeyboardButtonProps={{
                                                 'aria-label': 'change date',
                                             }}
@@ -984,7 +1035,7 @@ export default function CrearCompras(props) {
                                             value={form.area}
                                             name="area"
                                             onChange={handleChangeAreas}
-                                            style={{ width: 230, marginRight: '1rem' }}
+                                            style={{ width: 150, marginRight: '1rem' }}
                                             error={errores.area ? true : false}
                                         >
                                             {departamentos.map((item, index) => (
@@ -1006,7 +1057,7 @@ export default function CrearCompras(props) {
                                             value={form.partida}
                                             name="partida"
                                             onChange={handleChange}
-                                            style={{ width: 230, marginRight: '1rem' }}
+                                            style={{ width: 150, marginRight: '1rem' }}
                                             error={errores.partida ? true : false}
                                         >
                                             {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
@@ -1027,7 +1078,7 @@ export default function CrearCompras(props) {
                                             value={form.subarea}
                                             name="subarea"
                                             onChange={handleChange}  
-                                            style={{ width: 230, marginRight: '1rem' }}
+                                            style={{ width: 150, marginRight: '1rem' }}
                                             error={errores.subarea ? true : false}
                                         >
                                             {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id === form.partida).subpartidas.map((item, index) => (
@@ -1055,7 +1106,7 @@ export default function CrearCompras(props) {
                                         shrink: true,
                                     }}
                                     multiline
-                                    style={{ width: '70vh', height: 100 }}
+                                    style={{ width: '74vh', height: 100 }}
                                     error={errores.descripcion ? true : false}
                                 />
                             </div>
@@ -1086,7 +1137,7 @@ export default function CrearCompras(props) {
                                                 value={form.cuenta}
                                                 name="cuenta"
                                                 onChange={handleChange}
-                                                style={{ width: 230, marginRight: '1rem' }}
+                                                style={{ width: 150, marginRight: '1rem' }}
                                                 error={errores.cuenta ? true : false}
                                             >
                                                 {form.cuentas.map((item, index) => (
@@ -1101,14 +1152,6 @@ export default function CrearCompras(props) {
                             <div>
                                 {
                                     opciones.tiposPagos.length > 0 ?
-                                        // <Autocomplete
-                                        //     name="proveedor"
-                                        //     options={opciones.tiposPagos}
-                                        //     getOptionLabel={(option) => option.name}
-                                        //     style={{ width: 230, paddingRight: '1rem' }}
-                                        //     /* onChange={(event, value) => handleChangeProveedor(event, value)} */
-                                        //     renderInput={(params) => <TextField {...params} label={'tipo de pago'} variant="outlined" />}
-                                        // />
                                         <div>
                                             <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
 
@@ -1116,7 +1159,7 @@ export default function CrearCompras(props) {
                                                 value={form.tipoPago}
                                                 name="tipoPago"
                                                 onChange={handleChange}
-                                                style={{ width: 230, marginRight: '1rem' }}
+                                                style={{ width: 150, marginRight: '1rem' }}
                                                 error={errores.tipoPago ? true : false}
                                             >
                                                 {opciones.tiposPagos.map((item, index) => (
@@ -1143,7 +1186,7 @@ export default function CrearCompras(props) {
                                                 value={form.tipoImpuesto}
                                                 name="tipoImpuesto"
                                                 onChange={handleChange}
-                                                style={{ width: 230, marginRight: '1rem' }}
+                                                style={{ width: 150, marginRight: '1rem' }}
                                                 error={errores.tipoImpuesto ? true : false}
                                             >
                                                 {opciones.tiposImpuestos.map((item, index) => (
@@ -1163,6 +1206,7 @@ export default function CrearCompras(props) {
                                     currencySymbol="$"
                                     outputFormat="number"
                                     onChange={(event, value) => handleMoney(value)} 
+                                    style={{ width: 150, marginRight: '1rem' }}
                                     error={errores.total ? true : false}
                                 />
                             </div>
@@ -1173,6 +1217,7 @@ export default function CrearCompras(props) {
                                     value={form.comision} 
                                     currencySymbol="$"
                                     outputFormat="number"
+                                    style={{ width: 150, marginRight: '1rem' }}
                                     onChange={(event, value) => handleMoneyComision(value)} 
                                     
                                 />
@@ -1276,7 +1321,12 @@ export default function CrearCompras(props) {
                     </div>
                 </div>   
             </div>
-            
+
+            <Modal size="md" title={"agregar proveedor"} handleClose={handleCloseProveedor} show={nuevoProveedor}>
+                <CrearProveedor handleClose={handleCloseProveedor} getProveedores={getProveedores} departamentos={departamentos}
+                data={form}  reload={reload} handleCloseRecarga={setNuevoProveedor} auth={auth} setProveedorSelect={setProveedorSelect}/>
+            </Modal>
+
         </>
     )
 }

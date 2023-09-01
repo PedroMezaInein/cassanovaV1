@@ -35,9 +35,9 @@ export default function CrearCompras(props) {
 
     const auth = useSelector((state) => state.authUser.access_token);
 
-    let valorArea = areaCompras.find((element) => parseInt(element.id_area) === data.area.id)
-    let valorPartida = valorArea.partidas.find((element) => parseInt(element.id) === data.partida_id)
-    let valorSubPartida = valorPartida.subpartidas.find((element) => parseInt(element.id) === data.subarea.id)
+    // let valorArea = areaCompras.find((element) => parseInt(element.id_area) === data.area.id)
+    // let valorPartida = valorArea.partidas.find((element) => parseInt(element.id) === data.partida_id)
+    // let valorSubPartida = valorPartida.subpartidas.find((element) => parseInt(element.id) === data.subarea.id)
   
     useEffect(() => {
         

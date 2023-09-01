@@ -161,40 +161,52 @@ export default function Factura(props) {
                             obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']
                         }
                     }
-
                     let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
-                    let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
-                    let aux = []
-                    files.forEach((file, index) => {
-                        aux.push({
-                            name: file.name,
-                            file: file,
-                            url: URL.createObjectURL(file),
-                            key: index
+
+                    if(!empresa ){
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Fromato Sin empresa',
+                            text: 'La factura no tiene la empresa receptora registrada',
+                            showConfirmButton: false,
+                            timer: 2000
                         })
-                    })
-                    let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
-                    
-                    setForm({
-                        ...form,
-                        fecha: obj.fecha,
-                        rfc: obj.rfc_emisor,
-                        total: obj.total,
-                        descripcion: obj.descripcion,
-                        empresa: empresa ? empresa.id : null,
-                        empresa_nombre: empresa ? empresa.nombre : null,
-                        proveedor: proveedor ? proveedor.id : null,
-                        proveedor_nombre: proveedor ? proveedor.name : null,
-                        cuentas: opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas,
-                        adjuntos: {
-                            ...form.adjuntos,
-                            xml: {
-                                files: aux, 
-                                value: path
-                            }
-                        },
-                        facturaObject: obj
-                    })
+                    }else {
+                        let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
+                            let aux = []
+                            files.forEach((file, index) => {
+                                aux.push({
+                                    name: file.name,
+                                    file: file,
+                                    url: URL.createObjectURL(file),
+                                    key: index
+                                })
+                            })
+                            let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
+                        
+                            setForm({
+                                ...form,
+                                fecha: obj.fecha,
+                                rfc: obj.rfc_emisor,
+                                total: obj.total,
+                                descripcion: obj.descripcion,
+                                empresa: empresa ? empresa.id : null,
+                                empresa_nombre: empresa ? empresa.nombre : null,
+                                proveedor: proveedor ? proveedor.id : null,
+                                proveedor_nombre: proveedor ? proveedor.name : null,
+                                cuentas: empresa ? opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas : null,
+                                adjuntos: {
+                                    ...form.adjuntos,
+                                    xml: {
+                                        files: aux, 
+                                        value: path
+                                    }
+                                },
+                                facturaObject: obj
+                            })
+
+                    } 
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -310,7 +322,14 @@ export default function Factura(props) {
         apiPostForm(`v2/administracion/facturas`, aux, auth).then(
             (response) => {
                 const { factura } = response.data
-
+                Swal.close()
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Factura subida con éxito',
+                    text: 'Se subio la factura con éxito',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
                 setForm({
                     ...form,
                     facturaItem: factura,
