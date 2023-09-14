@@ -8,7 +8,7 @@ import { Card } from 'react-bootstrap'
 import { TreeGrid } from '../../components/form-components'
 import { FormEstadoResultados } from '../../components/forms'
 import { waitAlert, errorAlert, printResponseErrorAlert } from '../../functions/alert'
-import { setOptions } from '../../functions/setters'
+import { setOptions, setMoneyTable } from '../../functions/setters'
 import { setSingleHeader } from '../../functions/routers'
 import { MoneyTransaction } from '../../components/Lottie'
 class Normas extends Component {
@@ -23,8 +23,12 @@ class Normas extends Component {
         },
         options: {
             empresas: [],
+            cuentas: [],
+            balance: [],
+
         },
-        datos: null
+        datos: null,
+
     };
 
     componentDidMount() {
@@ -64,7 +68,14 @@ class Normas extends Component {
         await axios.post(`${URL_DEV}v2/reportes/estado-resultados`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { datos } = response.data
+                const { options } = this.state
+                options.cuentas = response.data.cuentas
+                options.balance = response.data.cuentas2
+
                 this.setDatos(datos)
+
+                this.setState({ ...this.state, options })
+
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -341,13 +352,15 @@ class Normas extends Component {
                 old.gastos.datos[index].subareas[index2].egresos.forEach((egreso) => {
                     total = total + egreso.total
                 })
+                let partida =  old.gastos.datos[index].subareas[index2].egresos[0].partidas ? old.gastos.datos[index].subareas[index2].egresos[0].partidas.nombre : ''
                 aux2.push({
-                    'header': old.gastos.datos[index].subareas[index2].nombre,
+                    'header': partida +" -> "+old.gastos.datos[index].subareas[index2].nombre,
                     'porcentaje': ((total * 100) / old.gastos.datos[index].total)/100,
                     'total': total
                 })
             }
-            total = old.gastos.datos[index].total
+            total = old.gastos.datos[index].nombre
+
             aux.push({
                 'header': old.gastos.datos[index].nombre+" ",
                 'total': total,
@@ -384,8 +397,10 @@ class Normas extends Component {
                 old.otros_ingresos.datos[index].subareas[index2].ingresos.forEach((egreso) => {
                     total = total + egreso.total
                 })
+                let partida =  old.otros_ingresos.datos[index].subareas[index2].ingresos[0].partidas ? old.otros_ingresos.datos[index].subareas[index2].ingresos[0].partidas.nombre : ''
+
                 aux2.push({
-                    'header': old.otros_ingresos.datos[index].subareas[index2].nombre,
+                    'header': partida +" -> "+old.otros_ingresos.datos[index].subareas[index2].nombre,
                     'porcentaje': ((total * 100) / old.otros_ingresos.datos[index].total)/100,
                     'total': total
                 })
@@ -485,8 +500,79 @@ class Normas extends Component {
                                     : <MoneyTransaction />
                                 }
                             </Card.Body>
+                            <Card.Body className={datos !== null ?'':"d-flex align-items-center"}>
+                                <table className="table table-vertical-center w-80 mx-auto table-borderless" id="tcalendar_p_info">
+                                    <tr>
+                                        <th>Cuenta </th>
+                                        <th>Ventas </th>
+                                        <th>Ingresos </th>
+                                        <th>Devoluciones </th>
+                                        <th>Transpaso destino </th>
+                                        <th>Egreso </th>
+                                        <th>Compras </th>
+                                        <th>Transpaso origen </th>
+                                        <th>Balance inicio </th>
+                                        <th>balance final </th>
+
+                                    </tr>
+                                        {
+                                        options.cuentas ?
+                                      options.cuentas.map((cuent) => {
+                                        const elementoCoincidente =    options.balance.find((item2) => cuent.id === item2.id);
+
+                                                // options.balance.forEach((cuenta) => {
+                                                    if (elementoCoincidente) {
+
+                                                return (
+                                                    <tr key={cuent.id}>
+                                                        <td> {cuent.nombre} </td>
+                                                        <td> {cuent.ventas_count ? setMoneyTable(cuent.ventas_count) : "$0.0" } </td>
+                                                        <td> {cuent.ingresos_count ? setMoneyTable(cuent.ingresos_count) : "$0.0"  } </td>
+                                                        <td> {cuent.devoluciones_count ? setMoneyTable(cuent.devoluciones_count) : "$0.0"  } </td>
+                                                        <td> {cuent.traspasos_destino_count ? setMoneyTable(cuent.traspasos_destino_count) : "$0.0"  } </td>
+                                                        <td> {cuent.egresos_count ? setMoneyTable(cuent.egresos_count) : "$0.0"  } </td>
+                                                        <td> {cuent.compras_count ? setMoneyTable(cuent.compras_count) : "$0.0"  } </td>
+                                                        <td> {cuent.traspasos_origen_count ? setMoneyTable(cuent.traspasos_origen_count) : "$0.0"  } </td>
+                                                        <td> 
+                                                            {
+                                                            setMoneyTable(
+                                                                cuent.ingresos_count + cuent.ventas_count +  
+                                                                cuent.devoluciones_count + cuent.traspasos_destino_count - cuent.egresos_count - cuent.compras_count - cuent.traspasos_origen_count)
+                                                             }
+                                                        </td>
+                                                        <td>
+                                                            { cuent.balance2 ? setMoneyTable(cuent.balance2) : "$0.0"  }
+                                                            {/* {
+                                                            setMoneyTable(
+                                                            elementoCoincidente.ingresos_count + elementoCoincidente.ventas_count +  
+                                                            elementoCoincidente.devoluciones_count + elementoCoincidente.traspasos_destino_count - 
+                                                            elementoCoincidente.egresos_count - elementoCoincidente.compras_count - elementoCoincidente.traspasos_origen_count)
+                                                             } */}
+                                                        </td>
+
+                                                    </tr>
+
+                                                    )
+                                                }
+                                                return null; // Omitir elementos que no tienen coincidencias
+
+                                         })
+
+                                            : ''
+
+                                        }
+                                            
+                                        {/* <td> id</td>
+                                        <td> id</td>
+                                        <td> id</td>
+                                        <td> id</td>
+                                        <td> id</td> */}
+
+                                </table>
+                            </Card.Body>
                         </Card>
                     </div>
+                
                 </div>
             </Layout >
         )
