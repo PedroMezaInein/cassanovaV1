@@ -391,8 +391,8 @@ export default function EgresosTable(props) {
             <div   title={`${ dato.factura == 1 ? 'Con factura': 'Sin factura'}`}  >
                 {
                     dato.factura ?
-                        dato.facturas.length > 0 ?
-                            <span   style={{ color: 'green' }}><DoneAllIcon/></span>
+                      dato.facturas.length > 0 || dato.facturas_pdf.length ?
+                     <span   style={{ color: 'green' }}><DoneAllIcon/></span>
                         : <span   style={{ color: 'red' }}><DoneAllIcon/></span>
                     : <span><DescriptionOutlinedIcon/></span>
                 }

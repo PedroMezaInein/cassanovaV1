@@ -171,6 +171,9 @@ class Empleados extends Component {
             pagos_hr_extra:'',
             total_obra:'',
             dias_laborables:'',
+            genero: '',
+            tipos: [],
+
             adjuntos: {
                 contrato: {
                     value: '',
@@ -313,6 +316,10 @@ class Empleados extends Component {
                         }
                     }
                 break;
+                
+                case 'tipos':
+                    formContrato[element] = []
+                    break;
                 default:
                     formContrato[element] = ''
                     break;
@@ -1065,6 +1072,8 @@ class Empleados extends Component {
                 if (key === 'administrativo') { this.getEmpleadosAxios() }
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
                 modal.contrato = false
+                formContrato.tipos = []
+
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
                 if(contrato.contrato)
                     window.open(contrato.contrato, '_blank');
@@ -1094,6 +1103,8 @@ class Empleados extends Component {
                     window.open(contrato.contrato, '_blank');
                 if(contrato.carta)
                     window.open(contrato.carta, '_blank');
+                    formContrato.tipos = []
+
                 this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1177,13 +1188,15 @@ class Empleados extends Component {
     deleteContratoAxios = async(contrato) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { empleado } = this.state
+        const { empleado ,formContrato} = this.state
         await axios.delete(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${contrato.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { empleado } = response.data
                 const { key } = this.state
                 if (key === 'administrativo') { this.getEmpleadosAxios() }
                 if (key === 'obra') { this.getEmpleadosObraAxios() }
+                formContrato.tipos = []
+
                 this.setState({...this.state, empleado: empleado})
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Contrato terminado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
@@ -1288,7 +1301,7 @@ class Empleados extends Component {
             <Layout active={'rh'} {...this.props}>
                 <Tabs defaultActiveKey={localStorage.getItem('activeKeyTabColaboradores')} activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
                     {
-                        departamento.departamentos[0].nombre !== "COMPRAS" &&
+                        // departamento.departamentos[0].nombre !== "COMPRAS" &&
                         <Tab eventKey="administrativo" title="Administrativo">
                     {/* <NewTable
                     columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'

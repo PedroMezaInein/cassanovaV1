@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react"
 import { useSelector } from 'react-redux';
 
 // import TablaGeneralPaginado from './../../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
-import TablaGeneral from './../../../../components/NewTables/TablaGeneral/TablaGeneral'
+import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 
-import { apiPostForm, apiGet, apiPutForm, apiDelete, catchErrors } from './../../../../functions/api'
+import { apiPostForm, apiGet, apiPutForm, apiDelete, catchErrors } from '../../../functions/api'
 
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
@@ -13,10 +13,10 @@ import j2xParser from 'fast-xml-parser'
 import Swal from 'sweetalert2'
 import S3 from 'react-aws-s3'
 
-import Style from './CrearEgreso.module.css'
+import Style from './../../Administracion/Egresos/Modales/CrearEgreso.module.css'
 
 export default function Factura(props) {
-    const { opcionesData, egreso, handleClose, reload } = props
+    const { opcionesData, handleClose, reload, venta } = props
     const auth = useSelector((state) => state.authUser.access_token);
     const [reloadTable, setReloadTable] = useState()
 
@@ -110,6 +110,8 @@ export default function Factura(props) {
                     jsonObj = jsonObj['cfdi:Comprobante']
                     const keys = Object.keys(jsonObj)
                     let obj = {}
+                    let comp = {}
+
                     let errores = []
                     if (keys.includes('cfdi:Receptor')) {
                         obj.rfc_receptor = jsonObj['cfdi:Receptor']['Rfc']
@@ -131,6 +133,25 @@ export default function Factura(props) {
                     obj.moneda = jsonObj['Moneda']
                     if (keys.includes('cfdi:Complemento')) {
                         if (jsonObj['cfdi:Complemento']['tfd:TimbreFiscalDigital']) {
+                            if(jsonObj['cfdi:Complemento']['pago20:Pagos']){
+                            comp.MontoTotalPagos = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Totales']['MontoTotalPagos']
+                            comp.FechaPago = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['FechaPago']
+                            comp.FormaDePagoP = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['FormaDePagoP']
+                            comp.MonedaP = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['MonedaP']
+                            comp.Monto = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['Monto']
+                            comp.TipoCambioP = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['TipoCambioP']
+                            comp.IdDocumento = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['IdDocumento']
+                            comp.MonedaDR = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['MonedaDR']
+                            comp.ObjetoImpDR = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ObjetoImpDR']
+                            comp.EquivalenciaDR = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['EquivalenciaDR']
+                            comp.ImpPagado = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ImpPagado']
+                            comp.NumParcialidad = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['NumParcialidad']
+                            comp.ImpSaldoAnt = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ImpSaldoAnt']
+                            comp.ImpSaldoInsoluto = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ImpSaldoInsoluto']
+
+                            obj.complemento = comp
+                            }
+
                             obj.numero_certificado = jsonObj['cfdi:Complemento']['tfd:TimbreFiscalDigital']['UUID']
                         } else { errores.push('El XML no tiene el UUID') }
                     } else { errores.push('El XML no tiene el UUID') }
@@ -140,7 +161,7 @@ export default function Factura(props) {
                             if (Array.isArray(jsonObj['cfdi:Conceptos']['cfdi:Concepto'])) {
                                 jsonObj['cfdi:Conceptos']['cfdi:Concepto'].forEach((element, index) => {
                                     if (index) {
-                                        obj.descripcion += ' - '
+                                        obj.descripcion += ' - ' 
                                     }
                                     obj.descripcion += element['Descripcion']
                                 })
@@ -161,19 +182,18 @@ export default function Factura(props) {
                             obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']
                         }
                     }
-                    let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
-
+                    let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_emisor)
                     if(!empresa ){
 
                         Swal.fire({
                             icon: 'error',
-                            title: 'Fromato Sin empresa',
+                            title: 'Formato Sin empresa',
                             text: 'La factura no tiene la empresa receptora registrada',
                             showConfirmButton: false,
                             timer: 2000
                         })
                     }else {
-                        let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
+                        let clientes = opcionesData.clientes.find((cliente) => cliente.rfc === obj.rfc_receptor)
                             let aux = []
                             files.forEach((file, index) => {
                                 aux.push({
@@ -193,8 +213,8 @@ export default function Factura(props) {
                                 descripcion: obj.descripcion,
                                 empresa: empresa ? empresa.id : null,
                                 empresa_nombre: empresa ? empresa.nombre : null,
-                                proveedor: proveedor ? proveedor.id : null,
-                                proveedor_nombre: proveedor ? proveedor.name : null,
+                                proveedor: clientes ? clientes.id : null,
+                                proveedor_nombre: clientes ? clientes.name : null,
                                 cuentas: empresa ? opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas : null,
                                 adjuntos: {
                                     ...form.adjuntos,
@@ -207,6 +227,7 @@ export default function Factura(props) {
                             })
 
                     } 
+
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -275,7 +296,7 @@ export default function Factura(props) {
         apiGet(`v1/constant/admin-proyectos`, auth).then(
             (response) => {
                 const { alma } = response.data
-                let filePath = `facturas/egresos/`
+                let filePath = `facturas/ventas/`
                 let aux = []
                 form.adjuntos.xml.files.forEach((file) => {
                     aux.push(file)
@@ -300,7 +321,7 @@ export default function Factura(props) {
                             }
                     })
                 })
-                Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, egreso) }).catch(err => console.error(err))
+                Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, venta) }).catch(err => console.error(err))
             }, (error) => { }
         ).catch((error) => { 
             Swal.close()
@@ -315,21 +336,14 @@ export default function Factura(props) {
         })
     }
 
-    const addNewFacturaAxios = (files, egreso) => {
+    const addNewFacturaAxios = (files, venta) => {
         let aux = form
         aux.archivos = files
 
         apiPostForm(`v2/administracion/facturas`, aux, auth).then(
             (response) => {
                 const { factura } = response.data
-                Swal.close()
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Factura subida con éxito',
-                    text: 'Se subio la factura con éxito',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
+
                 setForm({
                     ...form,
                     facturaItem: factura,
@@ -338,18 +352,18 @@ export default function Factura(props) {
                 if(reload){
                     reload.reload()
                 }
-                attachFactura(egreso, factura)
+                attachFactura(venta, factura)
             }, (error) => { }
         ).catch((error) => {
             console.error(error, 'error')
         })
     }
 
-    const attachFactura = (egreso, factura) => {
+    const attachFactura = (venta, factura) => {
 
         let objeto = {
-            dato: egreso.id,
-            tipo: 'egreso',
+            dato: venta.id,
+            tipo: 'venta',
             factura: factura.id
         }
 
@@ -359,8 +373,8 @@ export default function Factura(props) {
                 Swal.close()
                 Swal.fire({
                     icon: 'success',
-                    title: 'Gasto creado con éxito',
-                    text: 'Se creó el gasto con éxito',
+                    title: 'Venta creado con éxito',
+                    text: 'Se creó el venta con éxito',
                     showConfirmButton: false,
                     timer: 1500
                 })
@@ -427,9 +441,9 @@ export default function Factura(props) {
         //         adjuntos: 'n/a'
         //     });
         // } else { // dentro de facturas están las propiedades de XML y PDF, cada uno es un objeto
-            datos.egreso.facturas.forEach((factura) => {
+            datos.venta.facturas.forEach((factura) => {
                 let adjuntos = []; // creo un nuevo array para almacenar los valores de los adjuntos 
-                if (factura.xml) {
+                if (factura.xml.name) {
                     adjuntos.push(
                         <div style={{width:'100px', marginRight:'2.5rem'}}>
                             <a style={{width:'90%'}} href={factura.xml.url} target="_blank" rel="noopener noreferrer">
@@ -438,7 +452,7 @@ export default function Factura(props) {
                         </div>   
                     );
                 }
-                if (factura.pdf) {
+                if (factura.pdf.name) {
                     adjuntos.push(
                         <div style={{width:'100px'}}>
                             <a style={{width:'90%'}} href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
@@ -469,12 +483,11 @@ export default function Factura(props) {
     };
 
     const deleteEgresoAxios = (id) => {
-
-        apiDelete(`v2/administracion/egresos/${egreso.id}/facturas/${id}`, auth).then(
+        apiDelete(`v2/proyectos/ventas/${venta.id}/facturas/${id}`, auth).then(
             (response) => {
                 Swal.fire(
                     '¡Eliminado!',
-                    'El egreso ha sido eliminado.',
+                    'la venta ha sido eliminado.',
                     'success'
                 )
                 if (reloadTable) {
@@ -617,7 +630,7 @@ export default function Factura(props) {
             <div>
                 <TablaGeneral
                     subtitulo="información general"
-                    url={`v2/administracion/egresos/facturas/${egreso.id}`}
+                    url={`v2/proyectos/ventas/facturas/${venta.id}`}
                     columnas={columns}
                     numItemsPagina={20}
                     ProccessData={proccessData}

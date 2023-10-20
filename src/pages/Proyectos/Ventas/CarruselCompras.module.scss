@@ -1,0 +1,93 @@
+#button_delete{
+    width: 115px;
+    height: 45px;
+    background: #F26C4F;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+}
+
+#button_delete:hover {
+    background: #F26C4F;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+}
+
+#button_delete:active {
+    background: #F26C4F;
+    color: white;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    transform: translateY(4px);
+}
+
+#button_view{
+    width: 115px;
+    height: 45px;
+    background: rgba(22, 147, 165, 0.75);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+}
+
+#button_view:hover {
+    background: rgba(22, 147, 165, 0.75);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    border-radius: 40% 5%;
+
+}
+
+#button_view:active {
+    background: rgba(22, 147, 165, 0.75);
+    color: white;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
+    border: none;
+    border-radius: 40% 5%;
+    transform: translateY(4px);
+}
+
+.file{
+    margin-right: 15rem;
+    
+}
+
+.file input {
+    display: none;
+}
+
+.file label {
+    border: none;
+    background-color: rgba(27, 50, 95, 0.75);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    color: white;
+    border-radius: 40% 5%;
+    padding: 1rem;
+    margin-top: 1rem;
+    // opacity: .8;
+}
+
+.file label:hover {
+    // opacity: 1;
+    cursor: pointer;
+}
+
+.file-name {
+    color: #2171c1;
+    font-weight: bold;
+    background-color: #e1f0ff;
+    width: 150px;
+    padding: 0.3rem;
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.adjuntos_send{
+    display: flex;
+    justify-content: space-evenly;
+}

@@ -36,7 +36,7 @@ class ProyectosForm extends Component {
             fechaInicio: new Date(),
             fechaFin: new Date(),
             estatus:'',
-            fase1: true,
+            fase1: false,
             fase2: false,
             fase3: false,
             fase1_relacionado: false,
@@ -47,7 +47,7 @@ class ProyectosForm extends Component {
             semana: '',
             nombre: '',
             cliente: '',
-            contacto: 'Cassanova',
+            contacto: '',
             numeroContacto: '',
             empresa: '',
             cp: '',
@@ -64,7 +64,7 @@ class ProyectosForm extends Component {
             tipoProyecto:'',
             ciudad: '',
             sucursal: '',
-            m2:'0',
+            m2:'',
             costo: 0.0,
             adjuntos: {
                 image: {
@@ -677,11 +677,10 @@ class ProyectosForm extends Component {
             (response) => {
                 const { proyecto } = response.data
                 const { history } = this.props
-                history.push({ pathname: '/proyectos/proyectos' });
-                // createAlertSA2WithClose(
-                //     '¡FELICIDADES CREASTE EL PROYECTO!', '¿DESEAS CREAR LA CAJA CHICA?',
-                //     () => this.addCajaChicaAxios(proyecto), history, '/proyectos/proyectos'
-                // )
+                createAlertSA2WithClose(
+                    '¡FELICIDADES CREASTE EL PROYECTO!', '¿DESEAS CREAR LA CAJA CHICA?',
+                    () => this.addCajaChicaAxios(proyecto), history, '/proyectos/proyectos'
+                )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -765,12 +764,10 @@ class ProyectosForm extends Component {
             (response) => {
                 const { proyecto } = response.data
                 const { history } = this.props
-                history.push({ pathname: '/proyectos/proyectos' });
-
-                // createAlertSA2WithClose(
-                //     '¡FELICIDADES CREASTE EL PROYECTO!', '¿DESEAS CREAR LA CAJA CHICA?',
-                //     () => this.addCajaChicaAxios(proyecto), history, '/proyectos/proyectos'
-                // )
+                createAlertSA2WithClose(
+                    '¡FELICIDADES CREASTE EL PROYECTO!', '¿DESEAS CREAR LA CAJA CHICA?',
+                    () => this.addCajaChicaAxios(proyecto), history, '/proyectos/proyectos'
+                )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

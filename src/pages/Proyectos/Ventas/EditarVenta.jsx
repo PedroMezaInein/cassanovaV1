@@ -11,9 +11,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import j2xParser from 'fast-xml-parser'
 import Swal from 'sweetalert2'
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -24,34 +22,29 @@ import { es } from 'date-fns/locale'
 import DateFnsUtils from '@date-io/date-fns';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
-import { apiPostForm, apiGet, apiPutForm} from './../../../functions/api';
-import CrearProveedor from './CrearProveedor'
+import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
 import Style from './../../Administracion/Egresos/Modales/CrearEgreso.module.css'
-import { Modal } from './../../../components/singles'
 
 export default function CrearCompras(props) {
 
-    const { opcionesData, handleClose, reload, getProveedores } = props
-    const departamento = useSelector(state => state.authUser.departamento)
-    const departamentos = useSelector(state => state.opciones.compras)
+    const { opcionesData, handleClose, reload, data } = props
+    const departamentos = useSelector(state => state.opciones.ventas)
     const proyectos = useSelector(state => state.opciones.proyectos)
+    const areaCompras = useSelector(state => state.opciones.compras)
     const [errores, setErrores] = useState({})
+
     const auth = useSelector((state) => state.authUser.access_token);
 
-    const [proveedorSelect, setProveedorSelect] = useState({
-        preSelect: false,
-        id:null,
-        name: null,
-    })
-
+    // let valorArea = areaCompras.find((element) => parseInt(element.id_area) === data.area.id)
+    // let valorPartida = valorArea.partidas.find((element) => parseInt(element.id) === data.partida_id)
+    // let valorSubPartida = valorPartida.subpartidas.find((element) => parseInt(element.id) === data.subarea.id)
+  
     useEffect(() => {
-        if(proveedorSelect.preSelect){
-            let data = {
-                ...proveedorSelect
-            }
-            handleChangeProveedor('', data)
+        
+        if(opcionesData){
+            setOpciones(opcionesData)
         }
-    }, [proveedorSelect]) //cuando proveedorSelect tenga cualquier modificacion, lo que esta dentro de useEffect se ejecuta
+    }, [opcionesData])
 
     const [form, setForm] = useState({
         adjuntos: {
@@ -60,62 +53,43 @@ export default function CrearCompras(props) {
             presupuesto: { files: [], value: '' },
             xml: { files: [], value: '' },
         },
-        area: '',
+        area : data.area ?  data.area.id : '',
         banco: 0,
-        comision: 0,
-        correo: '',
-        cuenta: '',
+        // cuenta: '',
+        cuenta: data.cuenta ? data.cuenta.id : '',
         cuentas: [],
-        comision: 0,
-        descripcion: '',
-        empresa: '',
+        descripcion: data.descripcion ? data.descripcion : '',
+        empresa: data.empresa.id,
+        proveedor:data.cliente ? data.cliente.id : '',
+        proveedor_nombre:data.cliente ? data.cliente.empresa : '',
+        // empresa: data.empresa.id ? data.empresa.id : '',
         estatusCompra: 2,
         factura: false, 
         facturaItem: '',
         facturaObject: {},
-        fecha: '',
-        partida: "",
-        leadId: "",
-        nombre: "",
+        fecha: data.created_at,
+        partida: data.partida ? data.partida.id : '',
         numCuenta: "",
-        partida: '',
-        proveedor: '',
-        proyecto: '',
-        razonSocial: '',
-        rfc: null,
-        subarea: '', 
-        telefono: '',
+        proyecto: data.proyecto ? data.proyecto.id : '',
+        proyecto_nombre:data.proyecto ? data.proyecto.nombre: '',
+        subarea: data.subarea ? data.subarea.id : '',
         tipo: 0,
         tipoImpuesto: 1,
         tipoPago: 4,
-        total: '',
-        afectarCuentas: false,
+        total: data.total ? data.total : '',
     })
 
     const [opciones, setOpciones] = useState({
         cuentas: [],
         empresas: [],
+        clientes: [],
         estatusCompras: [],
         proveedores: [],
         proyectos: [],
         tiposImpuestos: [],
+        tickets: [],
         tiposPagos: [],
     })
-
-    const[nuevoProveedor, setNuevoProveedor] = useState(false)
-
-    const handleCloseProveedor = () => {
-        setNuevoProveedor(false)
-        setForm({
-            ...form,
-            proveedor: nuevoProveedor.id, // Establecer el proveedor recién creado
-            proveedor_nombre: nuevoProveedor.name,
-        });
-    }
-
-    const agregarProveedor = () => {
-        setNuevoProveedor(true)
-    }
 
     useEffect(() => {
         
@@ -131,35 +105,13 @@ export default function CrearCompras(props) {
         });
     };
 
-    const handleDeleteFile = (tipo, index) => {
-        let files = form.adjuntos[tipo].files;
-        files.splice(index, 1);
-
-        // Check if all XML files are deleted
-        const allXmlFilesDeleted = tipo === 'xml' && files.length === 0;
-
-        //LIMPIA LOS CAMPOS DEL FORMULARIO QUE YA HABIAN SIDO LLENADOS POR UNA FACTURA
-        setForm((prevForm) => ({
-            ...prevForm,
-            adjuntos: {
-                ...prevForm.adjuntos,
-                [tipo]: { files: [...files], value: '' },
-            },
-            rfc: allXmlFilesDeleted ? '' : prevForm.rfc, // Clear rfc field if all XML files deleted
-            empresa: allXmlFilesDeleted ? '' : prevForm.empresa, 
-            descripcion: allXmlFilesDeleted ? '' : prevForm.descripcion, 
-            fecha: allXmlFilesDeleted ? '' : prevForm.fecha, 
-            total: allXmlFilesDeleted ? '' : prevForm.total, 
-            facturaObject: allXmlFilesDeleted ? '' : prevForm.facturaObject, 
-        }));
-    };
-
     const handleChange = (e) => {
         if(e.target.name === 'empresa'){
             setForm({
                 ...form,
                 [e.target.name]: e.target.value,
                 cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas,
+
             });
         } else {
             setForm({
@@ -169,188 +121,31 @@ export default function CrearCompras(props) {
         }
         
     };
+    
+    const handleChangeTicket = (e, value) => {
+        if (value && value.name) {
+            setForm({
+                ...form,
+                tickets: value.id,
+                tickets_nombre: value.name,
+            })
+        }
+        if (value === null) {
+            setForm({
+                ...form,
+                tickets: null,
+                tickets_nombre: null,
+            })
+        }
+    }
 
     const handleChangeAreas=(e)=>{
         setForm({
             ...form,
             [e.target.name]:e.target.value,
-            partida: ''
+            partida: '',
+            subarea: ''
         })
-    }
-
-    const handleAddFile = (e, tipo) => {
-        let aux = []
-
-        e.target.files.forEach((file, index) => {
-            aux.push({
-                name: file.name,
-                file: file,
-                url: URL.createObjectURL(file),
-                key: index
-            })
-        })
-
-        let path = 'C:/fakepath/'+ aux[0].name
-
-        setForm({
-            ...form,
-            adjuntos: {
-                ...form.adjuntos,
-                [tipo]: {files: aux, value: path}
-            }
-        })
-    }
-
-    const onChangeFactura = (e) => {
-        const { files } = e.target
-        const reader = new FileReader()
-        if (files[0].type === 'text/xml') {
-            reader.onload = (event) => {
-                const text = (event.target.result)
-
-                let jsonObj = j2xParser.parse(text, {
-                    ignoreAttributes: false,
-                    attributeNamePrefix: ''
-                })
-
-                if (jsonObj['cfdi:Comprobante']) {
-                    jsonObj = jsonObj['cfdi:Comprobante']
-                    const keys = Object.keys(jsonObj)
-                    let obj = {}
-                    let errores = []
-                    if (keys.includes('cfdi:Receptor')) {
-                        obj.rfc_receptor = jsonObj['cfdi:Receptor']['Rfc']
-                        obj.nombre_receptor = jsonObj['cfdi:Receptor']['Nombre']
-                        obj.uso_cfdi = jsonObj['cfdi:Receptor']['UsoCFDI']
-                    } else { errores.push('El XML no tiene el receptor') }
-                    if (keys.includes('cfdi:Emisor')) {
-                        obj.rfc_emisor = jsonObj['cfdi:Emisor']['Rfc']
-                        obj.nombre_emisor = jsonObj['cfdi:Emisor']['Nombre']
-                        obj.regimen_fiscal = jsonObj['cfdi:Emisor']['RegimenFiscal']
-                    } else { errores.push('El XML no tiene el emisor') }
-                    obj.lugar_expedicion = jsonObj['LugarExpedicion']
-                    obj.fecha = jsonObj['Fecha'] ? new Date(jsonObj['Fecha']) : null
-                    obj.metodo_pago = jsonObj['MetodoPago']
-                    obj.tipo_de_comprobante = jsonObj['TipoDeComprobante']
-                    obj.total = jsonObj['Total']
-                    obj.subtotal = jsonObj['SubTotal']
-                    obj.tipo_cambio = jsonObj['TipoCambio']
-                    obj.moneda = jsonObj['Moneda']
-                    if (keys.includes('cfdi:Complemento')) {
-                        if (jsonObj['cfdi:Complemento']['tfd:TimbreFiscalDigital']) {
-                            obj.numero_certificado = jsonObj['cfdi:Complemento']['tfd:TimbreFiscalDigital']['UUID']
-                        } else { errores.push('El XML no tiene el UUID') }
-                    } else { errores.push('El XML no tiene el UUID') }
-                    obj.descripcion = ''
-                    if (keys.includes('cfdi:Conceptos')) {
-                        if (jsonObj['cfdi:Conceptos']['cfdi:Concepto']) {
-                            if (Array.isArray(jsonObj['cfdi:Conceptos']['cfdi:Concepto'])) {
-                                jsonObj['cfdi:Conceptos']['cfdi:Concepto'].forEach((element, index) => {
-                                    if (index) {
-                                        obj.descripcion += ' - '
-                                    }
-                                    obj.descripcion += element['Descripcion']
-                                })
-                            } else {
-                                obj.descripcion += jsonObj['cfdi:Conceptos']['cfdi:Concepto']['Descripcion']
-                            }
-                        }
-                    }
-                    obj.folio = jsonObj['Folio']
-                    obj.serie = jsonObj['Serie']
-                    if (keys.includes('cfdi:CfdiRelacionados')) {
-                        if (Array.isArray(jsonObj['cfdi:CfdiRelacionados'])) {
-                            obj.tipo_relacion = jsonObj['cfdi:CfdiRelacionados'][0]['TipoRelacion']
-                        }
-                    }
-                    if (keys.includes('cfdi:CfdiRelacionado')) {
-                        if (Array.isArray(jsonObj['cfdi:CfdiRelacionado'])) {
-                            obj.uuid_relacionado = jsonObj['cfdi:CfdiRelacionado'][0]['UUID']
-                        }
-                    }
-
-                    let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
-
-                    if(empresa === undefined ){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Fromato XML incorrecto',
-                            text: 'En esta factura no somos los receptores',
-                            showConfirmButton: false,
-                            timer: 3000
-                        })
-                    }
-                    let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
-
-                    if(!proveedor){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'No existe el proveedor',
-                            text: 'No existe el proveedor, favor de crearlo..',
-                            showConfirmButton: false,
-                            timer: 1000
-                        })
-                        setNuevoProveedor(true)
-
-                    }else{
-                        form.proveedor = proveedor.id.toString()
-                        form.contrato = ''
-                        // options.contratos = setOptions(proveedor.contratos, 'nombre', 'id')
-                    }
-                
-                    let aux = []
-                    files.forEach((file, index) => {
-                        aux.push({
-                            name: file.name,
-                            file: file,
-                            url: URL.createObjectURL(file),
-                            key: index
-                        })
-                    })
-                    let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
-                    setForm({
-                        ...form,
-                        fecha: obj.fecha,
-                        rfc: obj.rfc_emisor,
-                        total: obj.total,
-                        descripcion: obj.descripcion,
-                        empresa: empresa ? empresa.id : null,
-                        empresa_nombre: empresa ? empresa.nombre : null,
-                        proveedor: proveedor ? proveedor.id : null,
-                        proveedor_nombre: proveedor ? proveedor.name : null,
-                        cuentas: empresa ? opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas : '',
-                        adjuntos: {
-                            ...form.adjuntos,
-                            xml: {
-                                files: aux, 
-                                value: path
-                            }
-                        },
-                        facturaObject: obj
-                    })
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Fromato XML incorrecto',
-                        text: 'La factura no tiene el formato correcto',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-
-                }
-            }
-
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Fromato XML incorrecto',
-                text: 'La factura no tiene el formato correcto',
-                showConfirmButton: false,
-                timer: 3000
-            })
-        }
-
-        reader.readAsText(files[0])
     }
 
     const handleChangeProveedor = (e, value) => {
@@ -366,23 +161,6 @@ export default function CrearCompras(props) {
                 ...form,
                 proveedor: null,
                 proveedor_nombre: null,
-            })
-        }
-    }
-
-    const handleChangeProyecto = (e, value) => {
-        if (value && value.nombre) {
-            setForm({
-                ...form,
-                proyecto: value.id,
-                proyecto_nombre: value.nombre,
-            })
-        }
-        if (value === null) {
-            setForm({
-                ...form,
-                proyecto: null,
-                proyecto_nombre: null,
             })
         }
     }
@@ -431,7 +209,7 @@ export default function CrearCompras(props) {
         apiGet(`v1/constant/admin-proyectos`, auth).then(
             (response) => {
                 const { alma } = response.data
-                let filePath = `facturas/egresos/`
+                let filePath = `facturas/venta/`
                 let aux = []
                 form.adjuntos.xml.files.forEach((file) => {
                     aux.push(file)
@@ -469,7 +247,7 @@ export default function CrearCompras(props) {
     }
 
     const attachFilesS3 =  (files, egreso) => {
-        apiPutForm(`v2/proyectos/compras/${egreso.id}/archivos/s3`, { archivos: files }, auth).then(
+        apiPutForm(`v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, auth).then(
             (response) => {
                 Swal.close()
                 Swal.fire({
@@ -497,11 +275,11 @@ export default function CrearCompras(props) {
         })
     }
 
-    const  attachFiles = (egreso) => {
+    const  attachFiles = (venta) => {
         apiGet(`v1/constant/admin-proyectos`, auth).then(
             (response) => {
                 const { alma } = response.data
-                let filePath = `egresos/${egreso.id}/`
+                let filePath = `ventas/${venta.id}/`
                 let aux = []
                 form.adjuntos.pago.files.forEach((file) => {
                     aux.push(
@@ -535,7 +313,7 @@ export default function CrearCompras(props) {
                     })
                 })
                 Promise.all(auxPromises).then(values => { 
-                    attachFilesS3(values, egreso) 
+                    attachFilesS3(values, venta) 
                 }).catch(err => console.error(err))
             }, (error) => { }
         ).catch((error) => { 
@@ -554,7 +332,7 @@ export default function CrearCompras(props) {
 
         let objeto = {
             dato: egreso.id,
-            tipo: 'compra',
+            tipo: 'venta',
             factura: factura.id
         }
 
@@ -566,8 +344,8 @@ export default function CrearCompras(props) {
                     Swal.close()
                     Swal.fire({
                         icon: 'success',
-                        title: 'compra creada con éxito',
-                        text: 'Se creó la compra con éxito',
+                        title: 'compra editada con éxito',
+                        text: 'Se editó la compra con éxito',
                         showConfirmButton: false,
                         timer: 1500
                     })
@@ -591,17 +369,34 @@ export default function CrearCompras(props) {
                 showConfirmButton: false,
                 timer: 1500
             })
-        })
+         })
+    }
+
+    const handleChangeProyecto = (e, value) => {
+        if (value && value.nombre) {
+            setForm({
+                ...form,
+                proyecto: value.id,
+                proyecto_nombre: value.nombre,
+            })
+        }
+        if (value === null) {
+            setForm({
+                ...form,
+                proyecto: null,
+                proyecto_nombre: null,
+            })
+        }
     }
 
     const validateForm = () => {
         let validar = true
         let error = {}
-        if(form.proveedor === ''){
+        if(form.proveedor === '' || form.proveedor === null){
             error.proveedor = "Seleccione un proveedor"
             validar = false
         }
-        if(form.proyecto === ''){
+        if(form.proyecto === '' || form.proyecto === null){
             error.proyecto = "Seleccione un proyecto"
             validar = false
         }
@@ -625,35 +420,32 @@ export default function CrearCompras(props) {
             error.subarea = "Seleccione una subarea"
             validar = false
         }
-        if(form.descripcion === ''){
-            error.descripcion = "Escriba una descripcion"
-            validar = false
-        }
         if (form.cuenta === '') {
             error.cuenta = "Seleccione una cuenta"
+            validar = false
+        }
+        if(form.descripcion === ''){
+            error.descripcion = "Escriba una descripcion"
             validar = false
         }
         if (form.total === '') {
             error.total = "indique el monto total"
             validar = false
         }
-        if (form.afectarCuentas === false) { 
-            error.afectarCuentas = "Debe afectar cuentas";
-            validar = false;
-        }
-        
+       
         setErrores(error)
         return validar
     }
 
     const handleSend = () => {
         if(validateForm()){
+
             Swal.fire({
                 title: '¿Estás seguro?',    
-                text: 'Se creará la compra',
+                text: 'Se editará la compra',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Sí, crear',
+                confirmButtonText: 'Sí, editar',
                 cancelButtonText: 'No, cancelar',
                 cancelButtonColor: '#d33',
                 reverseButtons: true
@@ -662,7 +454,7 @@ export default function CrearCompras(props) {
                 if (result.value) {
                     Swal.close()
                     Swal.fire({
-                        title: 'Creando compra',
+                        title: 'editando compra',
                         text: 'Por favor, espere...',
                         allowOutsideClick: false,
                         onBeforeOpen: () => {
@@ -673,15 +465,15 @@ export default function CrearCompras(props) {
                     let aux = form
 
                     aux.factura = form.factura ? 'Con factura' : 'Sin factura'
-            
-                    try {
-                        apiPostForm('v2/proyectos/compras', form, auth)
-                        .then((response) => {
 
-                            const {compra} = response.data
+
+                    try {
+                        apiPutForm(`v2/proyectos/ventas/area/${data.id}`, form, auth)
+                        .then((response) => {
+                            const {venta} = response.data
                             Swal.close()
                             Swal.fire({
-                                title: 'compra creada con éxito',
+                                title: 'venta editada con éxito',
                                 text: 'Subiendo adjuntos...',
                                 allowOutsideClick: false,
                                 onBeforeOpen: () => {
@@ -691,24 +483,23 @@ export default function CrearCompras(props) {
                             
                             setForm({
                                 ...form,
-                                compra
+                                venta
                             })
-
-                            if (compra.factura) {
+                            if (venta.factura) {
                                 // Adjunto un XML
                                 if (Object.keys(form.facturaObject).length > 0) {
                                     if (form.facturaItem) {
                                         //Tiene una factura guardada
-                                        attachFactura(compra, compra.factura)
+                                        attachFactura(venta, venta.factura)
                                     } else {
                                         //No hay factura generada
-                                        addFacturaS3(compra.id , compra)
+                                        addFacturaS3(venta.id , venta)
                                     }
                                 } else {
                                     //No adjunto XML
                                     if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
                                         //El compra tiene adjuntos
-                                        attachFiles(compra)
+                                        attachFiles(venta)
                                     } else {
                                         //compra generado con éxito 
                                         
@@ -730,15 +521,15 @@ export default function CrearCompras(props) {
                                 // La compra no es con factura
                                 if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
                                     //La compra tiene adjuntos
-                                    attachFiles(compra)
+                                    attachFiles(venta)
 
                                 } else {
                                     //compra generado con éxito 
                                     Swal.close()
                                     Swal.fire({
                                         icon: 'success',
-                                        title: 'Compra creada con éxito',
-                                        text: 'Se creó la compra con éxito',
+                                        title: 'venta editada con éxito',
+                                        text: 'Se editó la venta con éxito',
                                         showConfirmButton: false,
                                         timer: 1500
                                     })
@@ -750,47 +541,30 @@ export default function CrearCompras(props) {
                             }
                         })
                         .catch((error) => {
+                            console.log(error)
 
                             Swal.fire({
                                 title: 'Error',
-                                text: 'No se pudo crear la compra',
+                                text: 'No se pudo editar la venta',
                                 icon: 'error',
                                 confirmButtonText: 'Cerrar',
                             })
                         })
                     } catch (error) {
+                        console.log(error)
                     }
                 }
-            })
-        } else{
+            }) 
+        }else{
             Swal.fire({
                 title: 'Faltan campos',
                 text: 'Favor de llenar todos los campos',
                 icon: 'info',
                 showConfirmButton: false,
-                timer: 1500,
+                timer: 2000,
             })
         }
-    }
 
-    const handleCuentas = (e) => {
-        Swal.fire({
-            title: '¿Desea afectar cuentas?',
-            text: "Si acepta, se afectaran las cuentas de la requisición y no podrá modificarlas",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: 'red',
-            cancelButtonColor: 'gray',
-            confirmButtonText: 'AFECTAR CUENTAS',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                setForm({
-                    ...form,
-                    afectarCuentas: !form.afectarCuentas
-                })
-            }
-        })
     }
 
     return(
@@ -826,87 +600,12 @@ export default function CrearCompras(props) {
                                 form.factura ?
                                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <div>
-                                            <InputLabel>XML de la factura</InputLabel>
-                                            <div >
-
-                                                <div>
-                                                    <input
-                                                        accept="application/xml"
-                                                        style={{ display: 'none' }}
-                                                        id="xml"
-                                                        type="file"
-                                                        onChange={onChangeFactura}
-                                                    />
-                                                    <label htmlFor="xml" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                                        <Button variant="contained" color="primary" component="span">
-                                                            Agregar
-                                                        </Button>
-                                                    </label>
-                                                </div>
-
-                                                <div>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                        {
-                                                            form.adjuntos.xml.files.map((item, index) => (
-                                                                <div key={index}  style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
-                                                                    <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'space-between' }}>
-                                                                        <p>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}<span onClick={() => handleDeleteFile('xml', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span></p>
-                                                                    </div>
-                                                                </div>
-                                                            ))
-                                                        }
-                                                    </div>    
-                                                </div> 
-
-                                            </div>   
-                                        </div> 
-
-                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                            
-                                            <div>
-                                                <InputLabel>PDF de la factura</InputLabel>
-                                                <div>
-                                                    <input
-                                                        accept="application/pdf"
-                                                        style={{ display: 'none' }}
-                                                        id="pdf"
-                                                        
-                                                        type="file"
-                                                        onChange={(e) => handleAddFile(e, 'pdf')} 
-                                                    />
-                                                    <label htmlFor="pdf" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                                        <Button variant="contained" color="primary" component="span">
-                                                            Agregar
-                                                        </Button>
-                                                    </label>
-                                                </div>
-
-                                                <div>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                        {
-                                                            form.adjuntos.pdf.files.map((item, index) => (
-                                                                <div key={index} style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
-                                                                    <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'space-between' }}>
-                                                                        <p>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}
-                                                                        <span onClick={() => handleDeleteFile('pdf', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span>
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            ))
-                                                        }
-                                                    </div>    
-                                                </div> 
-                                                
-                                            </div>
-                                        </div>
-                                        <div>
                                         <InputLabel>RFC</InputLabel>
                                             <TextField
                                                 variant="outlined"
                                                 name="rfc"
                                                 value={form.rfc ? form.rfc : ''}
                                                 onChange={handleChange}
-                                                style={{ width: 150, paddingRight: '1rem' }}
                                             />
 
                                         </div>
@@ -919,33 +618,23 @@ export default function CrearCompras(props) {
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
                             <div>
                                 {
-                                    opciones.proveedores.length > 0 ?
+                                    opciones.clientes.length > 0 ?
                                         <div>    
-                                            <InputLabel error={errores.proveedor ? true : false}>Proveedor</InputLabel>
+                                            <InputLabel error={errores.clientes ? true : false}>Cliente</InputLabel>
                                             <Autocomplete
-                                                name="proveedor"
-                                                options={opciones.proveedores}
+                                                name="cliente"
+                                                options={opciones.clientes}
                                                 getOptionLabel={(option) => option.name}
-                                                style={{ width: 150, paddingRight: '1rem' }}
+                                                style={{ width: 250, paddingRight: '1rem' }}
                                                 onChange={(event, value) => handleChangeProveedor(event, value)}
-                                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
-                                                error={errores.proveedor ? true : false}
+                                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'cliente'} />}
+                                                error={errores.clientes ? true : false}
                                             />
                                         </div>    
                                     : <></>
                                 }
                             </div>  
 
-                            {
-                                form.factura ? 
-                                    <></> :
-                                        <div className={`${Style.agregarProveedor}`}>
-                                            <Button variant="contained" color="primary" component="span" onClick={agregarProveedor}> 
-                                                Agregar proveedor
-                                            </Button>
-                                        </div>
-                            }
-                            
                             <div>
                                 {
                                     proyectos.length > 0 ?
@@ -955,14 +644,14 @@ export default function CrearCompras(props) {
                                             name="proyecto"
                                             options={proyectos}
                                             getOptionLabel={(option) => option.nombre}
-                                            style={{ width: 150, paddingRight: '1rem' }}
+                                            style={{ width: 230, paddingRight: '1rem' }}
                                             onChange={(event, value) => handleChangeProyecto(event, value)}
                                             renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proyecto_nombre ? form.proyecto_nombre : 'proyecto'} />}
                                         />
                                     </div>    
                                         : <></>
                                 }
-                            </div> 
+                            </div>  
 
                             <div>
                                 {
@@ -973,8 +662,7 @@ export default function CrearCompras(props) {
                                                 name="empresa"
                                                 value={form.empresa}
                                                 onChange={handleChange}
-                                                style={{ width: 150, paddingRight: '1rem' }}
-                                                error={errores.empresa ? true : false}
+                                                style={{ width: 200, paddingRight: '1rem' }}
                                             >
                                                 {
                                                     opciones.empresas.map((item, index) => (
@@ -987,6 +675,24 @@ export default function CrearCompras(props) {
                                 }
                             </div>  
                         </div> 
+                        <div>
+                                {
+                                    opciones.tickets.length > 0 ?
+                                        <div>    
+                                            <InputLabel error={errores.tickets ? true : false}>tickets</InputLabel>
+                                            <Autocomplete
+                                                name="tickets"
+                                                options={opciones.tickets}
+                                                getOptionLabel={(option) => option.name}
+                                                style={{ width: 250, paddingRight: '1rem' }}
+                                                onChange={(event, value) => handleChangeTicket(event, value)}
+                                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.tickets_nombre ? form.tickets_nombre : 'tickets'} />}
+                                                error={errores.tickets ? true : false}
+                                            />
+                                        </div>    
+                                    : <></>
+                                }                               
+                            </div>  
 
                     </div>
                 </AccordionDetails>
@@ -1003,7 +709,7 @@ export default function CrearCompras(props) {
 
                         <div>
                             <div>
-                                <InputLabel >Fecha de la compra</InputLabel>
+                                <InputLabel >Fecha de la venta</InputLabel>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <Grid container >
                                         <KeyboardDatePicker
@@ -1013,7 +719,6 @@ export default function CrearCompras(props) {
                                             value={form.fecha !== '' ? form.fecha : null}
                                             placeholder="dd/mm/yyyy"
                                             onChange={e => handleChangeFecha(e, 'fecha')} 
-                                            style={{ width: 150, marginRight: '1rem' }}
                                             KeyboardButtonProps={{
                                                 'aria-label': 'change date',
                                             }}
@@ -1024,7 +729,7 @@ export default function CrearCompras(props) {
                             </div>    
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                             <div>
                                 {departamentos.length > 0 ?
                                     <>
@@ -1033,7 +738,7 @@ export default function CrearCompras(props) {
                                             value={form.area}
                                             name="area"
                                             onChange={handleChangeAreas}
-                                            style={{ width: 150, marginRight: '1rem' }}
+                                            style={{ width: 230, marginRight: '1rem' }}
                                             error={errores.area ? true : false}
                                         >
                                             {departamentos.map((item, index) => (
@@ -1055,7 +760,7 @@ export default function CrearCompras(props) {
                                             value={form.partida}
                                             name="partida"
                                             onChange={handleChange}
-                                            style={{ width: 150, marginRight: '1rem' }}
+                                            style={{ width: 230, marginRight: '1rem' }}
                                             error={errores.partida ? true : false}
                                         >
                                             {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
@@ -1076,10 +781,10 @@ export default function CrearCompras(props) {
                                             value={form.subarea}
                                             name="subarea"
                                             onChange={handleChange}  
-                                            style={{ width: 150, marginRight: '1rem' }}
+                                            style={{ width: 230, marginRight: '1rem' }}
                                             error={errores.subarea ? true : false}
                                         >
-                                            {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id === form.partida).subpartidas.map((item, index) => (
+                                            {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
                                                 <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                             ))}
 
@@ -1104,7 +809,7 @@ export default function CrearCompras(props) {
                                         shrink: true,
                                     }}
                                     multiline
-                                    style={{ width: '74vh', height: 100 }}
+                                    style={{ width: '70vh', height: 100 }}
                                     error={errores.descripcion ? true : false}
                                 />
                             </div>
@@ -1125,31 +830,76 @@ export default function CrearCompras(props) {
                     <div style={{ width: '100%' }}>
                         
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            
                             <div>
+                                {/* {
+                                    form.empresa ? 
+                                        form.cuentas.length > 0 ? */}
+                                        
+                                            <div>
+                                                <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
+                                                <Select
+                                                    value={form.cuenta}
+                                                    name="cuenta"
+                                                    onChange={handleChange}
+                                                    style={{ width: 230, marginRight: '1rem' }}
+                                                    error={errores.cuenta ? true : false}
+                                                >
+                                                    {
+                                                        opciones.empresas.map((item, index) => (
+                                                            form.empresa == item.id ?
+                                                                item.cuentas.map((cuenta, index2) => (
+                                                                form.cuenta == cuenta.id ?
+                                                                <MenuItem key={index2} value={cuenta.id}>{cuenta.nombre}</MenuItem>
+                                                                : 
+                                                                <MenuItem key={index2} value={cuenta.id}>{cuenta.nombre}</MenuItem>
+
+                                                                ))
+                                                            : <></>
+                                                        ))
+
+                                                        // presupuestos.map((item, index) => ( 
+                                                        //     item.rel.map((item2, index2) => (
+                                                        //         item2.id_area == state.departamento ? 
+                                                        //         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                                        //         : <></>
+                                                        //     ))
+                                                            
+                                                        // ))
+                                                    }
+                                                </Select>
+                                            </div>
+                                        
+                                {/*         : null
+                                     : null
+                                 } */}
+                                  <div>
                                 {
-                                    form.cuentas.length > 0 ?
+                                    opciones.clientes.length > 0 ?
                                         <div>
-                                            <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
+                                            <InputLabel id="demo-simple-select-label">Contrato</InputLabel>
                                             <Select
-                                                value={form.cuenta}
-                                                name="cuenta"
+                                                value={form.contrato}
+                                                name="contrato"
                                                 onChange={handleChange}
                                                 style={{ width: 150, marginRight: '1rem' }}
-                                                error={errores.cuenta ? true : false}
+                                                error={errores.contrato ? true : false}
                                             >
-                                                {form.cuentas.map((item, index) => (
-                                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                                ))}
+                                                  { opciones.clientes.find(item => item.id == form.cliente)  && 
+                                                opciones.clientes.find(item => item.id == form.cliente).contratos.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))}
                                             </Select>
                                         </div>
                                         : null
                                 }
 
                             </div> 
+
+                            </div> 
                             <div>
                                 {
                                     opciones.tiposPagos.length > 0 ?
+            
                                         <div>
                                             <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
 
@@ -1157,15 +907,14 @@ export default function CrearCompras(props) {
                                                 value={form.tipoPago}
                                                 name="tipoPago"
                                                 onChange={handleChange}
-                                                style={{ width: 150, marginRight: '1rem' }}
-                                                error={errores.tipoPago ? true : false}
+                                                style={{ width: 230, marginRight: '1rem' }}
                                             >
                                                 {opciones.tiposPagos.map((item, index) => (
                                                     <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
                                                 ))}
                                             </Select>
                                         </div>
-                                        : null
+                                    : null
                                 }
 
                             </div> 
@@ -1184,8 +933,7 @@ export default function CrearCompras(props) {
                                                 value={form.tipoImpuesto}
                                                 name="tipoImpuesto"
                                                 onChange={handleChange}
-                                                style={{ width: 150, marginRight: '1rem' }}
-                                                error={errores.tipoImpuesto ? true : false}
+                                                style={{ width: 230, marginRight: '1rem' }}
                                             >
                                                 {opciones.tiposImpuestos.map((item, index) => (
                                                     <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
@@ -1204,7 +952,6 @@ export default function CrearCompras(props) {
                                     currencySymbol="$"
                                     outputFormat="number"
                                     onChange={(event, value) => handleMoney(value)} 
-                                    style={{ width: 150, marginRight: '1rem' }}
                                     error={errores.total ? true : false}
                                 />
                             </div>
@@ -1215,99 +962,12 @@ export default function CrearCompras(props) {
                                     value={form.comision} 
                                     currencySymbol="$"
                                     outputFormat="number"
-                                    style={{ width: 150, marginRight: '1rem' }}
                                     onChange={(event, value) => handleMoneyComision(value)} 
                                     
                                 />
                             </div>
                         </div>
 
-                        <div style={{display: 'flex', justifyContent: 'space-evenly', marginTop: '2rem'}}>
-
-                            <div>
-                                
-                                <div>
-                                    <InputLabel>Pagos</InputLabel>
-                                    <input
-                                        accept="*/*"
-                                        style={{ display: 'none' }}
-                                        id="pago_gasto"
-                                        multiple
-                                        type="file"
-                                        onChange={(e) => handleAddFile(e, 'pago')} 
-                                    />
-                                    <label htmlFor="pago_gasto" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                        <Button variant="contained" color="primary" component="span">
-                                            Agregar
-                                        </Button>
-                                    </label>
-                                </div>
-
-                                <div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column', width: '20vh'}}>
-                                        {
-                                            form.adjuntos.pago.files.map((item, index) => (
-                                                <div key={index} style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', padding: '5px', marginTop: '5px'}}>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                        <p>{item.name.length > 20 ? item.name.slice(0, 20) + '...' : item.name}
-                                                        <span onClick={() => handleDeleteFile('pago', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        }
-                                    </div>    
-                                </div>             
-                            </div>
-
-                            <div>
-                                <InputLabel>Presupuestos</InputLabel>
-                                <div>
-                                    <input
-                                        accept="*/*"
-                                        style={{ display: 'none' }}
-                                        id="presupuesto_gasto"
-                                        multiple
-                                        type="file"
-                                        onChange={(e) => handleAddFile(e, 'presupuesto')} 
-                                    />
-                                    <label htmlFor="presupuesto_gasto" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                        <Button variant="contained" color="primary" component="span">
-                                            Agregar
-                                        </Button>
-                                    </label>
-                                </div>
-
-                                <div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        {
-                                            form.adjuntos.presupuesto.files.map((item, index) => (
-                                                <div key={index} style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', padding: '5px', marginTop: '5px' }}>
-                                                    <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'space-between' }}>
-                                                        <p>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}
-                                                        <span onClick={() => handleDeleteFile('presupuesto', index)} style={{ color: 'red', cursor: 'pointer'  }}>X</span>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        }
-                                    </div>    
-                                </div>             
-                            </div>
-
-                            <div>
-                                <InputLabel error={errores.afectarCuentas ? true : false}>AFECTAR CUENTAS</InputLabel>
-                                <Checkbox
-                                    checked={form.afectarCuentas}
-                                    onChange={handleCuentas}
-                                    name="afectarCuentas"
-                                    color="secondary"
-                                    style={{ marginLeft: '15%' }}
-                                    disabled={form.afectarCuentas}
-                                />
-                            </div>
-
-                        </div>
                     </div>
                 </AccordionDetails>
             </Accordion>
@@ -1315,16 +975,11 @@ export default function CrearCompras(props) {
             <div>
                 <div className="row justify-content-end">
                     <div className="col-md-4">
-                        <button className={Style.sendButton} onClick={e => handleSend(form)}>Crear</button>
+                        <button className={Style.sendButton} onClick={e => handleSend(form)}>editar</button>
                     </div>
                 </div>   
             </div>
-
-            <Modal size="md" title={"agregar proveedor"} handleClose={handleCloseProveedor} show={nuevoProveedor}>
-                <CrearProveedor handleClose={handleCloseProveedor} getProveedores={getProveedores} departamentos={departamentos}
-                data={form}  reload={reload} handleCloseRecarga={setNuevoProveedor} auth={auth} setProveedorSelect={setProveedorSelect}/>
-            </Modal>
-
+            
         </>
     )
 }

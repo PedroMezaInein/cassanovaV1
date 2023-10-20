@@ -111,8 +111,8 @@ export default function CrearCompras(props) {
                     <div className='col-xl-12'>
                         <div className={Style.crear_primerParte}>
 
-                            <div className='col-xl-4'>
-                                {
+                            {/* <div className='col-xl-4'> */}
+                                {/* {
                                     opcionesFiltradas.length > 0 ?
                                         <div>
                                             <InputLabel>Empresa</InputLabel>
@@ -130,8 +130,8 @@ export default function CrearCompras(props) {
                                             </Select>
                                         </div>
                                     : null
-                                }
-                            </div>  
+                                } */}
+                            {/* </div>   */}
 
                             <div className='col-xl-4'>
                                 <TextField
@@ -162,17 +162,7 @@ export default function CrearCompras(props) {
                                     style={{ width: 150 }}
                                 />
                             </div>
-                            
-                        </div>
-
-                        <div className={Style.crear_segundaParte}>
-
-
-                            
-                        </div>
-
-                        <div className={Style.crear_cuartaParte}>
-                            <div style={{marginTop: '1rem'}}>
+                            <div className='col-xl-4'>
                                 <TextField
                                     name='descripcion'
                                     label="Descripción"
@@ -186,7 +176,15 @@ export default function CrearCompras(props) {
                                     style={{ width: '150px', height: 100 }}
                                 />
                             </div>
+                            
+                        </div>
 
+                        <div className={Style.crear_segundaParte}>
+
+                        </div>
+
+                        <div className={Style.crear_cuartaParte}>
+                           
                                 <FormGroup row>
                                     <FormControlLabel
                                         control={

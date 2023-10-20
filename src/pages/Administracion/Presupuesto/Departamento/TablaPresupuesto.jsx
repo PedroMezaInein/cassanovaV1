@@ -137,7 +137,6 @@ function Table({ columns, data }) {
     )
 }
 
-
 export default function TablaPresupuesto(props) {
     const { reload, handleClose } = props
     const partidas = useSelector(state => state.opciones.areas)
@@ -167,7 +166,6 @@ export default function TablaPresupuesto(props) {
     const [formDataTabla, setFormDataTabla] = useState([])
 
     /*     */
-
 
     useEffect(() => {
         getNominas()
@@ -398,6 +396,7 @@ export default function TablaPresupuesto(props) {
         aux[index].filas.push({
             id_partida: '',
             id_subpartida: '',
+            comentario: '',
             enero: 0,
             febrero: 0,
             marzo: 0,
@@ -484,7 +483,6 @@ export default function TablaPresupuesto(props) {
                 accessor: 'nombre',
             }
         ]
-
 
         return (
             <div>
@@ -682,6 +680,7 @@ export default function TablaPresupuesto(props) {
                         {
                             id_partida: '',
                             id_subpartida: '',
+                            comentario: '',
                             enero: 0,
                             febrero: 0,
                             marzo: 0,
@@ -732,26 +731,32 @@ export default function TablaPresupuesto(props) {
                 {
                     formDataTabla.sort((a, b) => a.nombre > b.nombre ? 1 : -1).map((tabla, indexTabla) => {
                         return (
-                            <div key={indexTabla} style={{ display: 'flex', flexDirection: 'column', marginTop: '20px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', justifyContent: 'center' }}>
-                                    <div><TrashIcon onClick={() => handleDeleteTable(indexTabla)} style={{ cursor: 'pointer', color: 'red', fontSize: '20px' }} /></div>
-                                    <h3 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', padding: '0 10px' }}>
+                            <div class="container-fluid">
+                                <div key={indexTabla} style={{ display: 'flex', flexDirection: 'column', marginTop: '20px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', justifyContent: 'center' }}>
+                                        <div><TrashIcon onClick={() => handleDeleteTable(indexTabla)} style={{ cursor: 'pointer', color: 'red', fontSize: '20px' }} /></div>
+                                        <h3 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', padding: '0 10px' }}>
 
-                                        <div>
-                                            {tabla.nombre}
-                                        </div>
-                                        <div style={{ marginLeft: '10px' }}>
-                                            {sumaTabla(indexTabla)}
-                                        </div>
-                                    </h3>
+                                            <div>
+                                                {tabla.nombre}
+                                            </div>
+                                            <div style={{ marginLeft: '10px' }}>
+                                                {sumaTabla(indexTabla)}
+                                            </div>
+                                        </h3>
 
+                                    </div>
                                 </div>
-                                <table>
+
+                            <div class="table-responsive">
+
+                                <table class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th></th>
                                             <th>Gasto</th>
                                             <th>Subgasto</th>
+                                            <th>Comentario</th>
                                             <th>enero <br /> {sumaMes(indexTabla, 'enero')}</th>
                                             <th>Febrero <br /> {sumaMes(indexTabla, 'febrero')}</th>
                                             <th>Marzo <br /> {sumaMes(indexTabla, 'marzo')}</th>
@@ -782,7 +787,7 @@ export default function TablaPresupuesto(props) {
                                                         </td>
                                                         <td>
                                                             {selectSubpartida(indexTabla, indexFila)}
-                                                        </td>
+                                                        </td>                                                      
                                                         {
                                                             Object.keys(fila).map((key, index) => {
                                                                 return (
@@ -803,6 +808,8 @@ export default function TablaPresupuesto(props) {
                                         }
                                     </tbody>
                                 </table>
+                            </div>
+
                                 <AddIcon onClick={() => nuevaFila(indexTabla)} style={{ cursor: 'pointer', color: 'green', fontSize: '25px', alignSelf: 'flex-start', marginTop: '10px', marginBottom: '10px' }} />
 
                             </div>
@@ -813,7 +820,6 @@ export default function TablaPresupuesto(props) {
             </>
         )
     }
-
 
     const handleChangeFecha = (date, tipo) => {
         setGeneral({
@@ -831,6 +837,8 @@ export default function TablaPresupuesto(props) {
 
     return (
         <>
+    <div  class="container-fluid">
+
             <div style={{ backgroundColor: 'white', padding: '2rem' }}>
                 <div style={{ marginBottom: '2rem' }}>
                     <h1 style={{ textAlign: 'center' }}>Infraestructura e Interiores, S.A. de C.V.</h1>
@@ -895,21 +903,22 @@ export default function TablaPresupuesto(props) {
                     </div>
 
                 </div>
+                <div class="container-fluid table-responsive">
+                    <div style={{ marginLeft: '8vw' }}>
+                        {
+                            form.length >= 13 &&
+                            createHeader()
+                        }
 
-                <div style={{ marginLeft: '18vw' }}>
-                    {
-                        form.length >= 13 &&
-                        createHeader()
-                    }
-
+                    </div>
                 </div>
+
                 <Styles>
                     {
                         formDataTabla.length > 0 &&
                         generateTables()
                     }
                 </Styles>
-
 
                 {
                     areasRestantes.length > 0 &&
@@ -931,6 +940,7 @@ export default function TablaPresupuesto(props) {
                 </div>
 
             </div>
+    </div>
 
         </>
     )

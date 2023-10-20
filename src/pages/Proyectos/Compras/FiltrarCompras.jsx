@@ -166,7 +166,7 @@ export default function CrearEgreso(props) {
     }
 
     const filtrar = () => {  
-        filtrarTabla(`&identificador=${form.identificador}&fecha_inicio=${changeDateFormat(form.fecha_inicio)}&fecha_fin=${changeDateFormat(form.fecha_fin)}&proveedor=${form.proveedor}&empresa=${form.empresa}&area=${form.area}&subarea=${form.subarea}&cuenta=${form.cuenta}&monto=${form.monto}&factura=${form.factura}&descripcion=${form.descripcion}&proyecto=${form.proyecto}`)
+        filtrarTabla(`&identificador=${form.identificador}&fecha_inicio=${changeDateFormat(form.fecha_inicio)}&fecha_fin=${changeDateFormat(form.fecha_fin)}&proveedor=${form.proveedor}&empresa=${form.empresa}&area=${form.area}&partida=${form.id_partidas}&subarea=${form.subarea}&cuenta=${form.cuenta}&monto=${form.monto}&factura=${form.factura}&descripcion=${form.descripcion}&proyecto=${form.proyecto}`)
         // console.log('filtrar tabla')
         handleClose()
         // borrar(false)

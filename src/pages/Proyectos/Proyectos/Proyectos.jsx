@@ -71,9 +71,9 @@ class Proyectos extends Component {
     setName = tab => {
         switch(tab){
             case 'all':
-                return 'Todas los meses';
-            case 'mes':
-                return 'Mes'
+                return 'Todas las Fases';
+            case 'fase1':
+                return 'Fase 1'
             case 'fase2':
                 return 'Fase 2'
             case 'fase3':
@@ -159,10 +159,10 @@ class Proyectos extends Component {
     setFasesList = proyecto => {
         let aux = [];
         if(proyecto.fase1)
-            aux.push({text: 'MES'})
-        // if(proyecto.fase2)
-        //     aux.push({text: 'FASE 2'})
-        // if(proyecto.fase3)
+            aux.push({text: 'FASE 1'})
+        if(proyecto.fase2)
+            aux.push({text: 'FASE 2'})
+        if(proyecto.fase3)
             aux.push({text: 'FASE 3'})
         if(proyecto.fase3 === 0 && proyecto.fase2 === 0 && proyecto.fase1=== 0)
             aux.push({text: 'SIN FASES'})
@@ -173,7 +173,7 @@ class Proyectos extends Component {
         if( key === tab ){
             return(
                 <div>
-                    <NewTable tableName = {`Meses-${tab}`} subtitle = 'Listado de mes' title = 'Meses ' mostrar_boton = { true } 
+                    <NewTable tableName = {`proyectos-${tab}`} subtitle = 'Listado de proyectos' title = 'Proyectos ' mostrar_boton = { true } 
                         abrir_modal = { false } url = '/proyectos/proyectos/add' columns = { PROYECTOS_COLUMNS } 
                         accessToken = { this.props.authUser.access_token } setter = { this.setProyectos } 
                         filterClick = { this.openModalFiltros } exportar_boton = { true } onClickExport = { () => this.exportProyectosAxios() } 
@@ -416,8 +416,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        // const tabs = ['all', 'mes', 'fase2', 'fase3']
-        const tabs = ['all', 'mes']
+        const tabs = ['all', 'fase1', 'fase2', 'fase3']
         /* const tabs = ['all'] */
         const { activeTab, modal, filtrado } = this.state
         const { access_token } = this.props.authUser

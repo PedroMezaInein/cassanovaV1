@@ -13,15 +13,29 @@ import InformacionProyecto from '../../../components/cards/Proyectos/Informacion
 import Swal from 'sweetalert2'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { setSingleHeader } from '../../../functions/routers'
+import DateFnsUtils from '@date-io/date-fns';
+import Carousel from 'react-bootstrap/Carousel';
+import Toast from 'react-bootstrap/Toast';
+
+import ProgressBar from 'react-bootstrap/ProgressBar';
+
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Image from 'react-bootstrap/Image';
+import Row from 'react-bootstrap/Row';
+
+import style from './estilos.module.css'
+
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 let aux = 'todas'
- 
+
 class CalendarioProyectos extends Component {
     state = {
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
         fase:'todas',
         proyectos: [],
+        comentarios: [],
         data: {
             empresas: []
         },
@@ -39,12 +53,25 @@ class CalendarioProyectos extends Component {
                     files: []
                 }
             },
-            comentario: ''
+            comentario: '',
+
+            semana: '',
+            programado: '',
+            ejecutado: '',
+            fechaInicio: new Date(),
+            fechaFin: new Date(),
+
         },
         tipo: '',
         usuarios: [],
         fase_actual: 'todas'
     }
+
+    constructor(props) {
+        super(props);
+        this.scrollContainerRef = React.createRef();
+      }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -63,6 +90,14 @@ class CalendarioProyectos extends Component {
         }
         this.getUsers()
 
+        this.scrollInterval = setInterval(() => {
+            const scrollContainer = this.scrollContainerRef.current;
+            scrollContainer.scrollLeft += 2; // Ajusta la velocidad y la dirección del scroll
+            if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+                scrollContainer.scrollLeft = 0;
+              }
+          }, 50); 
+
         setInterval(() => {
             this.getContentCalendarAxios(mes, año, aux)
             if (aux === 'todas') {
@@ -76,6 +111,11 @@ class CalendarioProyectos extends Component {
             }
         }, 600000);
     }
+
+  componentWillUnmount() {
+    clearInterval(this.scrollInterval); // Limpia el intervalo cuando el componente se desmonta
+  }
+
     getUsers() {
         const { access_token } = this.props.authUser
         axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } })
@@ -105,13 +145,14 @@ class CalendarioProyectos extends Component {
         })
     }
     getContentCalendarAxios = async (mes, año, fase) => {
-        console.log('primero carga aqui')
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}&fase=${fase}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos } = response.data
                 let { colorProyecto } = this.state
-                console.log(response.data)
+                let { comentarios } = this.state
+                comentarios =response.data.comentario
+                
                 proyectos.forEach((proyecto) => {
                     let esigual = false
                     let colorexistente = ''
@@ -148,7 +189,7 @@ class CalendarioProyectos extends Component {
                 
                 let dias = this.diasEnUnMes(mes, año)
                 
-                this.setState({ ...this.state, mes: mes, año: año, dias: dias, proyectos: proyectos, colorProyecto })
+                this.setState({ ...this.state, mes: mes, año: año, dias: dias, proyectos: proyectos, colorProyecto, comentarios:comentarios})
                 
                 //this.onDragEnd = this.onDragEnd.bind(this);
             }, (error) => { printResponseErrorAlert(error) }
@@ -249,6 +290,19 @@ class CalendarioProyectos extends Component {
         else {
             estado='#ABB2B9'
         } */
+        let programado = 0
+        let ejecutado = 0
+
+        proyecto.semanas_proyectos && proyecto.semanas_proyectos.length > 0 ?
+        proyecto.semanas_proyectos.forEach((element, semanaas) => {
+
+            programado += parseInt(element.programado)
+            ejecutado +=  parseInt(element.ejecutado)
+            
+        })
+
+            : <></>
+
         return (
             <OverlayTrigger rootClose overlay={
                 <Tooltip className="tool-calendar">
@@ -272,6 +326,7 @@ class CalendarioProyectos extends Component {
                     <div className={`text-truncate w-100 position-absolute text-white px-1 top-26 font-size-13px ${border}`} style={{ backgroundColor: proyecto.color, borderColor: proyecto.color }}>
                         {proyecto.nombre}
                     </div >
+                    
                     {/* <div className="text-truncate w-100 position-absolute text-white px-0 top-100 font-size-13px" colSpan={colspan}style={{
                         backgroundColor: `${proyecto.color}`,
                         fontSize: "8.5px",
@@ -279,7 +334,14 @@ class CalendarioProyectos extends Component {
                         height: "15px",
                     }}>
                     </div> */}
+                    <br></br>
+                
+                    <ProgressBar  striped now={programado} label={`${programado}%`} variant="success" visuallyHidden style={{marginTop:"40px"}}/>
+                    <ProgressBar  animated  now={ejecutado} label={`${ejecutado}%`}  variant={ (programado * 0.85) >= ejecutado ?  "danger" : (programado * 0.93) >= ejecutado ? "warning" :"success"  }  visuallyHidden  style={{marginTop:"10px"}} />
+                    <br />
+                    
                 </td>
+                
             </OverlayTrigger>
         )
     }
@@ -314,6 +376,7 @@ class CalendarioProyectos extends Component {
         fechaInicio.startOf('day')
         fechaFin.startOf('day')
         let fecha = new moment([año, meses.indexOf(mes), diaActual + 1])
+        // console.log(proyecto)
         // let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
         let esDiaActualInicioFecha = (diaActual + 1) === parseInt(fechaInicio.format('D'))
         let esMesActualInicioFecha = fechaInicio.format('M') === fecha.format('M')
@@ -325,7 +388,7 @@ class CalendarioProyectos extends Component {
             if ((diaActual + 1) === 1) {
                 let esDia1DentroFechas = fecha.toDate() >= fechaInicio.toDate() && fecha.toDate() <= fechaFin.toDate()
                 if (esDia1DentroFechas) {
-
+            
                     let duracionDia1HastaFechaFin = fechaFin.diff(fecha, 'days') + 1
                     if (duracionDia1HastaFechaFin < diasMesActual) {
                         this.showtd(proyecto, duracionDia1HastaFechaFin, "", estado)
@@ -343,6 +406,7 @@ class CalendarioProyectos extends Component {
                     <td>
                     </td>
                 }
+                
             }
             else {
                 let duracionDiaInicioHastaFechaFin = fechaFin.diff(fechaInicio, 'days') + 1
@@ -423,6 +487,17 @@ class CalendarioProyectos extends Component {
             form
         })
     }
+
+    handleChangeSemana = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
     addComentarioAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -454,6 +529,38 @@ class CalendarioProyectos extends Component {
             console.error(error, 'error')
         })
     }
+
+    addSemanasAxios  = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, proyecto } = this.state
+        const data = new FormData();
+        data.append(`semana`, form.semana)
+        data.append(`fechaInicio`, form.fechaInicio ?  new Date(form.fechaInicio).toISOString() : '') 
+        data.append(`fechaFin`, form.fechaFin ?  new Date(form.fechaFin).toISOString() : '') 
+
+        data.append(`comentario`, form.comentario)
+        data.append(`programado`, form.programado)
+        data.append(`ejecutado`, form.ejecutado)
+
+        await axios.post(`${URL_DEV}v2/proyectos/calendario-proyectos/addsemana/${proyecto.id}`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Semana agregado con éxito');
+                const { proyecto } = response.data
+                const { form } = this.state
+                // form.comentario = ''
+                this.componentDidMount()
+                this.handleClose(true)
+
+                this.setState({ ...this.state, form, proyecto: proyecto })
+
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.error(error, 'error')
+        })
+    }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -476,18 +583,35 @@ class CalendarioProyectos extends Component {
         })
         return form
     }
+
+    setInitials = name => {
+        let arreglo = name.split(' ')
+        let texto = ''
+        if(arreglo.length){
+            arreglo.forEach((elemento) => {
+                texto = texto + elemento.trim().charAt(0)
+            })
+        }else{
+            if(name.length)
+                return name.trim().charAt(0);
+        }
+        return texto
+    }
     
     render() {
-        const { mes, año, fase, proyectos, dias, modal, proyecto, form, tipo, usuarios } = this.state
+        const { mes, año, fase, proyectos, comentarios, dias, modal, proyecto, form, tipo, usuarios } = this.state
         return (
             <Layout active='proyectos' {... this.props}>
+            
                 <Card className='card-custom'>
+                    
                     <Card.Header>
                         <div className="d-flex align-items-center">
                             <h3 className="card-title align-items-start flex-column">
                                 <span className="font-weight-bolder text-dark"> Calendario de proyectos </span>
                             </h3>
                         </div>
+                        
                         <div className="card-toolbar row mx-0 row-paddingless d-flex justify-content-end ">
                             <div className="col-md-8 mr-4">
                                 {/* <Single textlabel={false} placeholder = 'Selecciona el mes' defaultvalue = { mes } iconclass='las la-tools icon-xl'
@@ -506,6 +630,49 @@ class CalendarioProyectos extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
+                        
+                    <div className={style.scrollableDiv}  ref={this.scrollContainerRef} >
+                    {/* <Container> */}
+                            {/* <Row>   */}
+
+                    {
+                            comentarios.length != 0 ?
+                            comentarios.map((proyect) => {
+                                // comentarios.comentarios.map((coment) => {
+                                // })
+                                return (
+
+                                    <div className="content d-inline-block" style={{ padding: '12px' }}>
+                                    {/* <Col   > */}
+
+                                        <Card  style={{ width: '520px' ,maginTop: '-30px' }} >
+                                            <Card.Header>
+                                                <blockquote className="blockquote mb-0">
+                                                <p>
+                                                    {' '}
+                                                    {  proyect.proyecto ? proyect.proyecto.nombre : '' }.{' '}
+                                                </p>
+                                                <footer className="blockquote-footer">
+                                                   <cite title="Source Title"> { proyect.comentario } </cite>
+                                                </footer>
+                                                </blockquote>
+                                            </Card.Header>
+                                            
+                                        </Card>
+
+                                    {/* </Col>   */}
+
+                                    </div>
+                                   
+                                )       
+                        })
+                        :''
+                    }
+
+                       {/* </Row> */}
+                                {/* </Container> */}
+                </div>
+
                         {/* <div className="d-flex justify-content-center">
                             {
                                 fase === '1' || fase === 'todas' ?
@@ -551,8 +718,10 @@ class CalendarioProyectos extends Component {
                                                 [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
                                                     return (<th className="border-top-0" key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
                                                 })
+                                                
                                             }
                                         </tr>
+                                       
                                     </thead>
                                     <DragDropContext onDragEnd={this.onDragEnd}>
                                         <Droppable droppableId="droppable">
@@ -579,6 +748,7 @@ class CalendarioProyectos extends Component {
                                                                 return (
                                                                     <Draggable key={proyecto.id} draggableId={proyecto.id.toString()} index={index}>
                                                                         {(provided, snapshot) => (
+
                                                                             <tr ref = { provided.innerRef } {...provided.draggableProps} {...provided.dragHandleProps} className='h-30px' >
                                                                                 <td className="text-center font-weight-bolder white-space-nowrap py-8px">
                                                                                     <span className="d-block font-size-13px"> { proyecto.nombre } </span>
@@ -586,10 +756,37 @@ class CalendarioProyectos extends Component {
                                                                                         color: `${proyecto.color == "yellow" ? "black" : "black"}`,
                                                                                         backgroundColor: `${proyecto.estatus.fondo}`,
                                                                                         fontSize: "8.5px", }} >
-                                                                                        {proyecto.estatus.estatus}
+                                                                                            {proyecto.estatus.estatus}
                                                                                     </span>
+                                                                                    <span className="d-block font-size-13px"> 
+                                                                                    {
+                                                                                          proyecto.departamentos ? 
+                                                                                    proyecto.departamentos.map((element, foto) => {
+                                                                                        // console.log(element)
+                                                                                            // <img alt="Pic" src={element.user.usuario ?  element.user.usuario.avatar : '' } />
+                                                                                            return (
+                                                                                                <OverlayTrigger rootClose key={index} overlay={<Tooltip>{element.user.usuario.name}</Tooltip>}>
+                                                                                                    <div className={`symbol symbol-20 symbol-lg-30 symbol-circle border-0 ${!element.enable ? '' : 'symbol-light-info '}`}>
+                                                                                                        {
+                                                                                                             element.user.usuario ?
+                                                                                                                <img alt="Pic" src={  element.user.usuario.avatar ? element.user.usuario.avatar : `https://ui-avatars.com/api/?name=${element.user.usuario.name}` } />
+                                                                                                            : 
+                                                                                                            <span className="symbol-label font-weight-bolder">{this.setInitials( element.user.usuario.name)}</span>
+                                                                                                        }
+                                                                                                    </div>
+                                                                                                </OverlayTrigger>
+                                                                                            )
+                                                                                        })
+                                                                                        :''
+
+                                                                                    }
+                                                                                   
+                                                                                    </span>
+                                                                                    
+                                                                                    {/* <img alt="Pic" src={ vatar } /> */}
+
                                                                                 </td>
-                                                                                
+
                                                                                 {
                                                                                     [...Array(dias)].map((element, diaActual) => {
                                                                                         return(
@@ -599,10 +796,11 @@ class CalendarioProyectos extends Component {
                                                                                         )
                                                                                     })
                                                                                 }
-                                                                                
-                                                                            </tr>       
+
+                                                                            </tr>     
+
                                                                         )}
-                                                                    </Draggable>
+                                                                     </Draggable>
                                                                 )
                                                             })
                                                     }
@@ -615,7 +813,7 @@ class CalendarioProyectos extends Component {
                         </div>
                     </Card.Body>
                 </Card>
-                <Modal show = { modal } size="lg" title = {
+                <Modal show = { modal } size="xl" title = {
                     proyecto?
                         proyecto.estatus ?
                             <>
@@ -632,8 +830,8 @@ class CalendarioProyectos extends Component {
                         : <span>-</span>
                     :''
                 } handleClose = { this.handleClose } >
-                    <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario={this.addComentarioAxios} form={form}
-                        onChange={this.onChange} handleChange={this.handleChangeComentario} tipo={tipo} urls={true} at={this.props.authUser.access_token} usuarios={usuarios} color={proyecto.color} reload={this.getContentCalendarAxios} />
+                    <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario={this.addComentarioAxios} addSemanas={this.addSemanasAxios} form={form}
+                        onChange={this.onChange} handleChange={this.handleChangeComentario}  handleChanges={this.handleChangeSemana}tipo={tipo} urls={true} at={this.props.authUser.access_token} usuarios={usuarios} color={proyecto.color} reload={this.getContentCalendarAxios} />
                 </Modal>
             </Layout>       
         )

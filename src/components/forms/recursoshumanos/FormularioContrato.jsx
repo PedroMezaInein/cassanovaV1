@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { deleteAlert, validateAlert } from '../../../functions/alert'
 import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { InputGray, RangeCalendar, InputNumberGray, FileInput, CalendarDay } from '../../form-components'
+import { InputGray, RangeCalendar, InputNumberGray, FileInput, CalendarDay,TagInput } from '../../form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import $ from "jquery";
@@ -40,7 +40,6 @@ class FormularioContrato extends Component {
     }
 
     isAdmin = ( contrato ) => {
-        console.log(contrato)
         const { user } = this.props
         if(contrato.contrato_firmado)
             return false
@@ -61,10 +60,14 @@ class FormularioContrato extends Component {
             switch(form.periodo){
                 case 'determinado':
                 case 'servicios':
+                case 'obrasinprestaciones':
+                case 'obraconprestaciones':
+                case 'obraportrabajo':
                     if(form.dias !== '')
                         return true
                     break;
                 case 'indefinido':
+                    
                     return true
                 default: break;
             }
@@ -82,9 +85,29 @@ class FormularioContrato extends Component {
                 return `SERVICIOS PROFESIONALES POR ${contrato.dias} DÍAS`
             case 'determinado':
                 return `TIEMPO DETERMINADO POR ${contrato.dias} DÍAS`
+            case 'obrasinprestaciones':
+                return `TRABAJO POR OBRA DETERMINADA SIN PRESTACIONES POR ${contrato.dias} DÍAS`
+            case 'obraconprestaciones':
+                return `TRABAJO POR OBRA DETERMIANAC CON PRESTACIONES POR ${contrato.dias} DÍAS`
+            case 'obraportrabajo':
+                return `TRABAJO DETERMINADO SIN PRESTACIONES POR ${contrato.dias} DÍAS`
             default:
                 return `TIEMPO INDETERMINADO`
         }
+    }
+
+    tagInputChange = (nuevoTipos) => {
+        console.log(nuevoTipos)
+        const uppercased = nuevoTipos.map(tipo => tipo.toUpperCase()); 
+        const { form } = this.props
+        let unico = {};
+        uppercased.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        form.tipos = uppercased ? Object.keys(unico) : [];
+        this.setState({
+            form
+        })
     }
 
     render() {
@@ -137,9 +160,10 @@ class FormularioContrato extends Component {
                                                     <td className="text-center">
                                                         <span className="text-dark-75 font-weight-bolder font-size-lg">
                                                             { 
-                                                                contrato.tipo_contrato === 'obra' ? 
-                                                                    'OBRA DETERMINADA' 
-                                                                :  this.printContratoType(contrato)
+                                                                // contrato.tipo_contrato === 'obra' ? 
+                                                                    // 'OBRA DETERMINADA' 
+                                                                // :  
+                                                                this.printContratoType(contrato)
                                                             }
                                                         </span>
                                                     </td>
@@ -269,7 +293,7 @@ class FormularioContrato extends Component {
                                 }
                             >
                                 {
-                                    empleado.tipo_empleado === 'Administrativo' ?
+                                    // empleado.tipo_empleado === 'Administrativo' ?
                                         <div className="row mx-0 my-5">
                                             <div className = { `${form.periodo !== '' ? 'col-md-6' : 'col-md-12'}` }>
                                                 <div className="mx-auto w-fit-content">
@@ -290,15 +314,53 @@ class FormularioContrato extends Component {
                                                                 onChange = { onChangeContrato } checked = { form.periodo === 'servicios' ? true : false } />
                                                             <span></span>SERVICIOS PROFESIONALES
                                                         </label>
+                                                        <label className="radio radio-outline radio-success">
+                                                            <input type = "radio" name = 'periodo' value = 'obrasinprestaciones'
+                                                                onChange = { onChangeContrato } checked = { form.periodo === 'obrasinprestaciones' ? true : false } />
+                                                            <span></span>INDIVIDUAL OBRA DETERMINADA SIN PRESTACIONES
+                                                        </label>
+                                                        <label className="radio radio-outline radio-success">
+                                                            <input type = "radio" name = 'periodo' value = 'obraconprestaciones'
+                                                                onChange = { onChangeContrato } checked = { form.periodo === 'obraconprestaciones' ? true : false } />
+                                                            <span></span>INDIVIDUAL OBRA DETERMINADA CON PRESTACIONES
+                                                        </label>
+                                                        <label className="radio radio-outline radio-success">
+                                                            <input type = "radio" name = 'periodo' value = 'obraportrabajo'
+                                                                onChange = { onChangeContrato } checked = { form.periodo === 'obraportrabajo' ? true : false } />
+                                                            <span></span>INDIVIDUAL DETERMINADO POR TRABAJO SIN PRESTACIONES
+                                                        </label>
                                                     </div>
                                                 </div>
                                                 {
-                                                    form.periodo === 'determinado' || form.periodo === 'servicios' ?
-                                                        <div className = 'mt-3'>
+                                                    form.periodo === 'determinado' || form.periodo === 'servicios' || form.periodo === 'obrasinprestaciones' || form.periodo === 'obraconprestaciones' ||
+                                                     form.periodo === 'obraportrabajo' ?
+                                                        <div className = 'form-group col-md-4 mb-3'>
                                                             <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
                                                                 withicon={1} requirevalidation={1} onChange = { onChangeContrato }
                                                                 name = "dias" type = "text" value = { form.dias } placeholder="DÍAS"
                                                                 iconclass="flaticon2-calendar-6" messageinc="Incorrecto. Ingresa el número de días." />
+                                                        </div>
+                                                    : ''
+                                                }
+                                                 {
+                                                    form.periodo === 'obraconprestaciones' ||
+                                                     form.periodo === 'obraportrabajo' ?
+                                                        <div className = 'form-group col-md-6 mb-6'>
+                                                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
+                                                                withicon={1} requirevalidation={1} onChange = { onChangeContrato }
+                                                                name = "nameobra" type = "text" value = { form.nameobra } placeholder="Nombre de la obra"
+                                                                iconclass="flaticon2-calendar-6" messageinc="Incorrecto. Ingresa el nombre de la obra." />
+                                                        </div>
+                                                    : ''
+                                                }
+                                                {
+                                                    form.periodo === 'obrasinprestaciones' || form.periodo === 'obraconprestaciones' ||
+                                                     form.periodo === 'obraportrabajo' ?
+                                                        <div className = 'form-group col-md-6 mb-6'>
+                                                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
+                                                                withicon={1} requirevalidation={1} onChange = { onChangeContrato }
+                                                                name = "genero" type = "text" value = { form.genero } placeholder="Género"
+                                                                iconclass="flaticon2-calendar-6" messageinc="Incorrecto. Ingresa el género." />
                                                         </div>
                                                     : ''
                                                 }
@@ -308,145 +370,154 @@ class FormularioContrato extends Component {
                                                     <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                                         <label className="text-center font-weight-bolder">Fecha de contrato</label>
                                                     </div>
-                                                    <CalendarDay date = { form.fechaInicio } onChange = { onChangeContrato } name = 'fechaInicio' 
-                                                        requirevalidation = { 1 } withformgroup = { 0 } />
+                                                    {/* <CalendarDay date = { form.fechaInicio } onChange = { onChangeContrato } name = 'fechaInicio' 
+                                                        requirevalidation = { 1 } withformgroup = { 0 } /> */}
+                                                        <RangeCalendar
+                                                            onChange={onChangeRange}
+                                                            start={form.fechaInicio}
+                                                            end={form.fechaFin}
+                                                        />
                                                 </div>
                                             </div>
+                                            <div className="col-md-12">
+                                                <TagInput tags={form.tipos}  onChange={this.tagInputChange}  placeholder={"Actividades"} iconclass={"far fa-folder-open"} />
+                                            </div>     
                                         </div>
-                                    :
-                                        <div className="form-group row form-group-marginless mt-8">
-                                            <div className="col-md-6 text-align-last-center align-self-center">
-                                                <label className="text-center font-weight-bolder text-bodymb-2">Fecha de inicio - Fecha final</label><br />
-                                                <RangeCalendar
-                                                    onChange={onChangeRange}
-                                                    start={form.fechaInicio}
-                                                    end={form.fechaFin}
-                                                />
-                                            </div>
-                                            <div className="col-md-6 align-self-center">
-                                                <div className="col-md-12 mb-4">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        withformgroup={0}
-                                                        requirevalidation={1}
-                                                        onChange={onChangeContrato}
-                                                        name="periodo_pago"
-                                                        type="text"
-                                                        value={form.periodo_pago}
-                                                        placeholder="PERIODO DE PAGO"
-                                                        iconclass="flaticon2-calendar-4"
-                                                        messageinc="Incorrecto. Ingresa el periodo de pago."
-                                                    />
-                                                </div>
-                                                <div className="form-group col-md-12 mb-4">
-                                                    <InputNumberGray
-                                                        withtaglabel = { 1 }
-                                                        withtextlabel = { 1 }
-                                                        withplaceholder = { 1 }
-                                                        withicon={1}
-                                                        requirevalidation={1}
-                                                        onChange={onChangeContrato}
-                                                        name="pagos_hr_extra"
-                                                        type="text"
-                                                        value={form.pagos_hr_extra}
-                                                        placeholder="PAGOS DE HORA EXTRA "
-                                                        iconclass="far fa-money-bill-alt"
-                                                        messageinc="Incorrecto. Ingresa el pago de hora extra."
-                                                        thousandseparator = { true }
-                                                    />
-                                                </div>
-                                                <div className="form-group col-md-12 mb-4">
-                                                    <InputNumberGray
-                                                        withtaglabel = { 1 }
-                                                        withtextlabel = { 1 }
-                                                        withplaceholder = { 1 }
-                                                        withicon={1}
-                                                        requirevalidation={1}
-                                                        onChange={onChangeContrato}
-                                                        name="total_obra"
-                                                        type="text"
-                                                        value={form.total_obra}
-                                                        placeholder="TOTAL DE LA OBRA"
-                                                        iconclass="fas fa-dollar-sign"
-                                                        messageinc="Incorrecto. Ingresa el total de la obra."
-                                                        thousandseparator = { true }
-                                                    />
-                                                </div>
-                                                <div className="form-group col-md-12 mb-4">
-                                                    <InputNumberGray
-                                                        withtaglabel = { 1 }
-                                                        withtextlabel = { 1 }
-                                                        withplaceholder = { 1 }
-                                                        withicon={1}
-                                                        requirevalidation={1}
-                                                        onChange={onChangeContrato}
-                                                        name="dias"
-                                                        type="text"
-                                                        value={form.dias}
-                                                        placeholder="DÍAS DEL CONTRATO"
-                                                        iconclass="flaticon2-calendar-6"
-                                                        messageinc="Incorrecto. Ingresa el número de días del contrato."
-                                                    />
-                                                </div>
-                                                <div className="form-group col-md-12">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        withformgroup={0}
-                                                        requirevalidation={1}
-                                                        onChange={onChangeContrato}
-                                                        name="dias_laborables"
-                                                        type="text"
-                                                        value={form.dias_laborables}
-                                                        placeholder="DÍAS LABORABLES"
-                                                        iconclass="flaticon2-calendar-9"
-                                                        messageinc="Incorrecto. Ingresa el número de días laborables."
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="col-md-12 mb-4">
-                                                <div className="col-md-12 mb-4">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        withformgroup={0}
-                                                        requirevalidation={1}
-                                                        onChange={onChangeContrato}
-                                                        name="ubicacion_obra"
-                                                        type="text"
-                                                        value={form.ubicacion_obra}
-                                                        placeholder="UBICACIÓN DE LA OBRA"
-                                                        iconclass="flaticon2-map"
-                                                        messageinc="Incorrecto. Ingresa la ubicación de la obra."
-                                                    />
-                                                </div>
-                                                <div className="col-md-12">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        withformgroup={0}
-                                                        requirevalidation={1}
-                                                        formeditado={formeditado}
-                                                        onChange={onChangeContrato}
-                                                        name="direccion_contrato"
-                                                        type="text"
-                                                        value={form.direccion_contrato}
-                                                        placeholder="DIRECCIÓN DEL CONTRATO"
-                                                        iconclass="las la-map-marked-alt icon-xl p-0"
-                                                        messageinc="Incorrecto. Ingresa la dirección del contrato."
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
+                                    // :
+                                    // ''
+                                        // <div className="form-group row form-group-marginless mt-8">
+                                        //     <div className="col-md-6 text-align-last-center align-self-center">
+                                        //         <label className="text-center font-weight-bolder text-bodymb-2">Fecha de inicio - Fecha final</label><br />
+                                        //         <RangeCalendar
+                                        //             onChange={onChangeRange}
+                                        //             start={form.fechaInicio}
+                                        //             end={form.fechaFin}
+                                        //         />
+                                        //     </div>
+                                        //     <div className="col-md-6 align-self-center">
+                                        //         <div className="col-md-12 mb-4">
+                                        //             <InputGray
+                                        //                 withtaglabel={1}
+                                        //                 withtextlabel={1}
+                                        //                 withplaceholder={1}
+                                        //                 withicon={1}
+                                        //                 withformgroup={0}
+                                        //                 requirevalidation={1}
+                                        //                 onChange={onChangeContrato}
+                                        //                 name="periodo_pago"
+                                        //                 type="text"
+                                        //                 value={form.periodo_pago}
+                                        //                 placeholder="PERIODO DE PAGO"
+                                        //                 iconclass="flaticon2-calendar-4"
+                                        //                 messageinc="Incorrecto. Ingresa el periodo de pago."
+                                        //             />
+                                        //         </div>
+                                        //         <div className="form-group col-md-12 mb-4">
+                                        //             <InputNumberGray
+                                        //                 withtaglabel = { 1 }
+                                        //                 withtextlabel = { 1 }
+                                        //                 withplaceholder = { 1 }
+                                        //                 withicon={1}
+                                        //                 requirevalidation={1}
+                                        //                 onChange={onChangeContrato}
+                                        //                 name="pagos_hr_extra"
+                                        //                 type="text"
+                                        //                 value={form.pagos_hr_extra}
+                                        //                 placeholder="PAGOS DE HORA EXTRA "
+                                        //                 iconclass="far fa-money-bill-alt"
+                                        //                 messageinc="Incorrecto. Ingresa el pago de hora extra."
+                                        //                 thousandseparator = { true }
+                                        //             />
+                                        //         </div>
+                                        //         <div className="form-group col-md-12 mb-4">
+                                        //             <InputNumberGray
+                                        //                 withtaglabel = { 1 }
+                                        //                 withtextlabel = { 1 }
+                                        //                 withplaceholder = { 1 }
+                                        //                 withicon={1}
+                                        //                 requirevalidation={1}
+                                        //                 onChange={onChangeContrato}
+                                        //                 name="total_obra"
+                                        //                 type="text"
+                                        //                 value={form.total_obra}
+                                        //                 placeholder="TOTAL DE LA OBRA"
+                                        //                 iconclass="fas fa-dollar-sign"
+                                        //                 messageinc="Incorrecto. Ingresa el total de la obra."
+                                        //                 thousandseparator = { true }
+                                        //             />
+                                        //         </div>
+                                        //         <div className="form-group col-md-12 mb-4">
+                                        //             <InputNumberGray
+                                        //                 withtaglabel = { 1 }
+                                        //                 withtextlabel = { 1 }
+                                        //                 withplaceholder = { 1 }
+                                        //                 withicon={1}
+                                        //                 requirevalidation={1}
+                                        //                 onChange={onChangeContrato}
+                                        //                 name="dias"
+                                        //                 type="text"
+                                        //                 value={form.dias}
+                                        //                 placeholder="DÍAS DEL CONTRATO"
+                                        //                 iconclass="flaticon2-calendar-6"
+                                        //                 messageinc="Incorrecto. Ingresa el número de días del contrato."
+                                        //             />
+                                        //         </div>
+                                        //         <div className="form-group col-md-12">
+                                        //             <InputGray
+                                        //                 withtaglabel={1}
+                                        //                 withtextlabel={1}
+                                        //                 withplaceholder={1}
+                                        //                 withicon={1}
+                                        //                 withformgroup={0}
+                                        //                 requirevalidation={1}
+                                        //                 onChange={onChangeContrato}
+                                        //                 name="dias_laborables"
+                                        //                 type="text"
+                                        //                 value={form.dias_laborables}
+                                        //                 placeholder="DÍAS LABORABLES"
+                                        //                 iconclass="flaticon2-calendar-9"
+                                        //                 messageinc="Incorrecto. Ingresa el número de días laborables."
+                                        //             />
+                                        //         </div>
+                                        //     </div>
+                                        //     <div className="col-md-12 mb-4">
+                                        //         <div className="col-md-12 mb-4">
+                                        //             <InputGray
+                                        //                 withtaglabel={1}
+                                        //                 withtextlabel={1}
+                                        //                 withplaceholder={1}
+                                        //                 withicon={1}
+                                        //                 withformgroup={0}
+                                        //                 requirevalidation={1}
+                                        //                 onChange={onChangeContrato}
+                                        //                 name="ubicacion_obra"
+                                        //                 type="text"
+                                        //                 value={form.ubicacion_obra}
+                                        //                 placeholder="UBICACIÓN DE LA OBRA"
+                                        //                 iconclass="flaticon2-map"
+                                        //                 messageinc="Incorrecto. Ingresa la ubicación de la obra."
+                                        //             />
+                                        //         </div>
+                                        //         <div className="col-md-12">
+                                        //             <InputGray
+                                        //                 withtaglabel={1}
+                                        //                 withtextlabel={1}
+                                        //                 withplaceholder={1}
+                                        //                 withicon={1}
+                                        //                 withformgroup={0}
+                                        //                 requirevalidation={1}
+                                        //                 formeditado={formeditado}
+                                        //                 onChange={onChangeContrato}
+                                        //                 name="direccion_contrato"
+                                        //                 type="text"
+                                        //                 value={form.direccion_contrato}
+                                        //                 placeholder="DIRECCIÓN DEL CONTRATO"
+                                        //                 iconclass="las la-map-marked-alt icon-xl p-0"
+                                        //                 messageinc="Incorrecto. Ingresa la dirección del contrato."
+                                        //             />
+                                        //         </div>
+                                        //     </div>
+                                        // </div>
                                 }      
                                 {
                                     this.canSendContrado() ?

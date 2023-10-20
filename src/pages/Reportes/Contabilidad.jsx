@@ -78,6 +78,11 @@ class Contabilidad extends Component {
                     text: 'Con factura',
                     id: 'Con factura',
                     checked: false,
+                },
+                {
+                    text: 'Factura extranjera',
+                    id: 'facturasPdf',
+                    checked: false,
                 }
             ]
         },
@@ -195,13 +200,23 @@ class Contabilidad extends Component {
                         let url = ''
                         if(empresa.venta_url){
                             url = URL_ASSETS + '/storage/' + empresa.venta_url
-                            const blobPromise = fetch(url, {method: 'GET', headers:{'Access-Control-Allow-Origin': '*'}, cache: 'default'}).then(r => {
+                            const blobPromise = fetch(url).then(r => {
                                 if (r.status === 200) return r.blob()
                                 return Promise.reject(new Error(r.statusText))
                             })
-                            const name = (url.substring(url.lastIndexOf('/'))).replace('/', '');
-                            
+                            console.log(url)
+                            const name = (url.substring(url.lastIndexOf('/'))).replace('/', '')
                             empresaFolder.file(name, blobPromise)
+
+                        // if(empresa.venta_url){
+                        //     url = URL_ASSETS + '/storage/' + empresa.venta_url
+                        //     const blobPromise = fetch(url, {method: 'GET', headers:{'Access-Control-Allow-Origin': '*'}, cache: 'default'}).then(r => {
+                        //         if (r.status === 200) return r.blob()
+                        //         return Promise.reject(new Error(r.statusText))
+                        //     })
+                        //     const name = (url.substring(url.lastIndexOf('/'))).replace('/', '');
+                            
+                        //     empresaFolder.file(name, blobPromise)
                             if(empresa.ventas){
                                 empresa.ventas.map( (venta) => {
                                     if(venta.pagos){
@@ -250,15 +265,17 @@ class Contabilidad extends Component {
                                             }
                                             return false
                                         })
-                                        venta.facturas_pdf.forEach((factura) => {
-                                            url = factura.url
-                                            const blobPromise = fetch(url).then(r => {
-                                                if (r.status === 200) return r.blob()
-                                                return Promise.reject(new Error(r.statusText))
+                                        if( venta.facturas_pdf){
+                                            venta.facturas_pdf.forEach((factura) => {
+                                                url = factura.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = 'ventas/facturas-extranjera/'+empresa.name+' FE '+factura.id+' '+venta.id+url.substring(url.lastIndexOf('.'))
+                                                empresaFolder.file(name, blobPromise)
                                             })
-                                            const name = 'ventas/facturas/'+empresa.name+' FE '+factura.id+' '+venta.id+url.substring(url.lastIndexOf('.'))
-                                            empresaFolder.file(name, blobPromise)
-                                        })
+                                        }
                                     }
                                     return false
                                 })
@@ -320,15 +337,17 @@ class Contabilidad extends Component {
                                             }
                                             return false
                                         })
-                                        compra.facturas_pdf.forEach((factura) => {
-                                            url = factura.url
-                                            const blobPromise = fetch(url).then(r => {
-                                                if (r.status === 200) return r.blob()
-                                                return Promise.reject(new Error(r.statusText))
+                                        if( compra.facturas_pdf){
+                                            compra.facturas_pdf.forEach((factura) => {
+                                                url = factura.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = 'compras/facturas-extranjera/'+empresa.name+' FE '+factura.id+' '+compra.id+url.substring(url.lastIndexOf('.'))
+                                                empresaFolder.file(name, blobPromise)
                                             })
-                                            const name = 'compras/facturas/'+empresa.name+' FE '+factura.id+' '+compra.id+url.substring(url.lastIndexOf('.'))
-                                            empresaFolder.file(name, blobPromise)
-                                        })
+                                      }
                                     }
                                     return false
                                 })
@@ -390,15 +409,18 @@ class Contabilidad extends Component {
                                             }
                                             return false
                                         })
-                                        egreso.facturas_pdf.forEach((factura) => {
-                                            url = factura.url
-                                            const blobPromise = fetch(url).then(r => {
-                                                if (r.status === 200) return r.blob()
-                                                return Promise.reject(new Error(r.statusText))
+                                        // console.log(egreso)
+                                        if( egreso.facturas_pdf){
+                                            egreso.facturas_pdf.forEach((factura) => {
+                                                url = factura.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = 'egresos/facturas-extranjera/'+empresa.name+' FE '+factura.id+' '+egreso.id+url.substring(url.lastIndexOf('.'))
+                                                empresaFolder.file(name, blobPromise)
                                             })
-                                            const name = 'egresos/facturas/'+empresa.name+' FE '+factura.id+' '+egreso.id+url.substring(url.lastIndexOf('.'))
-                                            empresaFolder.file(name, blobPromise)
-                                        })
+                                        }
                                     }
                                     return false
                                 })
@@ -460,15 +482,17 @@ class Contabilidad extends Component {
                                             }
                                             return false
                                         })
-                                        ingreso.facturas_pdf.forEach((factura) => {
-                                            url = factura.url
-                                            const blobPromise = fetch(url).then(r => {
-                                                if (r.status === 200) return r.blob()
-                                                return Promise.reject(new Error(r.statusText))
+                                        if( ingreso.facturas_pdf){
+                                            ingreso.facturas_pdf.forEach((factura) => {
+                                                url = factura.url
+                                                const blobPromise = fetch(url).then(r => {
+                                                    if (r.status === 200) return r.blob()
+                                                    return Promise.reject(new Error(r.statusText))
+                                                })
+                                                const name = 'ingresos/facturas-extranjera/'+empresa.name+' FE '+factura.id+' '+ingreso.id+url.substring(url.lastIndexOf('.'))
+                                                empresaFolder.file(name, blobPromise)
                                             })
-                                            const name = 'ingresos/facturas/'+empresa.name+' FE '+factura.id+' '+ingreso.id+url.substring(url.lastIndexOf('.'))
-                                            empresaFolder.file(name, blobPromise)
-                                        })
+                                      }
                                     }
                                     return false
                                 })

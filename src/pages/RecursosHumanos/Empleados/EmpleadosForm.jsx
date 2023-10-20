@@ -27,7 +27,7 @@ class EmpleadosForm extends Component {
             curp: '',
             rfc: '',
             nss: '',
-            fecha_nacimiento: new Date(),
+            fecha_nacimiento: '',
             nacionalidad: '',
             telefono_movil: '',
             telefono_particular: '',
@@ -97,10 +97,10 @@ class EmpleadosForm extends Component {
             departamento: '',
            
             // salario_imss: '',
-            // imss: 0.0,
+            imss: 0.0,
             // rcv: 0.0,
-            // infonavit: 0.0,
-            // isn: 0.0
+            infonavit: 0.0,
+            isn: 0.0
         },
         options: {
             empresas: [],
@@ -209,8 +209,6 @@ class EmpleadosForm extends Component {
                         form.isn = empleado.isn
                         form.checador = empleado.checador
                         form.id_patronal = empleado.id_patronal === null ? '' : empleado.id_patronal.toString()
-                        console.log(empleado)
-                        console.log(form)
                         this.setState({
                             ...this.state,
                             form,

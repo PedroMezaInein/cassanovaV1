@@ -157,6 +157,7 @@ class ProyectosForm extends Component {
     render() {
         const { title, children, form, onChange, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, 
             removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, tagInputChange, setOptions, openModalCP, showModal, ...props } = this.props
+            console.log(form)
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -211,22 +212,22 @@ class ProyectosForm extends Component {
 
                                         <div className="form-group row form-group-marginless">                                            
                                             <div className="col-md-4">
-                                                <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 1 } requirevalidation = { 1}
+                                                <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 1 } requirevalidation = { 0 }
                                                     formeditado = { formeditado } type = "text" name = "nombre" value = { form.nombre } onChange = { onChange }
-                                                    placeholder = "Nombre" iconclass = "far fa-folder-open" messageinc="Ingresa la nombre del proyecto."
+                                                    placeholder = "SUCURSAL" iconclass = "far fa-folder-open" messageinc="Ingresa la sucursal del proyecto."
                                                 />
                                             </div>
-                                            {/* <div className="col-md-4">
+                                            <div className="col-md-4">
                                                 <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } withformgroup = { 1 } requirevalidation = { 0 }
                                                     formeditado = { formeditado } type = "text" name = "ciudad" value = { form.ciudad } onChange = { onChange }
                                                     placeholder = "CIUDAD" iconclass = "fas fa-map-marked-alt" messageinc="Ingresa la ciudad del proyecto."
                                                 />
-                                            </div> */}
+                                            </div>
                                           
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
 
-                                        {/* <div className="form-group row form-group-marginless">   
+                                        <div className="form-group row form-group-marginless">   
                                             <div className="col-md-8">
                                             <InputGray letterCase={false} withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={0} requirevalidation={0} withformgroup={0} 
                                                     formeditado = { formeditado } rows = "3" onChange = { onChange }
@@ -234,11 +235,11 @@ class ProyectosForm extends Component {
                                                     customclass="px-2" messageinc = "Ingresa la dirección completa."
                                                 />
                                             </div>
-                                        </div> */}
+                                        </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className = 'col-md-4 mt-2 align-self-center'>
-                                                {/* <div className="d-flex justify-content-space-around">
+                                                <div className="d-flex justify-content-space-around">
                                                     <div className="mr-5">
                                                         <div className="text-center">
                                                             <p className="font-size-sm font-weight-bold">FASE 1</p>
@@ -287,26 +288,26 @@ class ProyectosForm extends Component {
                                                             </Form.Group>
                                                         </div>
                                                     </div>
-                                                </div> */}
+                                                </div>
                                                 {/* {
                                                     form.fase1 || form.fase2 || form.fase3 ? <></>:
                                                     <span className="form-text text-danger text-center is-invalid"> Selecciona una fase </span>
                                                 } */}
                                             </div>
-                                            {/* <div className="col-md-4">
+                                            <div className="col-md-4">
                                                 <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} 
                                                     formeditado = { formeditado } placeholder = "M²"
                                                     value = { form.m2 } name = "m2" onChange = { onChange } iconclass = "fas fa-ruler-combined"
                                                     messageinc = "Ingresa los m²."
                                                 />
-                                            </div> */}
-                                            {/* <div className="col-md-4">
+                                            </div>
+                                            <div className="col-md-4">
                                                 <InputMoneyGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0}
                                                     formeditado = { formeditado } thousandseparator = { true }
                                                     prefix = '$' name = 'costo' value = { form.costo } onChange = { onChange } placeholder = "COSTO CON IVA"
                                                     iconclass = "fas fa-money-bill-wave-alt"
                                                 />
-                                            </div> */}
+                                            </div>
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
@@ -331,14 +332,14 @@ class ProyectosForm extends Component {
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <InputGray letterCase={true} withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} withformgroup={0}
+                                        <InputGray letterCase={true} withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={1} withformgroup={0}
                                             formeditado = { formeditado } name = "contacto" value = { form.contacto } 
                                             onChange = { onChange } type = "text" placeholder="NOMBRE DEL CONTACTO" iconclass = "far fa-user-circle"
                                             messageinc="Ingresa el nombre de contacto."
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <InputPhoneGray requirevalidation = { 0 } formeditado = { formeditado } prefix = '' name="numeroContacto"
+                                        <InputPhoneGray requirevalidation = { 1 } formeditado = { formeditado } prefix = '' name="numeroContacto"
                                             value = { form.numeroContacto } onChange = { onChange } placeholder = "NÚMERO DE CONTACTO"
                                             iconclass = "fas fa-mobile-alt" messageinc = "Ingresa el número de contacto."
                                             patterns = { TEL }

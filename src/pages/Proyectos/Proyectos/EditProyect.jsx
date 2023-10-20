@@ -35,6 +35,7 @@ import { apiPostForm, apiGet, apiDelete } from '../../../functions/api'
 
 import '../../../styles/_editProyect.scss'
 import { makeStyles } from "@material-ui/core/styles";
+import { convertCompilerOptionsFromJson } from 'typescript';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -74,6 +75,9 @@ export default function EditProyect(props) {
         cliente_id: proyecto.pivot ? proyecto.pivot.cliente_id : '',
         fases: [],
         responsable: proyecto.responsable ? proyecto.responsable.empleado_id : '',
+        inicio_obra: proyecto.inicio_obra ? proyecto.inicio_obra : '',
+        termino_obra: proyecto.termino_obra ? proyecto.termino_obra : '',
+
     })
 
     const [responsable, setResponsable] = useState({
@@ -132,8 +136,6 @@ export default function EditProyect(props) {
                 })    
             }
             
-            
-
             let newAux = []
 
             aux.forEach((element) => {
@@ -145,7 +147,6 @@ export default function EditProyect(props) {
             setPreloadDataResponsables(newAux)
         }
     }, [departamentos, dataResponsable])
-
 
     const handleChange = (e) => {
         setForm({
@@ -165,6 +166,20 @@ export default function EditProyect(props) {
         setForm({
             ...form,
             fechaFin: new Date(date)
+        })
+    };
+
+    const handleChangeinicioobra= (date) => {
+        setForm({
+            ...form,
+            inicio_obra: new Date(date)
+        })
+    };
+
+    const handleChangeterminoobra = (date) => {
+        setForm({
+            ...form,
+            termino_obra: new Date(date)
         })
     };
 
@@ -223,7 +238,6 @@ export default function EditProyect(props) {
                 
             }
         ).catch((error) => {
-            
             
         })
     }
@@ -294,9 +308,9 @@ export default function EditProyect(props) {
         }
         let new_clientes = form.clientes.map(cliente => {
             return {
-                name: cliente.empresa,
-                value: `${cliente.id}`,
-                label: cliente.empresa,
+                name: cliente.name ? cliente.name : cliente.empresa,
+                value: cliente.value ? `${cliente.value}` : `${cliente.id}`,
+                label: cliente.name ? cliente.name : cliente.empresa,
             }
         })
 
@@ -329,7 +343,9 @@ export default function EditProyect(props) {
             numeroContacto: form.numero_contacto,
             contacto: form.contacto,
             correos: form.correos,
-
+            inicio_obra: form.inicio_obra,
+            termino_obra: form.termino_obra,
+            cliente:form.cliente_id
         }
 
         try {
@@ -445,7 +461,6 @@ export default function EditProyect(props) {
         try {
             apiPostForm(`v2/proyectos/calendario-proyectos/users/responsable/${proyecto.id}`, { id_user:id}, user.access_token)
                 .then((response) => { 
-                    console.log(response)
                     reload()
                 })
                 .catch((error) => { 
@@ -468,7 +483,6 @@ export default function EditProyect(props) {
             apiGet(`proyectos/responsable/${proyecto.id}`, user.access_token)
                 .then((response) => {
                     setDataResponsable([...response.data.data.departamentos])
-                    console.log(response)
                 })
                 .catch((error) => {
                     console.log(error)
@@ -491,7 +505,6 @@ export default function EditProyect(props) {
                 apiPostForm('areas/asignado', newForm, user.access_token)
                 /* apiGet(`proyectos/responsable/${proyecto.id}`, user.access_token) */
                     .then((response) => {
-                        console.log(response)
                         getResponsables()
                     })
                     .catch((error) => {
@@ -509,7 +522,6 @@ export default function EditProyect(props) {
                 /* apiGet(`proyectos/responsable/${proyecto.id}`, user.access_token) */
 
                     .then((response) => {
-                        console.log(response)
                         getResponsables()
                     })
                     .catch((error) => {
@@ -632,7 +644,6 @@ export default function EditProyect(props) {
         }
     }
 
-
     return (
         <>
             <div className='proyect-Titulo'>
@@ -691,6 +702,56 @@ export default function EditProyect(props) {
                     </AccordionDetails>
                 </Accordion>
 
+                <Accordion
+                    defaultExpanded
+                    className='proyect-accordion'
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                        <Typography className='proyect-Subtitulo'>Fecha del Obra</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <div className='container-Date'>
+                            <div>
+                                <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
+                                    <Grid container justifyContent="space-around">
+                                        <KeyboardDatePicker
+                                            margin="normal"
+                                            label="Fecha de Inicio obra"
+                                            format="dd/MM/yyyy"
+                                            value={form.inicio_obra}
+                                            onChange={handleChangeinicioobra}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                    </Grid>
+                                </MuiPickersUtilsProvider>
+                            </div>
+                            <Divider orientation="vertical" flexItem />
+                            <div>
+                                <MuiPickersUtilsProvider locale={es} utils={DateFnsUtils}>
+                                    <Grid container justifyContent="space-around">
+                                        <KeyboardDatePicker
+                                            margin="normal"
+                                            label="Fecha de Termino"
+                                            format="dd/MM/yyyy"
+                                            value={form.termino_obra}
+                                            onChange={handleChangeterminoobra}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                    </Grid>
+                                </MuiPickersUtilsProvider>
+                            </div>    
+                        </div>
+                    </AccordionDetails>
+                </Accordion>
+
                 <Accordion defaultExpanded className='proyect-accordion'>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -736,7 +797,6 @@ export default function EditProyect(props) {
 
                                             </Select>    
                                         </div>
-                                        
                                         
                                     </> : null
                             }
@@ -796,7 +856,6 @@ export default function EditProyect(props) {
                                 </div>
                             }    
                             
-                            
 {/*                             {
                                 colaboradores.length > 0 &&
                                 <div>
@@ -842,15 +901,11 @@ export default function EditProyect(props) {
                                     : <></>
                             } */}
 
-                            
-
-                            
                         </div>
                         
                     </AccordionDetails>
                 </Accordion>
 
-                
                 <Accordion
                     className='proyect-accordion'
                 >
@@ -936,7 +991,6 @@ export default function EditProyect(props) {
                                     }    
                                 </div>
                                 
-
                                 <hr/>
                                 {
                                     preloadDataResponsables.length > 0 &&
@@ -1024,7 +1078,6 @@ export default function EditProyect(props) {
                                                                 }
                                                             </div>
 
-
                                                         </>
                                                     )
                                                 })
@@ -1033,10 +1086,8 @@ export default function EditProyect(props) {
                                     </div>
                                 }
 
-                      
                             </div> 
                         </div>
-                        
                         
                     </AccordionDetails>
                 </Accordion>
@@ -1176,23 +1227,41 @@ export default function EditProyect(props) {
                                     </div>
                                     : null
                             }
-                            {opciones &&
+                            {opciones.clientes &&
                                 <div className='input-tag'>
                                     <Autocomplete
-                                        options={opciones.clientes.map((item) => item.name)}
+                                        name="clientes"
+                                        options={opciones.clientes }
                                         multiple
-                                        defaultValue={form.clientes.map((item) => item.empresa)}
-                                        id="tags-filled"
-                                        freeSolo
+                                        getOptionLabel={(option) => option.name}
+                                        // onChange={handleChangeCliente}
+                                        onChange={(e, value) => handleChangeCliente(e, value)}
+
+                                        value={form.clientes }
+                                        // id="tags-filled"
+                                        // freeSolo
                                         renderTags={(value, getTagProps) =>
                                             value.map((option, index) => (
-                                                <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                                                <Chip variant="outlined" label={ option.empresa? option.empresa : option.label  } {...getTagProps({ index })} />
                                             ))
                                         }
                                         renderInput={(params) => (
                                             <TextField {...params} variant="filled" label="Clientes" placeholder="agregar cliente" />
                                         )}
-                                        onChange={(e, value) => handleChangeCliente(e, value)}
+                                        
+                                        // renderInput={(params) => (
+                                        //     <TextField
+                                        //         {...params}
+                                        //         variant="outlined"
+                                        //         label={
+                                        //             form.clientes.length > 0
+                                        //             ? form.clientes
+                                        //                 .map((c) => c.empresa)
+                                        //                 .join(', ')
+                                        //             : 'Clientes'
+                                        //         }
+                                        //     />
+                                        //     )}
                                     />
                                 </div>
                                 
@@ -1283,7 +1352,6 @@ export default function EditProyect(props) {
             >
                 Guardar
             </Button>
-            
             
         </>
     )

@@ -224,6 +224,73 @@ export const printComentario = (texto, proyectos) => {
     })
 }
 
+export const printComentarioSemana = (texto, proyectos) => {
+    let indice = indexSubcadena(texto, '___', '***')
+    let arrayAux = [];
+    if(indice === -1)        
+        return(
+            <span>
+                {texto}
+            </span>
+        )
+    let subcadena = texto
+    let final = 0
+    let inicio = indice + 3
+    let flag = ''
+    let prefix = ''
+    while(indice !== -1){
+        inicio = indice + 3
+        switch(indexSubcadena(subcadena, '___', '***')){
+            case subcadena.indexOf('___'):
+                flag = 'black';
+                break
+            case subcadena.indexOf('***'):
+                flag = 'info';
+                break
+            case -1:
+                flag = 'none'
+                break
+            default: break;
+        }
+        if(flag !== 'none'){
+            prefix = flag === 'black' ? '___' : '***'
+            arrayAux.push({
+                texto: replaceAll(subcadena.substring(final, inicio), prefix, ''),
+                tipo: 'normal'
+            })
+            final = subcadena.indexOf(prefix, inicio)
+            arrayAux.push({
+                texto: subcadena.substring(inicio, final),
+                tipo: flag
+            })
+            subcadena = subcadena.substring(final+3)
+            indice = indexSubcadena(subcadena, '___', '***')
+            final = 0
+        }
+    }
+    if(subcadena)
+        arrayAux.push({
+            texto: subcadena,
+            tipo: 'normal'
+        })
+    return arrayAux.map((elemento, index) => {
+        if(elemento.tipo === 'info'){
+            return(
+                <span className = 'font-weight-bolder text-info' key = { index }>
+                    <a rel="noreferrer" href = {setLink(elemento.texto, proyectos)} className = 'font-weight-bolder text-info' target = '_blank'>
+                        {elemento.texto}
+                    </a>
+                </span>
+            )
+        }
+        return (
+            <span key = { index } className = {` ${elemento.tipo ==='black' ? 'font-weight-bolder text-success' : ''}`}>
+                { elemento.texto }
+            </span>
+        )
+    })
+}
+
 export const printDireccion = (dato) => {
     let texto = ''
     if(dato.calle){

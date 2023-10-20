@@ -7,7 +7,8 @@ import { Button, InputCantidad } from '../../form-components'
 class HistorialHM extends Component {
 
     state = {
-        datos: []
+        datos: [],
+        data:[]
     }
 
     componentDidMount = () => {
@@ -39,36 +40,41 @@ class HistorialHM extends Component {
         this.setState({ ...this.state, datos: aux })
     }
 
-    componentDidUpdate = prevProps => {
-        if(this.props.data.entradas.length !== prevProps.data.entradas.length){
-            const { data } = this.props
-            let aux = []
-            data.prestamos.forEach((prestamo) => {
-                aux.push({
-                    tipo: 'prestamo',
-                    fecha: prestamo.fecha,
-                    dato: prestamo
-                })
-            })
-            data.entradas.forEach((entrada) => {
-                aux.push({
-                    tipo: 'entrada',
-                    fecha: entrada.fecha,
-                    dato: entrada
-                })
-            })
-            aux.sort(function (a, b) {
-                if (a.fecha < b.fecha) {
-                    return 1;
-                }
-                if (a.fecha > b.fecha) {
-                    return -1;
-                }
-                return 0;
-            });
-            this.setState({ ...this.state, datos: aux })
-        }
-    }
+    // componentDidUpdate = prevProps => {
+    //     const { data } = this.props
+
+    //     console.log(this.props)
+    //     console.log(data)
+
+    //     if(this.props.data.entradas.length !== prevProps.data.entradas.length){
+    //         const { data } = this.props
+    //         let aux = []
+    //         data.prestamos.forEach((prestamo) => {
+    //             aux.push({
+    //                 tipo: 'prestamo',
+    //                 fecha: prestamo.fecha,
+    //                 dato: prestamo
+    //             })
+    //         })
+    //         data.entradas.forEach((entrada) => {
+    //             aux.push({
+    //                 tipo: 'entrada',
+    //                 fecha: entrada.fecha,
+    //                 dato: entrada
+    //             })
+    //         })
+    //         aux.sort(function (a, b) {
+    //             if (a.fecha < b.fecha) {
+    //                 return 1;
+    //             }
+    //             if (a.fecha > b.fecha) {
+    //                 return -1;
+    //             }
+    //             return 0;
+    //         });
+    //         this.setState({ ...this.state, datos: aux })
+    //     }
+    // }
 
     setProyecto = dato => {
         if(dato.dato){

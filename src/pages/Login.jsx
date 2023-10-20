@@ -5,7 +5,7 @@ import { logout } from '../redux/reducers/auth_user'
 class Login extends Component{
 
     componentDidMount(){
-        logout()
+        logout() 
     }
     
     render(){

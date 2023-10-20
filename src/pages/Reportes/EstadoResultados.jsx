@@ -541,13 +541,13 @@ class Normas extends Component {
                                                              }
                                                         </td>
                                                         <td>
-                                                            { cuent.balance2 ? setMoneyTable(cuent.balance2) : "$0.0"  }
-                                                            {/* {
+                                                            {/* { cuent.balance2 ? setMoneyTable(cuent.balance2) : "$0.0"  } */}
+                                                            {
                                                             setMoneyTable(
                                                             elementoCoincidente.ingresos_count + elementoCoincidente.ventas_count +  
                                                             elementoCoincidente.devoluciones_count + elementoCoincidente.traspasos_destino_count - 
                                                             elementoCoincidente.egresos_count - elementoCoincidente.compras_count - elementoCoincidente.traspasos_origen_count)
-                                                             } */}
+                                                             }
                                                         </td>
 
                                                     </tr>

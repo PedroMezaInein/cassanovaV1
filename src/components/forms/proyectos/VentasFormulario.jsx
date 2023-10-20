@@ -998,6 +998,7 @@ class VentasFormulario extends Component {
                                     withtaglabel = { 1 } withtextlabel = { 1 }/>
                             </div>
                             
+
                             {/* <div className="col-md-12">
                                 <InputGray requirevalidation = { 0 } formeditado = { formeditado } as = "textarea" placeholder = "DESCRIPCIÓN" 
                                     rows = "3" value = { form.descripcion } name = "descripcion" onChange = { this.onChange } 

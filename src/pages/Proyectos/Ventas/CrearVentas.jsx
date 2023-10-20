@@ -33,7 +33,7 @@ export default function CrearCompras(props) {
 
     const { opcionesData, handleClose, reload, getProveedores } = props
     const departamento = useSelector(state => state.authUser.departamento)
-    const departamentos = useSelector(state => state.opciones.compras)
+    const departamentos = useSelector(state => state.opciones.ventas)
     const proyectos = useSelector(state => state.opciones.proyectos)
     const [errores, setErrores] = useState({})
     const auth = useSelector((state) => state.authUser.access_token);
@@ -62,11 +62,7 @@ export default function CrearCompras(props) {
         },
         area: '',
         banco: 0,
-        comision: 0,
-        correo: '',
-        cuenta: '',
-        cuentas: [],
-        comision: 0,
+        cuentas: '',
         descripcion: '',
         empresa: '',
         estatusCompra: 2,
@@ -75,20 +71,14 @@ export default function CrearCompras(props) {
         facturaObject: {},
         fecha: '',
         partida: "",
-        leadId: "",
-        nombre: "",
-        numCuenta: "",
-        partida: '',
-        proveedor: '',
+        cliente: '',
         proyecto: '',
-        razonSocial: '',
-        rfc: null,
         subarea: '', 
-        telefono: '',
-        tipo: 0,
         tipoImpuesto: 1,
         tipoPago: 4,
         total: '',
+        contrato:'',
+        tickets:'',
         afectarCuentas: false,
     })
 
@@ -96,10 +86,12 @@ export default function CrearCompras(props) {
         cuentas: [],
         empresas: [],
         estatusCompras: [],
-        proveedores: [],
+        clientes: [],
         proyectos: [],
         tiposImpuestos: [],
         tiposPagos: [],
+        tickets: [],
+        contratos: [] , 
     })
 
     const[nuevoProveedor, setNuevoProveedor] = useState(false)
@@ -269,7 +261,7 @@ export default function CrearCompras(props) {
                         }
                     }
 
-                    let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
+                    let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_emisor)
 
                     if(empresa === undefined ){
                         Swal.fire({
@@ -280,20 +272,20 @@ export default function CrearCompras(props) {
                             timer: 3000
                         })
                     }
-                    let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
+                    let cliente = opcionesData.clientes.find((cliente) => cliente.rfc === obj.rfc_receptor)
 
-                    if(!proveedor){
+                    if(!cliente){
                         Swal.fire({
                             icon: 'error',
-                            title: 'No existe el proveedor',
-                            text: 'No existe el proveedor, favor de crearlo..',
+                            title: 'No existe la empresa',
+                            text: 'No existe el empresa, favor de crearlo..',
                             showConfirmButton: false,
                             timer: 1000
                         })
-                        setNuevoProveedor(true)
+                        // setNuevoProveedor(true)
 
                     }else{
-                        form.proveedor = proveedor.id.toString()
+                        form.cliente = cliente.id.toString()
                         form.contrato = ''
                         // options.contratos = setOptions(proveedor.contratos, 'nombre', 'id')
                     }
@@ -316,8 +308,8 @@ export default function CrearCompras(props) {
                         descripcion: obj.descripcion,
                         empresa: empresa ? empresa.id : null,
                         empresa_nombre: empresa ? empresa.nombre : null,
-                        proveedor: proveedor ? proveedor.id : null,
-                        proveedor_nombre: proveedor ? proveedor.name : null,
+                        cliente: cliente ? cliente.id : null,
+                        proveedor_nombre: cliente ? cliente.name : null,
                         cuentas: empresa ? opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas : '',
                         adjuntos: {
                             ...form.adjuntos,
@@ -357,15 +349,32 @@ export default function CrearCompras(props) {
         if (value && value.name) {
             setForm({
                 ...form,
-                proveedor: value.id,
+                cliente: value.id,
                 proveedor_nombre: value.name,
             })
         }
         if (value === null) {
             setForm({
                 ...form,
-                proveedor: null,
+                cliente: null,
                 proveedor_nombre: null,
+            })
+        }
+    }
+
+    const handleChangeTicket = (e, value) => {
+        if (value && value.name) {
+            setForm({
+                ...form,
+                tickets: value.id,
+                tickets_nombre: value.name,
+            })
+        }
+        if (value === null) {
+            setForm({
+                ...form,
+                tickets: null,
+                tickets_nombre: null,
             })
         }
     }
@@ -468,8 +477,8 @@ export default function CrearCompras(props) {
         })
     }
 
-    const attachFilesS3 =  (files, egreso) => {
-        apiPutForm(`v2/proyectos/compras/${egreso.id}/archivos/s3`, { archivos: files }, auth).then(
+    const attachFilesS3 =  (files, venta) => {
+        apiPutForm(`v2/proyectos/ventas/${venta.id}/archivos/s3`, { archivos: files }, auth).then(
             (response) => {
                 Swal.close()
                 Swal.fire({
@@ -497,11 +506,11 @@ export default function CrearCompras(props) {
         })
     }
 
-    const  attachFiles = (egreso) => {
+    const  attachFiles = (ventas) => {
         apiGet(`v1/constant/admin-proyectos`, auth).then(
             (response) => {
                 const { alma } = response.data
-                let filePath = `egresos/${egreso.id}/`
+                let filePath = `ventas/${ventas.id}/`
                 let aux = []
                 form.adjuntos.pago.files.forEach((file) => {
                     aux.push(
@@ -535,7 +544,7 @@ export default function CrearCompras(props) {
                     })
                 })
                 Promise.all(auxPromises).then(values => { 
-                    attachFilesS3(values, egreso) 
+                    attachFilesS3(values, ventas) 
                 }).catch(err => console.error(err))
             }, (error) => { }
         ).catch((error) => { 
@@ -550,18 +559,18 @@ export default function CrearCompras(props) {
         })
     }
 
-    const attachFactura = (egreso, factura) => {
+    const attachFactura = (venta, factura) => {
 
         let objeto = {
-            dato: egreso.id,
-            tipo: 'compra',
+            dato: venta.id,
+            tipo: 'venta',
             factura: factura.id
         }
 
         apiPutForm(`v2/administracion/facturas/attach`, objeto, auth).then(
             (response) => {
                 if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
-                    attachFiles(egreso)
+                    attachFiles(venta)
                 } else {
                     Swal.close()
                     Swal.fire({
@@ -650,7 +659,7 @@ export default function CrearCompras(props) {
         if(validateForm()){
             Swal.fire({
                 title: '¿Estás seguro?',    
-                text: 'Se creará la compra',
+                text: 'Se creará la venta',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, crear',
@@ -662,7 +671,7 @@ export default function CrearCompras(props) {
                 if (result.value) {
                     Swal.close()
                     Swal.fire({
-                        title: 'Creando compra',
+                        title: 'Creando venta',
                         text: 'Por favor, espere...',
                         allowOutsideClick: false,
                         onBeforeOpen: () => {
@@ -673,15 +682,15 @@ export default function CrearCompras(props) {
                     let aux = form
 
                     aux.factura = form.factura ? 'Con factura' : 'Sin factura'
-            
+                    console.log(form)
                     try {
-                        apiPostForm('v2/proyectos/compras', form, auth)
+                        apiPostForm('v3/proyectos/ventas', form, auth)
                         .then((response) => {
 
-                            const {compra} = response.data
+                            const {venta} = response.data
                             Swal.close()
                             Swal.fire({
-                                title: 'compra creada con éxito',
+                                title: 'venta creada con éxito',
                                 text: 'Subiendo adjuntos...',
                                 allowOutsideClick: false,
                                 onBeforeOpen: () => {
@@ -691,24 +700,24 @@ export default function CrearCompras(props) {
                             
                             setForm({
                                 ...form,
-                                compra
+                                venta
                             })
 
-                            if (compra.factura) {
+                            if (venta.factura) {
                                 // Adjunto un XML
                                 if (Object.keys(form.facturaObject).length > 0) {
                                     if (form.facturaItem) {
                                         //Tiene una factura guardada
-                                        attachFactura(compra, compra.factura)
+                                        attachFactura(venta, venta.factura)
                                     } else {
                                         //No hay factura generada
-                                        addFacturaS3(compra.id , compra)
+                                        addFacturaS3(venta.id , venta)
                                     }
                                 } else {
                                     //No adjunto XML
                                     if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
                                         //El compra tiene adjuntos
-                                        attachFiles(compra)
+                                        attachFiles(venta)
                                     } else {
                                         //compra generado con éxito 
                                         
@@ -730,7 +739,7 @@ export default function CrearCompras(props) {
                                 // La compra no es con factura
                                 if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
                                     //La compra tiene adjuntos
-                                    attachFiles(compra)
+                                    attachFiles(venta)
 
                                 } else {
                                     //compra generado con éxito 
@@ -792,9 +801,9 @@ export default function CrearCompras(props) {
             }
         })
     }
-
     return(
         <>
+
             <Accordion defaultExpanded className='proyect-accordion'>
 
                 <AccordionSummary
@@ -919,47 +928,47 @@ export default function CrearCompras(props) {
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
                             <div>
                                 {
-                                    opciones.proveedores.length > 0 ?
+                                    opciones.clientes.length > 0 ?
                                         <div>    
-                                            <InputLabel error={errores.proveedor ? true : false}>Proveedor</InputLabel>
+                                            <InputLabel error={errores.clientes ? true : false}>Cliente</InputLabel>
                                             <Autocomplete
-                                                name="proveedor"
-                                                options={opciones.proveedores}
+                                                name="cliente"
+                                                options={opciones.clientes}
                                                 getOptionLabel={(option) => option.name}
-                                                style={{ width: 150, paddingRight: '1rem' }}
+                                                style={{ width: 250, paddingRight: '1rem' }}
                                                 onChange={(event, value) => handleChangeProveedor(event, value)}
-                                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
-                                                error={errores.proveedor ? true : false}
+                                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'cliente'} />}
+                                                error={errores.clientes ? true : false}
                                             />
                                         </div>    
                                     : <></>
                                 }
                             </div>  
 
-                            {
-                                form.factura ? 
-                                    <></> :
-                                        <div className={`${Style.agregarProveedor}`}>
-                                            <Button variant="contained" color="primary" component="span" onClick={agregarProveedor}> 
-                                                Agregar proveedor
-                                            </Button>
-                                        </div>
-                            }
-                            
                             <div>
                                 {
-                                    proyectos.length > 0 ?
-                                    <div> 
-                                        <InputLabel error={errores.proyecto ? true : false}>proyecto</InputLabel>
-                                        <Autocomplete
-                                            name="proyecto"
-                                            options={proyectos}
-                                            getOptionLabel={(option) => option.nombre}
-                                            style={{ width: 150, paddingRight: '1rem' }}
-                                            onChange={(event, value) => handleChangeProyecto(event, value)}
-                                            renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proyecto_nombre ? form.proyecto_nombre : 'proyecto'} />}
-                                        />
-                                    </div>    
+                                    opciones.clientes.length > 0 ?
+                                    <div>
+                                    {opciones.clientes.length > 0 && form.cliente !== '' ?
+                                        <>
+                                            <InputLabel id="demo-simple-select-label">Proyectos</InputLabel>
+                                            <Select
+                                                value={form.proyecto}
+                                                name="proyecto"
+                                                onChange={handleChange}
+                                                style={{ width: 150, marginRight: '1rem' }}
+                                                error={errores.proyecto ? true : false}
+                                            >
+                                                { opciones.clientes.find(item => item.id == form.cliente)  && 
+                                                opciones.clientes.find(item => item.id == form.cliente).proyectos.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))}
+    
+                                            </Select>
+                                        </>
+                                        : null
+                                    }
+                                </div>   
                                         : <></>
                                 }
                             </div> 
@@ -987,6 +996,25 @@ export default function CrearCompras(props) {
                                 }
                             </div>  
                         </div> 
+                        <br></br>
+                        <div>
+                                {
+                                    opciones.tickets.length > 0 ?
+                                        <div>    
+                                            <InputLabel error={errores.tickets ? true : false}>tickets</InputLabel>
+                                            <Autocomplete
+                                                name="tickets"
+                                                options={opciones.tickets}
+                                                getOptionLabel={(option) => option.name}
+                                                style={{ width: 250, paddingRight: '1rem' }}
+                                                onChange={(event, value) => handleChangeTicket(event, value)}
+                                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.tickets_nombre ? form.tickets_nombre : 'tickets'} />}
+                                                error={errores.tickets ? true : false}
+                                            />
+                                        </div>    
+                                    : <></>
+                                }                               
+                            </div>  
 
                     </div>
                 </AccordionDetails>
@@ -1003,7 +1031,7 @@ export default function CrearCompras(props) {
 
                         <div>
                             <div>
-                                <InputLabel >Fecha de la compra</InputLabel>
+                                <InputLabel >Fecha de la venta</InputLabel>
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <Grid container >
                                         <KeyboardDatePicker
@@ -1023,6 +1051,7 @@ export default function CrearCompras(props) {
                                 </MuiPickersUtilsProvider>
                             </div>    
                         </div>
+                        <br />
 
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                             <div>
@@ -1148,7 +1177,7 @@ export default function CrearCompras(props) {
 
                             </div> 
                             <div>
-                                {
+                                {/* {
                                     opciones.tiposPagos.length > 0 ?
                                         <div>
                                             <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
@@ -1163,6 +1192,28 @@ export default function CrearCompras(props) {
                                                 {opciones.tiposPagos.map((item, index) => (
                                                     <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
                                                 ))}
+                                            </Select>
+                                        </div>
+                                        : null
+                                } */}
+
+                            </div> 
+                            <div>
+                                {
+                                    opciones.clientes.length > 0 ?
+                                        <div>
+                                            <InputLabel id="demo-simple-select-label">Contrato</InputLabel>
+                                            <Select
+                                                value={form.contrato}
+                                                name="contrato"
+                                                onChange={handleChange}
+                                                style={{ width: 150, marginRight: '1rem' }}
+                                                error={errores.contrato ? true : false}
+                                            >
+                                                  { opciones.clientes.find(item => item.id == form.cliente)  && 
+                                                opciones.clientes.find(item => item.id == form.cliente).contratos.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))}
                                             </Select>
                                         </div>
                                         : null
@@ -1220,6 +1271,7 @@ export default function CrearCompras(props) {
                                     
                                 />
                             </div>
+                            
                         </div>
 
                         <div style={{display: 'flex', justifyContent: 'space-evenly', marginTop: '2rem'}}>

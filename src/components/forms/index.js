@@ -107,6 +107,8 @@ import facturaExtranjera from './FacturaExtranjera'
 import comentarios from './Comentarios'
 import formCalendarioTareas from './usuarios/FormCalendarioTareas'
 import comentarioForm from './ComentarioForm'
+import comentarioSemana from './ComentarioSemana'
+
 import timelineComments from './TimelineComments'
 import tags from './usuarios/tareas/Tags'
 import listPanel from './usuarios/tareas/ListPanel'
@@ -295,6 +297,8 @@ export const FacturaExtranjera = facturaExtranjera
 export const Comentarios = comentarios
 export const FormCalendarioTareas = formCalendarioTareas
 export const ComentarioForm = comentarioForm
+export const ComentarioSemana = comentarioSemana
+
 export const TimelineComments = timelineComments
 export const Tags = tags
 export const ListPanel = listPanel

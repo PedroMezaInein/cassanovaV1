@@ -70,7 +70,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Adjuntos(props) {
 
     const { proyecto } = props
-    console.log(proyecto)
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
     const [value, setValue] = useState(0);
@@ -213,7 +212,6 @@ export default function Adjuntos(props) {
                                 break;
                         }
                     });
-                    console.log('aux', aux)
                     setAdjuntos(aux)
                 })
 
@@ -261,10 +259,8 @@ export default function Adjuntos(props) {
                 }
             })
             let filePath = `proyecto/${proyecto.id}/${activeTab}/${Math.floor(Date.now() / 1000)}-`
-            console.log('filePath', filePath)
             let aux = []
             form.file.forEach((file) => {
-                console.log(file)
                 aux.push(file)
             })
 

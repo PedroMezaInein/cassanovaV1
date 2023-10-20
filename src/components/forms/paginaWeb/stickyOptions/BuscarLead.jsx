@@ -120,7 +120,7 @@ class BuscarLead extends Component {
                                                                 lead.empresa.isotipos.length > 0 ?
                                                                     lead.empresa.isotipos.map((isotipo, key) => {
                                                                         return (
-                                                                            <img alt="Pic" src={isotipo.url} className="w-isotipo" key={key} />
+                                                                            <img alt="Pic" src={isotipo.url} style={{ width: '20%' }} className="w-isotipo" key={key} />
                                                                         )
                                                                     })
                                                                     : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>

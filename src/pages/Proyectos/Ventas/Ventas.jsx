@@ -20,6 +20,9 @@ import { apiOptions, apiGet, apiDelete, apiPutForm, catchErrors, apiPostFormResp
 import { waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, customInputAlert, errorAlert } from '../../../functions/alert'
 import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, 
     setCustomeDescripcionReactDom, setNaviIcon, setOptionsWithLabel } from '../../../functions/setters'
+
+import VentasTable from './VentasTable'
+
 class Ventas extends Component {
     state = {
         modal:{
@@ -44,7 +47,8 @@ class Ventas extends Component {
             formasPago: [],
             metodosPago: [],
             estatusFacturas: [],
-            contratos: []
+            contratos: [],
+            tickets: [],
         },
         data: {
             clientes: [],
@@ -892,7 +896,7 @@ class Ventas extends Component {
         const { access_token } = this.props.authUser
         return (
             <Layout active = 'proyectos'  {...this.props}>
-                <Tabs mountOnEnter = { true } unmountOnExit = { true } defaultActiveKey = 'all' activeKey = { key } 
+                {/* <Tabs mountOnEnter = { true } unmountOnExit = { true } defaultActiveKey = 'all' activeKey = { key } 
                     onSelect = { (value) => { this.getVentasAxios(value) } } >
                     {
                         tabs.map((tab, index) => {
@@ -903,7 +907,9 @@ class Ventas extends Component {
                             )
                         })
                     }
-                </Tabs>
+                </Tabs> */}
+                <VentasTable/> 
+
                 <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
                     <FacturasFormTable at = { access_token } tipo_factura='ventas' id={venta.id} dato={venta} reloadTable = {this.reloadTableFacturas}/>
                 </Modal>

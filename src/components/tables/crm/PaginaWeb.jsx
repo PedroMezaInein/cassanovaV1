@@ -6,7 +6,7 @@ import { InputGray } from '../../form-components'
 import 'perfect-scrollbar-react/dist/style.min.css'
 import { setDate } from '../../../functions/setters'
 import { AgendaLlamada, InformacionGeneral } from '../../forms'
-import { LeadContactosModal, Modal } from '../../../components/modals'
+import { LeadContactosModal, Modal,LeadNecesidadesModal } from '../../../components/modals'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton, Form, Button } from 'react-bootstrap'
 import { apiPutForm, apiGet, apiPostForm, apiDelete, catchErrors } from '../../../functions/api'
 import { questionAlert, printResponseErrorAlert, errorAlert, waitAlert, questionAlert2, originChangeAlert,
@@ -27,7 +27,9 @@ class PaginaWeb extends Component {
             { text: 'SEGUIMIENTO', icon:'las la-file-alt', show:true },
             { text: 'HISTORIAL DE CONTACTO', icon:'las la-list-alt', show:true },
             { text: 'ELIMINAR LEAD DUPLICADO', icon:'las la-minus-circle', show:true },
-            { text: 'RELACIONES PÚBLICAS', icon:'las la-handshake', show:true }
+            { text: 'RELACIONES PÚBLICAS', icon:'las la-handshake', show:true },
+            { text: 'PROGRAMA DE NECESIDADES', icon:'las la-handshake', show:true }
+
         ],
         leads: {
             data: [],
@@ -57,7 +59,9 @@ class PaginaWeb extends Component {
         modal:{
             editar: false,
             agendar: false,
-            historial: false
+            historial: false,
+            necesidades: false
+
         },
         data:{
             lead:''
@@ -375,6 +379,9 @@ class PaginaWeb extends Component {
             case 'RELACIONES PÚBLICAS':
                 relacionesPublicasAlert('¿ESTÁS SEGURO?', () => this.moveToRelacionesPublicasAxios(lead))
                 break;
+            case 'PROGRAMA DE NECESIDADES':
+                this.openModalNecesidades(lead)
+                break;
             default: break;
         }
     }
@@ -410,6 +417,7 @@ class PaginaWeb extends Component {
         modal.editar = false
         data.lead = ''
         modal.historial = false
+        modal.necesidades = false
         this.setState({ ...this.state, modal, data })
     }
 
@@ -462,6 +470,12 @@ class PaginaWeb extends Component {
     openModalHistorial = lead => {
         const { modal, data } = this.state
         modal.historial = true
+        data.lead = lead
+        this.setState({ ...this.state, modal, data })
+    }
+    openModalNecesidades = lead => {
+        const { modal, data } = this.state
+        modal.necesidades = true
         data.lead = lead
         this.setState({ ...this.state, modal, data })
     }
@@ -799,6 +813,14 @@ class PaginaWeb extends Component {
                 </Modal>
                 <LeadContactosModal lead = { data.lead } show={modal.historial} handleClose={this.closeModal}
                     at = { at } options = { options } refresh = { this.refresh } />
+               
+                <Modal size="xl" title='Progama de necesidades' show={modal.necesidades} handleClose={this.closeModal}>
+                    <div className="mt-7">
+                    <LeadNecesidadesModal lead = { data.lead } show={modal.necesidades} handleClose={this.closeModal}
+                    at = { at } options = { options } refresh = { this.refresh } />
+                     </div>  
+                </Modal>
+               
             </div>
         )
     }

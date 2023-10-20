@@ -102,8 +102,6 @@ class PresupuestoDiseñoForm extends Component {
     
     onChanges = (value, name) => {
         const { form } = this.props
-        console.log(value)
-        console.log(name)
         form[name] = value
         this.setState({ ...this.state, form })
     }

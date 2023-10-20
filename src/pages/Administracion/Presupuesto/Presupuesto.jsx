@@ -5,6 +5,8 @@ import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 
 import TablaPresupuesto from './Departamento/TablaPresupuesto'
+import TablaNomina from './Departamento/TablaNomina'
+
 import TablaPresupuestoObra from './Obra/TablaPresupuestoObra'
 import Editar from './Departamento/EditarPresupuestoDepartamento'
 import Ver from './Departamento/VerPresupuestoDepartamento'
@@ -18,8 +20,6 @@ import { Modal } from '../../../components/singles'
 import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { apiDelete, apiPutForm } from '../../../functions/api'
 
-
-
 export default function Presupuesto() {
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState()
@@ -27,6 +27,10 @@ export default function Presupuesto() {
 
     const [modal, setModal] = useState({
         nuevo: {
+            show: false,
+            data: null
+        },
+        nomina: {
             show: false,
             data: null
         },
@@ -282,6 +286,18 @@ export default function Presupuesto() {
                 setModal({
                     ...modal,
                     nuevo: {
+                        show: true,
+                        data: item
+                    }
+                })
+            }
+        },
+        {
+            nombre: 'Nueva nomina',
+            funcion: (item) => {
+                setModal({
+                    ...modal,
+                    nomina: {
                         show: true,
                         data: item
                     }
@@ -551,6 +567,10 @@ export default function Presupuesto() {
             <Modal size="xl" title={"Nuevo presupuesto"} show={modal.nuevo.show} handleClose={handleClose('nuevo')}>
                 <TablaPresupuesto reload={reloadTable} handleClose={handleClose('nuevo')} />
             </Modal>
+
+            <Modal size="xl" title={"Nueva nomina"} show={modal.nomina.show} handleClose={handleClose('nomina')}>
+                <TablaNomina reload={reloadTable} handleClose={handleClose('nomina')} />
+            </Modal>
             {
                 modal.editar.data &&
                 <Modal size="xl" title={"Editar presupuesto"} show={modal.editar.show} handleClose={handleClose('editar')}>
@@ -582,7 +602,6 @@ export default function Presupuesto() {
                     <VerObra data={modalObra.ver.data} reload={reloadTableObra} handleClose={handleCloseObra('ver')} />
                 </Modal>
             }
-
 
         </>
     );

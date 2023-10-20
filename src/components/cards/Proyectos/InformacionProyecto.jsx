@@ -3,7 +3,11 @@ import {useSelector} from 'react-redux'
 import { Tab, Nav } from 'react-bootstrap'
 import { printDates } from '../../../functions/printers'
 import ComentarioForm from '../../forms/ComentarioForm'
+import ComentarioSemana from '../../forms/ComentarioSemana'
+
 import TimelineComments from '../../forms/TimelineComments'
+import TimelineSemanas from '../../forms/TimelineSemanas'
+
 import { setEmpresaLogo, setMoneyText } from '../../../functions/setters'
 import { LEADS_FRONT } from "../../../constants";
 import { apiPostForm, apiGet, apiDelete, apiPutForm } from '../../../functions/api'
@@ -14,7 +18,7 @@ import '../../../styles/_proyectos.scss'
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
 export default function InformacionProyecto(props) {
-    const { proyecto, form, addComentario, onChange, handleChange, tipo, urls, at, usuarios, color, close, reload } = props
+    const { proyecto, form, addComentario, addSemanas ,onChange, handleChanges, handleChange, tipo, urls, at, usuarios, color, close, reload } = props
     const [state, setState] = useState({
         colaboradores: [],
         formulario: {
@@ -26,7 +30,6 @@ export default function InformacionProyecto(props) {
         mes: meses[new Date().getMonth()],
     })
     
-
     useEffect(() => {
         handleGetUsers()
     }, [])
@@ -35,6 +38,14 @@ export default function InformacionProyecto(props) {
         if (proyecto)
             if (proyecto.comentarios)
                 if (proyecto.comentarios.length)
+                    return true
+        return false
+    }
+
+    const hasSemanas = (proyecto) => {
+        if (proyecto)
+            if (proyecto.semanas_proyectos)
+                if (proyecto.semanas_proyectos.length)
                     return true
         return false
     }
@@ -167,8 +178,6 @@ export default function InformacionProyecto(props) {
 
     }
 
-
-    
         return (
         <div className="col-md-12 mt-4">
             {
@@ -176,7 +185,7 @@ export default function InformacionProyecto(props) {
                 <Tab.Container defaultActiveKey={tipo === '' ? "tab_informacion_general" : proyecto.comentarios.length ? "tab_mostrar_comentarios" : "tab_informacion_general"}>
                     <Nav className="nav nav-light-primary nav-pills d-flex justify-content-end">
                         {
-                            form && hasComentarios(proyecto) ?
+                            form && hasComentarios(proyecto) && hasSemanas(proyecto) ?
                                 <Nav.Item className="nav-item">
                                     <Nav.Link className="nav-link px-3" eventKey="tab_informacion_general">
                                         <span className="nav-icon"><i className="flaticon2-file"></i></span>
@@ -205,6 +214,26 @@ export default function InformacionProyecto(props) {
                                 </Nav.Item>
                                 : ''
                         }
+                         {
+                            form ?
+                                <Nav.Item className="nav-item">
+                                    <Nav.Link className="nav-link px-3" eventKey="tab_semanas">
+                                        <span className="nav-icon"><i className="flaticon2-plus"></i></span>
+                                        <span className="nav-text font-size-lg font-weight-bolder">Agregar semanas</span>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                : ''
+                        }
+                          {
+                            hasSemanas(proyecto) ?
+                                <Nav.Item className="nav-item">
+                                    <Nav.Link className="nav-link px-3" eventKey="tab_mostrar_semanas" >
+                                        <span className="nav-icon"><i className="flaticon2-chat-1"></i></span>
+                                        <span className="nav-text font-size-lg font-weight-bolder">Mostrar Semanas</span>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                : ''
+                        }
                     </Nav>
                     <Tab.Content>
                         <Tab.Pane eventKey='tab_informacion_general'>
@@ -214,12 +243,12 @@ export default function InformacionProyecto(props) {
                                 </div>
 
                                 <div>
-                                    <label className={`btn ${color === 'green' || color == null ? 'btn-success' : 'btn-outline-success'} btn-sm`} onClick={() => handleChangeColor('green')}>A TIEMPO</label>
-                                    <label className={`btn ${color === 'orange' ? 'btn-warning' : 'btn-outline-warning'} btn-sm`} onClick={() => handleChangeColor('orange')}>CON RETRAZO</label>
-                                    <label className={`btn ${color === 'red' ? 'btn-danger' : 'btn-outline-danger'} btn-sm`} onClick={() => handleChangeColor('red')}>ATRAZADO</label>
+                                    <label className={`btn ${color === 'green' || color == null ? 'btn-success' : 'btn-outline-success'} btn-sm`} onClick={() => handleChangeColor('green')}>Ejecucion</label>
+                                    <label className={`btn ${color === 'orange' ? 'btn-warning' : 'btn-outline-warning'} btn-sm`} onClick={() => handleChangeColor('orange')}>CON Cambios</label>
+                                    <label className={`btn ${color === 'red' ? 'btn-danger' : 'btn-outline-danger'} btn-sm`} onClick={() => handleChangeColor('red')}>Suspendido</label>
                                 </div>
                             </div>
-                            {
+                            {/* {
                                 <div className='agregar-colaborador'>
                                     <label className="font-weight-bolder">Agregar Colaborador</label>
                                     <select className="form-control" name="colaborador" onChange={e => handleChangeAdd(e)}>
@@ -241,7 +270,7 @@ export default function InformacionProyecto(props) {
                                     </select>
                                                 
                                 </div>
-                            }
+                            } */}
                             {
                                 state.colaboradores.length > 0 ?
                                     <div className='colaboradores'>
@@ -362,6 +391,20 @@ export default function InformacionProyecto(props) {
                                             <td className="font-weight-bolder text-dark-50">PERIODO DEL PROYECTO</td>
                                             <td className="font-weight-light">
                                                 {printDates(proyecto.fecha_inicio, proyecto.fecha_fin)}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td className="text-center">
+                                                <i className="las la-calendar icon-2x text-dark-50"></i>
+                                            </td>
+                                            <td className="font-weight-bolder text-dark-50">PERIODO DE obra</td>
+                                            <td className="font-weight-light">
+                                                {
+                                                    proyecto.inicio_obra && proyecto.termino_obra ?
+                                                         printDates(proyecto.inicio_obra, proyecto.termino_obra)
+                                                    : 'Sin fecha de obra'
+                                                }
                                             </td>
                                         </tr>
                                         {/* {
@@ -530,6 +573,21 @@ export default function InformacionProyecto(props) {
                                 </Tab.Pane>
                                 : ''
                         }
+
+{
+                            form ?
+                                <Tab.Pane eventKey='tab_semanas'>
+                                    <ComentarioSemana
+                                        addSemanas={addSemanas}
+                                        form={form}
+                                        onChange={onChange}
+                                        handleChange={handleChanges}
+                                        color="primary"
+                                    />
+                                </Tab.Pane>
+                                : ''
+                        }
+                        
                         <Tab.Pane eventKey='tab_mostrar_comentarios'>
                             <TimelineComments
                                 comentariosObj={proyecto}
@@ -537,6 +595,15 @@ export default function InformacionProyecto(props) {
                                 color='primary'
                             />
                         </Tab.Pane>
+
+                        <Tab.Pane eventKey='tab_mostrar_semanas'>
+                            <TimelineSemanas
+                                semanasObj={proyecto}
+                                col='11'
+                                color='primary'
+                            />
+                        </Tab.Pane>
+
                     </Tab.Content>
                 </Tab.Container>
             }

@@ -1,0 +1,23 @@
+.scrollableDiv {
+    width: 100%; /* Ancho del div con scroll */
+    height: 220px; /* Altura del div con scroll */
+    overflow: auto; /* Hace que el contenido desborde y sea desplazable */
+    /*border: 1px solid #ccc;  Un borde para el div */
+    display: flex;
+    /* scroll-snap-type: y mandatory;   */
+    scroll-snap-align: start;
+    min-height: 1vh;
+    border: none;
+
+  }
+
+  .scrollableDiv > div{
+    height: 190px; /* Altura del div con scroll */
+    /* overflow: hidden; */
+    /* width: 500px; */
+
+  }
+  
+  .content {
+    padding: 10px; /* Espacio dentro del div con scroll */
+  }

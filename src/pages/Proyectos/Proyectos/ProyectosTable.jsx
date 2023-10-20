@@ -89,7 +89,7 @@ export default function ProyectosTable() {
         /* { nombre: 'T. Proyecto', identificador: 'tipoProyecto', sort: true, stringSearch: true }, */
         /* { nombre: 'F. incio', identificador: 'FInicio', sort: true, stringSearch: false },
         { nombre: 'F. fin', identificador: 'FFin', sort: true, stringSearch: false }, */
-        { nombre: 'Nombre', identificador: 'nombre', sort: false, stringSearch: false },
+        { nombre: 'Cliente', identificador: 'nombre', sort: false, stringSearch: false },
         { nombre : 'Fases', identificador: 'fases', sort: false, stringSearch: false},
         /* { nombre: 'Cliente', identificador: 'cliente', sort: false, stringSearch: false }, */
         { nombre: 'Dirección', identificador: 'direccion', sort: false, stringSearch: false },
@@ -187,7 +187,6 @@ export default function ProyectosTable() {
             }
         ).catch((error) => {
 
-
         })
     }
 
@@ -229,7 +228,6 @@ export default function ProyectosTable() {
                                 </span>
                             </center>
                             
-                            
                             <div>
                                 <span>{item.name}</span>    
                             </div>
@@ -241,16 +239,16 @@ export default function ProyectosTable() {
         )
     }
 
-    
     const ProccessData = (data) => {
         let aux = []
-        data.data.forEach((item) => {
+        data.data.data.forEach((item) => {
             if (item.proyectos.length > 0) {
                 let tipoAux = opciones.tipos.find(tipo => parseInt(tipo.value) === item.proyectos[0].tipo_proyecto_id)
-                
+                console.log(item)
                 aux.push({
                     id: item.id,
-                    nombre: item.proyectos[0].simpleName,
+                    // nombre: item.proyectos[0].simpleName,
+                    nombre: item.nombre,
                     tipoProyecto: tipoAux && tipoAux.name ? tipoAux.name : 'Sin tipo',
                     /* cliente: item.id, */
                     empresa: item.empresa,
@@ -345,11 +343,12 @@ export default function ProyectosTable() {
                         url="proyectos/project" 
                         opciones={opcionesbtn} 
                         acciones={createAcciones()} 
-                        numItemsPagina={20} 
+                        numItemsPagina={50} 
                         ProccessData={ProccessData}
                         filtros={filtrado}
                         reload={setReloadTable} 
                     />
+                    
                 }
             </Layout>
 
