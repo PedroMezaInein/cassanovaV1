@@ -222,9 +222,9 @@ const calcularValores = (categoria, filaIndex) => {
     const cantidad = parseFloat(fila.cantidad) || 0;
     const medidaRecomendada = parseFloat(fila.medidaRecomendada) || 0;
     const parametricoXM2 = parseFloat(fila.parametricoXM2) || 0;
-    const totalM2 = (cantidad * medidaRecomendada).toFixed(2);
-    const totales = (totalM2 * parametricoXM2).toFixed(2);
-    const total = (cantidad * totalM2 * parametricoXM2).toFixed(2);
+    const totalM2 = (cantidad * medidaRecomendada).toFixed(0);
+    const totales = (totalM2 * parametricoXM2).toFixed(0);
+    const total = (cantidad * totalM2 * parametricoXM2).toFixed(0);
 
    
     // Actualiza los valores en la tabla local
@@ -283,14 +283,25 @@ const calcularValores = (categoria, filaIndex) => {
           0
         );
         setFlujoSum(flujoSumForCategory);
-      }    console.log('Subarea:', fila.subArea);
-      console.log('TotalM2:', totalM2);
+      }    
       
-       // Update the total M2 for the subarea
+      // console.log('Subarea:', fila.subArea);
+      // console.log('TotalM2:', totalM2);
+      
+       // Calculate the subarea total for the current category
+      const subareaTotal = tablaCategoria.reduce((total, fila) => {
+        if (fila.subArea === fila.subArea) {
+          return total + parseFloat(fila.totalM2) || 0;
+        }
+        return total;
+      }, 0);
+
+        // Update the subareaTotals state for the current category
         setSubareaTotals((prevSubareaTotals) => ({
           ...prevSubareaTotals,
-          [fila.subArea]: (prevSubareaTotals[fila.subArea] || 0) + parseFloat(totalM2),
+          [categoria]: subareaTotal,
         }));
+
     
 
       // Actualiza los estados locales y globales
@@ -317,17 +328,18 @@ const enviarFormulario = () => {
   console.log('Datos de la tabla:', tabla);
 };
 // console.log(filasEliminadas)
+// console.log(subareaTotals)
 
   return (
     
     <div className="table-responsive rounded">
       <tr>
             <th colSpan={12}>Totales</th>          
-             <CurrencyTextField  label="Flujo"  variant="standard" value={(totalM2Global * 0.15).toFixed(2)}  // Muestra la suma de "totales"
+             <TextField  label="Flujo"  variant="standard" value={(totalM2Global * 0.15).toFixed(0)}  // Muestra la suma de "totales"
               currencySymbol="$" outputFormat="string" decimalCharacter="."  digitGroupSeparator="," autoFocus readonly disabled
               style={{ width: 120, marginRight: '1rem' }}
             />
-            <CurrencyTextField label="Estructura" variant="standard" value={(totalM2Global * 0.05).toFixed(2)} // Muestra la suma de "totales" 
+            <TextField label="Estructura" variant="standard" value={(totalM2Global * 0.05).toFixed(0)} // Muestra la suma de "totales" 
             currencySymbol="$" outputFormat="string" decimalCharacter="." digitGroupSeparator="," autoFocus readonly disabled  style={{ width: 120, marginRight: '1rem' }}
             />
              {/* <CurrencyTextField  label="Estacionamiento"  variant="standard"   value={totalesEstacionamiento.toFixed(2)} // Muestra la suma de "totales"
@@ -336,11 +348,11 @@ const enviarFormulario = () => {
 
             /> */}
 
-            <CurrencyTextField label="Total m2" variant="standard"   value={(totalM2Global + (totalM2Global * 0.15) + (totalM2Global * 0.05)).toFixed(2)} // Muestra la suma de "total de m2"
-              currencySymbol="$" outputFormat="string" decimalCharacter="." digitGroupSeparator=","autoFocus readonly disabled style={{ width: 120, marginRight: '1rem' }}
+            <TextField label="Total m2" variant="standard"   value={(totalM2Global + (totalM2Global * 0.15) + (totalM2Global * 0.05)).toFixed(0)} // Muestra la suma de "total de m2"
+              currencySymbol="M2" outputFormat="string" decimalCharacter="." digitGroupSeparator=","autoFocus readonly disabled style={{ width: 120, marginRight: '1rem' }}
             />
-            <CurrencyTextField label="SubTotal" variant="standard" value={totalesGlobal.toFixed(2)} // Muestra la suma de "totales"
-              currencySymbol="$" outputFormat="string"  decimalCharacter="." digitGroupSeparator="," autoFocus readonly disabled style={{ width: 120, marginRight: '1rem' }}
+            <TextField label="SubTotal" variant="standard" value={totalesGlobal.toFixed(0)} // Muestra la suma de "totales"
+             outputFormat="string"  decimalCharacter="." digitGroupSeparator="," autoFocus readonly disabled style={{ width: 120, marginRight: '1rem' }}
             />
             
           </tr>
@@ -490,7 +502,7 @@ const enviarFormulario = () => {
               <td colSpan={3}>Total M2 de {categoria}:</td>
               <td>
                 <CurrencyTextField
-                  value={subareaTotals[categoria] ? subareaTotals[categoria].toFixed(2) : ''}
+                  value={subareaTotals[categoria] ? subareaTotals[categoria].toFixed(0) : ''}
                   currencySymbol=" m2"
                   outputFormat="string"
                   decimalCharacter="."

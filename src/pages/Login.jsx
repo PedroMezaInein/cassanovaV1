@@ -20,7 +20,7 @@ class Login extends Component{
 
                             </div>
                             <div className="login-form text-center" >
-                                <LoginForm { ...this.props} />
+                                <LoginForm { ...this.props} /> 
                             </div>
                         </div>
                     </div>

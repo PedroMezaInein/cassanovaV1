@@ -1,947 +1,634 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-
-import { useTable } from 'react-table'
-import styled from 'styled-components'
-
-import Swal from 'sweetalert2'
-
-import Select from '@material-ui/core/Select';
+import SelectMUI from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+
+import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
-
 import TrashIcon from '@material-ui/icons/DeleteOutline';
-import AddIcon from '@material-ui/icons/Add';
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import InputLabel from '@material-ui/core/InputLabel';
-
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import { apiOptions, apiPostForm } from '../../../../functions/api'
-
+import Tooltip from '@material-ui/core/Tooltip';
+import Swal from 'sweetalert2'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
 import Grid from '@material-ui/core/Grid';
 
-import Style from './TablaPresupuesto.module.css'
 
-import { waitAlert2 } from '../../../../functions/alert'
+const useStyles = makeStyles((theme) => ({
+  button: {
+    display: 'block',
+    marginTop: theme.spacing(2),
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+}));
 
-const Styles = styled.div`
- 
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
-    background-color: white;
-    width: 102%;
+const GreenCheckbox = withStyles({
+  root: {
+    color: green[400],
+    '&$checked': {
+      color: green[600],
+    },
+  },
+  checked: {},
+})((props) => <Checkbox color="default" {...props} />);
 
-    tr {
-        min-width: 4vw;
-      max-width: 6vw;
-      :last-child {
-        td {
-            border-bottom: 0;
+function App(props) {
+    const { reload, handleClose } = props
+
+//   const [selectedMonths, setSelectedMonths] = useState([]);
+  const [tableName, setTableName] = useState('');
+  const [tables, setTables] = useState([]); // Estado para almacenar las tablas
+  const [tableData, setTableData] = useState([]);
+  const departamentos = useSelector(state => state.opciones.areas)
+  const auth = useSelector(state => state.authUser.access_token)
+  const [departmentTotals, setDepartmentTotals] = useState({});
+  const [monthlyTotals, setMonthlyTotals] = useState({});
+  const [hasRowsInDepartments, setHasRowsInDepartments] = useState({});
+  const usuario = useSelector(state => state.authUser.departamento.departamentos[0])
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [comment, setComment] = useState('');
+
+// Define un estado para las subpartidas seleccionadas en cada fila
+  const [selectedSubpartidas, setSelectedSubpartidas] = useState({});
+  
+  const classes = useStyles();
+  const [age, setAge] = React.useState('');
+  const [open, setOpen] = React.useState(false);
+
+  const [state, setState] = React.useState({
+    checkedA: true,
+    checkedB: true,
+    checkedF: true,
+    checkedG: true,
+  });
+
+  const handleStartDateChange = (date) => {
+    // new Date(date)
+    setStartDate(date); // Actualiza el estado con la fecha seleccionada
+  };
+  const handlsetEndDateChange = (date) => {
+    // new Date(date)
+    setEndDate(date); // Actualiza el estado con la fecha seleccionada
+  };
+
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
+  };
+
+  const handleCommentChange = (event) => {
+    setComment(event.target.value);
+  };
+
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
+
+  const handleClosee = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+
+  useEffect(() => {
+    // Realiza una petición a la API cuando el componente se monta
+        const updatedTables =  apiOptions(`presupuestosdep`, auth)
+            .then((response) => {
+        // Procesa los datos de la API según sea necesario
+        const apiData = response.data;
+
+        // Actualiza el estado de la tabla con los datos de la API procesados
+        setTableData(apiData);
+      })
+      .catch((error) => {
+        console.error('Error al obtener datos de la API:', error);
+      });
+  }, []); // E
+
+  const months = [
+    'Enero', 'Febrero', 'Marzo', 'Abril',
+    'Mayo', 'Junio', 'Julio', 'Agosto',
+    'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+  ];
+
+
+  const handleAddTable = () => {
+    console.log(tableName)
+    if (tableName) {
+      // Verificar si el departamento ya existe
+      const departmentExists = tables.some((table) => table.name === tableName);
+  
+      if (!departmentExists) {
+        const newTable = {
+          id: Date.now(),
+          name: tableName,
+          months: months,
+          rows: [],
+        };
+        // console.log(newTable)
+
+        setTables([...tables, newTable]);
+        setTableName('');
+      } else {
+        // Aquí puedes manejar una notificación o mensaje de error
+        console.log("El departamento ya existe en la lista.");
+      }
+    }
+  };
+
+
+
+  const handleDeleteTable = (tableId) => {
+    const updatedTables = tables.filter((table) => table.id !== tableId);
+    setTables(updatedTables);
+  };
+
+  
+  const handleAddRow = (tableId) => {
+    const updatedTables = tables.map((table) => {
+      if (table.id === tableId) {
+        const newRow = {
+          id: Date.now(),
+          select1: '',
+          select2: '',
+          montos: months.map(() => ({ monto: 0 })),
+        };
+        table.rows.push(newRow);
+  
+        // Inicializa el estado de subpartidas seleccionadas para esta fila
+        setSelectedSubpartidas({
+          ...selectedSubpartidas,
+          [`${table.id}-${newRow.id}`]: {
+            select1: '',
+            select2: '',
+          },
+        });
+  
+        // Actualiza el estado de hasRowsInDepartments
+        setHasRowsInDepartments({
+          ...hasRowsInDepartments,
+          [table.name]: true,
+        });
+      }
+      return table;
+    });
+    setTables(updatedTables);
+  };
+  
+
+  const handleDeleteRow = (tableId, rowId) => {
+    const updatedTables = tables.map((table) => {
+      if (table.id === tableId) {
+        table.rows = table.rows.filter((row) => row.id !== rowId);
+      }
+      return table;
+    });
+  
+    setTables(updatedTables);
+  
+    // Recalculate department totals
+    const updatedDepartmentTotals = {};
+  
+    updatedTables.forEach((table) => {
+      const departmentName = table.name;
+  
+      updatedDepartmentTotals[departmentName] = {};
+  
+      months.forEach((month, monthIndex) => {
+        const monthTotal = table.rows.reduce((total, row) => {
+          return total + parseFloat(row.montos[monthIndex].monto);
+        }, 0);
+        updatedDepartmentTotals[departmentName][month] = monthTotal;
+      });
+    });
+  
+    setDepartmentTotals(updatedDepartmentTotals);
+  };
+
+
+  const handleSelectChange = (tableId, rowId, fieldName, value) => {
+
+    const updatedTables = tables.map((table) => {
+
+      if (table.id === tableId) {
+        const updatedRows = table.rows.map((row) => {
+          if (row.id === rowId) {
+              // De lo contrario, actualiza el campo select correspondiente
+              return { ...row, [fieldName]: value };
+          }
+          return row;
+        });
+        return { ...table, rows: updatedRows };
+      }
+      return table;
+    });
+    setTables(updatedTables);
+  };
+
+  const handleMontosChange = (tableId, rowId, monthIndex, value) => {
+    const updatedTables = tables.map((table) => {
+      if (table.id === tableId) {
+        const updatedRows = table.rows.map((row) => {
+          if (row.id === rowId) {
+            const updatedMontos = [...row.montos];
+            updatedMontos[monthIndex].monto = value;
+            return { ...row, montos: updatedMontos };
+          }
+          return row;
+        });
+  
+        const updatedDepartmentTotals = { ...departmentTotals };
+        const updatedMonthlyTotals = { ...monthlyTotals };
+  
+        updatedDepartmentTotals[table.name] = updatedDepartmentTotals[table.name] || {};
+        updatedDepartmentTotals[table.name][months[monthIndex]] = updatedRows.reduce(
+          (total, row) => total + parseFloat(row.montos[monthIndex].monto),
+          0
+        );
+  
+        // Calculate the monthly total across all tables
+        updatedMonthlyTotals[months[monthIndex]] = tables.reduce((total, table) => {
+          const sum = table.rows.reduce(
+            (tableTotal, row) => tableTotal + parseFloat(row.montos[monthIndex].monto),
+            0
+          );
+          return total + sum;
+        }, 0);
+  
+        setMonthlyTotals(updatedMonthlyTotals); // Update the monthly totals state
+  
+        setDepartmentTotals(updatedDepartmentTotals); // Update the department totals state
+  
+        return { ...table, rows: updatedRows };
+      }
+      return table;
+    });
+    setTables(updatedTables);
+  };
+  
+
+  const handleSendTables = () => {
+    // Verifica que startDate, endDate y comment no estén vacíos
+    if (!startDate || !endDate || !comment) {
+      // Muestra una alerta al usuario indicando que los campos son obligatorios
+      Swal.fire({
+        icon: 'error',
+        title: 'Campos obligatorios',
+        text: 'Por favor, completa las fechas de inicio y fin, y el comentario.',
+      });
+      return; // Detén la función si los campos están vacíos
+    }
+  
+    // Verifica que select1 y select2 en cada fila no estén vacíos
+    for (const table of tables) {
+      for (const row of table.rows) {
+        if (!row.select1 || !row.select2) {
+          // Muestra una alerta al usuario indicando que los campos son obligatorios
+          Swal.fire({
+            icon: 'error',
+            title: 'Campos obligatorios',
+            text: 'Por favor, completa los campos Partida y Subpartida en todas las filas.',
+          });
+          return; // Detén la función si algún campo está vacío
         }
       }
-      
     }
+  
+    // Si todos los campos requeridos están completos, llama a la función para enviar los datos de la tabla a la API
+    sendTableDataToAPI(tables);
+  };
+  
 
-    th{
-        background: #9CC4E4;
+// Crea una función para enviar los datos de la tabla a la API en el nuevo formato
+const sendTableDataToAPI = async (tables) => {
+    try {
+      const formattedData = [];
+      let totalGlobal = 0; // Variable para almacenar el total global
+
+      // Recorre las tablas
+      tables.forEach((table) => {
+        const department = departamentos.find((item) => item.id_area === table.name);
+  
+        // Recorre las filas de cada tabla
+        table.rows.forEach((row) => {
+          const rowData = {
+            departamentoId: department ? department.id_area : null, // Agrega el ID del departamento
+            departamento: department ? department.nombreArea : '',
+            partida: row.select1,
+            subpartida: row.select2,
+            months: row.montos.map((monto, monthIndex) => ({
+              month: months[monthIndex],
+              monto: parseFloat(monto.monto),
+            })),
+          };
+          // Calcula el total de la fila y lo agrega al total global
+            const rowTotal = rowData.months.reduce((acc, monthData) => acc + monthData.monto, 0);
+            totalGlobal += rowTotal;
+    
+            formattedData.push(rowData);
+            });
+         });
+
+         // Agrega el total global al objeto de datos
+            const dataToSend = {
+                total: totalGlobal,
+                data: formattedData,
+                fecha_inicio: startDate, // Agrega la fecha de inicio
+                fecha_fin: endDate, // Agrega la fecha de fin
+                nombre: comment, // Agrega el comentario
+                tab: 'departamento', // Agrega el comentario
+                id_departamento:usuario.id
+            };
+        // console.log(usuario)
+            apiPostForm(`presupuestosdep?departamento_id=${usuario.id}`, dataToSend, auth)
+            .then(res => {
+                Swal.close()
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Presupuesto creado con éxito',
+                    timer: 2000
+                }).then(() => {
+                    if (reload) {
+                        reload.reload()
+                    }
+                    handleClose()
+                })
+
+            })
+
+    //   const response = await fetch('URL_DE_TU_API', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       // Agrega otros encabezados si es necesario, como la autorización
+    //     },
+    //     body: JSON.stringify(dataToSend), // Convierte los datos a formato JSON
+    //   });
+  
+    //   if (response.ok) {
+    //     // La solicitud fue exitosa, puedes realizar acciones adicionales si es necesario
+    //     console.log('Datos de la tabla enviados con éxito');
+    //   } else {
+    //     // La solicitud falló, maneja el error apropiadamente
+    //     console.error('Error al enviar datos de la tabla a la API');
+    //   }
+    } catch (error) {
+      console.error('Error en la solicitud HTTP:', error);
     }
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-      min-width: 4vw;
-      max-width: 6vw;
+  };
 
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`
-const StylesGeneral = styled.div`
- 
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
-    background-color: white;
 
-    tr {
-      :last-child {
-        td {
-            border-bottom: 0;
-        }
-      }
-      
-    }
+  const calculateRowTotal = (row) => {
+    return row.montos.reduce((total, { monto }) => total + parseFloat(monto), 0);
+  };
 
-    th{
-        background: #9CC4E4;
-    }
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-      min-width: 10vw;
-      max-width: 10vw;
+function calculateTotalGlobal() {
+  let total = 0;
 
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`
+  tables.forEach((table) => {
+    table.rows.forEach((row) => {
+      row.montos.forEach((monto) => {
+        total += parseFloat(monto.monto);
+      });
+    });
+  });
 
-function Table({ columns, data }) {
-    // Use the state and functions returned from useTable to build the UI
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({
-        columns,
-        data,
-    })
-
-    // Render the UI for the table
-    return (
-        <table {...getTableProps()}>
-            <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                        ))}
-                    </tr>
-                ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                            })}
-                        </tr>
-                    )
-                })}
-            </tbody>
-        </table>
-    )
+  return total;
 }
 
-export default function TablaPresupuesto(props) {
-    const { reload, handleClose } = props
-    const partidas = useSelector(state => state.opciones.areas)
-    const areas = useSelector(state => state.opciones.areas)
-    const departamento = useSelector(state => state.authUser.departamento.departamentos[0])
-    const nombreUsuario = useSelector(state => state.authUser.user)
-    const auth = useSelector(state => state.authUser.access_token)
-    const [form, setForm] = useState([])
-    const [general, setGeneral] = useState({
-        departamento: departamento.nombre,
-        departamento_id: departamento.id,
-        gerente: nombreUsuario.name,
-        gerente_id: nombreUsuario.id,
-        colaboradores: '',
-        colaboradores_id: '',
-        granTotal: '',
-        nomina: 0,
-        fecha_inicio: '',
-        fecha_fin: '',
-        nombre: '',
-    })
-    /* const [nominas, setNominas] = useState([]) */
-
-    /*     */
-
-    const [areasRestantes, setAreasRestantes] = useState([])
-    const [formDataTabla, setFormDataTabla] = useState([])
-
-    /*     */
-
-    useEffect(() => {
-        getNominas()
-    }, [])
-
-    const handleChangePartida = (e, index, subindex) => {
-        let nuevoForm = [...formDataTabla]
-        nuevoForm[index].filas[subindex].id_partida = e.target.value
-        setFormDataTabla(nuevoForm)
-    }
-
-    const handleChangeSubpartida = (e, index, subindex) => {
-        const nuevoForm = [...formDataTabla]
-        nuevoForm[index].filas[subindex].id_subpartida = e.target.value
-        setFormDataTabla(nuevoForm)
-    }
-
-    useEffect(() => {
-        if (areas.length >= 13) {
-            createData()
-        }
-
-        if (areas.length) {
-            setAreasRestantes(areas)
-        }
-    }, [areas])
-
-    const formatNumberCurrency = (number) => {
-        return new Intl.NumberFormat('es-MX', {
-            style: 'currency',
-            currency: 'MXN',
-            minimumFractionDigits: 2
-        }).format(number)
-    }
-
-    const sumaMes = (index, mes) => {
-        let suma = 0
-        for (let i = 0; i < formDataTabla[index].filas.length; i++) {
-            if (Object.keys(formDataTabla[index].filas[i]) !== 'id_partida' && Object.keys(formDataTabla[index].filas[i]) !== 'id_subpartida') {
-                suma += formDataTabla[index].filas[i][mes]
-            }
-
-        }
-        suma = formatNumberCurrency(suma)
-
-        return suma
-
-    }
-
-    const sumaTotalFila = (index, subindex) => {
-        let suma = 0
-        suma += formDataTabla[index].filas[subindex].enero
-        suma += formDataTabla[index].filas[subindex].febrero
-        suma += formDataTabla[index].filas[subindex].marzo
-        suma += formDataTabla[index].filas[subindex].abril
-        suma += formDataTabla[index].filas[subindex].mayo
-        suma += formDataTabla[index].filas[subindex].junio
-        suma += formDataTabla[index].filas[subindex].julio
-        suma += formDataTabla[index].filas[subindex].agosto
-        suma += formDataTabla[index].filas[subindex].septiembre
-        suma += formDataTabla[index].filas[subindex].octubre
-        suma += formDataTabla[index].filas[subindex].noviembre
-        suma += formDataTabla[index].filas[subindex].diciembre
-        suma = formatNumberCurrency(suma)
-        return suma
-    }
-
-    const getSumaMeses = (mes) => {
-        let suma = 0
-        formDataTabla.forEach((tabla) => {
-            tabla.filas.forEach((fila) => {
-                if (Object.keys(fila) !== 'id_partida' && Object.keys(fila) !== 'id_subpartida') {
-                    suma += fila[mes]
-                }
-            })
-        })
-        /* suma = suma + general.nomina */
-        suma = formatNumberCurrency(suma)
-        return suma
-    }
-
-    const sumaTabla = (index) => {
-        let suma = 0
-        for (let i = 0; i < formDataTabla[index].filas.length; i++) {
-            if (Object.keys(formDataTabla[index].filas[i]) !== 'id_partida' && Object.keys(formDataTabla[index].filas[i]) !== 'id_subpartida') {
-                suma += formDataTabla[index].filas[i].enero
-                suma += formDataTabla[index].filas[i].febrero
-                suma += formDataTabla[index].filas[i].marzo
-                suma += formDataTabla[index].filas[i].abril
-                suma += formDataTabla[index].filas[i].mayo
-                suma += formDataTabla[index].filas[i].junio
-                suma += formDataTabla[index].filas[i].julio
-                suma += formDataTabla[index].filas[i].agosto
-                suma += formDataTabla[index].filas[i].septiembre
-                suma += formDataTabla[index].filas[i].octubre
-                suma += formDataTabla[index].filas[i].noviembre
-                suma += formDataTabla[index].filas[i].diciembre
-            }
-        }
-        suma = formatNumberCurrency(suma)
-        return suma
-    }
-
-    const getColumnsHeader = () => {
-        let columnas = [{
-            Header: 'Total mensual',
-            columns: [
-                {
-                    Header: 'Enero',
-                    accessor: '1',
-                },
-                {
-                    Header: 'Febrero',
-                    accessor: '2',
-                },
-                {
-                    Header: 'Marzo',
-                    accessor: '3',
-                },
-                {
-                    Header: 'Abril',
-                    accessor: '4',
-                },
-                {
-                    Header: 'Mayo',
-                    accessor: '5',
-                },
-                {
-                    Header: 'Junio',
-                    accessor: '6',
-                },
-                {
-                    Header: 'Julio',
-                    accessor: '7',
-                },
-                {
-                    Header: 'Agosto',
-                    accessor: '8',
-                },
-                {
-                    Header: 'Septiembre',
-                    accessor: '9',
-                },
-                {
-                    Header: 'Octubre',
-                    accessor: '10',
-                },
-                {
-                    Header: 'Noviembre',
-                    accessor: '11',
-                },
-                {
-                    Header: 'Diciembre',
-                    accessor: '12',
-                },
-                {
-                    Header: 'Total',
-                    accessor: 'total',
-                }
-            ]
-        }]
-
-        return columnas
-    }
-
-    const handleMoney = (indexTabla, indexFila, key, value) => {
-        const nuevoForm = [...formDataTabla]
-        nuevoForm[indexTabla].filas[indexFila][key] = value
-        setFormDataTabla(nuevoForm)
-    }
-
-    const createCurrencyInput = (fila, indexTabla, indexFila, key) => {
-        return (
-            <CurrencyTextField
-
-                variant="standard"
-                value={formDataTabla[indexTabla].filas[indexFila][key]}
-                currencySymbol="$"
-                outputFormat="number"
-                onChange={(event, value) => handleMoney(indexTabla, indexFila, key, value)}
-            />
-
-        )
-    }
-
-    const createData = () => {
-        let aux = []
-        let id = 0
-        areas.map((area, index) => {
-            aux.push([])
-        })
-        setForm(aux)
-    }
-
-    const getDataHeader = (index) => {
-        let aux = [{
-            id: 0,
-            1: getSumaMeses('enero'),
-            2: getSumaMeses('febrero'),
-            3: getSumaMeses('marzo'),
-            4: getSumaMeses('abril'),
-            5: getSumaMeses('mayo'),
-            6: getSumaMeses('junio'),
-            7: getSumaMeses('julio'),
-            8: getSumaMeses('agosto'),
-            9: getSumaMeses('septiembre'),
-            10: getSumaMeses('octubre'),
-            11: getSumaMeses('noviembre'),
-            12: getSumaMeses('diciembre'),
-            total: getGranTotal(),
-
-        }]
-        return aux
-    }
-
-    const createHeader = () => {
-        return (
-            <div>
-                <Styles>
-                    <Table columns={getColumnsHeader()} data={getDataHeader()} />
-                </Styles>
-            </div>
-        )
-    }
-
-    const nuevaFila = (index) => {
-        let aux = [...formDataTabla]
-        aux[index].filas.push({
-            id_partida: '',
-            id_subpartida: '',
-            comentario: '',
-            enero: 0,
-            febrero: 0,
-            marzo: 0,
-            abril: 0,
-            mayo: 0,
-            junio: 0,
-            julio: 0,
-            agosto: 0,
-            septiembre: 0,
-            octubre: 0,
-            noviembre: 0,
-            diciembre: 0,
-        })
-        setFormDataTabla(aux)
-    }
-
-    const eliminarFila = (index, subindex) => {
-        let aux = [...formDataTabla]
-        aux[index].filas.splice(subindex, 1)
-        setFormDataTabla(aux)
-    }
-
-    const selectPartidas = (index, subindex) => {
-        return (
-            <div>
-
-                <Select
-                    value={formDataTabla[index].filas[subindex].id_partida}
-                    onChange={e => handleChangePartida(e, index, subindex)}
-                    style={{ maxWidth: '5vw' }}
-                >
-                    <MenuItem value='' hidden>partida</MenuItem>
-                    {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.map(partida => (
-                        <MenuItem key={partida.id} value={partida.id}>{partida.nombre}</MenuItem>
-                    ))}
-                </Select>
-
-            </div>
-        )
-    }
-
-    const selectSubpartida = (index, subindex) => {
-        return (
-            <div>
-                {
-                    formDataTabla[index].filas[subindex].id_partida !== '' &&
-                    <Select
-                        value={formDataTabla[index].filas[subindex].id_subpartida}
-                        onChange={e => handleChangeSubpartida(e, index, subindex)}
-                        style={{ maxWidth: '5vw' }}
-
-                    >
-                        <MenuItem value='' hidden>subpartida</MenuItem>
-                        {areas.find(partida => partida.id_area === formDataTabla[index].id_area).partidas.find(partida => partida.id === formDataTabla[index].filas[subindex].id_partida).subpartidas.map(subpartida => (
-                            <MenuItem key={subpartida.id} value={subpartida.id}>{subpartida.nombre}</MenuItem>
-                        ))}
-                    </Select>
-                }
-
-            </div>
-        )
-    }
-
-    const createTableDepartamento = () => {
-        const columnas = [
-            {
-                Header: 'Departamento',
-                accessor: 'nombre',
-            }
-        ]
-        return (
-            <div>
-                <StylesGeneral>
-                    <Table columns={columnas} data={[{ nombre: general.departamento }]} />
-                </StylesGeneral>
-            </div>
-        )
-    }
-
-    const createTableGerente = () => {
-        const columnas = [
-            {
-                Header: 'Gerente',
-                accessor: 'nombre',
-            }
-        ]
-
-        return (
-            <div>
-                <StylesGeneral>
-                    <Table columns={columnas} data={[{ nombre: general.gerente }]} />
-                </StylesGeneral>
-            </div>
-        )
-    }
-
-    const createTableColaboradores = () => {
-        const columnas = [
-            {
-                Header: 'Colaboradores',
-                accessor: 'nombre',
-            }
-        ]
-        return (
-            <div>
-                <StylesGeneral>
-                    <Table columns={columnas} data={[{ nombre: general.colaboradores }]} />
-                </StylesGeneral>
-            </div>
-        )
-    }
-
-    const getGranTotal = () => {
-        let suma = 0
-        for (let i = 0; i < formDataTabla.length; i++) {
-            for (let j = 0; j < formDataTabla[i].filas.length; j++) {
-                suma += formDataTabla[i].filas[j].enero
-                suma += formDataTabla[i].filas[j].febrero
-                suma += formDataTabla[i].filas[j].marzo
-                suma += formDataTabla[i].filas[j].abril
-                suma += formDataTabla[i].filas[j].mayo
-                suma += formDataTabla[i].filas[j].junio
-                suma += formDataTabla[i].filas[j].julio
-                suma += formDataTabla[i].filas[j].agosto
-                suma += formDataTabla[i].filas[j].septiembre
-                suma += formDataTabla[i].filas[j].octubre
-                suma += formDataTabla[i].filas[j].noviembre
-                suma += formDataTabla[i].filas[j].diciembre
-            }
-        }
-        /* suma = suma + (general.nomina * 12) */
-        suma = formatNumberCurrency(suma)
-        return suma
-    }
-
-    const getGranTotalR = () => {
-        let suma = 0
-        for (let i = 0; i < formDataTabla.length; i++) {
-            for (let j = 0; j < formDataTabla[i].filas.length; j++) {
-                suma += formDataTabla[i].filas[j].enero
-                suma += formDataTabla[i].filas[j].febrero
-                suma += formDataTabla[i].filas[j].marzo
-                suma += formDataTabla[i].filas[j].abril
-                suma += formDataTabla[i].filas[j].mayo
-                suma += formDataTabla[i].filas[j].junio
-                suma += formDataTabla[i].filas[j].julio
-                suma += formDataTabla[i].filas[j].agosto
-                suma += formDataTabla[i].filas[j].septiembre
-                suma += formDataTabla[i].filas[j].octubre
-                suma += formDataTabla[i].filas[j].noviembre
-                suma += formDataTabla[i].filas[j].diciembre
-            }
-        }
-        /* suma = suma + (general.nomina * 12) */
-        return suma
-    }
-
-    const getDataGranTotal = () => {
-        let aux = [{
-            valor: getGranTotal()
-        }]
-        return aux
-    }
-
-    const createTableGranTotal = () => {
-        const columnas = [
-            {
-                Header: 'Gran Total Anual',
-                accessor: 'valor',
-            }
-        ]
-
-        return (
-            <div>
-                <Styles>
-                    <Table columns={columnas} data={getDataGranTotal()} />
-                </Styles>
-            </div>
-        )
-    }
-
-    const getNominas = () => {
-        waitAlert2()
-        try {
-            apiOptions(`presupuestosdep?departamento_id=${general.departamento_id}`, auth)
-                .then(res => {
-                    let suma = 0
-                    /* setNominas([...res.data.empleados]) */
-                    for (let i = 0; i < res.data.empleados.length; i++) {
-                        suma += res.data.empleados[i].nomina_imss + res.data.empleados[i].nomina_extras
-                    }
-                    suma = suma * 2
-                    setGeneral({
-                        ...general,
-                        nomina: suma,
-                        colaboradores: res.data.empleados.length
-                    })
-                    Swal.close()
-                })
-
-        } catch (error) {
-            Swal.close()
-            console.log(error)
-        }
-    }
-
-    const sendPresupuesto = () => {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "Se creará el presupuesto",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Creando presupuesto',
-                    allowOutsideClick: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    }
-                })
-                try {
-                    let aux = {
-                        tipo: 'crear',
-                        data: formDataTabla,
-                        fecha_inicio: general.fecha_inicio,
-                        fecha_fin: general.fecha_fin,
-                        total: getGranTotalR(),
-                        id_departamento: general.departamento_id,
-                        colaboradores: general.colaboradores,
-                        nombre: general.nombre,
-                        tab: "departamento"
-                    }
-                    apiPostForm(`presupuestosdep?departamento_id=${general.departamento_id}`, aux, auth)
-                        .then(res => {
-                            Swal.close()
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Presupuesto creado con éxito',
-                                timer: 2000
-                            }).then(() => {
-                                if (reload) {
-                                    reload.reload()
-                                }
-                                handleClose()
-                            })
-
-                        })
-                } catch (error) {
-                    Swal.close()
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error al crear el presupuesto',
-                        timer: 2000
-                    })
-                }
-            }
-        })
-    }
-
-    const handleSelectArea = (e) => {
-        let aux = []
-        let newTable = {}
-
-        areasRestantes.forEach(area => {
-            if (area.id_area !== e.target.value) {
-                aux = [...aux, area]
-            }
-        })
-
-        setAreasRestantes(aux)
-
-        partidas.forEach(partida => {
-            if (partida.id_area === e.target.value) {
-                newTable = {
-                    id_area: partida.id_area,
-                    nombre: partida.nombreArea,
-                    filas: [
-                        {
-                            id_partida: '',
-                            id_subpartida: '',
-                            comentario: '',
-                            enero: 0,
-                            febrero: 0,
-                            marzo: 0,
-                            abril: 0,
-                            mayo: 0,
-                            junio: 0,
-                            julio: 0,
-                            agosto: 0,
-                            septiembre: 0,
-                            octubre: 0,
-                            noviembre: 0,
-                            diciembre: 0
-                        }
-                    ],
-                }
-            }
-        })
-        setFormDataTabla([...formDataTabla, newTable])
-    }
-
-    const handleDeleteTable = (index) => {
-        Swal.fire({
-            title: '¿Estás seguro de eliminar la tabla de ' + formDataTabla[index].nombre + '?',
-            text: "No podrás revertir esta acción",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                let aux = [...formDataTabla]
-                let addArea = partidas.filter(partida => partida.id_area === aux[index].id_area)
-                setAreasRestantes([...areasRestantes, addArea[0]])
-                aux.splice(index, 1)
-                setFormDataTabla(aux)
-            }
-        })
-    }
-
-    console.log(formDataTabla)
-
-    const generateTables = () => {
-
-        return (
-            <>
-                {
-                    formDataTabla.sort((a, b) => a.nombre > b.nombre ? 1 : -1).map((tabla, indexTabla) => {
-                        return (
-                            <div class="container-fluid">
-                                <div key={indexTabla} style={{ display: 'flex', flexDirection: 'column', marginTop: '20px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', justifyContent: 'center' }}>
-                                        <div><TrashIcon onClick={() => handleDeleteTable(indexTabla)} style={{ cursor: 'pointer', color: 'red', fontSize: '20px' }} /></div>
-                                        <h3 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', padding: '0 10px' }}>
-
-                                            <div>
-                                                {tabla.nombre}
-                                            </div>
-                                            <div style={{ marginLeft: '10px' }}>
-                                                {sumaTabla(indexTabla)}
-                                            </div>
-                                        </h3>
-
-                                    </div>
-                                </div>
-
-                            <div class="table-responsive">
-
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Gasto</th>
-                                            <th>Subgasto</th>
-                                            <th>Comentario</th>
-                                            <th>enero <br /> {sumaMes(indexTabla, 'enero')}</th>
-                                            <th>Febrero <br /> {sumaMes(indexTabla, 'febrero')}</th>
-                                            <th>Marzo <br /> {sumaMes(indexTabla, 'marzo')}</th>
-                                            <th>Abril <br /> {sumaMes(indexTabla, 'abril')}</th>
-                                            <th>Mayo <br /> {sumaMes(indexTabla, 'mayo')}</th>
-                                            <th>Junio <br /> {sumaMes(indexTabla, 'junio')}</th>
-                                            <th>Julio <br /> {sumaMes(indexTabla, 'julio')}</th>
-                                            <th>Agosto <br /> {sumaMes(indexTabla, 'agosto')}</th>
-                                            <th>Septiembre <br /> {sumaMes(indexTabla, 'septiembre')}</th>
-                                            <th>Octubre <br /> {sumaMes(indexTabla, 'octubre')}</th>
-                                            <th>Noviembre <br /> {sumaMes(indexTabla, 'noviembre')}</th>
-                                            <th>Diciembre <br /> {sumaMes(indexTabla, 'diciembre')}</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            tabla.filas.map((fila, indexFila) => {
-                                                return (
-                                                    <tr key={indexFila}>
-                                                        <td>
-                                                            <center>
-                                                                <TrashIcon onClick={() => eliminarFila(indexTabla, indexFila)} style={{ cursor: 'pointer', color: 'red' }} />
-                                                            </center>
-                                                        </td>
-                                                        <td>
-                                                            {selectPartidas(indexTabla, indexFila)}
-                                                        </td>
-                                                        <td>
-                                                            {selectSubpartida(indexTabla, indexFila)}
-                                                        </td>                                                      
-                                                        {
-                                                            Object.keys(fila).map((key, index) => {
-                                                                return (
-                                                                    key !== 'id_partida' && key !== 'id_subpartida' &&
-                                                                    <td key={index}>
-                                                                        {createCurrencyInput(fila, indexTabla, indexFila, key)}
-                                                                    </td>
-                                                                )
-                                                            })
-
-                                                        }
-                                                        <td>
-                                                            {sumaTotalFila(indexTabla, indexFila)}
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-
-                                <AddIcon onClick={() => nuevaFila(indexTabla)} style={{ cursor: 'pointer', color: 'green', fontSize: '25px', alignSelf: 'flex-start', marginTop: '10px', marginBottom: '10px' }} />
-
-                            </div>
-                        )
-
-                    })
-                }
-            </>
-        )
-    }
-
-    const handleChangeFecha = (date, tipo) => {
-        setGeneral({
-            ...general,
-            [tipo]: new Date(date)
-        })
-    };
-
-    const handleChangeNombre = (e) => {
-        setGeneral({
-            ...general,
-            nombre: e.target.value
-        })
-    }
-
-    return (
-        <>
-    <div  class="container-fluid">
-
-            <div style={{ backgroundColor: 'white', padding: '2rem' }}>
-                <div style={{ marginBottom: '2rem' }}>
-                    <h1 style={{ textAlign: 'center' }}>Infraestructura e Interiores, S.A. de C.V.</h1>
-                    <h2 style={{ textAlign: 'center' }}>Presupuesto Anual</h2>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
-                    {createTableDepartamento()}
-                    {createTableColaboradores()}
-                    {createTableGerente()}
-                    {createTableGranTotal()}
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
-                    <div>
-                        <InputLabel >Fecha Inicio</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                            <Grid container >
-                                <KeyboardDatePicker
-
-                                    format="dd/MM/yyyy"
-                                    name="fecha_pago"
-                                    value={general.fecha_inicio !== '' ? general.fecha_inicio : null}
-                                    placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha_inicio')}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-                    </div>
-
-                    <div>
-                        <InputLabel >Fecha Fin</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                            <Grid container >
-                                <KeyboardDatePicker
-
-                                    format="dd/MM/yyyy"
-                                    name="fecha_pago"
-                                    value={general.fecha_fin !== '' ? general.fecha_fin : null}
-                                    placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha_fin')}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-                    </div>
-
-                    <div>
-                        <InputLabel >Nombre del presupuesto</InputLabel>
-                        <TextField
-                            name='nombre'
-                            type="text"
-                            defaultValue={general.nombre}
-                            onChange={handleChangeNombre}
-                            InputLabelProps={{
-                                shrink: true,
+const calculateMonthlyTotals = () => {
+  const monthlyTotals = {};
+
+  months.forEach((month) => {
+    let total = 0;
+
+    tables.forEach((table) => {
+      table.rows.forEach((row) => {
+        total += parseFloat(row.montos[months.indexOf(month)].monto);
+      });
+    });
+
+    monthlyTotals[month] = total;
+  });
+
+  return monthlyTotals;
+};
+
+  // Llama a esta función en el useEffect para calcular los totales cuando los datos se cargan inicialmente
+  useEffect(() => {
+    setMonthlyTotals(calculateMonthlyTotals());
+  }, [tables]); // Asegúrate de que se vuelva a calcular cuando cambian los datos de las tablas
+  
+  
+  
+  function calculateDepartmentTotal(departmentName) {
+    let total = 0;
+    tables.forEach((table) => {
+      if (table.name === departmentName) {
+        table.rows.forEach((row) => {
+          row.montos.forEach((monto) => {
+            total += parseFloat(monto.monto);
+          });
+        });
+      }
+    });
+    return total;
+  }
+  
+  // console.log(tables)
+
+  
+  return (
+    <div className="form-group form-group-marginless row mx-0">    
+        <div className="col-md-3">
+              <InputLabel id="demo-controlled-open-select-label">Departamento</InputLabel>
+                <Select labelId="demo-controlled-open-select-label" id="demo-controlled-open-select" open={open}  onClose={handleClosee} onOpen={handleOpen}
+                  name="tabla" value={tableName} onChange={(e) => setTableName(e.target.value)} placeholder="Nombre de la tabla" style={{ width: 230, paddingRight: '2px' }} >
+                  {
+                    departamentos.map((item, index) => (
+                    <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+                  ))}
+              </Select>
+              <Button  className = "btn btn-light-primary mr-4 my-2" color="primary" onClick={handleAddTable}>Agregar Departamento</Button>
+        </div>       
+        <div  className="col-md-2">
+
+        <InputLabel >Fecha Inicio</InputLabel>
+            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                <Grid container >
+                    <KeyboardDatePicker
+                        format="dd/MM/yyyy"
+                        name="fecha_inicio"
+                        value={startDate}
+                        placeholder="dd/mm/yyyy"
+                        onChange={handleStartDateChange}
+                        KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                        }}
+                    />
+                </Grid>
+            </MuiPickersUtilsProvider>
+      </div>
+
+      <div className="col-md-2">
+      <InputLabel >Fecha fin</InputLabel>
+            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                <Grid container >
+                    <KeyboardDatePicker
+                        format="dd/MM/yyyy"
+                        name="fecha_fin"
+                        id="endDate"
+                        value={endDate}
+                        placeholder="dd/mm/yyyy"
+                        onChange={handlsetEndDateChange}
+                        KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                        }}
+                    />
+                </Grid>
+            </MuiPickersUtilsProvider>
+        
+      </div>
+        <div className="col-md-2">
+            <label htmlFor="comment">NOMBRE DEL PRESUPUESTO</label>
+            <TextField
+                id="comment"
+                value={comment}
+                onChange={handleCommentChange}
+                InputLabelProps={{
+                shrink: true,
                             }}
-                        />
-                    </div>
+                />
+           
+        </div>
+        <div className="col-md-3">
+           <h2>Total Global: {calculateTotalGlobal().toLocaleString('es-MX', {style: 'currency', currency: 'MXN',minimumFractionDigits: 2,maximumFractionDigits: 2,})}</h2>
+        </div>        
+        <hr></hr>
+        <div className="col-md-12">
+        <div className="table-responsive rounded">
 
-                </div>
-                <div class="container-fluid table-responsive">
-                    <div style={{ marginLeft: '8vw' }}>
-                        {
-                            form.length >= 13 &&
-                            createHeader()
+              <table className="table table-borderless table-vertical-center rounded table-hover">
+                <thead>
+              {months.map((month, monthIndex) => (
+                    <th key={monthIndex}>
+                         {month}<br></br> Total: {(monthlyTotals[month] || 0).toLocaleString('es-MX', {style: 'currency', currency: 'MXN',minimumFractionDigits: 2,maximumFractionDigits: 2,}) }
+                    </th>
+                    ))}
+                </thead>
+              </table>
+
+
+          {tables.map((table) => (
+            <div key={table.id} className="table-container">
+                <br></br>                   
+                <div>
+                {departamentos.map((item) => (
+                    item.id_area == table.name ?
+                    <h2 key={item.id_area}>{item.nombreArea}  
+                       <Tooltip title="Eliminar departamento" arrow>
+                           <TrashIcon onClick={() => handleDeleteTable(table.id)}style={{ cursor: 'pointer', color: 'red' }} />
+                        </Tooltip>
+                    {/* <Button  className = "btn btn-light-danger " onClick={() => handleDeleteTable(table.id)}>Eliminar Departamento </Button> */}
+                    <p>Total: {calculateDepartmentTotal(item.id_area).toLocaleString('es-MX', {style: 'currency', currency: 'MXN',minimumFractionDigits: 2,maximumFractionDigits: 2,})}</p>
+
+                    </h2>
+                    :
+                    ''
+                ))}
+                
+                </div>              
+
+              <table className="table table-borderless table-vertical-center rounded table-hover">
+                <thead>                   
+                  <tr  style={{ width: 20 }}>
+                    <th className="w-5">Partida</th>
+                    <th className="w-5">Subpartida</th>
+                    {months.map((month, monthIndex) => (
+                    <th key={monthIndex}>{month}<br></br> Total: <br></br>{ (departmentTotals[table.name]?.[month] || 0).toLocaleString('es-MX', {style: 'currency', currency: 'MXN',minimumFractionDigits: 2,maximumFractionDigits: 2,}) } </th>
+                    ))}
+                    <th>Total</th>
+
+                    <th> </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {table.rows.map((row) => (
+                    <tr key={row.id}>     
+                      <td>
+                         <Tooltip title="Eliminar columna" arrow>
+                           <TrashIcon onClick={() => handleDeleteRow(table.id, row.id)} style={{ cursor: 'pointer', color: 'red' }} />
+                        </Tooltip>
+
+                          <Select value={row.select1} name="partida" onChange={(e) => handleSelectChange( table.id, row.id,  'select1', e.target.value)}style={{ width: 100, marginRight: '1rem' }}>
+                              {departamentos.find(item => item.id_area == table.name) && departamentos.find(item => item.id_area == table.name).partidas.map((items, index) => (
+                                  <MenuItem key={index} value={items.id}>{items.nombre}</MenuItem>
+                              ))}
+                          </Select>                        
+                      </td>
+                      <td>
+                      {
+                         departamentos.length && row.select1 !== '' ?
+                              <Select name="subarea" value={row.select2} style={{ width: 100, marginRight: '1rem' }} onChange={(e) => handleSelectChange(table.id, row.id,'select2',e.target.value )} >
+                                {departamentos.find(item => item.id_area == table.name).partidas.find(item => item.id == row.select1).subpartidas.map((item, index) => (
+                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                ))}
+
+                              </Select>
+                            : null
                         }
-
-                    </div>
-                </div>
-
-                <Styles>
-                    {
-                        formDataTabla.length > 0 &&
-                        generateTables()
-                    }
-                </Styles>
-
-                {
-                    areasRestantes.length > 0 &&
-                    <Select onChange={(e) => handleSelectArea(e)} value={0}>
-                        <MenuItem value={0} hidden>Selecciona departamento</MenuItem>
-                        {
-                            areasRestantes.sort((a, b) => a.nombreArea > b.nombreArea ? 1 : -1).map((area, index) => {
-                                return <MenuItem key={index} value={area.id_area}>{area.nombreArea}</MenuItem>
-                            })
-                        }
-                    </Select>
-
-                }
-
-                <div className="row justify-content-end">
-                    <div className="col-md-4">
-                        <button className={Style.sendButton} onClick={() => sendPresupuesto()} variant="contained" color="primary">Crear</button>
-                    </div>
-                </div>
-
+                             
+                      </td>
+                      {table.months.map((month, monthIndex) => (
+                        <td  key={monthIndex}>
+                            <CurrencyTextField style={{ width: 70, marginRight: '1rem' }}  label="monto" variant="standard" value={row.montos[monthIndex].monto} currencySymbol="$"
+                              outputFormat="string" decimalCharacter="." digitGroupSeparator="," autoFocus onChange={(event, value) => handleMontosChange(table.id, row.id, monthIndex, value)} />                                  
+                        </td>
+                      ))}
+                      <td>
+                        <CurrencyTextField label="total" variant="standard"  value={calculateRowTotal(row)} currencySymbol="$" outputFormat="string" decimalCharacter="." digitGroupSeparator=","
+                            autoFocus disabled style={{ width: 65, marginRight: '1rem' }}/>          
+                     </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Tooltip title="Agregar columna" arrow>
+                 <PlaylistAddIcon onClick={() => handleAddRow(table.id)} style={{ cursor: 'pointer', color: 'green' }} />
+              </Tooltip>
             </div>
+          ))}
+          </div>
+
+        </div>
+        <br></br>
+    <div className="col-md-12">
+        {tables.length > 0 && (
+          <div>
+            <Button className = "btn btn-light-primary mr-4 my-2" onClick={handleSendTables}  disabled={ tables.length === 0 || Object.values(hasRowsInDepartments).every((hasRows) => !hasRows)}>Guardar</Button>
+          </div>
+        )}
+      </div>
     </div>
 
-        </>
-    )
+  );
 }
+
+export default App;

@@ -285,6 +285,7 @@ class Contabilidad extends Component {
                             url = URL_ASSETS + '/storage/' + empresa.compra_url
                             const blobPromise = fetch(url).then(r => {
                                 if (r.status === 200) return r.blob()
+                                console.log(r.statusText)
                                 return Promise.reject(new Error(r.statusText))
                             })
                             const name = (url.substring(url.lastIndexOf('/'))).replace('/', '')

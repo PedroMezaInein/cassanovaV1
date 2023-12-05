@@ -442,6 +442,11 @@ class EmpleadosForm extends Component {
                                         <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange}
                                              name="salario_bruto" type="text" value={form.salario_bruto} placeholder="SALARIO BRUTO MENSUAL" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa el salario bruto." thousandseparator={true} prefix={'$'}
                                         />
+                                          <div className="col-md-2">
+                                                <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange}
+                                                    name="total" type="text" value={form.total} placeholder="Sueldo Completo" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa Sueldo Completo." thousandseparator={true} prefix={'$'}
+                                                />
+                                            </div>
                                     </div>
 
                                     <div className="mx-0 row border-rh-info ribbon ribbon-top form-group-marginless" style={{ width: "100%" }}>
@@ -454,7 +459,7 @@ class EmpleadosForm extends Component {
                                                     name="salario_bruto" type="text" value={form.salario_bruto} placeholder="SALARIO BRUTO MENSUAL" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa el salario bruto." thousandseparator={true} prefix={'$'}
                                                 />
                                             </div>
-                                            <div className="col-md-2">
+                                            {/* <div className="col-md-2">
                                                 <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange}
                                                     name="salario_neto_mensal" type="text" value={form.salario_neto_mensal} placeholder="SALARIO NETO MENSUAL" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa salario neto mensual." thousandseparator={true} prefix={'$'}
                                                 />
@@ -463,13 +468,14 @@ class EmpleadosForm extends Component {
                                                 <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange}
                                                     name="total_efectivo" type="text" value={form.total_efectivo} placeholder="Efectivo Mensual" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa Efectivo Mensual." thousandseparator={true} prefix={'$'}
                                                 />
-                                            </div>
+                                            </div> */}
                                             
                                             <div className={form.tipo_empleado === 'Obra' ? "col-md-2" : "col-md-2"}>
                                                 <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange}
                                                     name="nomina_imss" type="text" value={form.nomina_imss} placeholder="Nomina IMSS Quincenal"  iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa la nomina imss Quincenal." thousandseparator={true} prefix={'$'}
                                                 />
                                             </div>
+                                            
                                             {
                                                 form.tipo_empleado === 'Obra' ?
                                                     <>
@@ -499,6 +505,12 @@ class EmpleadosForm extends Component {
                                                     name="adicionales_imss" type="text" value={form.adicionales_imss} placeholder="ADICIONALES IMSS" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa adicionales imss." thousandseparator={true} prefix={'$'}
                                                 />
                                             </div> */}
+                                            <div className="col-md-2">
+                                                <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange} disabled
+                                                    name="rcv" type="text" value={form.adicionales_efectivo} placeholder="Comision Efectiva" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa comision efectiva."
+                                                    thousandseparator={true} prefix={'$'}
+                                                />
+                                            </div>
                                             
                                         </div>
 
@@ -556,16 +568,17 @@ class EmpleadosForm extends Component {
                                     </div>
                                     <div className="col-md-2">
                                         <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange}
-                                            name="ispt" type="text" value={form.ispt} placeholder="Imss" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa el Imss ."
+                                            name="imss" type="text" value={form.imss} placeholder="Imss" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa el Imss ."
                                             thousandseparator={true} prefix={'$'}
                                         />
                                     </div>
                                     <div className="col-md-2">
                                         <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={0} formeditado={formeditado} onChange={onChange}
-                                            name="total" type="text" value={form.total} placeholder="Prestaciones de ley" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa prestaciones de ley ."
+                                            name="rcv" type="text" value={form.rcv} placeholder="Prestaciones de ley" iconclass="fas fa-money-check-alt" messageinc="Incorrecto. Ingresa prestaciones de ley ."
                                             thousandseparator={true} prefix={'$'}
                                         />
                                     </div>
+                                   
                                 </div>
 
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">

@@ -71,6 +71,7 @@ export default function TablaGeneralPaginado(props) {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(5);
 
+     
     useEffect(() => {
         getData();
         setFilter(() => {
@@ -298,6 +299,7 @@ export default function TablaGeneralPaginado(props) {
     //     <button onClick={() => changeCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}> Siguiente &#62;</button>
     // </div>
 
+
     return (
         <div className='containerTable'>
             <div className="row">
@@ -342,7 +344,7 @@ export default function TablaGeneralPaginado(props) {
                                     <tr >
                                         {columnas.map((columna, index) => {
                                             return (
-                                                <th key={index} className='mt-20'>
+                                                <th key={index} className= {columna.nombre + ' mt-20'} >
                                                     <div className="TitleColumn">
 
                                                         {
@@ -430,7 +432,11 @@ export default function TablaGeneralPaginado(props) {
 
                                                         } else {
                                                             return (
-                                                                <td key={index} className='CellContent'><div className='contenido'>{item[columna.identificador]}</div></td>
+                                                                <td key={index} className={columna.identificador+ ' CellContent'}>
+                                                                    <div className='contenido'>{item[columna.identificador]}
+                                                                    
+                                                                    { columna.identificador === "compra" && <div className='hijo'> </div>}
+                                                                    </div></td>
                                                             )
                                                         }
                                                     })}

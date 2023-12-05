@@ -17,6 +17,18 @@ import { NewTable } from '../../components/NewTables'
 import { FiltersVentas } from '../../components/filters'
 import { apiOptions,catchErrors } from '../../functions/api'
 import { escapeLeadingUnderscores } from 'typescript'
+import VentasTable from './FacturasTable'
+import ComprasTable from './FComprasTable'
+import EgresoTable from './FEgresoTable'
+import FacturaTable from './Facturas'
+import FacturaTable2 from './Facturas2'
+
+import IngresoTable from './FIngresoTable'
+
+
+
+
+
 
 class Facturacion extends Component {
 
@@ -69,7 +81,9 @@ class Facturacion extends Component {
             }
         },
         tipo: 'Ventas',
-        key: 'ventas',
+        key: 'facturas',
+        eliminar: '',
+
         filters: {}
 
     }
@@ -82,6 +96,8 @@ class Facturacion extends Component {
             const { modulo: { url } } = element
             return pathname === url
         });
+        this.state.eliminar = conceptos.delete ?  conceptos.delete : 0
+
         if (!conceptos)
             history.push('/')
         this.getOptionsAxios()
@@ -926,12 +942,17 @@ class Facturacion extends Component {
 
     async getComprasAxios() { $('#compras').DataTable().ajax.reload(); }
     async getVentasAxios() { $('#ventas').DataTable().ajax.reload(); }
+    // async getVentasAxios() { $('#facturas').DataTable().ajax.reload(); }
 
     controlledTab = value => {
         if (value === 'compras')
             this.getComprasAxios()
         if (value === 'ventas')
             this.getVentasAxios()
+        if (value === 'egreso')
+            this.getVentasAxios()
+        // if (value === 'facturas')
+        //     this.getVentasAxios()
         this.setState({ ...this.state, key: value })
     }
     
@@ -1106,15 +1127,25 @@ class Facturacion extends Component {
     }
 
     render() {
-        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, empresas, modalFacturaRelacionada, modalFiltersVentas, filters, clearFiltros,options} = this.state
+        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, empresas, modalFacturaRelacionada, modalFiltersVentas, filters, clearFiltros,options,eliminar } = this.state
         const { access_token } = this.props.authUser
 
         return (
             <Layout active='administracion'  {...this.props}>
-             <Tabs mountOnEnter={true} unmountOnExit={true} defaultActiveKey="ventas" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>                
+             <Tabs mountOnEnter={true} unmountOnExit={true} defaultActiveKey="facturas" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}> 
+             
+                    <Tab eventKey = "facturas" title = "Pedientes | IV">
+                        <FacturaTable eliminar={eliminar} /> 
+
+                    </Tab>  
+                    <Tab eventKey = "facturas2" title = "Pendientes | CE">
+                        <FacturaTable2 eliminar={eliminar} /> 
+
+                    </Tab>  
+
                     <Tab eventKey = "ventas" title = "Ventas">
                     
-                            <NewTable
+                            {/* <NewTable
                                 tableName='ventas'
                                 subtitle='Listado de facturas'
                                 title='Facturas'
@@ -1130,28 +1161,29 @@ class Facturacion extends Component {
                                 onClickExport = { () => { this.getExcelFacturasVentas() } }
                                 type='tab'
 
-                            />
-                        
+                            /> */}
+                        {/* <FacturaTable />  */}
+
+                        <VentasTable eliminar={eliminar} /> 
+                        {/* <ComprasTable />   */}
+                        {/* <EgresoTable />                       */}
+                    
+                    </Tab>  
+
+                    <Tab eventKey = "ingresos" title = "Ingresos">         
+                        <IngresoTable eliminar={eliminar} />                      
+
                     </Tab>
 
-                    <Tab eventKey = "compras" title = "Compras">         
-                        <NewTable
-                            tableName='compras'
-                            subtitle='Listado de facturas'
-                            title='Compras Facturas'
-                            mostrar_boton={true}
-                            abrir_modal={true}
-                            accessToken={access_token}
-                            columns={FACTURAS_COLUMNS}
-                            setter={this.setFactura}
-                            addClick = { this.openModal }
-                            urlRender={`${URL_DEV}facturas/compras`}
-                            filterClick={this.openModalFiltrosVentas}
-                            exportar_boton={true}
-                            onClickExport = { () => { this.getExcelFacturasCompras() } }
-                             type='tab'
-                        />
+                    <Tab eventKey = "compras" title = "Compras">       
+                        <ComprasTable eliminar={eliminar}  />   
                     </Tab>
+
+                    <Tab eventKey = "egreso" title = "Egreso">         
+                        <EgresoTable  eliminar={eliminar}  />                     
+                    </Tab>
+                   
+
                    
                 </Tabs>
                 <Modal size="lg" title={"Agregar adjuntos para cancelar"} show={modalCancelar} handleClose={this.handleClose} >

@@ -15,6 +15,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputLabel from '@material-ui/core/InputLabel';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import Button from '@material-ui/core/Button';
 
 import Style from './../../Administracion/Egresos/Modales/estilos.module.css'
 
@@ -59,6 +60,7 @@ export default function CrearEgreso(props) {
         proveedor: '',
         proyecto: '',
         subarea: '',
+        faltaFactura:'',
     })
 
     const handleChangeCheck = (tipo) => {
@@ -74,6 +76,7 @@ export default function CrearEgreso(props) {
                     factura: false
                 });
             }
+            
         } else if(tipo === 'si'){
             if(form.factura === true){
                 setForm({
@@ -84,6 +87,35 @@ export default function CrearEgreso(props) {
                 setForm({
                     ...form,
                     factura: true
+                });
+            }
+            
+        } 
+    };
+
+    const handleChangeCheck2 = (tipo) => {
+        if(tipo === 'no'){
+           if(form.faltaFactura === false){
+                setForm({
+                    ...form,
+                    faltaFactura: ''
+                });
+            } else {
+                setForm({
+                    ...form,
+                    faltaFactura: false
+                });
+            }
+        } else if(tipo === 'si'){
+            if(form.faltaFactura === true){
+                setForm({
+                    ...form,
+                    faltaFactura: ''
+                });
+            } else {
+                setForm({
+                    ...form,
+                    faltaFactura: true
                 });
             }
         } 
@@ -166,7 +198,7 @@ export default function CrearEgreso(props) {
     }
 
     const filtrar = () => {  
-        filtrarTabla(`&identificador=${form.identificador}&fecha_inicio=${changeDateFormat(form.fecha_inicio)}&fecha_fin=${changeDateFormat(form.fecha_fin)}&proveedor=${form.proveedor}&empresa=${form.empresa}&area=${form.area}&partida=${form.id_partidas}&subarea=${form.subarea}&cuenta=${form.cuenta}&monto=${form.monto}&factura=${form.factura}&descripcion=${form.descripcion}&proyecto=${form.proyecto}`)
+        filtrarTabla(`&identificador=${form.identificador}&fecha_inicio=${changeDateFormat(form.fecha_inicio)}&fecha_fin=${changeDateFormat(form.fecha_fin)}&proveedor=${form.proveedor}&empresa=${form.empresa}&area=${form.area}&partida=${form.id_partidas}&subarea=${form.subarea}&cuenta=${form.cuenta}&monto=${form.monto}&factura=${form.factura}&descripcion=${form.descripcion}&proyecto=${form.proyecto}&faltaFactura=${form.faltaFactura}`)
         // console.log('filtrar tabla')
         handleClose()
         // borrar(false)
@@ -183,10 +215,10 @@ export default function CrearEgreso(props) {
 
     return (
         <>
-            <div style={{padding: '1rem'}}>
-                
-                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '1rem', marginBottom: '1rem'}}>
-                    <div>
+         <div className="form-group form-group-marginless  mx-0">
+                    <br></br>      
+            <div className="row">
+                    <div className="col-md-4">
                         <InputLabel>ID</InputLabel>
                         <TextField
                             type="text"
@@ -196,13 +228,12 @@ export default function CrearEgreso(props) {
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            style={{width: '100px'}}
                             
                         />    
                     </div>
-                    <div>
+                    <div className="col-md-4">
                         <InputLabel >fecha inicio</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardDatePicker
 
@@ -217,11 +248,10 @@ export default function CrearEgreso(props) {
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    </div> 
-
-                    <div>
+                    </div>
+                    <div className="col-md-4">
                         <InputLabel >fecha fin</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid container >
                                 <KeyboardDatePicker
 
@@ -236,11 +266,13 @@ export default function CrearEgreso(props) {
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    </div> 
+                    </div>
 
-                </div>
-                
-                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '4rem', marginBottom: '4rem'}}>
+            </div>
+            <br></br>      
+
+            <div className="row">
+                <div className="col-md-4">
                     {
                         opciones.proveedores.length > 0 ?
                         <div>
@@ -257,44 +289,36 @@ export default function CrearEgreso(props) {
                                 
                         : null
                     } 
-
-                    <div>
-                        {
-                            proyectos.length > 0 ?
-                            <div> 
-                                <InputLabel>proyecto</InputLabel>
-                                <Autocomplete
-                                    name="proyecto"
-                                    options={proyectos}
-                                    getOptionLabel={(option) => option.nombre}
-                                    style={{ width: 230, paddingRight: '1rem' }}
-                                    onChange={(event, value) => handleChangeProyecto(event, value)}
-                                    renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proyecto_nombre ? form.proyecto_nombre : 'proyecto'} />}
-                                />
-                            </div>    
-                                : <></>
-                        }
-                    </div> 
-
-                    <div>
-                        <CurrencyTextField
-                            label="total"
-                            name="monto"
-                            value={form.monto}
-                            currencySymbol="$"
-                            outputFormat="number"
-                            onChange={(event, value) => handleMoney(value)}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            style={{width: '150px'}}
-                            />
-                    
-                    </div>
                 </div>
+                <div className="col-md-4">
+                    {
+                        proyectos.length > 0 ?
+                        <div> 
+                            <InputLabel>proyecto</InputLabel>
+                            <Autocomplete
+                                name="proyecto"
+                                options={proyectos}
+                                getOptionLabel={(option) => option.nombre}
+                                style={{ width: 230, paddingRight: '1rem' }}
+                                onChange={(event, value) => handleChangeProyecto(event, value)}
+                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proyecto_nombre ? form.proyecto_nombre : 'proyecto'} />}
+                            />
+                        </div>    
+                            : <></>
+                    }
+                </div>
+                <div className="col-md-4">
 
-                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '4rem', marginBottom: '4rem'}}>
+                <CurrencyTextField label="total" name="monto" value={form.monto} currencySymbol="$" outputFormat="number" onChange={(event, value) => handleMoney(value)} InputLabelProps={{
+                                shrink: true, }}  />
+                </div>     
+            </div>
+            <br></br>      
 
+            <div className="row">
+                <div className="col-md-2">
+                </div>
+                <div className="col-md-4">
                     {
                         opciones.empresas.length > 0 ?
                             <div>
@@ -315,7 +339,9 @@ export default function CrearEgreso(props) {
                         : null
                     }
 
-                    {
+                </div>
+                <div className="col-md-4">
+                  {
                         form.cuentas.length > 0 ?
                             <div>
                                 <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
@@ -333,17 +359,21 @@ export default function CrearEgreso(props) {
                         : null
                     }    
                 </div>
+            </div>
 
-                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '1.5rem', marginBottom: '5rem'}}>
-                    <div>
-                        {departamentos.length > 0 ?
+            <br></br>      
+
+                <div className="row">
+                <div className="col-md-1"> </div>
+                    <div className="col-md-3">
+                    {departamentos.length > 0 ?
                             <>
                                 <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
                                 <Select
                                     value={form.area}
                                     name="area"
                                     onChange={handleChange}
-                                    style={{ width: 230, marginRight: '1rem' }}
+                                    style={{  marginRight: '1rem' }}
                                 >
                                     {departamentos.map((item, index) => (
                                         <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
@@ -353,18 +383,16 @@ export default function CrearEgreso(props) {
                             </>
                             : null
                         }
-
                     </div>
-
-                    <div>
-                        {departamentos.length > 0 && form.area !== '' ?
+                    <div className="col-md-3">
+                    {departamentos.length > 0 && form.area !== '' ?
                             <>
                                 <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
                                 <Select
                                     value={form.id_partidas}
                                     name="id_partidas"
                                     onChange={handleChange}
-                                    style={{ width: 230, marginRight: '1rem' }}
+                                    style={{ marginRight: '1rem' }}
                                 >
                                     {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -375,16 +403,16 @@ export default function CrearEgreso(props) {
                             : null
                         }
                     </div>
+                    <div className="col-md-3">
 
-                    <div>
-                        {departamentos.length && form.id_partidas !== '' ?
+                    {departamentos.length && form.id_partidas !== '' ?
                             <>
                                 <InputLabel id="demo-simple-select-label">Tipo de Subgasto</InputLabel>
                                 <Select
                                     name="subarea"
                                     onChange={handleChange}
                                     value={form.subarea}
-                                    style={{ width: 230, marginRight: '1rem' }}
+                                    style={{ marginRight: '1rem' }}
                                 >
                                     {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id == form.id_partidas).subpartidas.map((item, index) => (
                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
@@ -394,31 +422,15 @@ export default function CrearEgreso(props) {
                             </>
                             : null
                         }
-                    </div>  
-                    
+                    </div>
                 </div>
+                <br></br>      
 
-                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '1.5rem', marginBottom: '5rem'}}>
-                    {/* {
-                        opciones.estatusCompras.length > 0 ?
-                            <div>
-                                <InputLabel id="demo-simple-select-label">Estatus de Compra</InputLabel>
-                                <Select
-                                    value={form.estatusCompra}
-                                    name="estatusCompra"
-                                    onChange={handleChange}
-                                    style={{ width: 230, marginRight: '1rem' }}
-                                >
-                                    {opciones.estatusCompras.map((item, index) => (
-                                        <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                    ))}
-                                </Select>
-                            </div>
-                            : null
-                    } */}
-                    
-                    <div>
-                        <InputLabel>¿Factura?</InputLabel>
+                <div className="row">
+                <div className="col-md-2"> </div>
+
+                <div className="col-md-4"> 
+                    <InputLabel>¿Factura?</InputLabel>
                         <FormGroup row>
                             <FormControlLabel
                                 control={<Checkbox checked={form.factura === false ? true : false} onChange={e=>handleChangeCheck('no')} color='secondary' name='factura' />}
@@ -431,10 +443,29 @@ export default function CrearEgreso(props) {
                                 
                             />
                         </FormGroup>
-                    </div>     
                 </div>
+                <div className="col-md-4"> 
+                   <InputLabel>¿Pendiente Factura?</InputLabel>
+                        <FormGroup row>
+                            <FormControlLabel
+                                control={<Checkbox checked={form.faltaFactura === false ? true : false} onChange={e=>handleChangeCheck2('no')} color='secondary' name='faltaFactura' />}
+                                label="No"
+                                
+                            />
+                            <FormControlLabel
+                                control={<Checkbox checked={form.faltaFactura} onChange={e=>handleChangeCheck2('si')} color='primary' name='faltaFactura' />}
+                                label="Si"
+                                
+                            />
+                        </FormGroup>
+                </div>
+                </div>
+                <br></br>      
 
-                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '1.5rem', marginBottom: '1rem'}}>
+                <div className="row">
+                <div className="col-md-2"> </div>
+
+                    <div className="col-md-10"> 
                     <TextField
                         name='descripcion'
                         label="Descripción"
@@ -445,17 +476,28 @@ export default function CrearEgreso(props) {
                             shrink: true,
                         }}
                         multiline
-                        style={{ width: '70vh', height: 100 }}
+                        style={{ width: '40vh', height: 100 }}
                     />
+                    </div>
+
                 </div>
-                  
-            </div>
-            <div>
-                <button className={Style.borrarButton}  onClick={borrar}>Borrar</button>
-            </div>
-            <div>
-                <button className={Style.sendButton}  onClick={filtrar}>Filtrar</button>
-            </div>
+                <br></br>      
+
+                <div className="row">
+                <div className="col-md-3"> </div>
+                <div className="col-md-2"> 
+                  <Button color="secondary"  variant="contained"   onClick={borrar}>Borrar</Button>
+
+                </div>
+                <div className="col-md-3"> </div>
+                <div className="col-md-2">
+                  <Button  variant="contained"  color="primary" onClick={filtrar}>Filtrar</Button>
+
+                </div>
+
+                </div>
+
+        </div>
 
         </>
     ) 

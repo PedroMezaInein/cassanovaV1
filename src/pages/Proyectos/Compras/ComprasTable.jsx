@@ -18,6 +18,12 @@ import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 
 import TablaGeneralPaginado from './../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 import Swal from 'sweetalert2'
+import InputLabel from '@material-ui/core/InputLabel';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale'
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 
 import { apiOptions, catchErrors, apiDelete, apiPostFormResponseBlob } from './../../../functions/api';
 import { printResponseErrorAlert, doneAlert } from './../../../functions/alert';
@@ -29,6 +35,12 @@ export default function ComprasTable() {
     const [filtrado, setFiltrado] = useState('') 
     const [reloadTable, setReloadTable] = useState()
     const areaCompras = useSelector(state => state.opciones.compras)
+
+    const [form, setForm] = useState({     
+        fecha_fin: '',
+        fecha_inicio: '',
+        idSeleccionado: '',
+    })
 
     const [modal, setModal] = useState({
         ver: {
@@ -56,6 +68,10 @@ export default function ComprasTable() {
             data: null
         },
         facturas: {
+            show: false,
+            data: null
+        },
+        exportar: {
             show: false,
             data: null
         }
@@ -195,29 +211,49 @@ export default function ComprasTable() {
     // } 
 
     const  exportEgresosAxios = () => {
-        Swal.fire({
-            icon: 'success',
-            title: 'Descargar compra',
-            text: 'Exportando compras espere...',
-            showConfirmButton: false,
-            timer: 4000
-        })
-        
-        apiPostFormResponseBlob(`v3/proyectos/compra/exportar`,{ columnas: [] },  auth).then(
-            (response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'compras.xlsx');
-                document.body.appendChild(link);
-                link.click();
-                doneAlert(
-                    response.data.message !== undefined ? 
-                        response.data.message 
-                    : 'compras exportadas con éxito.'
-                )
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
+        if(form.fecha_fin && form.fecha_inicio){
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Descargar compra',
+                text: 'Exportando compras espere...',
+                showConfirmButton: false,
+                timer: 4000
+            })
+            
+            apiPostFormResponseBlob(`v3/proyectos/compra/exportar`,{ columnas: form },  auth).then(
+                (response) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', 'compras.xlsx');
+                    document.body.appendChild(link);
+                    link.click();
+                    doneAlert(
+                        response.data.message !== undefined ? 
+                            response.data.message 
+                        : 'compras exportadas con éxito.'
+                    )
+                    setModal({
+                        ...modal,
+                        ['exportar']: {
+                            show: false,
+                            data: null
+                        }
+                    })
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => { catchErrors(error) })
+
+        }else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Campos obligatorios',
+                text: 'Por favor, completa las fechas de inicio y fin.',
+            });
+            return; // Detén la función si los campos están vacíos
+
+
+        }
     }
 
     const opciones = [
@@ -238,13 +274,17 @@ export default function ComprasTable() {
             //exportar
             nombre: <div><i className="fas fa-file-export mr-5"></i><span>Exportar</span></div>,
             funcion: (item) => {
-                exportEgresosAxios(item.id)
+                openModal('exportar', item)
+
+                // exportEgresosAxios(item.id)
 
             }
         },
     ]
 
     const openModal = (tipo, data) => {
+            form.fecha_inicio = ''
+            form.fecha_fin = ''
         if(data.factura == 'Sin factura' && tipo == 'facturas'){
             Swal.fire({
                 icon: 'error',
@@ -274,6 +314,14 @@ export default function ComprasTable() {
             }
         })
     }
+
+    const handleChangeFecha = (date, tipo) => {
+        setForm({
+            ...form,
+            [tipo]: new Date(date)
+        })
+    };
+
 
     useEffect(() => {
         getProveedores()
@@ -452,6 +500,68 @@ export default function ComprasTable() {
                 modal.facturas?.data &&
                 <Modal size="xl" title={"facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
                     <FacturasCompras handleClose={e => handleClose('facturas')} opcionesData={opcionesData} reload={reloadTable} compra={modal.facturas?.data?.data}/>
+                </Modal>
+            }
+
+            {
+                modal.exportar.data &&
+                <Modal size="lg" title={"Exportar egreso"} show={modal.exportar?.show} handleClose={e => handleClose('exportar')} >
+                    {/* <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable}/> */}
+                        <div className="form-group form-group-marginless  mx-0">
+                                <br></br> 
+                            <div className="row">
+                            <div className="col-md-3">
+                            </div> 
+
+                                <div className="col-md-3">
+                                    <InputLabel >FECHA INICIAL</InputLabel>
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                                        <Grid container >
+                                            <KeyboardDatePicker
+
+                                                format="dd/MM/yyyy"
+                                                name="fecha_inicio"
+                                                value={form.fecha_inicio !== '' ? form.fecha_inicio : null}
+                                                placeholder="dd/mm/yyyy"
+                                                onChange={e => handleChangeFecha(e, 'fecha_inicio')} 
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change date',
+                                                }}
+                                            />
+                                        </Grid>
+                                    </MuiPickersUtilsProvider>
+                                </div> 
+
+                                <div className="col-md-3">
+                                    <InputLabel >FECHA FINAL</InputLabel>
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                                        <Grid container >
+                                            <KeyboardDatePicker
+
+                                                format="dd/MM/yyyy"
+                                                name="fecha_fin"
+                                                value={form.fecha_fin !== '' ? form.fecha_fin : null}
+                                                placeholder="dd/mm/yyyy"
+                                                onChange={e => handleChangeFecha(e, 'fecha_fin')} 
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change date',
+                                                }}
+                                            />
+                                        </Grid>
+                                    </MuiPickersUtilsProvider>
+                                </div>     
+                            </div>
+                            <br></br> 
+
+                            <div className=" row ">
+                                <div className="col-md-6"> 
+                                </div>
+                                <div className="col-md-6">
+                                    <Button variant="contained" color="primary" onClick={exportEgresosAxios}>Filtrar</Button>
+                                </div>
+                            </div>
+
+                        </div>
                 </Modal>
             }
         </>

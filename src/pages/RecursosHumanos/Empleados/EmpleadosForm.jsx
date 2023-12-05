@@ -194,7 +194,7 @@ class EmpleadosForm extends Component {
                         form.salario_neto_mensal = empleado.salario_neto_mensal
                         form.salario_neto_quincenal = empleado.salario_neto_quincenal
                         form.adicionales_imss = empleado.adicionales_imss
-                        form.adicionales_efectivo = empleado.adicionales_efectivo
+                        form.adicionales_efectivo = empleado.adicionales_efectivo > 0 ? empleado.nomina_extras * 0.04 : empleado.nomina_extras * 0.04
                         form.total_efectivo = empleado.total_efectivo
                         form.total = empleado.total
                         form.ispt = empleado.ispt
@@ -206,7 +206,7 @@ class EmpleadosForm extends Component {
                         form.imss = empleado.imss
                         form.rcv = empleado.rcv
                         form.infonavit = empleado.infonavit
-                        form.isn = empleado.isn
+                        form.isn = empleado.salario_bruto *0.03
                         form.checador = empleado.checador
                         form.id_patronal = empleado.id_patronal === null ? '' : empleado.id_patronal.toString()
                         this.setState({

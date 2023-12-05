@@ -5,7 +5,7 @@ import { toAbsoluteUrl } from "../../functions/routers"
 import { printComentario,printComentarioSemana } from '../../functions/printers'
 
 class TimelineSemanas extends Component {
- 
+
     isSameComment = (comentario) => {
         const { comentarioId } = this.props
         if(comentarioId){

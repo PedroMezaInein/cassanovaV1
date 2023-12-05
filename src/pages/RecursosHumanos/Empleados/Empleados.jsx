@@ -69,6 +69,8 @@ class Empleados extends Component {
             nomina_extras: 0.0,
             salario_hr: 0.0,
             salario_hr_extra: 0.0,
+            imss: 0.0,
+            rcv: 0.0,
             organigrama:'',
             checador: '',
             matricula: '',

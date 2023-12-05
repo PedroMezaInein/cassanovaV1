@@ -1,1138 +1,1026 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-
-import { useTable } from 'react-table'
-import styled from 'styled-components'
-
-import Swal from 'sweetalert2'
-
-import Select from '@material-ui/core/Select';
+import SelectMUI from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+
+import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
-
 import TrashIcon from '@material-ui/icons/DeleteOutline';
-import AddIcon from '@material-ui/icons/Add';
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import InputLabel from '@material-ui/core/InputLabel';
-
-import { apiGet, apiPutForm, apiDelete } from '../../../../functions/api'
-
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import { apiGet, apiPutForm } from '../../../../functions/api'
+import Tooltip from '@material-ui/core/Tooltip';
+import Swal from 'sweetalert2'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
 import Grid from '@material-ui/core/Grid';
 
-import Style from './TablaPresupuesto.module.css'
+const useStyles = makeStyles((theme) => ({
+  button: {
+    display: 'block',
+    marginTop: theme.spacing(2),
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+}));
 
-const Styles = styled.div`
- 
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
-    background-color: white;
-    width: 102%;
+const GreenCheckbox = withStyles({
+  root: {
+    color: green[400],
+    '&$checked': {
+      color: green[600],
+    },
+  },
+  checked: {},
+})((props) => <Checkbox color="default" {...props} />);
 
-    tr {
-        min-width: 4vw;
-      max-width: 6vw;
-      :last-child {
-        td {
-            border-bottom: 0;
+function App(props) {
+  const { reload, handleClose, data } = props
+  //   const [selectedMonths, setSelectedMonths] = useState([]);
+  const [tableName, setTableName] = useState('');
+  const [tables, setTables] = useState([
+    // Otras tablas existentes...
+    {
+      id: 'new-table', // Un identificador único para la nueva tabla
+      name: 'Tabla Personalizada', // Nombre de la nueva tabla
+      months: months,
+      rows: [],
+    },
+  ]);
+
+
+  const departamentos = useSelector(state => state.opciones.areas)
+  const auth = useSelector(state => state.authUser.access_token)
+  const [departmentTotals, setDepartmentTotals] = useState({});
+  const [monthlyTotals, setMonthlyTotals] = useState({});
+  const [hasRowsInDepartments, setHasRowsInDepartments] = useState({});
+  const usuario = useSelector(state => state.authUser.departamento.departamentos[0])
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [comment, setComment] = useState('');
+  const [idPresu, setIdPresu] = useState('');
+
+  // Define un estado para las subpartidas seleccionadas en cada fila
+  const [selectedSubpartidas, setSelectedSubpartidas] = useState({});
+  const initialAuthorizedMonths = months ? months.map(() => false) : [];
+  const [authorizedMonths, setAuthorizedMonths] = useState(initialAuthorizedMonths);
+  const [selectedTable, setSelectedTable] = useState(null);
+  //variables para presupuesto de nomina
+
+  const [totalGlobal, setTotalGlobal] = useState(0);
+  const [totalesPorMes, setTotalesPorMes] = useState({});
+  const [departamentosData, setDepartamentosData] = useState([]);
+  const [departamentosAgregados, setDepartamentosAgregados] = useState([]);
+  const [empleadosPorDepartamento, setEmpleadosPorDepartamento] = useState({});
+  const [departamento, setDepartamentos] = useState([]);
+  const [mese, setMeses] = useState([]);
+
+  const cargarNombresMeses = () => {
+    const nombresMeses = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    setMeses(nombresMeses);
+  };
+
+  const meses = [
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+  ];
+  const months = [
+    'Enero', 'Febrero', 'Marzo', 'Abril',
+    'Mayo', 'Junio', 'Julio', 'Agosto',
+    'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+  ];
+
+
+
+  const classes = useStyles();
+  const [age, setAge] = React.useState('');
+  const [open, setOpen] = React.useState(false);
+
+  const [state, setState] = React.useState({
+    checkedA: true,
+    checkedB: true,
+    checkedF: true,
+    checkedG: true,
+  });
+
+  const handleStartDateChange = (date) => {
+    // Verifica si el nombre actual es igual a "Presupuesto Nómina"
+    if (comment === "Presupuesto Nomina" || comment === "Presupuesto Prestaciones") {
+      // No permitas cambios en el campo de fecha de inicio
+      return;
+    }
+    // Si no es "Presupuesto Nómina", permite cambios en el campo de fecha de inicio
+    setStartDate(date);
+  };
+  const handlsetEndDateChange = (date) => {
+    // Verifica si el nombre actual es igual a "Presupuesto Nómina"
+    if (comment === "Presupuesto Nomina" || comment === "Presupuesto Prestaciones") {
+      // No permitas cambios en el campo de fecha de fin
+      return;
+    }
+    // Si no es "Presupuesto Nómina", permite cambios en el campo de fecha de fin
+    setEndDate(date);
+  };
+
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
+  };
+
+  const handleCommentChange = (event) => {
+    // Verifica si el nombre actual es igual a "Presupuesto Nómina"
+    if (comment === "Presupuesto Nomina" || comment === "Presupuesto Prestaciones") {
+      // No permitas cambios en el campo de entrada
+      return;
+    }
+
+    // Si no es "Presupuesto Nómina", permite cambios en el campo de entrada
+    setComment(event.target.value);
+  };
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
+
+  const handleClosee = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+
+
+  useEffect(() => {
+    apiGet(`presupuestosdep/edit/${data.id}`, auth)
+      .then((response) => {
+        const apiDepartments = response.data.presupuesto[0].rel;
+        const apiData = response.data.presupuesto[0];
+        const nomina = response.data;
+
+        const updatedDepartmentTotals = {};
+        const { fecha_inicio, fecha_fin, nombre } = apiData;
+        setIdPresu(apiData.id); // Assuming fecha_inicio is a valid date string
+
+        setStartDate(new Date(apiData.fecha_inicio)); // Assuming fecha_inicio is a valid date string
+        setEndDate(new Date(apiData.fecha_fin)); // Assuming fecha_fin is a valid date string
+        setComment(apiData.nombre);
+
+        if (apiData.nombre != 'Presupuesto Nomina' && apiData.nombre != 'Presupuesto Prestaciones') {
+          setSelectedTable('Presupuesto');
+
+          const updatedTables = {};
+          const addedIdAreas = {};
+
+          apiDepartments.forEach((department) => {
+            const idArea = department.id_area;
+
+            if (!addedIdAreas[idArea]) {
+              addedIdAreas[idArea] = true;
+            }
+
+            if (!updatedTables[idArea]) {
+              updatedTables[idArea] = {
+                id: idArea,
+                name: idArea,
+                departments: department.rel,
+                months: months,
+                rows: [],
+              };
+            }
+
+            const newRow = {
+              id: department.id,
+              select1: department.id_partida, // Establece la "partida" según los datos de la API
+              select2: department.id_subareas, // Establece la "subárea" según los datos de la API
+              montos: months.map(() => ({ monto: 0 })),
+            };
+
+            months.forEach((_, index) => {
+              newRow.montos[index].monto = department[meses[index].toLowerCase()];
+            });
+
+            updatedTables[idArea].rows.push(newRow);
+          });
+
+          const convertedAuthorizedMonths = months.map(month => {
+            if (apiData.mes[0]) {
+              const value = apiData.mes[0][month.toLowerCase()];
+              return value == 1;
+            }
+
+          });
+
+          setAuthorizedMonths(convertedAuthorizedMonths);
+          setTables(Object.values(updatedTables));
+          Object.keys(updatedTables).forEach((indice) => {
+            const departmentName = updatedTables[indice].name;
+            updatedDepartmentTotals[departmentName] = {};
+
+            months.forEach((month, monthIndex) => {
+              const monthTotal = updatedTables[indice].rows.reduce((total, row) => {
+                return total + parseFloat(row.montos[monthIndex].monto);
+              }, 0);
+              updatedDepartmentTotals[departmentName][month] = monthTotal;
+            });
+          });
+
+          setDepartmentTotals(updatedDepartmentTotals);
+
+
+
+        } else if (apiData.nombre == 'Presupuesto Nomina') {
+          setSelectedTable('Nomina');
+
+          const empleados = apiData.prestaciones;
+            const nomina = response.data.presupuesto[0];
+
+          const departamentosUnicos = [...new Set(empleados.map((empleado) => empleado.id_area))];
+
+          // Crea un objeto de departamentos donde cada departamento contiene sus empleados
+          const updatedDepartamentosData = departamentosUnicos.map((departamentoId) => {
+          const empleadosEnDepartamento = empleados.filter((empleado) => empleado.id_area === departamentoId);
+
+            return {
+              id: departamentoId,
+              datos: empleadosEnDepartamento,
+              fecha_inicio: nomina.fecha_inicio, 
+              fecha_fin: nomina.fecha_fin, 
+            };
+          });
+
+          setDepartamentosData(updatedDepartamentosData);
+          calcularTotales(updatedDepartamentosData);
+          
+        } else {
+          // Si no cumple con ninguna condición, puedes seleccionar la tabla personalizada o cualquier otra
+          setSelectedTable('Prestaciones');
+
+          const empleados = apiData.prestaciones;
+          const departamentosUnicos = [...new Set(empleados.map((empleado) => empleado.id_area))];
+
+          // Crea un objeto de departamentos donde cada departamento contiene sus empleados
+          const updatedDepartamentosData = departamentosUnicos.map((departamentoId) => {
+            const empleadosEnDepartamento = empleados.filter((empleado) => empleado.id_area === departamentoId);
+            return {
+              id: departamentoId,
+              datos: empleadosEnDepartamento
+            };
+          });
+
+          setDepartamentosData(updatedDepartamentosData);
+          calcularTotales(updatedDepartamentosData);
+        }
+
+      })
+      .catch((error) => {
+        console.error('Error al obtener datos de la API de departamentos:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    cargarNombresMeses();
+    // cargarDepartamentos(); // Llama a la función para cargar departamentos al iniciar el componente.
+  }, []);
+
+
+  const handleAddTable = () => {
+    if (tableName) {
+      const departmentExists = tables.some((table) => table.name == tableName);
+
+      if (!departmentExists) {
+        const newTable = {
+          id: Date.now(),
+          name: tableName,
+          months: months,
+          rows: [],
+        };
+
+        setTables([...tables, newTable]);
+        setTableName('');
+      } else {
+        // Display an error message if the department already exists
+        alert("El departamento ya existe en la lista.");
+      }
+    }
+  };
+
+
+
+
+  const handleDeleteTable = (tableId) => {
+    const updatedTables = tables.filter((table) => table.id !== tableId);
+    setTables(updatedTables);
+  };
+
+
+  const handleAddRow = (tableId) => {
+    const updatedTables = tables.map((table) => {
+      if (table.id === tableId) {
+        const newRow = {
+          id: Date.now(),
+          select1: '',
+          select2: '',
+          montos: months.map(() => ({ monto: 0 })),
+        };
+        table.rows.push(newRow);
+
+        // Inicializa el estado de subpartidas seleccionadas para esta fila
+        setSelectedSubpartidas({
+          ...selectedSubpartidas,
+          [`${table.id}-${newRow.id}`]: {
+            select1: '',
+            select2: '',
+          },
+        });
+
+        // Actualiza el estado de hasRowsInDepartments
+        setHasRowsInDepartments({
+          ...hasRowsInDepartments,
+          [table.name]: true,
+        });
+      }
+      return table;
+    });
+    setTables(updatedTables);
+  };
+
+
+  const handleDeleteRow = (tableId, rowId) => {
+    const updatedTables = tables.map((table) => {
+      if (table.id === tableId) {
+        table.rows = table.rows.filter((row) => row.id !== rowId);
+      }
+      return table;
+    });
+
+    setTables(updatedTables);
+
+    // Recalculate department totals
+    const updatedDepartmentTotals = {};
+
+    updatedTables.forEach((table) => {
+      const departmentName = table.name;
+      updatedDepartmentTotals[departmentName] = {};
+
+      months.forEach((month, monthIndex) => {
+        const monthTotal = table.rows.reduce((total, row) => {
+          return total + parseFloat(row.montos[monthIndex].monto);
+        }, 0);
+        updatedDepartmentTotals[departmentName][month] = monthTotal;
+      });
+    });
+
+    setDepartmentTotals(updatedDepartmentTotals);
+  };
+
+
+  const handleSelectChange = (tableId, rowId, fieldName, value) => {
+
+    const updatedTables = tables.map((table) => {
+
+      if (table.id === tableId) {
+        const updatedRows = table.rows.map((row) => {
+          if (row.id === rowId) {
+            // De lo contrario, actualiza el campo select correspondiente
+            return { ...row, [fieldName]: value };
+          }
+          return row;
+        });
+        return { ...table, rows: updatedRows };
+      }
+      return table;
+    });
+    setTables(updatedTables);
+  };
+
+  const handleMontosChange = (tableId, rowId, monthIndex, value) => {
+    const updatedTables = tables.map((table) => {
+      if (table.id === tableId) {
+        const updatedRows = table.rows.map((row) => {
+          if (row.id === rowId) {
+            const updatedMontos = [...row.montos];
+            updatedMontos[monthIndex].monto = value;
+            return { ...row, montos: updatedMontos };
+          }
+          return row;
+        });
+
+        const updatedDepartmentTotals = { ...departmentTotals };
+        const updatedMonthlyTotals = { ...monthlyTotals };
+
+        updatedDepartmentTotals[table.name] = updatedDepartmentTotals[table.name] || {};
+        // console.log(updatedDepartmentTotals[table.name][months[monthIndex]] )
+        updatedDepartmentTotals[table.name][months[monthIndex]] = updatedRows.reduce(
+          (total, row) => total + parseFloat(row.montos[monthIndex].monto),
+          0
+        );
+
+        updatedMonthlyTotals[months[monthIndex]] = tables.reduce((total, table) => {
+          const sum = table.rows.reduce(
+            (tableTotal, row) => tableTotal + parseFloat(row.montos[monthIndex].monto),
+            0
+          );
+          return total + sum;
+        }, 0);
+
+        setMonthlyTotals(updatedMonthlyTotals); // Update the monthly totals state
+
+        setDepartmentTotals(updatedDepartmentTotals); // Update the department totals state
+
+        return { ...table, rows: updatedRows };
+      }
+      return table;
+    });
+    setTables(updatedTables);
+  };
+
+
+  const handleSendTables = () => {
+    // Verifica que startDate, endDate y comment no estén vacíos
+    if (!startDate || !endDate || !comment) {
+      // Muestra una alerta al usuario indicando que los campos son obligatorios
+      Swal.fire({
+        icon: 'error',
+        title: 'Campos obligatorios',
+        text: 'Por favor, completa las fechas de inicio y fin, y el comentario.',
+      });
+      return; // Detén la función si los campos están vacíos
+    }
+
+    // Verifica que select1 y select2 en cada fila no estén vacíos
+    for (const table of tables) {
+      for (const row of table.rows) {
+        if (!row.select1 || !row.select2) {
+          // Muestra una alerta al usuario indicando que los campos son obligatorios
+          Swal.fire({
+            icon: 'error',
+            title: 'Campos obligatorios',
+            text: 'Por favor, completa los campos Partida y Subpartida en todas las filas.',
+          });
+          return; // Detén la función si algún campo está vacío
         }
       }
-      
     }
 
-    th{
-        background: #9CC4E4;
-    }
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-      min-width: 4vw;
-      max-width: 6vw;
+    // Si todos los campos requeridos están completos, llama a la función para enviar los datos de la tabla a la API
+    sendTableDataToAPI(tables);
+  };
 
-      :last-child {
-        border-right: 0;
-      }
+
+  // Crea una función para enviar los datos de la tabla a la API en el nuevo formato
+  const sendTableDataToAPI = async (tables) => {
+    try {
+      const formattedData = [];
+      let totalGlobal = 0; // Variable para almacenar el total global
+      tables.mesesAutorizados = authorizedMonths;
+
+      // Recorre las tablas
+      tables.forEach((table) => {
+        const department = departamentos.find((item) => item.id_area === table.name);
+        // Recorre las filas de cada tabla
+        table.rows.forEach((row) => {
+          const rowData = {
+            departamentoId: table.name, // Agrega el ID del departamento
+            id: row.id,
+            partida: row.select1,
+            subpartida: row.select2,
+            months: row.montos.map((monto, monthIndex) => ({
+              month: months[monthIndex],
+              monto: parseFloat(monto.monto),
+            })),
+          };
+          // Calcula el total de la fila y lo agrega al total global
+          const rowTotal = rowData.months.reduce((acc, monthData) => acc + monthData.monto, 0);
+          totalGlobal += rowTotal;
+          formattedData.push(rowData);
+        });
+      });
+
+      // Agrega el total global al objeto de datos
+      const dataToSend = {
+        totalGlobal: totalGlobal,
+        data: formattedData,
+        fecha_inicio: startDate, // Agrega la fecha de inicio
+        fecha_fin: endDate, // Agrega la fecha de fin
+        nombre: comment, // Agrega el comentario
+        autorizados: authorizedMonths,
+        presuId: idPresu,
+        tab: 'departamento'
+      };
+      // console.log(dataToSend)
+      apiPutForm(`presupuestosdep/update/${idPresu}`, dataToSend, auth)
+
+        // apiPostForm(`presupuestosdep?departamento_id=${usuario.id}`, dataToSend, auth)
+        .then(res => {
+          Swal.close()
+          Swal.fire({
+            icon: 'success',
+            title: 'Presupuesto editado con éxito',
+            timer: 2000
+          }).then(() => {
+            if (reload) {
+              reload.reload()
+            }
+            handleClose()
+          })
+
+        })
+
+
+    } catch (error) {
+      console.error('Error en la solicitud HTTP:', error);
     }
+  };
+
+
+  const calculateRowTotal = (row) => {
+    return row.montos.reduce((total, { monto }) => total + parseFloat(monto), 0);
+  };
+
+  function calculateTotalGlobal() {
+    let total = 0;
+
+    tables.forEach((table) => {
+      table.rows.forEach((row) => {
+        row.montos.forEach((monto) => {
+          total += parseFloat(monto.monto);
+        });
+      });
+    });
+
+    return total;
   }
-`
-const StylesGeneral = styled.div`
- 
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
-    background-color: white;
 
-    tr {
-      :last-child {
-        td {
-            border-bottom: 0;
-        }
+  const calculateMonthlyTotals = () => {
+    const monthlyTotals = {};
+
+    months.forEach((month) => {
+      let total = 0;
+      tables.forEach((table) => {
+        table.rows.forEach((row) => {
+          total += parseFloat(row.montos[months.indexOf(month)].monto);
+        });
+      });
+
+      monthlyTotals[month] = total;
+    });
+    return monthlyTotals;
+  };
+
+  // Llama a esta función en el useEffect para calcular los totales cuando los datos se cargan inicialmente
+  useEffect(() => {
+    setMonthlyTotals(calculateMonthlyTotals());
+  }, [tables]); // Asegúrate de que se vuelva a calcular cuando cambian los datos de las tablas
+
+
+
+  function calculateDepartmentTotal(departmentName) {
+    let total = 0;
+    tables.forEach((table) => {
+      if (table.name == departmentName) {
+        table.rows.forEach((row) => {
+          row.montos.forEach((monto) => {
+            total += parseFloat(monto.monto);
+          });
+        });
       }
-      
-    }
-
-    th{
-        background: #9CC4E4;
-    }
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-      min-width: 10vw;
-      max-width: 10vw;
-
-      :last-child {
-        border-right: 0;
-      }
-    }
+    });
+    return total;
   }
-`
 
-function Table({ columns, data }) {
-    // Use the state and functions returned from useTable to build the UI
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({
-        columns,
-        data,
-    })
+  const handleMonthAuthorizationChange = (index) => {
+    const updatedAuthorizedMonths = [...authorizedMonths];
+    updatedAuthorizedMonths[index] = !updatedAuthorizedMonths[index];
+    setAuthorizedMonths(updatedAuthorizedMonths);
+  };
 
-    // Render the UI for the table
-    return (
-        <table {...getTableProps()}>
-            <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                        ))}
-                    </tr>
+  const handleRemoveDepartamento = (departamentoId) => {
+    const updatedDepartamentosAgregados = departamentosAgregados.filter((depId) => depId !== departamentoId);
+    setDepartamentosAgregados(updatedDepartamentosAgregados);
+    // Elimina los datos de empleados por departamento
+    const updatedEmpleadosPorDepartamento = { ...empleadosPorDepartamento };
+    delete updatedEmpleadosPorDepartamento[departamentoId];
+    setEmpleadosPorDepartamento(updatedEmpleadosPorDepartamento);
+    const updatedDepartamentosData = departamentosData.filter((data) => data.id !== departamentoId);
+    setDepartamentosData(updatedDepartamentosData);
+    calcularTotales(updatedDepartamentosData);
+
+  };
+
+  const calcularTotales = (data) => {
+    const updatedTotalesPorMes = {};
+    let updatedTotalGlobal = 0;
+
+    data.forEach((departamentoInfo) => {
+      departamentoInfo.datos.forEach((empleado) => {
+        meses.forEach((mes) => {
+          const montoPorMes = empleado[mes] || 0;
+          updatedTotalesPorMes[mes] = (updatedTotalesPorMes[mes] || 0) + montoPorMes;
+          updatedTotalGlobal += montoPorMes;
+        });
+      });
+    });
+
+    setTotalesPorMes(updatedTotalesPorMes);
+    setTotalGlobal(updatedTotalGlobal);
+  };
+
+  function isFechaInicioCurrentYear(fechaInicio,fechaComparar) {
+
+    if (fechaInicio && fechaComparar) {
+      const currentYear = new Date(fechaComparar).getFullYear();
+      const fechaInicioYear = new Date(fechaInicio).getFullYear();
+      return fechaInicioYear == currentYear;
+    }
+    return false;
+  }
+
+  // console.log(tables)
+  // console.log(departamentos)
+  // console.log(departamentosData)
+
+
+  return (
+    <div>
+      {selectedTable === 'Presupuesto' && (
+        <div className="form-group form-group-marginless row mx-0">
+
+          <div className="col-md-3">
+            <InputLabel id="demo-controlled-open-select-label">Departamento</InputLabel>
+            <Select labelId="demo-controlled-open-select-label" id="demo-controlled-open-select" open={open} onClose={handleClosee} onOpen={handleOpen}
+              name="tabla" value={tableName} onChange={(e) => setTableName(e.target.value)} placeholder="Nombre de la tabla" style={{ width: 230, paddingRight: '2px' }} >
+              {
+                departamentos.map((item, index) => (
+                  <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
                 ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
-                    prepareRow(row)
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                            })}
-                        </tr>
-                    )
-                })}
-            </tbody>
-        </table>
-    )
-}
+            </Select>
+            <Button className="btn btn-light-primary mr-4 my-2" color="primary" onClick={handleAddTable}>Agregar Departamento</Button>
+          </div>
+          <div className="col-md-2">
 
-export default function EditarPresupuestoDepartamento(props) {
-    const { reload, handleClose, data } = props
-    const partidas = useSelector(state => state.opciones.areas)
-    const areas = useSelector(state => state.opciones.areas)
-    const auth = useSelector(state => state.authUser.access_token)
+            <InputLabel >Fecha Inicio</InputLabel>
+            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+              <Grid container >
+                <KeyboardDatePicker format="dd/MM/yyyy" name="fecha_inicio" value={startDate} placeholder="dd/mm/yyyy" onChange={handleStartDateChange}
+                  KeyboardButtonProps={{ 'aria-label': 'change date', }} />
+              </Grid>
+            </MuiPickersUtilsProvider>
+          </div>
 
-    const [preloadData, setPreloadData] = useState(false)
+          <div className="col-md-2">
+            <InputLabel >Fecha fin</InputLabel>
+            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+              <Grid container >
+                <KeyboardDatePicker format="dd/MM/yyyy" name="fecha_fin" id="endDate" value={endDate} placeholder="dd/mm/yyyy" onChange={handlsetEndDateChange}
+                  KeyboardButtonProps={{ 'aria-label': 'change date', }} />
+              </Grid>
+            </MuiPickersUtilsProvider>
 
-    const [form, setForm] = useState([])
-    const [general, setGeneral] = useState({
-        departamento: '',
-        departamento_id: '',
-        gerente: '',
-        gerente_id: '',
-        colaboradores: '',
-        colaboradores_id: '',
-        granTotal: '',
-        nomina: 0,
-        fecha_inicio: '',
-        fecha_fin: '',
-        nombre: '',
-        id: '',
-    })
+          </div>
+          <div className="col-md-2">
+            <label htmlFor="comment">NOMBRE DEL PRESUPUESTO</label>
+            <TextField id="comment" value={comment} onChange={handleCommentChange} InputLabelProps={{ shrink: true, }} />
 
-    const [areasRestantes, setAreasRestantes] = useState([])
-    const [formDataTabla, setFormDataTabla] = useState([])
+          </div>
+          <div className="col-md-3">
+            <h2>Total Global: {calculateTotalGlobal().toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2, })}</h2>
+          </div>
+          <div className="col-md-12">
+            <div className="table-responsive rounded">
+              <table className="table table-borderless table-vertical-center rounded table-hover">
+                <thead>
+                  {months.map((month, monthIndex) => (
+                    <th key={monthIndex}>
+                      {month}
+                      <br></br> Total:{' '}
+                      {(monthlyTotals[month] || 0).toLocaleString('es-MX', {
+                        style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0,
+                      })}
+                      <br></br>
+                      <FormControlLabel
+                        control={
+                          <GreenCheckbox checked={authorizedMonths[monthIndex] ? true : false} onChange={() => handleMonthAuthorizationChange(monthIndex)} />
+                        } label="Autorizar"
+                      />
+                    </th>
+                  ))}
+                </thead>
+              </table>
 
+              {tables.map((table) => (
+                <div key={table.id} className="table-container">
+                  <br></br>
+                  {departamentos.map((item) => (
+                    item.id_area == table.name ?
+                      <h2 key={item.id_area}>{item.nombreArea}
+                        <Tooltip title="Eliminar departamento" arrow>
+                          <TrashIcon onClick={() => handleDeleteTable(table.id)} style={{ cursor: 'pointer', color: 'red' }} />
+                        </Tooltip>
+                        {/* <Button  className = "btn btn-light-danger " onClick={() => handleDeleteTable(table.id)}>Eliminar Departamento </Button> */}
+                        <p>Total: {calculateDepartmentTotal(item.id_area).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0, })}</p>
 
-    useEffect(() => {
-        getDataApi()
-    }, [])
-
-    useEffect(() => {
-        if (preloadData) {
-            setFormDataTabla(precargarDatos(preloadData))
-        }
-    }, [preloadData])
-
-    useEffect(() => {
-        if (areas.length >= 13) {
-            createData()
-        }
-
-        /* if (areas.length) {
-            setAreasRestantes(areas)
-        } */
-    }, [areas])
-
-    useEffect(() => { 
-        if (formDataTabla.length && areas.length) { 
-            let areasRestantes = areas.filter(area => {
-                let existe = formDataTabla.find(data => data.id_area === area.id_area)
-                if (existe) {
-                    return false
-                } else {
-                    return true
-                }
-            })
-            setAreasRestantes(areasRestantes)
-        }
-    }, [formDataTabla, areas])
-
-    const setDateFormate = (date) => {
-        let fecha = date.split('-')
-        fecha = new Date(`${fecha[0]}`, `${fecha[1] - 1}`, `${fecha[2]}`)
-        return fecha
-    }
-    
-    const getDataApi = () => { 
-        apiGet(`presupuestosdep/edit/${data.id}`, auth).then(res => {
-            let data = res.data.presupuesto[0]
-            setGeneral({
-                ...general,
-                departamento: data.area.nombre,
-                departamento_id: data.id_area,
-                gerente: data.usuario.name,
-                gerente_id: data.usuario.id,
-                colaboradores: data.colaboradores,
-                colaboradores_id: '',
-                granTotal: '',
-                nomina: 0,
-                fecha_inicio: setDateFormate(data.fecha_inicio),
-                fecha_fin: setDateFormate(data.fecha_fin),
-                nombre: data.nombre,
-                id: data.id,
-            })
-            setPreloadData(data)
-        })
-    }
-
-    const handleChangePartida = (e, index, subindex) => {
-        let nuevoForm = [...formDataTabla]
-        nuevoForm[index].filas[subindex].id_partida = e.target.value
-        setFormDataTabla(nuevoForm)
-    }
-
-    const handleChangeSubpartida = (e, index, subindex) => {
-        const nuevoForm = [...formDataTabla]
-        nuevoForm[index].filas[subindex].id_subpartida = e.target.value
-        setFormDataTabla(nuevoForm)
-    }
-
-    const formatNumberCurrency = (number) => {
-        return new Intl.NumberFormat('es-MX', {
-            style: 'currency',
-            currency: 'MXN',
-            minimumFractionDigits: 2
-        }).format(number)
-    }
-
-    const sumaMes = (index, mes) => {
-        let suma = 0
-        for (let i = 0; i < formDataTabla[index].filas.length; i++) {
-            if (Object.keys(formDataTabla[index].filas[i]) !== 'id_partida' && Object.keys(formDataTabla[index].filas[i]) !== 'id_subpartida') {
-                suma += formDataTabla[index].filas[i][mes]
-            }
-
-        }
-        suma = formatNumberCurrency(suma)
-
-        return suma
-
-    }
-
-    const sumaTotalFila = (index, subindex) => {
-        let suma = 0
-        suma += formDataTabla[index].filas[subindex].enero
-        suma += formDataTabla[index].filas[subindex].febrero
-        suma += formDataTabla[index].filas[subindex].marzo
-        suma += formDataTabla[index].filas[subindex].abril
-        suma += formDataTabla[index].filas[subindex].mayo
-        suma += formDataTabla[index].filas[subindex].junio
-        suma += formDataTabla[index].filas[subindex].julio
-        suma += formDataTabla[index].filas[subindex].agosto
-        suma += formDataTabla[index].filas[subindex].septiembre
-        suma += formDataTabla[index].filas[subindex].octubre
-        suma += formDataTabla[index].filas[subindex].noviembre
-        suma += formDataTabla[index].filas[subindex].diciembre
-        suma = formatNumberCurrency(suma)
-        return suma
-    }
-
-    const getSumaMeses = (mes) => {
-        let suma = 0
-        formDataTabla.forEach((tabla) => {
-            tabla.filas.forEach((fila) => {
-                if (Object.keys(fila) !== 'id_partida' && Object.keys(fila) !== 'id_subpartida') {
-                    suma += fila[mes]
-                }
-            })
-        })
-        /* suma = suma + general.nomina */
-        suma = formatNumberCurrency(suma)
-        return suma
-    }
-
-    const sumaTabla = (index) => {
-        let suma = 0
-        for (let i = 0; i < formDataTabla[index].filas.length; i++) {
-            if (Object.keys(formDataTabla[index].filas[i]) !== 'id_partida' && Object.keys(formDataTabla[index].filas[i]) !== 'id_subpartida') {
-                suma += formDataTabla[index].filas[i].enero
-                suma += formDataTabla[index].filas[i].febrero
-                suma += formDataTabla[index].filas[i].marzo
-                suma += formDataTabla[index].filas[i].abril
-                suma += formDataTabla[index].filas[i].mayo
-                suma += formDataTabla[index].filas[i].junio
-                suma += formDataTabla[index].filas[i].julio
-                suma += formDataTabla[index].filas[i].agosto
-                suma += formDataTabla[index].filas[i].septiembre
-                suma += formDataTabla[index].filas[i].octubre
-                suma += formDataTabla[index].filas[i].noviembre
-                suma += formDataTabla[index].filas[i].diciembre
-            }
-        }
-        suma = formatNumberCurrency(suma)
-        return suma
-    }
-
-    const getColumnsHeader = () => {
-        let columnas = [{
-            Header: 'Total mensual',
-            columns: [
-                {
-                    Header: 'Enero',
-                    accessor: '1',
-                },
-                {
-                    Header: 'Febrero',
-                    accessor: '2',
-                },
-                {
-                    Header: 'Marzo',
-                    accessor: '3',
-                },
-                {
-                    Header: 'Abril',
-                    accessor: '4',
-                },
-                {
-                    Header: 'Mayo',
-                    accessor: '5',
-                },
-                {
-                    Header: 'Junio',
-                    accessor: '6',
-                },
-                {
-                    Header: 'Julio',
-                    accessor: '7',
-                },
-                {
-                    Header: 'Agosto',
-                    accessor: '8',
-                },
-                {
-                    Header: 'Septiembre',
-                    accessor: '9',
-                },
-                {
-                    Header: 'Octubre',
-                    accessor: '10',
-                },
-                {
-                    Header: 'Noviembre',
-                    accessor: '11',
-                },
-                {
-                    Header: 'Diciembre',
-                    accessor: '12',
-                },
-                {
-                    Header: 'Total',
-                    accessor: 'total',
-                }
-            ]
-        }]
-
-        return columnas
-    }
-
-    const handleMoney = (indexTabla, indexFila, key, value) => {
-        const nuevoForm = [...formDataTabla]
-        nuevoForm[indexTabla].filas[indexFila][key] = value
-        setFormDataTabla(nuevoForm)
-    }
-
-    const createCurrencyInput = (fila, indexTabla, indexFila, key) => {
-        return (
-            <CurrencyTextField
-
-                variant="standard"
-                value={formDataTabla[indexTabla].filas[indexFila][key]}
-                currencySymbol="$"
-                outputFormat="number"
-                onChange={(event, value) => handleMoney(indexTabla, indexFila, key, value)}
-            />
-
-        )
-    }
-
-    const createData = () => {
-        let aux = []
-        let id = 0
-        areas.map((area, index) => {
-            aux.push([])
-        })
-        setForm(aux)
-    }
-
-    const getDataHeader = (index) => {
-        let aux = [{
-            id: 0,
-            1: getSumaMeses('enero'),
-            2: getSumaMeses('febrero'),
-            3: getSumaMeses('marzo'),
-            4: getSumaMeses('abril'),
-            5: getSumaMeses('mayo'),
-            6: getSumaMeses('junio'),
-            7: getSumaMeses('julio'),
-            8: getSumaMeses('agosto'),
-            9: getSumaMeses('septiembre'),
-            10: getSumaMeses('octubre'),
-            11: getSumaMeses('noviembre'),
-            12: getSumaMeses('diciembre'),
-            total: getGranTotal(),
-
-        }]
-        return aux
-    }
-
-    const createHeader = () => {
-        return (
-            <div>
-                <Styles>
-                    <Table columns={getColumnsHeader()} data={getDataHeader()} />
-                </Styles>
-            </div>
-        )
-    }
-
-    const nuevaFila = (index) => {
-        let aux = [...formDataTabla]
-        aux[index].filas.push({
-            id_partida: '',
-            id_subpartida: '',
-            enero: 0,
-            febrero: 0,
-            marzo: 0,
-            abril: 0,
-            mayo: 0,
-            junio: 0,
-            julio: 0,
-            agosto: 0,
-            septiembre: 0,
-            octubre: 0,
-            noviembre: 0,
-            diciembre: 0,
-        })
-        setFormDataTabla(aux)
-    }
-
-    const eliminarFila = (index, subindex, fila) => {
-        let aux = [...formDataTabla]
-        aux[index].filas.splice(subindex, 1)
-        setFormDataTabla(aux)
-        if (fila.id) {
-            try {
-                Swal.fire({
-                    title: 'Eliminando fila...',
-                    allowOutsideClick: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    }
-                })
-                let aux = {
-                    id: general.id,
-                    data: formDataTabla,
-                    fecha_inicio: general.fecha_inicio,
-                    fecha_fin: general.fecha_fin,
-                    total: getGranTotalR(),
-                    id_departamento: general.departamento_id,
-                    colaboradores: general.colaboradores,
-                    nombre: general.nombre,
-                    tipo: 'editar',
-                    tab: "departamento"
-                }
-                apiDelete(`presupuestosdep/fila/${fila.id}`, auth)
-                    .then(response => { 
-                        apiPutForm(`presupuestosdep/update/${general.id}`, aux, auth)
-                            .then(res => {
-                                Swal.close()
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Eliminado',
-                                    text: 'Se eliminó la fila correctamente',
-                                    timer: 1500
-                                })
-                            })
-                    })
-                
-
-                
-            } catch (error) { 
-                Swal.close()
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No se pudo eliminar la fila',
-                })
-
-            }    
-        }
-    }
-
-    const selectPartidas = (index, subindex) => {
-        return (
-            <div>
-
-                <Select
-                    value={formDataTabla[index].filas[subindex].id_partida}
-                    onChange={e => handleChangePartida(e, index, subindex)}
-                    style={{ maxWidth: '5vw' }}
-                >
-                    <MenuItem value='' hidden>partida</MenuItem>
-                    {areas.find(partida => partida.id_area == formDataTabla[index].id_area).partidas.map(partida => (
-                        <MenuItem key={partida.id} value={partida.id}>{partida.nombre}</MenuItem>
-                    ))}
-                </Select>
-
-            </div>
-        )
-    }
-
-    const selectSubpartida = (index, subindex) => {
-        return (
-            <div>
-                {
-                    formDataTabla[index].filas[subindex].id_partida !== '' &&
-                    <Select
-                        value={formDataTabla[index].filas[subindex].id_subpartida}
-                        onChange={e => handleChangeSubpartida(e, index, subindex)}
-                        style={{ maxWidth: '5vw' }}
-
-                    >
-                        <MenuItem value='' hidden>subpartida</MenuItem>
-                            {areas.find(partida => partida.id_area == formDataTabla[index].id_area).partidas.find(partida => partida.id == formDataTabla[index].filas[subindex].id_partida).subpartidas.map(subpartida => (
-                                <MenuItem key={subpartida.id} value={subpartida.id}>{subpartida.nombre}</MenuItem>
+                      </h2>
+                      :
+                      ''
+                  ))}
+                  <table className="table table-borderless table-vertical-center rounded table-hover">
+                    <thead>
+                      <tr style={{ width: 20 }}>
+                        <th></th>
+                        <th className="w-5">Partida</th>
+                        <th className="w-5">Subpartida</th>
+                        {months.map((month, monthIndex) => (
+                          <th key={monthIndex}>
+                            {month}
+                            <br></br> Total: <br></br>
+                            {(departmentTotals[table.name]?.[month] || 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 0, maximumFractionDigits: 0, })}{' '}
+                          </th>
                         ))}
-                    </Select>
-                }
+                        <th>Total</th>
 
-            </div>
-        )
-    }
+                        <th> </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {table.rows.map((row) => (
+                        <tr key={row.id}>
+                          <td>
+                            <Tooltip title="Eliminar columna" arrow >
+                              <TrashIcon onClick={() => handleDeleteRow(table.id, row.id)} style={{ cursor: 'pointer', color: 'red' }} />
+                            </Tooltip>
+                          </td>
+                          <td>
+                            <Select value={row.select1} name="partida" onChange={(e) => handleSelectChange(table.id, row.id, 'select1', e.target.value)}>
+                              {departamentos.find((item) => item.id_area == table.name) &&
+                                departamentos.find((item) => item.id_area == table.name).partidas.map((items, index) => (
+                                  <MenuItem key={index} value={items.id} > {items.nombre} </MenuItem>
+                                ))}
+                            </Select>
+                          </td>
+                          <td>
+                            {
+                              departamentos.length && row.select1 !== '' ?
+                                <Select name="subarea" value={row.select2} style={{ width: 100, marginRight: '1rem' }} onChange={(e) => handleSelectChange(table.id, row.id, 'select2', e.target.value)} >
+                                  {departamentos.find(item => item.id_area == table.name).partidas.find(item => item.id == row.select1).subpartidas.map((item, index) => (
+                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                  ))}
 
-    const createTableDepartamento = (data) => {
-
-        return (
-            <div>
-                <StylesGeneral>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Departamento</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{data.area.nombre}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </StylesGeneral>
-            </div>
-        )
-    }
-
-    const createTableGerente = (data) => {
-        const columnas = [
-            {
-                Header: 'Gerente',
-                accessor: 'nombre',
-            }
-        ]
-
-
-        return (
-            <div>
-                <StylesGeneral>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Gerente</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{data.usuario.name}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </StylesGeneral>
-            </div>
-        )
-    }
-
-    const createTableColaboradores = (data) => {
-        const columnas = [
-            {
-                Header: 'Colaboradores',
-                accessor: 'nombre',
-            }
-        ]
-        return (
-            <div>
-                <StylesGeneral>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Colaboradores</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{data.colaboradores}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </StylesGeneral>
-            </div>
-        )
-    }
-
-    const getGranTotal = () => {
-        let suma = 0
-        for (let i = 0; i < formDataTabla.length; i++) {
-            for (let j = 0; j < formDataTabla[i].filas.length; j++) {
-                suma += formDataTabla[i].filas[j].enero
-                suma += formDataTabla[i].filas[j].febrero
-                suma += formDataTabla[i].filas[j].marzo
-                suma += formDataTabla[i].filas[j].abril
-                suma += formDataTabla[i].filas[j].mayo
-                suma += formDataTabla[i].filas[j].junio
-                suma += formDataTabla[i].filas[j].julio
-                suma += formDataTabla[i].filas[j].agosto
-                suma += formDataTabla[i].filas[j].septiembre
-                suma += formDataTabla[i].filas[j].octubre
-                suma += formDataTabla[i].filas[j].noviembre
-                suma += formDataTabla[i].filas[j].diciembre
-            }
-        }
-        /* suma = suma + (general.nomina * 12) */
-        suma = formatNumberCurrency(suma)
-        return suma
-    }
-
-    const getGranTotalR = () => {
-        let suma = 0
-        for (let i = 0; i < formDataTabla.length; i++) {
-            for (let j = 0; j < formDataTabla[i].filas.length; j++) {
-                suma += formDataTabla[i].filas[j].enero
-                suma += formDataTabla[i].filas[j].febrero
-                suma += formDataTabla[i].filas[j].marzo
-                suma += formDataTabla[i].filas[j].abril
-                suma += formDataTabla[i].filas[j].mayo
-                suma += formDataTabla[i].filas[j].junio
-                suma += formDataTabla[i].filas[j].julio
-                suma += formDataTabla[i].filas[j].agosto
-                suma += formDataTabla[i].filas[j].septiembre
-                suma += formDataTabla[i].filas[j].octubre
-                suma += formDataTabla[i].filas[j].noviembre
-                suma += formDataTabla[i].filas[j].diciembre
-            }
-        }
-        /* suma = suma + (general.nomina * 12) */
-        return suma
-    }
-
-    const getDataGranTotal = () => {
-        let aux = [{
-            valor: getGranTotal()
-        }]
-        return aux
-    }
-
-    const createTableGranTotal = () => {
-        const columnas = [
-            {
-                Header: 'Gran Total Anual',
-                accessor: 'valor',
-            }
-        ]
-
-        return (
-            <div>
-                <Styles>
-                    <Table columns={columnas} data={getDataGranTotal()} />
-                </Styles>
-            </div>
-        )
-    }
-
-    const sendPresupuesto = () => {
-        Swal.fire({
-            title: '¿Estás seguro de editar el presupuesto?',
-            text: "¡Se eliminará la autorización del presupuesto!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: `Si, editar`,
-            cancelButtonText: 'Cancelar'
-            
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Editando Presupuesto',
-                    allowOutsideClick: false,
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        Swal.showLoading()
-                    },
-                })
-                try {
-                    let aux = {
-                        id: general.id,
-                        data: formDataTabla,
-                        fecha_inicio: general.fecha_inicio,
-                        fecha_fin: general.fecha_fin,
-                        total: getGranTotalR(),
-                        id_departamento: general.departamento_id,
-                        colaboradores: general.colaboradores,
-                        nombre: general.nombre,
-                        tipo: 'editar',
-                        tab:"departamento"
-                    }
-                    apiPutForm(`presupuestosdep/update/${general.id}`, aux, auth)
-                        .then(res => {
-                            Swal.close()
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Presupuesto Editado con éxito',
-                                timer: 2000
-                            }).then(() => {
-                                
-                            })
-                            if (reload) {
-                                reload.reload()
+                                </Select>
+                                : null
                             }
-                            handleClose()
 
-                        })
-                } catch (error) {
-                    Swal.close()
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error al editar el presupuesto',
-                        text: error
-                    })
-                }
-            }
-        })
-    }
-
-    const handleDeleteTable = (index) => {
-        Swal.fire({
-            title: '¿Estás seguro de eliminar la tabla de ' + formDataTabla[index].nombre + '?',
-            text: "No podrás revertir esta acción",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                if (formDataTabla.length > 1) {
-                    let aux = [...formDataTabla]
-                    let promesas = []
-                    if (aux[index].filas.length > 0) {
-                        aux[index].filas.forEach(fila => {
-                            if (fila.id) {
-                                promesas.push(apiDelete(`presupuestosdep/fila/${fila.id}`, auth))
-                            }
-                        })
-
-                    }
-
-                    let addArea = partidas.filter(partida => partida.id_area === aux[index].id_area)
-                    setAreasRestantes([...areasRestantes, addArea[0]])
-                    aux.splice(index, 1)
-                    setFormDataTabla(aux)
-                    Promise.all(promesas)
-                        .then(res => {
-                            if (reload) {
-                                reload.reload()
-                            }
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Tabla eliminada con éxito',
-                                timer: 2000
-                            })
-                        }) 
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'No puedes eliminar la última tabla',
-                        text: 'Debes tener al menos una tabla',
-                        timer: 2000
-                    })
-
-                }  
-            }
-        })
-    }
-
-    const handleSelectArea = (e) => {
-        let aux = []
-        let newTable = {}
-
-        areasRestantes.forEach(area => {
-            if (area.id_area !== e.target.value) {
-                aux = [...aux, area]
-            }
-        })
-
-        setAreasRestantes(aux)
-
-        partidas.forEach(partida => {
-            if (partida.id_area === e.target.value) {
-                newTable = {
-                    id_area: partida.id_area,
-                    nombre: partida.nombreArea,
-                    filas: [
-                        {
-                            id_partida: '',
-                            id_subpartida: '',
-                            enero: 0,
-                            febrero: 0,
-                            marzo: 0,
-                            abril: 0,
-                            mayo: 0,
-                            junio: 0,
-                            julio: 0,
-                            agosto: 0,
-                            septiembre: 0,
-                            octubre: 0,
-                            noviembre: 0,
-                            diciembre: 0
-                        }
-                    ],
-                }
-            }
-        })
-        setFormDataTabla([...formDataTabla, newTable])
-    }
-
-    const precargarDatos = (data) => { 
-        let aux = []
-        let table = []
-
-        partidas.forEach(partida => {
-            table.push({
-                id_area: partida.id_area,
-                nombre: partida.nombreArea,
-                filas: [
-                ],
-            })
-        })
-
-        let nuevaFila = {
-            enero: 0,
-            febrero: 0,
-            marzo: 0,
-            abril: 0,
-            mayo: 0,
-            junio: 0,
-            julio: 0,
-            agosto: 0,
-            septiembre: 0,
-            octubre: 0,
-            noviembre: 0,
-            diciembre: 0,
-            id: '',
-            id_partida: '',
-            id_subpartida: '',
-        }
-
-        data.rel.map((fila, index) => { 
-            table.map((tabla, indexTabla) => { 
-                if (fila.id_area === parseInt(tabla.id_area)) {
-                    nuevaFila = {
-                        enero: fila.enero,
-                        febrero: fila.febrero,
-                        marzo: fila.marzo,
-                        abril: fila.abril,
-                        mayo: fila.mayo,
-                        junio: fila.junio,
-                        julio: fila.julio,
-                        agosto: fila.agosto,
-                        septiembre: fila.septiembre,
-                        octubre: fila.octubre,
-                        noviembre: fila.noviembre,
-                        diciembre: fila.diciembre,
-                        id: fila.id,
-                        id_partida: fila.id_partida,
-                        id_subpartida: fila.id_subareas,
-                    }
-                    
-                    table[indexTabla].filas.push(nuevaFila)
-                }
-            })
-        })
-
-        table.map((tabla, indexTabla) => {
-            if(tabla.filas.length > 0){
-                aux.push(tabla)
-            }
-        })
-
-
-        return aux
-    }
-
-    const generateTables = (data) => {
-
-        return (
-            <>
-                {
-                    formDataTabla.sort((a, b) => a.nombre > b.nombre ? 1 : -1).map((tabla, indexTabla) => {
-                        return (
-                            <div key={indexTabla} style={{ display: 'flex', flexDirection: 'column', marginTop: '20px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', justifyContent: 'center' }}>
-                                    <div><TrashIcon onClick={() => handleDeleteTable(indexTabla)} style={{ cursor: 'pointer', color: 'red', fontSize: '20px' }} /></div>
-                                    <h3 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', padding: '0 10px' }}>
-
-                                        <div>
-                                            {tabla.nombre}
-                                        </div>
-                                        <div style={{ marginLeft: '10px' }}>
-                                            {sumaTabla(indexTabla)}
-                                        </div>
-                                    </h3>
-
-                                </div>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Partida</th>
-                                            <th>Subpartida</th>
-                                            <th>enero <br /> {sumaMes(indexTabla, 'enero')}</th>
-                                            <th>Febrero <br /> {sumaMes(indexTabla, 'febrero')}</th>
-                                            <th>Marzo <br /> {sumaMes(indexTabla, 'marzo')}</th>
-                                            <th>Abril <br /> {sumaMes(indexTabla, 'abril')}</th>
-                                            <th>Mayo <br /> {sumaMes(indexTabla, 'mayo')}</th>
-                                            <th>Junio <br /> {sumaMes(indexTabla, 'junio')}</th>
-                                            <th>Julio <br /> {sumaMes(indexTabla, 'julio')}</th>
-                                            <th>Agosto <br /> {sumaMes(indexTabla, 'agosto')}</th>
-                                            <th>Septiembre <br /> {sumaMes(indexTabla, 'septiembre')}</th>
-                                            <th>Octubre <br /> {sumaMes(indexTabla, 'octubre')}</th>
-                                            <th>Noviembre <br /> {sumaMes(indexTabla, 'noviembre')}</th>
-                                            <th>Diciembre <br /> {sumaMes(indexTabla, 'diciembre')}</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            tabla.filas.map((fila, indexFila) => {
-                                                return (
-                                                    <tr key={indexFila}>
-                                                        <td>
-                                                            <center>
-                                                                <TrashIcon onClick={() => eliminarFila(indexTabla, indexFila, fila)} style={{ cursor: 'pointer', color: 'red' }} />
-                                                            </center>
-                                                        </td>
-                                                        <td>
-                                                            {selectPartidas(indexTabla, indexFila)}
-                                                        </td>
-                                                        <td>
-                                                            {selectSubpartida(indexTabla, indexFila)}
-                                                        </td>
-                                                        {
-                                                            Object.keys(fila).map((key, index) => {
-                                                                return (
-                                                                    key !== 'id_partida' && key !== 'id_subpartida' && key !== 'id' &&
-                                                                    <td key={index}>
-                                                                        {createCurrencyInput(fila, indexTabla, indexFila, key)}
-                                                                    </td>
-                                                                )
-                                                            })
-
-                                                        }
-                                                        <td>
-                                                            {sumaTotalFila(indexTabla, indexFila)}
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </table>
-                                <AddIcon onClick={() => nuevaFila(indexTabla)} style={{ cursor: 'pointer', color: 'green', fontSize: '25px', alignSelf: 'flex-start', marginTop: '10px', marginBottom: '10px' }} />
-
-                            </div>
-                        )
-
-                    })
-                }
-            </>
-        )
-    }
-
-    const handleChangeFecha = (date, tipo) => {
-        setGeneral({
-            ...general,
-            [tipo]: new Date(date)
-        })
-    };
-
-    const handleChangeNombre = (e) => {
-        setGeneral({
-            ...general,
-            nombre: e.target.value
-        })
-    }
-
-    return (
-        <>
-            <div style={{ backgroundColor: 'white', padding: '2rem' }}>
-                <div style={{ marginBottom: '2rem' }}>
-                    <h1 style={{ textAlign: 'center' }}>Infraestructura e Interiores, S.A. de C.V.</h1>
-                    <h2 style={{ textAlign: 'center' }}>Presupuesto Anual</h2>
-                </div>
-                {
-                    preloadData &&
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
-                        {createTableDepartamento(preloadData)}
-                        {createTableColaboradores(preloadData)}
-                        {createTableGerente(preloadData)}
-                        {createTableGranTotal(preloadData)}
-                    </div>
-                }
-
-                {
-                    preloadData &&
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
-                        <div>
-                            <InputLabel >Fecha Inicio</InputLabel>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                                <Grid container >
-                                    <KeyboardDatePicker
-
-                                        format="dd/MM/yyyy"
-                                        name="fecha_pago"
-                                        value={general.fecha_inicio !== '' ? general.fecha_inicio : null}
-                                        placeholder="dd/mm/yyyy"
-                                        onChange={e => handleChangeFecha(e, 'fecha_inicio')}
-                                        KeyboardButtonProps={{
-                                            'aria-label': 'change date',
-                                        }}
-                                    />
-                                </Grid>
-                            </MuiPickersUtilsProvider>
-                        </div>
-
-                        <div>
-                            <InputLabel >Fecha Fin</InputLabel>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                                <Grid container >
-                                    <KeyboardDatePicker
-
-                                        format="dd/MM/yyyy"
-                                        name="fecha_pago"
-                                        value={general.fecha_fin !== '' ? general.fecha_fin : null}
-                                        placeholder="dd/mm/yyyy"
-                                        onChange={e => handleChangeFecha(e, 'fecha_fin')}
-                                        KeyboardButtonProps={{
-                                            'aria-label': 'change date',
-                                        }}
-                                    />
-                                </Grid>
-                            </MuiPickersUtilsProvider>
-                        </div>
-
-                            <div>
-                                <InputLabel >Nombre del presupuesto</InputLabel>
-                                <TextField
-                                    name='nombre'
-                                    type="text"
-                                    defaultValue={general.nombre}
-                                    onChange={handleChangeNombre}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                }}
+                          </td>
+                          {table.months.map((month, monthIndex) => (
+                            <td key={monthIndex}>
+                              <CurrencyTextField style={{ width: 70, marginRight: '1rem' }} label="monto" variant="standard" value={row.montos[monthIndex].monto} currencySymbol="$" outputFormat="string"
+                                decimalCharacter="." digitGroupSeparator="," autoFocus onChange={(event, value) => handleMontosChange(table.id, row.id, monthIndex, value)}
+                              />
+                            </td>
+                          ))}
+                          <td>
+                            <CurrencyTextField label="total" variant="standard" value={calculateRowTotal(row)} currencySymbol="$" outputFormat="string" decimalCharacter="." digitGroupSeparator=","
+                              autoFocus disabled style={{ width: 65, marginRight: '1rem' }}
                             />
-                        </div>  
-
-                    </div>
-                }
-
-                <div style={{ marginLeft: '18vw' }}>
-                    {
-                        form.length >= 13 &&
-                        createHeader()
-                    }
-
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <Tooltip
+                    title="Agregar columna"
+                    arrow
+                  >
+                    <PlaylistAddIcon
+                      onClick={() => handleAddRow(table.id)}
+                      style={{ cursor: 'pointer', color: 'green' }}
+                    />
+                  </Tooltip>
                 </div>
-                {
-                    preloadData &&
-                    <Styles>
-                        {
-                            formDataTabla.length > 0 &&
-                                generateTables(preloadData)
-                        }
-                    </Styles>
-                }
-                
-                {
-                    areasRestantes.length > 0 &&
-                    <Select onChange={(e) => handleSelectArea(e)} value={0}>
-                        <MenuItem value={0} hidden>Selecciona un área</MenuItem>
-                        {
-                            areasRestantes.sort((a, b) => a.nombreArea > b.nombreArea ? 1 : -1).map((area, index) => {
-                                return <MenuItem key={index} value={area.id_area}>{area.nombreArea}</MenuItem>
-                            })
-                        }
-                    </Select>
-                }
-
-                <div className="row justify-content-end">
-                    <div className="col-md-4">
-                        <button className={Style.sendButton} onClick={() => sendPresupuesto()} variant="contained" color="primary">Editar</button>
-                    </div>
-                </div>
-
+              ))}
             </div>
+          </div>
+          <br></br>
+          <div className="col-md-12">
+            {tables.length > 0 && (
+              <div>
+                <Button
+                  className="btn btn-light-primary mr-4 my-2"
+                  onClick={handleSendTables}
+                // disabled={
+                //     tables.length == 0 ||
+                //     Object.values(hasRowsInDepartments).every(
+                //     (hasRows) => !hasRows
+                //     )
+                // }
+                >
+                  Guardar
+                </Button>
+              </div>
+            )}
+          </div>
 
-        </>
-    )
+
+        </div>
+      )}
+
+      {selectedTable === 'Nomina' && (
+
+        <div className="form-group form-group-marginless row mx-0">
+          <div className="col-md-4">
+            <h2>Presupuesto de nomina</h2>
+          </div>
+          <div className="col-md-4">
+            <h3>Total Global: {totalGlobal.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2, })} </h3>
+          </div>
+          <div className="col-md-12">
+            <div className="table-responsive rounded">
+              <table className="table table-border less table-vertical-center rounded table-hover">
+                <thead>
+                  <tr>
+                    <th>Departamento</th>
+                    <th>Nombre</th>
+                    <th>Puesto</th>
+                    {meses.map((mes, index) => (
+                      <th key={index}>
+                        {mes}
+                        <br />
+                        Total: <br />
+                        {totalesPorMes[mes] ? totalesPorMes[mes].toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2, }) : 0}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+
+                  {Object.values(departamentosData).map((departamentoInfo) => (
+                    <React.Fragment key={departamentoInfo.id}>
+                      {Object.values(departamentoInfo.datos).map((empleado) => (
+                        <tr key={empleado.id} style={{ border:  isFechaInicioCurrentYear(empleado.usuarios.fecha_inicio,departamentoInfo.fecha_fin) ? '2px solid green' : '' , color: isFechaInicioCurrentYear(empleado.usuarios.fecha_inicio,departamentoInfo.fecha_fin) ? 'green' : '' }}>
+                          <td>
+                            {empleado.usuarios.departamentos ? empleado.usuarios.departamentos[0].nombre : 'N/A'}
+                          </td>
+                          <td>{empleado.usuarios.nombre} {empleado.usuarios.apellido_paterno} {empleado.usuarios.apellido_materno}</td>
+                          <td>{empleado.usuarios.puestos ? empleado.usuarios.puestos.nombre_puesto : ''}</td>
+                          {meses.map((mes, index) => (
+                            <td key={index}>{empleado[mes].toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2, })} </td>
+                          ))}
+                        </tr>
+                      ))}
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        {/* <td> <Button  className = "btn mr-4 my-2" color="secondary" startIcon={<DeleteIcon />} onClick={() => handleRemoveDepartamento(departamentoInfo.id)}>Eliminar</Button></td> */}
+                        <td>
+                          {departamentos && departamentos.map((item) => (
+                            item.id_area == departamentoInfo.id ?
+                              <strong> <p key={item.id_area}> Subtotales {item.nombreArea} </p> </strong>
+                              :
+                              ''
+                          ))}
+                        </td>
+                        {meses.map((mes, index) => (
+                          <td key={index}>
+                            <strong>
+                              {Object.values(departamentoInfo.datos).reduce((totalPorMes, empleado) => {
+                                const montoPorMes = empleado[mes] || 0; // Obtener el monto para el mes actual (o 0 si no existe)
+                                return totalPorMes + montoPorMes;
+                              }, 0).toLocaleString('es-MX', {
+                                style: 'currency',
+                                currency: 'MXN',
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}
+                            </strong>
+                          </td>
+                        ))}
+
+                      </tr>
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
+              <div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedTable === 'Prestaciones' && (
+
+        <div className="form-group form-group-marginless row mx-0">
+          <div className="col-md-4">
+            <h2> Nomina Prestaciones</h2>
+          </div>
+          <div className="col-md-4">
+            <h2>Total Global: {totalGlobal.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2, })}</h2>
+          </div>
+          <div className="col-md-12">
+            <div className="table-responsive rounded">
+              <table className="table table-border less table-vertical-center rounded table-hover">
+                <thead>
+                  <tr>
+                    <th>Departamento</th>
+                    <th>Nombre</th>
+                    <th>Puesto</th>
+                    <th>Prestacion</th>
+                    {meses.map((mes, index) => (
+                      <th key={index}>
+                        {mes}
+                        <br />
+                        Total: <br />
+                        {totalesPorMes[mes] ? totalesPorMes[mes].toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2, }) : 0}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+
+                  {Object.values(departamentosData).map((departamentoInfo) => (
+                    <React.Fragment key={departamentoInfo.id}>
+                      {Object.values(departamentoInfo.datos).map((empleado) => (
+                        // Object.values(array).map((empleado) => (
+                        // Object.values(empleado.prestaciones).map((prestaciones) => (
+                        <tr key={empleado}>
+                          <td>
+                            {empleado.usuarios.departamentos ? empleado.usuarios.departamentos[0].nombre : 'N/A'}
+                          </td>
+                          <td>{empleado.usuarios.nombre} {empleado.usuarios.apellido_paterno} {empleado.usuarios.apellido_materno}</td>
+                          <td>{empleado.usuarios.puestos ? empleado.usuarios.puestos.nombre_puesto : ''}</td>
+                          <td>{empleado.nombre ? empleado.nombre : ''}</td>
+                          {meses.map((mes, index) => (
+                            <td key={index}>{empleado[mes].toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2, })}</td>
+                          ))}
+                        </tr>
+                        // ))                      
+                        // ))                  
+                      ))}
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                        {/* <td> <Button  className = "btn mr-4 my-2" color="secondary" startIcon={<DeleteIcon />} onClick={() => handleRemoveDepartamento(departamentoInfo.id)}>Eliminar</Button></td> */}
+                        <td>
+                          {departamentos && departamentos.map((item) => (
+                            item.id_area == departamentoInfo.id ?
+                              <strong> <p key={item.id_area}> Subtotales {item.nombreArea} </p> </strong>
+                              :
+                              ''
+                          ))}
+                        </td>
+                        {meses.map((mes, index) => (
+
+                          <td key={index}>
+                            <strong>
+                              {Object.values(departamentoInfo.datos).reduce((totalPorMes, empleado) => {
+                                const montoPorMes = empleado[mes] || 0; // Obtener el monto para el mes actual (o 0 si no existe)
+                                return totalPorMes + montoPorMes;
+                              }, 0).toLocaleString('es-MX', {
+                                style: 'currency',
+                                currency: 'MXN',
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}
+                            </strong>
+                          </td>
+                        ))}
+
+                      </tr>
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
+              {/* <Button  className = "btn  mr-4 my-2"  startIcon={<SaveIcon />} color="primary"  onClick={enviarFormulario} >Guardar</Button> */}
+              <div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+
+    </div>
+
+
+
+  );
+
 }
+
+export default App;

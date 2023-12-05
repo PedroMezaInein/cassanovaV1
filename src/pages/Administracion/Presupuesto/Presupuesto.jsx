@@ -6,6 +6,8 @@ import Layout from '../../../components/layout/layout'
 
 import TablaPresupuesto from './Departamento/TablaPresupuesto'
 import TablaNomina from './Departamento/TablaNomina'
+import TablaPrestaciones from './Departamento/TablaPrestaciones'
+
 
 import TablaPresupuestoObra from './Obra/TablaPresupuestoObra'
 import Editar from './Departamento/EditarPresupuestoDepartamento'
@@ -31,6 +33,10 @@ export default function Presupuesto() {
             data: null
         },
         nomina: {
+            show: false,
+            data: null
+        },
+        prestaciones: {
             show: false,
             data: null
         },
@@ -95,10 +101,11 @@ export default function Presupuesto() {
     const ProccessData = (e) => {
         let aux = []
         e.presupuesto.map(item => {
+            // console.log(item)
             aux.push({
                 id: item.id,
                 id_area: item.id_area,
-                nombre: item.nombre,
+                nombre: item.nombre +' / '+ item.fecha_inicio,
                 fecha: formatDateString(item.fecha),
                 monto: item.presupuesto,
                 monto_show: formatNumberCurrency(item.presupuesto),
@@ -298,6 +305,18 @@ export default function Presupuesto() {
                 setModal({
                     ...modal,
                     nomina: {
+                        show: true,
+                        data: item
+                    }
+                })
+            }
+        },
+        {
+            nombre: 'Prestaciones',
+            funcion: (item) => {
+                setModal({
+                    ...modal,
+                    prestaciones: {
                         show: true,
                         data: item
                     }
@@ -570,6 +589,10 @@ export default function Presupuesto() {
 
             <Modal size="xl" title={"Nueva nomina"} show={modal.nomina.show} handleClose={handleClose('nomina')}>
                 <TablaNomina reload={reloadTable} handleClose={handleClose('nomina')} />
+            </Modal>
+
+            <Modal size="xl" title={"Prestaciones"} show={modal.prestaciones.show} handleClose={handleClose('prestaciones')}>
+                <TablaPrestaciones reload={reloadTable} handleClose={handleClose('prestaciones')} />
             </Modal>
             {
                 modal.editar.data &&
