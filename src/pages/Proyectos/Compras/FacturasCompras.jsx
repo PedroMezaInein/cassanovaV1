@@ -423,7 +423,7 @@ export default function Factura(props) {
         // } else { // dentro de facturas están las propiedades de XML y PDF, cada uno es un objeto
             datos.compra.facturas.forEach((factura) => {
                 let adjuntos = []; // creo un nuevo array para almacenar los valores de los adjuntos 
-                if (factura.xml.name) {
+                if (factura.xml && factura.xml.name) {
                     adjuntos.push(
                         <div style={{width:'100px', marginRight:'2.5rem'}}>
                             <a style={{width:'90%'}} href={factura.xml.url} target="_blank" rel="noopener noreferrer">
@@ -432,7 +432,7 @@ export default function Factura(props) {
                         </div>   
                     );
                 }
-                if (factura.pdf.name) {
+                if (factura.pdf && factura.pdf.name) {
                     adjuntos.push(
                         <div style={{width:'100px'}}>
                             <a style={{width:'90%'}} href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
