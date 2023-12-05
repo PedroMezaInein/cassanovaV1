@@ -1199,7 +1199,7 @@ export default function CrearCompras(props) {
 
                             </div> 
                             <div>
-                                {
+                                {/* {
                                     opciones.clientes.length > 0 ?
                                         <div>
                                             <InputLabel id="demo-simple-select-label">Contrato</InputLabel>
@@ -1217,7 +1217,7 @@ export default function CrearCompras(props) {
                                             </Select>
                                         </div>
                                         : null
-                                }
+                                } */}
 
                             </div> 
                             <div>
