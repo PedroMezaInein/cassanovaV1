@@ -28,6 +28,13 @@ import TablaInsumos from './pages/RecursosHumanos/Insumos/TablaInsumos';
 
 import PresupuestoAnual from './pages/Administracion/Presupuesto/Presupuesto'
 
+import ReporteSatisfaccion from './pages/Satisfaccion/ReporteSatisfaccion';
+
+import { VacacionesPermisos } from './pages/RecursosHumanos/VacacionesPermisos'
+import Permisos from './pages/RecursosHumanos/PermisosVacaciones'
+import ClimaLaboral from './pages/RecursosHumanos/Encuestas/ClimaLaboral/ClimaLaboral'
+import Comunicados from "./pages/Comunicados/Comunicados";
+
 const Login = React.lazy(() => import('./pages/Login') )
 const Home = React.lazy(() => import('./pages/Home') )
 
@@ -113,11 +120,9 @@ const CalendarioPagos = React.lazy( () => import('./pages/Administracion/Calenda
 const Proveedores = React.lazy(() => import('./pages/Leads/Proveedor/Proveedor') )
 const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/ProveedorForm') )
 
-
 /** */
 const ProyectosNuevo = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosTable')) //nuevo
 const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos')) //anterior
-
 
 const ProyectosForm = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
 
@@ -250,6 +255,17 @@ const Etiquetas = React.lazy( () => import('./pages/Catalogos/Etiquetas') )
 const Modulo = React.lazy(() => import('./pages/RecursosHumanos/Modulos/Modulos') )
 const RepseForm = React.lazy(() => import('./pages/RecursosHumanos/Modulos/RepseForm'))
 
+const Crm = React.lazy(() => import('./pages/Crm') )
+const LeadLlamadaSalida = React.lazy(() => import('./pages/Add/LeadLlamadaSalida') )
+const LeadTelefono = React.lazy(() => import('./pages/Add/LeadTelefono') )
+const LeadInfo = React.lazy(() => import('./pages/Info/LeadInfo') )
+const LeadContratar = React.lazy(() => import('./pages/Contratar') )
+const Miproyecto = React.lazy(() => import('./pages/Miproyecto') )
+const TeEscuchamos = React.lazy(() => import('./pages/TeEscuchamos/TeEscuchamos') )
+const Satisfaccion = React.lazy(() => import('./pages/Satisfaccion/Satisfaccion') )
+const Incidencias = React.lazy(() => import('./pages/Incidencias/Incidencias') )
+const Directorio = React.lazy(() => import('./pages/Incidencias/Directorio') )
+
 class App extends Component{
 
     async componentDidMount(){
@@ -338,6 +354,23 @@ class App extends Component{
                     
                     {/* <Route path = "/mi-proyecto/encuesta" exact component = { Encuesta } /> */}
 
+                    <Route path = "/leads/crm" exact component = { Crm } />
+                    <Route path = "/leads/crm/add/llamada-salida" exact component = { LeadLlamadaSalida } />
+                    <Route path = "/leads/crm/add/telefono" exact component = { LeadTelefono } />
+                    <Route path = "/leads/crm/info/info" exact component = { LeadInfo } />
+                    <Route path = "/leads/crm/contratar" exact component = { LeadContratar } />
+                    <Route path = "/leads/reporte" exact component = { ReporteSatisfaccion } />
+                    <Route path = "/mi-proyecto" exact component = { Miproyecto } />
+                    <Route path = "/te-escuchamos" exact component = { TeEscuchamos } />
+                    <Route path = "/satisfaccion" exact component = { Satisfaccion } />
+                    <Route path = "/rh/incidencias" exact component = { Incidencias } />
+                    <Route path = "/rh/directorio" exact component = { Directorio } />
+                    <Route path="/rh/vacaciones-permisos" exact component={ VacacionesPermisos } />
+                    <Route path="/rh/permisos-vacaciones" exact component={ Permisos } />
+                    <Route path = "/encuesta" exact component = { Satisfaccion } />
+                    <Route path="/rh/comunicados" exact component={Comunicados} />
+                    <Route path="/rh/encuestas/clima-laboral" exact component={ClimaLaboral} />
+                            
                     <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
                     <Route path = "/usuarios/usuarios/:action" exact component ={ UsuariosForm } />
 
@@ -372,8 +405,8 @@ class App extends Component{
 
                     {/*  ANCHOR Routes for proyectos */}
 
-                    <Route path = "/proyectos/proyectos/nuevo" exact component = { ProyectosNuevo } />
-                    <Route path="/proyectos/proyectos/" exact component={ Proyectos  } />
+                    <Route path = "/proyectos/proyectos/nuevo" exact component = { Proyectos } />
+                    <Route path="/proyectos/proyectos/" exact component={ProyectosNuevo } />
                     
                     <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
                     <Route path = "/proyectos/proyectos/single/:id" exact component ={ SingleProyecto } />
