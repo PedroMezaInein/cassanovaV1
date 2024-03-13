@@ -25,14 +25,13 @@ export default function ModalModificarSubGasto (props){
         idsubGastoViejo: data.id,
         arraySubGastos: ''
     })
-    console.log(form)
 
     useEffect(() => {
         contador()
     }, [])
 
-    console.log(dataGeneral)
-    console.log(data)
+    // console.log(dataGeneral)
+    // console.log(data)
     // console.log(data.nombre)
 
     const handleChange = (event) => {
@@ -85,7 +84,7 @@ export default function ModalModificarSubGasto (props){
                 // let newForm = {
                 //     id_subGasto: form.idsubGasto,
                 // }
-                // console.log(newForm.id_subGasto)
+                console.log(form)
 
                 apiDelete(`v2/catalogos/areas/${form.idsubGastoViejo}/subareagasto/${form.idsubGasto}`, user.access_token)
                     .then((data) => {
@@ -148,6 +147,9 @@ export default function ModalModificarSubGasto (props){
                 //     id_subGasto: form.idsubGasto,
                 // }
                 // console.log(newForm.id_subGasto)
+                // console.log(form)
+                // console.log(data)
+                // console.log(dataGeneral.data)
 
                 apiDelete(`v2/catalogos/areas/${dataGeneral.id}/subarea/${form.idsubGastoViejo}?sub=`, user.access_token)
                     .then((data) => {

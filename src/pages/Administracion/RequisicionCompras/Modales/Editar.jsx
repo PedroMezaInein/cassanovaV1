@@ -16,7 +16,8 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {  printResponseErrorAlert } from '../../../../functions/alert'
-
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Swal from 'sweetalert2'
 
 import Style from './AprobarSolicitud.module.css'
@@ -35,7 +36,7 @@ export default function Editar(props) {
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector(state => state.authUser)
     const [form, setForm] = useState({
-        fecha: new Date(data.fecha),
+        fecha: new Date(data.fecha + 'T08:10:00.000Z'),
         departamento: data.departamento_id,
         tipoGasto: data.tipoEgreso_id,
         tipoSubgasto: data.tipoSubEgreso_id,
@@ -51,11 +52,13 @@ export default function Editar(props) {
         id_estatus: data.id_estatus,
         checked: data.auto1 ? true : false,
         proveedor: data.proveedor,
-        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega+ 'T08:10:00.000Z') : '',
         empresa: "",
         conta: data.conta,
         factura: data.factura,
         orden_compra: data.orden_compra,
+        facturas: data.factura == 1 ? true : false,
+
         labelPorveedor: data.proveedor ? opciones.proveedores.find(proveedor => proveedor.value == data.proveedor).name: 'Proveedor',
 
     })
@@ -127,8 +130,10 @@ export default function Editar(props) {
                                 id_estatus_compra: form.id_estatus,
                                 id_proveedor: form.proveedor,
                                 fecha_entrega: form.fecha_entrega,
-                                id_estatus_factura: form.factura,
+                                // id_estatus_factura: form.factura,
                                 id_estatus_conta: form.conta,
+                                facturas: form.facturas,
+                                form : 'editar',
                             }
 
                             apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
@@ -205,8 +210,10 @@ export default function Editar(props) {
                         id_estatus_compra: form.id_estatus,
                         id_proveedor: form.proveedor,
                         fecha_entrega: form.fecha_entrega,
-                        id_estatus_factura: form.factura,
+                        // id_estatus_factura: form.factura,
                         id_estatus_conta: form.conta,
+                        form : 'editar',
+                        facturas: form.facturas,
                     }
 
                     apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
@@ -401,6 +408,14 @@ export default function Editar(props) {
     const handleFile = (e) => { 
         setFile(e.target.files[0])
     }
+
+    const handleChangeCheck = () => {
+        setForm({
+            ...form,
+            facturas: !form.facturas
+        });
+    };
+    
 
     return (
         <>
@@ -638,6 +653,21 @@ export default function Editar(props) {
                         style={{ marginLeft: '20%' }}
                     />
                 </div> */}
+                  <div>
+                    <InputLabel>¿Lleva factura?</InputLabel>
+                    <FormGroup row>
+                        <FormControlLabel
+                            control={<Checkbox checked={!form.facturas} onChange={handleChangeCheck} color='secondary' name='facturas' />}
+                            label="No"
+
+                        />
+                        <FormControlLabel
+                            control={<Checkbox checked={form.facturas} onChange={handleChangeCheck} color='primary' name='facturas' />}
+                            label="Si"
+
+                        />
+                    </FormGroup>
+                </div>  
 
                 <div className='adjuntos_send'>
                     <div className="file">

@@ -25,6 +25,7 @@ import Swal from 'sweetalert2'
 import Style from './AprobarSolicitud.module.css'
 
 import j2xParser from 'fast-xml-parser'
+import { CONTRATOS_CLIENTES_COLUMNS } from '../../../../constants';
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -39,8 +40,9 @@ export default function Convertir(props) {
     const { data, handleClose, reload, opciones, estatusCompras } = props
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector(state => state.authUser)
+    // console.log(data)
     const [form, setForm] = useState({
-        fecha: new Date(data.fecha),
+        fecha: new Date(data.fecha+ 'T08:10:00.000Z'),
         departamento: data.departamento_id,
         tipoGasto: data.tipoEgreso_id,
         tipoSubgasto: data.tipoSubEgreso_id,
@@ -49,7 +51,7 @@ export default function Convertir(props) {
         descripcion: data.descripcion,
         id: data.id,
         orden_compra: data.orden_compra,
-        fecha_pago: data.fecha_pago ? new Date(data.fecha_pago) : '',
+        fecha_pago: data.fecha_pago ? new Date(data.fecha_pago+ 'T08:10:00.000Z') : '',
         id_cuenta: data.cuenta ? data.cuenta.id : null,
         monto_solicitado: data.monto_solicitado,
         auto1: data.auto1 ? data.auto1 : false,
@@ -62,11 +64,12 @@ export default function Convertir(props) {
         afectarCuentas: false,
         compra: data.compra,
         conta: data.conta,
-        factura: data.factura,
+        // factura: data.factura,
+        facturas: data.factura == 'Con Factura' ? true : false,
         empresa: "",
         labelPorveedor: data.proveedor ? opciones.proveedores.find(proveedor => proveedor.value == data.proveedor).name : 'Proveedor',
         labelCuenta: data.cuenta ? data.cuenta.nombre : 'cuenta',
-        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega+ 'T08:10:00.000Z') : '',
     })
 
     const [file, setFile] = useState({
@@ -146,15 +149,30 @@ export default function Convertir(props) {
                                     empresa: form.empresa,
                                     autorizacion_conta: true,
                                     fecha_entrega: form.fecha_entrega,
+                                    form : 'convertir',
+                                    facturas: form.facturas,
+                                    fecha: form.fecha,
+
+
                                 }
                                 apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token)
                                   .then(
                                     (response) => {
                                         Swal.close()
-                                        handleClose('convertir')
+
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Guardado',
+                                            text: 'Se ha guardado correctamente',
+                                            timer: 2000,
+                                            timerProgressBar: true,
+                                        })
                                         if (reload) {
                                             reload.reload()
                                         }
+                                        
+
+                                        handleClose('convertir')
                                         Swal.fire({
                                             title: 'Subiendo factura..',
                                             allowOutsideClick: false,
@@ -162,6 +180,7 @@ export default function Convertir(props) {
                                                 Swal.showLoading()
                                             }
                                         })
+
 
                                         if (form.factura && file.factura && file.factura !== '' && file.xml && file.xml !== '') {
                                             let archivo = new FormData();
@@ -199,38 +218,128 @@ export default function Convertir(props) {
                                                 })
                                             }
                                         }
+                                        
                                     }, (error) => { 
                                         // printResponseErrorAlert(error)
                                         // Swal.close()
+                                        if(error.response.status == 400){
+                                            Swal.close()
+
+                                            Swal.fire(error.response.data.message, "", "info");
+                                            handleClose('convertir')
+
+                                        }else{
+
                                         Swal.fire({
-                                            title: 'Oops...',
-                                            text: error.response.data.message,
-                                            icon: 'warning',
-                                            showCancelButton: false,
-                                            confirmButtonColor: '#3085d6',
-                                            // cancelButtonColor: '#d33',
-                                            // cancelButtonText: 'Cancelar',
-                                            confirmButtonText: 'Aceptar'
-                                        }).then((result) => {
+                                            title: error.response.data.message ,
+                                            showDenyButton: true,
+                                            // showCancelButton: true,
+                                            confirmButtonText: "Crear",
+                                            denyButtonText: `No Crear`,
+                                            text: "¿Deseas crear la partida en el presupuesto para aprobación?",
+                                          }).then((result) => {
+                                            // console.log(result)
+                                            /* Read more about isConfirmed, isDenied below */
                                             if (result.isConfirmed) {
-                                                Swal.fire({
-                                                    title: 'Enviando',
-                                                    text: 'Espere un momento...',
-                                                    allowOutsideClick: false,
-                                                    allowEscapeKey: false,
-                                                    allowEnterKey: false,
-                                                    showConfirmButton: false,
-                                                    onOpen: () => {
-                                                        handleClose('convertir')
-                                                        if (reload) {
-                                                            reload.reload()
-                                                        }
-                                                        Swal.showLoading()
-                                                    }
+                                                Swal.close()
+                                            handleClose('convertir')
+
+                                                if (reload) {
+                                                    reload.reload()
+                                                }
+                                                apiPutForm(`requisicion/${form.id}/presupuesto`, newForm, auth.access_token).then(
+                                                    res => {
+                                                        Swal.close()
+
+                                                        let timerInterval;
+                                                            Swal.fire({
+                                                            title: res.data.message ,
+                                                            html: " <b></b> milliseconds.",
+                                                            timer: 10000,
+                                                            timerProgressBar: true,
+                                                            didOpen: () => {
+                                                                Swal.showLoading();
+                                                                const timer = Swal.getPopup().querySelector("b");
+                                                                timerInterval = setInterval(() => {
+                                                                timer.textContent = `${Swal.getTimerLeft()}`;
+                                                                }, 100);
+                                                            },
+                                                            willClose: () => {
+                                                                clearInterval(timerInterval);
+                                                                
+                                                            }
+
+                                                            })
+                                                    // Swal.fire("Saved!", "Se creo la partida pero necesita aprovacion", "success");
+        
+                                                    // Swal.fire({
+                                                    //     icon: 'success',
+                                                    //     title: 'Guardado',
+                                                    //     text: 'Se creó la partida pero necesita aprobación',
+                                                    //     timer: 2000,
+                                                    //     timerProgressBar: true,
+                                                    //     onOpen: () => {
+                                                    //         handleClose('convertir')
+                                                    //         if (reload) {
+                                                    //             reload.reload()
+                                                    //         }
+                                                    //         Swal.showLoading()
+                                                    //     }
+                                                    // })
                                                 })
-                                           
+                                                .catch(err => {
+                                                    Swal.close()
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'El registro fue actualizado pero no fue posible subir la factura',
+                                                        text: 'Algo salio mal!',
+                                                        onOpen: () => {
+                                                            handleClose('convertir')
+                                                            if (reload) {
+                                                                reload.reload()
+                                                            }
+                                                            Swal.showLoading()
+                                                        }
+                                                    })
+                                                })
+        
+        
+                                            } else if (result.isDenied) {
+        
+                                              Swal.fire("Cambia el tipo de gasto para continuar", "", "info");
                                             }
-                                        })
+                                          });
+                                        }
+
+                                        // Swal.fire({
+                                        //     title: 'Oops...',
+                                        //     text: error.response.data.message,
+                                        //     icon: 'warning',
+                                        //     showCancelButton: false,
+                                        //     confirmButtonColor: '#3085d6',
+                                        //     // cancelButtonColor: '#d33',
+                                        //     // cancelButtonText: 'Cancelar',
+                                        //     confirmButtonText: 'Aceptar'
+                                        // }).then((result) => {
+                                        //     if (result.isConfirmed) {
+                                        //         Swal.fire({
+                                        //             title: 'Enviando',
+                                        //             text: 'Espere un momento...',
+                                        //             allowOutsideClick: false,
+                                        //             allowEscapeKey: false,
+                                        //             allowEnterKey: false,
+                                        //             showConfirmButton: false,
+                                        //             onOpen: () => {
+                                        //                 handleClose('convertir')
+                                        //                 if (reload) {
+                                        //                     reload.reload()
+                                        //                 }
+                                        //                 Swal.showLoading()
+                                        //             }
+                                        //         })
+                                           
+                                        //     }
+                                        // })
                                     }
                                 ).catch((error) => {
                                     Swal.close()
@@ -547,6 +656,19 @@ export default function Convertir(props) {
             })
         }
     }
+
+    const handleChangeCheck = () => {
+        setForm({
+            ...form,
+            facturas: !form.facturas
+        });
+    };
+
+    // console.log(data)
+    // console.log(form)
+
+
+
 
     return (
         <>
@@ -868,7 +990,7 @@ export default function Convertir(props) {
                                         value={form.conta}
                                         onChange={handleChange}
                                         className={classes.textField}
-                                        error={errores.compra ? true : false}
+                                        error={errores.conta ? true : false}
                                     >
                                         {estatusCompras.map((item, index) => {
                                             if (item.nivel === 2) {
@@ -1020,6 +1142,21 @@ export default function Convertir(props) {
                         />
                     </div>
                 </div>
+                <div>
+                    <InputLabel>¿Lleva factura?</InputLabel>
+                    <FormGroup row>
+                        <FormControlLabel
+                            control={<Checkbox checked={!form.facturas} onChange={handleChangeCheck} color='secondary' name='facturas' />}
+                            label="No"
+
+                        />
+                        <FormControlLabel
+                            control={<Checkbox checked={form.facturas} onChange={handleChangeCheck} color='primary' name='facturas' />}
+                            label="Si"
+
+                        />
+                    </FormGroup>
+                </div>  
 
             </div>
 

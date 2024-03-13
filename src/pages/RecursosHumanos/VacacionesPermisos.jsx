@@ -23,10 +23,12 @@ function VacacionesPermisos () {
     let prop = {
         pathname: '/rh/vacaciones-permisos',
     }
+    const moment = require('moment');
+
 
     const handleSelect = (key) => {
         setTabShow(key)
-        console.log(key)
+        // console.log(key)
     }
 
     // function acciones() {
@@ -57,7 +59,6 @@ function VacacionesPermisos () {
 
     const aceptarPermiso = (e, data)=>{
         e.preventDefault()
-        console.log(data)
 
         Swal.fire({
             title: '¿Estás seguro de aceptar el permiso?',
@@ -76,10 +77,8 @@ function VacacionesPermisos () {
             }
             
           }).then((result) => {
-            console.log(result)
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                console.log(e)
                 let form = {
                     estatus: 'pre_autorizado',
                     empleado_id: data.empleado_id,
@@ -95,9 +94,35 @@ function VacacionesPermisos () {
         })
     }
 
+    const adjuntos = (e, data)=>{
+        e.preventDefault()
+
+        const pdfUrl = data.adjuntos ? data.adjuntos[0].url : '';
+
+        if (pdfUrl.toLowerCase().endsWith('.pdf')) {
+            // Si el enlace es un archivo PDF, abrir el visor de PDF
+            const pdfViewerUrl = 'https://mozilla.github.io/pdf.js/web/viewer.html?file=' + encodeURIComponent(pdfUrl);
+            window.open(pdfViewerUrl, '_blank');
+        } else {
+            // Si no es un PDF, mostrar la imagen
+            Swal.fire({
+                imageUrl: pdfUrl,
+                imageHeight: 600, // Ajusta la altura según tus necesidades
+                imageAlt: "Image",
+                width: 800, // Ajusta el ancho según tus necesidades
+                showCloseButton: true, // Agrega un botón de cierre
+                confirmButtonText: 'Cerrar', // Cambia el texto del botón de confirmación
+                customClass: {
+                    image: 'custom-image-class', // Agrega clases CSS personalizadas para la imagen
+                    confirmButton: 'custom-confirm-button-class', // Agrega clases CSS personalizadas para el botón de confirmación
+                },
+            });
+        }
+      
+    }
+
     const rechazarPermiso = (e, data)=>{
         e.preventDefault()
-        console.log(data)
             Swal.fire({
             title: '¿Estás seguro de rechazar el permiso?',
             icon: 'warning',
@@ -133,7 +158,6 @@ function VacacionesPermisos () {
 
     const aceptarVacaciones = (e, data)=>{
         e.preventDefault()
-        console.log(data)
 
         Swal.fire({
             title: '¿Estás seguro de aceptar las vacaciones?',
@@ -152,10 +176,8 @@ function VacacionesPermisos () {
             }
             
           }).then((result) => {
-            console.log(result)
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                console.log(e)
                 let form = {
                     estatus: 'pre_autorizado',
                     empleado_id: data.empleado_id,
@@ -173,7 +195,6 @@ function VacacionesPermisos () {
 
     const rechazarVacaciones = (e, data)=>{
         e.preventDefault()
-        console.log(data)
             Swal.fire({
             title: '¿Estás seguro de rechazar las vacaciones?',
             icon: 'warning',
@@ -216,6 +237,9 @@ function VacacionesPermisos () {
 
                 <button className='btn-rechazar' onClick={e=>rechazarPermiso(e, data)} >
                     Rechazar
+                </button>
+                <button className='btn-primary' onClick={e=>adjuntos(e, data)} >
+                    Adjuntos
                 </button>
                 {/* <DropdownButton
                     menualign="right" 
@@ -281,7 +305,6 @@ function VacacionesPermisos () {
         datos.map((item) => { 
             // console.log(item)
          item.map((item2) => { 
-            console.log(item2)
             aux.push({
                 actions: setActionsVacaciones(item2),
                 empleado: `
@@ -305,7 +328,6 @@ function VacacionesPermisos () {
         datos.map((item) => { 
             // console.log(item)
          item.map((item2) => { 
-            console.log(item2)
             aux.push({
                 actions: setActionsPermisos(item2),
                 empleado: `
@@ -314,8 +336,8 @@ function VacacionesPermisos () {
                     ${item2.empleado.apellido_materno}
                 `,
                 comentario: item2.comentarios,
-                fecha_inicio: item2.fecha_inicio,
-                fecha_fin: item2.fecha_fin,
+                fecha_inicio: moment(item2.fecha_inicio).format('YYYY-MM-DD') + ' / ' + item2.hora_entrada + ' - ' + item2.hora_salida  ,
+                fecha_fin: moment(item2.fecha_inicio).format('YYYY-MM-DD') + ' / ' + item2.hora_ir + ' - ' + item2.hora_regresar  ,
                 estado: item2.estatus
             })
           })

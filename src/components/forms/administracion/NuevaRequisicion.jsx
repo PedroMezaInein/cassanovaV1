@@ -12,18 +12,19 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import Style from './NuevaRequisicion.module.css'
 import './../../../styles/_nuevaRequisicion.scss'
 
 export default function NuevaRequisicion(props) {
     const {handleClose, reload} = props
-    const user = useSelector(state => state.authUser)
-    const departamento = useSelector(state => state.authUser.departamento)
-    const departamentos = useSelector(state => state.opciones.areas)
-    const presupuestos = useSelector(state => state.opciones.presupuestos)
+    const user = useSelector(form => form.authUser)
+    const departamento = useSelector(form => form.authUser.departamento)
+    const departamentos = useSelector(form => form.opciones.areas)
+    const presupuestos = useSelector(form => form.opciones.presupuestos)
 
-    const [state, setState] = useState({
+    const [form, setForm] = useState({
         solicitante: user.user.id,
         fecha:'',
         departamento: departamento.departamentos[0].id,
@@ -31,13 +32,19 @@ export default function NuevaRequisicion(props) {
         descripcion: '',
         solicitud: '',
         presupuesto: '',
+        monto: '',
+        partidas: [], 
+        presupuestoActual: true,
+        todosPresupuestos: false,  
     });
     
+    const { presupuestoActual, todosPresupuestos } = form;
+
     const [errores, setErrores] = useState({})
 
     const handleFile = (e) => {
-        setState({
-            ...state,
+        setForm({
+            ...form,
             solicitud: e.target.files[0]
         })
     }
@@ -45,15 +52,71 @@ export default function NuevaRequisicion(props) {
     const handleChange = (event) => {
         // name son los diferentes tipos de atributos (departamento, fecha...)
         let name = event.target.name;
-        setState({
-            ...state,
-            [name]: event.target.value,
-        });
+        let value = event.target.value;
+    
+        setForm((prevState) => ({
+
+            ...prevState,
+            [name]: value,
+            tipo_gasto: null, // Reset the selected category when the budget changes
+        }));
+
+         // Find the selected budget by its ID
+         const selectedBudget = presupuestos.find((budget) => budget.id === value);
+
+         if (selectedBudget) {
+
+            // console.log(form.departamento)
+            // console.log(departamentos)
+
+            const matchingDepartments = departamentos.filter((department) => parseInt(department.id_area) === form.departamento);
+
+
+            // console.log("matchingDepartments:", matchingDepartments);
+
+            if (matchingDepartments.length > 0) {
+                const updatedPartidas = matchingDepartments.flatMap((matchingDepartment) =>
+                    matchingDepartment.partidas.map((partida) => {
+                        const matchingCategories = selectedBudget.rel.filter((category) => {
+                            return String(category.id_partida) === String(partida.id);
+                        });
+            
+                        // console.log("partida.id:", partida.id);
+                        
+                        if (matchingCategories.length > 0) {
+            
+                            return {
+                                id: partida.id,
+                                nombre: partida.nombre,
+                            };
+                        }
+                        return null;
+                    })
+                );
+            
+                // Remove null values (occurs when there are no matching categories)
+                const filteredPartidas = updatedPartidas.filter(partida => partida !== null);
+            
+                // console.log("Updated Partidas:", filteredPartidas);
+            
+                setForm((prevState) => ({
+                    ...prevState,
+                    partidas: filteredPartidas,
+                }));
+            }
+
+
+        }
     };
+    
+    useEffect(() => {
+        // console.log("Updated partidas:", form.partidas);
+    }, [form.partidas]);
+
 
     const handleChangeFecha = (date, tipo) => {
-        setState({
-            ...state,
+        setForm({
+            ...form,
             [tipo]: new Date(date)
         })
     };
@@ -61,23 +124,23 @@ export default function NuevaRequisicion(props) {
     const validateForm = () => {
         let validar = true
         let error = {}
-        if(state.departamento === ''){
+        if(form.departamento === ''){
             error.departamento = "Seleccione un departamento"
             validar = false
         }
-        if(state.tipo_gasto === ''){
+        if(form.tipo_gasto === ''){
             error.tipo_gasto = "Seleccione el tipo de gasto"
             validar = false
         }
-        if(state.descripcion === ''){
+        if(form.descripcion === ''){
             error.descripcion = "Escriba una descripcion"
             validar = false
         }
-        if (state.presupuesto === '') {
+        if (form.presupuesto === '') {
             error.presupuesto = "Seleccione un presupuesto"
             validar = false
         }
-        if (state.fecha === '' || state.fecha === null) {
+        if (form.fecha === '' || form.fecha === null) {
             error.fecha = "Seleccione una fecha"
             validar = false
         }
@@ -110,15 +173,17 @@ export default function NuevaRequisicion(props) {
             }) 
             try {
                 let dataForm = new FormData()
-
+                // console.log(form)
                 let newForm = {
-                    id_solicitante: state.solicitante,
-                    id_departamento: state.departamento,
-                    id_gasto: state.tipo_gasto,
-                    descripcion: state.descripcion,
-                    fecha: formatDate(state.fecha),
-                    solicitud: state.solicitud,
-                    presupuesto: state.presupuesto
+                    id_solicitante: form.solicitante,
+                    id_departamento: form.departamento,
+                    id_gasto: form.tipo_gasto,
+                    descripcion: form.descripcion,
+                    fecha: formatDate(form.fecha),
+                    solicitud: form.solicitud,
+                    presupuesto: form.presupuesto,
+                    monto: form.monto
+
                 }
 
                 let aux = Object.keys(newForm)
@@ -134,7 +199,7 @@ export default function NuevaRequisicion(props) {
                 })
 
                 dataForm.append(`files_name_requisicion[]`, 'requisicion01')
-                dataForm.append(`files_requisicion[]`, state.solicitud)
+                dataForm.append(`files_requisicion[]`, form.solicitud)
                 dataForm.append('adjuntos[]', "requisicion")
 
                 apiPostForm('requisicion', dataForm, user.access_token)
@@ -199,30 +264,89 @@ export default function NuevaRequisicion(props) {
     }
 
     const handleChangeDepartamento = (event) => {
-        let name = event.target.name; // aquí declaro en que componente realizaré el cambio, extrayendo el nombre dinámico de este, ya sea de un imput, un select etc
-        let value = parseInt(event.target.value, 10); // Aquí almaceno el valor ingresado convirtiendólo a entero
-        setState({
-            ...state,
-            [name]: value, //Aquí asigno el nombre con el valor, por ejemplo si cambio de departamento digo que [departamento] : 82
-            tipo_gasto: null,
+        let name = event.target.name;
+        let value = parseInt(event.target.value, 10);
+      
+        const selectedDepartment = departamentos.find((department) => department.id_area === value);
+      
+        setForm((prevState) => ({
+          ...prevState,
+          [name]: value,
+          tipo_gasto: null, // Reset the selected category when the department changes
+          partidas: selectedDepartment ? selectedDepartment.partidas : [], // Update the partidas array
+          presupuesto: selectedDepartment ? selectedDepartment.presupuesto_default : '', // Set presupuesto based on the selected department
+        }));
+      };
+      
 
-        });
+
+    const handleMoney = (e) => {
+        setForm({
+            ...form,
+            monto: e
+        })
+    }
+
+    const handleChangeCheckbox = (event) => {
+        const { name, checked } = event.target;
+
+        if (name === 'presupuestoActual' && checked) {
+            setForm((prevState) => ({
+                ...prevState,
+                presupuestoActual: true,
+                todosPresupuestos: false,
+            }));
+        } else if (name === 'todosPresupuestos' && checked) {
+            setForm((prevState) => ({
+                ...prevState,
+                presupuestoActual: false,
+                todosPresupuestos: true,
+            }));
+        } else {
+            // If none of the checkboxes is selected, uncheck both
+            setForm((prevState) => ({
+                ...prevState,
+                presupuestoActual: false,
+                todosPresupuestos: false,
+            }));
+        }
     };
-    
     
 
     // const handleChangeDepartamento = (e) => {
-    //     setState({
-    //         ...state,
+    //     setForm({
+    //         ...form,
     //         [e.target.name]: e.target.value,
     //         tipo_gasto: null,
     //     })
     // }
 
-    const itemsPresupuesto = presupuestos.map((item, index) => ( item.id_area !== state.departamento ?
+    // const handleChangeTipo = (e) => {
+    //     console.log("Selected Tipo de Gasto:", e.target.value);
+    //     // form.tipo_gasto = e.target.value
+    //     setForm((prevState) => ({
+    //         ...prevState,
+    //         [e.target.name]: e.target.value,
+    //         // tipo_gasto: e.target.value,
+    //     }));
+    // };
+
+    const handleChangeTipo = (event) => {
+        let name = event.target.name;
+        setForm({
+            ...form,
+            [name]: event.target.value,
+        });
+    };
+
+
+    
+    const itemsPresupuesto = presupuestos.map((item, index) => ( item.id_area !== form.departamento ?
         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
         : ''
     ));
+
+
 
     return (
         <>
@@ -248,7 +372,7 @@ export default function NuevaRequisicion(props) {
                                 <InputLabel>Departamento</InputLabel>
                                 <Select
                                     className={Style.select}
-                                    value={state.departamento}
+                                    value={form.departamento}
                                     name="departamento"
                                     onChange={handleChangeDepartamento}
                                     disabled={user.user.tipo.id ==1 ? false : true}
@@ -263,44 +387,21 @@ export default function NuevaRequisicion(props) {
                         }
                     </div>
 
-                    <div>  
-                        {departamentos.length > 0 && state.departamento !== ''?
-                            <>
-                                <InputLabel>Tipo de Gasto</InputLabel>
-                                <Select
-                                    className={Style.select}
-                                    value={state.tipo_gasto}
-                                    name="tipo_gasto"
-                                    onChange={handleChange}
-                                    error={errores.tipo_gasto ? true : false}
-                                >
-                                    {departamentos.find(item => item.id_area == state.departamento).partidas.map((item, index) => (
-                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                    ))}
+                    <div>
+                    {presupuestos.length > 0 && form.departamento !== '' ? (
 
-                                </Select>
-                            </>
-                            : null
-                        }
-                    </div>
-
-                </div>
-
-                <div className={Style.nuevaRequisicion_segundoBloque}>
-                    <div className={Style.nuevaRequisicion}>
-                        {presupuestos.length > 0 && state.departamento !== '' ? (
                             <>
                                 <InputLabel>Presupuesto</InputLabel>
                                 <Select
                                     className={Style.select}
-                                    value={state.presupuesto}
+                                    value={form.presupuesto}
                                     name="presupuesto"
                                     onChange={handleChange}
                                     error={errores.presupuesto ? true : false}
                                 >
                                 {
                                     presupuestos
-                                        .filter(presupuesto => presupuesto.rel.some(item => item.id_area === state.departamento))
+                                        .filter(presupuesto => presupuesto.rel.some(item => item.id_area === form.departamento))
                                         .map((presupuesto, index) => (
                                             // Usamos map solo para los objetos que pasaron el filtro anterior
                                             <MenuItem key={index} value={presupuesto.id}>
@@ -313,21 +414,92 @@ export default function NuevaRequisicion(props) {
                         ) : null}
                     </div>
 
+                   
+
+                </div>
+
+                    <div className={Style.checkboxContainer}>
+                        <div className={Style.checkboxItem}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="presupuestoActual"
+                                    checked={presupuestoActual}
+                                    onChange={handleChangeCheckbox}
+                                />
+                                 Presupuesto Actual
+                            </label>
+                        </div>
+                        <div className={Style.checkboxItem}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="todosPresupuestos"
+                                    checked={todosPresupuestos}
+                                    onChange={handleChangeCheckbox}
+                                />
+                                 Todos
+                            </label>
+                        </div>
+                    </div>
+
+                <div className={Style.nuevaRequisicion_segundoBloque}>
+                    <div className={Style.nuevaRequisicion}>
+                    {form.presupuestoActual && form.partidas && form.partidas.length > 0 ? (
+                            <>
+                                <InputLabel>Tipo de Gasto</InputLabel>
+                                <Select
+                                    className={Style.select}
+                                    value={form.tipo_gasto}
+                                    name="tipo_gasto"
+                                    onChange={handleChangeTipo}
+                                    error={errores.tipo_gasto ? true : false}
+                                >
+                                    {form.partidas.map((category, index) => (
+                                        <MenuItem key={index} value={category.id}>
+                                            {category.nombre}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </>
+                        ) : null}
+
+                        
+                         {form.todosPresupuestos && departamentos.length > 0 && form.departamento !== '' ? (
+
+                                <>
+                                    <InputLabel>Tipo de Gasto</InputLabel>
+                                    <Select
+                                        className={Style.select}
+                                        value={form.tipo_gasto}
+                                        name="tipo_gasto"
+                                        onChange={handleChangeTipo}
+                                        error={errores.tipo_gasto ? true : false}
+                                    >
+                                        {departamentos.find(item => item.id_area == form.departamento).partidas.map((item, index) => (
+                                            <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </>
+                            ) : null}
+
+                    </div>
+
 
                     {/* <div className={Style.nuevaRequisicion}>
-                        {presupuestos.length > 0 && state.departamento !== '' ?
+                        {presupuestos.length > 0 && form.departamento !== '' ?
                             <>
                                 <InputLabel>Presupuesto</InputLabel>
                                 <Select
                                     className={Style.select}
-                                    value={state.presupuesto}
+                                    value={form.presupuesto}
                                     name="presupuesto"
                                     onChange={handleChange}
                                     error={errores.presupuesto ? true : false}
                                 >
                                 {
                                     presupuestos.map((item, index) => (
-                                        item.filter(item.rel.some(item2 => item2.id_area == state.departamento ? 
+                                        item.filter(item.rel.some(item2 => item2.id_area == form.departamento ? 
                                             <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                         ))
                                     ))
@@ -336,7 +508,7 @@ export default function NuevaRequisicion(props) {
                                     {
                                     presupuestos.map((item, index) => ( 
                                         item.rel.map((item2, index2) => (
-                                            item2.id_area == state.departamento ? 
+                                            item2.id_area == form.departamento ? 
                                             <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                             : <></>
                                         ))
@@ -349,22 +521,22 @@ export default function NuevaRequisicion(props) {
                             : null
                         }
                     </div> */}
-                       {/* {presupuestos.map((item, index) => ( item.id_area == state.departamento ? 
+                       {/* {presupuestos.map((item, index) => ( item.id_area == form.departamento ? 
                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                         : <></>
                                     ))} */}
                                     {/* {itemsPresupuesto} */}
                     <div className={Style.nuevaRequisicion}>
-                        <InputLabel error={errores.fecha ?true: false}>Fecha</InputLabel>
+                        <InputLabel error={errores.fecha ?true: false}>Fecha que lo requieres</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                             <Grid>
                                 <KeyboardDatePicker
                                     className={Style.select}
                                     format="dd/MM/yyyy"
                                     name='fecha'
-                                    value={state.fecha !=='' ? state.fecha : null}
+                                    value={form.fecha !=='' ? form.fecha : null}
                                     onChange={e=>handleChangeFecha(e,'fecha')}
-                                    // defaultValue={state.fecha}
+                                    // defaultValue={form.fecha}
                                     placeholder="dd/mm/yyyy"
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
@@ -379,10 +551,10 @@ export default function NuevaRequisicion(props) {
                             className={Style.select}
                             label="Descripcion"
                             placeholder="Deja una descripción"
-                            onChange={handleChange}
+                            onChange={handleChangeTipo}
                             margin="normal"
                             name='descripcion'
-                            defaultValue={state.descripcion}
+                            defaultValue={form.descripcion}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -390,9 +562,23 @@ export default function NuevaRequisicion(props) {
                             error={errores.descripcion ? true : false}
                         />
                     </div>
+                  
                 </div>
 
             </div>
+            <div className={Style.container}>
+                 <div>
+                    <CurrencyTextField
+                        label="monto solicitado"
+                        variant="standard"
+                        value={form.monto}
+                        currencySymbol="$"
+                        outputFormat="number"
+                        onChange={(event, value) => handleMoney(value)}
+                        error={errores.monto ? true : false}
+                    />
+                </div>
+                </div>
 
             <div>
                 <div className={Style.file}>
@@ -402,7 +588,7 @@ export default function NuevaRequisicion(props) {
                     <label htmlFor="file">Seleccionar archivo(s)</label>
                     <input type="file" id='file' name="file" onChange={handleFile} />
                     <div>
-                        {state.solicitud.name ? <div className='file-name'>{state.solicitud.name}</div> : null}
+                        {form.solicitud.name ? <div className='file-name'>{form.solicitud.name}</div> : null}
                     </div>
                     
                 </div>

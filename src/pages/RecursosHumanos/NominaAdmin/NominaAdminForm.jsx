@@ -24,6 +24,7 @@ class NominaAdminForm extends Component {
             periodo: '',
             empresa:'',
             empresas: '',
+            nombre_presupuesto:'',
             fechaInicio: new Date(),
             fechaFin: new Date(),
             fecha:'',
@@ -48,7 +49,8 @@ class NominaAdminForm extends Component {
                     files: []
                 }
             },
-            tipo:''
+            tipo:'',
+            presupuesto:''
         },
         options: {
             usuarios: [],
@@ -117,9 +119,10 @@ class NominaAdminForm extends Component {
                 Swal.close()
                 const { nomina } = response.data
                 const { form, options } = this.state
-
+                console.log(nomina)
                 form.periodo = nomina.periodo
                 form.empresa = nomina.empresa ? nomina.empresa.id.toString() : ''
+                form.nombre_presupuesto = nomina.presu ? nomina.presu.nombre : ''
                 form.fechaInicio = new Date(moment(nomina.fecha_inicio))
                 form.fechaFin = nomina.fecha_fin ? new Date(moment(nomina.fecha_fin)) : ''
                 form.fecha = nomina.fecha ? nomina.fecha : ''
@@ -372,7 +375,7 @@ class NominaAdminForm extends Component {
         const { name, value } = e.target
         let { form } = this.state
         form[name] = value
-        if(form.empresa !== ''){
+        if(form.empresa && form.presupuesto !== ''){
             form.periodo = form.año+form.mes+form.quincena
             if(form.quincena === '1Q'){
                 form.fechaInicio= moment(`${form.año}-${form.mes}-01`).format("DD/MM/YYYY");

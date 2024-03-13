@@ -17,11 +17,14 @@ import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import { setDateTable } from '../../../functions/setters'
 import { printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 
-import { setMoneyTable } from '../../../functions/setters'
+import { setMoneyTable,setLabelTable } from '../../../functions/setters'
 
 import StatusIndicatorGastos from './Modales/StatusIndicatorGastos'
 
 import Swal from 'sweetalert2'
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
+import Button from '@material-ui/core/Button';
 
 import { apiOptions, catchErrors, apiDelete, apiPostFormResponseBlob } from './../../../functions/api';
 
@@ -186,14 +189,14 @@ export default function EgresosTable(props) {
         { nombre: 'Cuenta', identificador: 'cuenta', stringSearch: false },
 
         { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false }, //quitar
-        { nombre: 'id requisicion', identificador: 'id_requisicion', stringSearch: false }, //quitar
+        { nombre: 'Requisicion', identificador: 'id_requisicion', stringSearch: false ,active : true }, //quitar
 
         // { nombre: 'Pago', identificador: 'pago', stringSearch: false },
         // { nombre: 'Impuesto', identificador: 'impuesto', stringSearch: false },
         // { nombre: 'Estatus', identificador: 'estatusCompra', stringSearch: false },
-        { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false }, //quitar
+        // { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false }, //quitar
 
-        { nombre: 'estatus', identificador: 'semaforo', stringSearch: false } //quitar
+        // { nombre: 'estatus', identificador: 'semaforo', stringSearch: false } //quitar
     ]
 
     const acciones = [
@@ -352,6 +355,18 @@ export default function EgresosTable(props) {
             )
         }
     }
+
+    const HtmlTooltip = withStyles((theme) => ({
+        tooltip: {
+          backgroundColor: '#f5f5f9',
+          color: 'rgba(0, 0, 0, 0.87)',
+          maxWidth: 500,
+          maxHeight: 500,
+          fontSize: theme.typography.pxToRem(14),
+          border: '1px solid #dadde9',
+        },
+      }))(Tooltip);
+
     
     const formatNumber = (num) => {
         return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
@@ -360,11 +375,13 @@ export default function EgresosTable(props) {
     const proccessData = (datos) => { 
         let aux = []
         datos.data.data.map((dato) => {
+            // console.log(dato)
             aux.push({
                 data: dato,
+                acciones:dato,
                 id: dato.id ? dato.id : '',
                 fecha: dato.created_at ? setDateTable(dato.created_at) : '',
-                monto: dato.monto ? formatNumber(dato.monto) : '',
+                monto: dato.monto ? formatNumber(dato.monto) : '$0',
                 area: dato.area ? dato.area.nombre : '',
                 partida: dato.partidas ? dato.partidas.nombre : '',
                 subarea: dato.subarea ? dato.subarea.nombre : '',
@@ -373,17 +390,33 @@ export default function EgresosTable(props) {
                 pago: dato.tipo_pago ? dato.tipo_pago.tipo : '',
                 impuesto: dato.tipo_impuesto ? dato.tipo_impuesto.tipo : '',
                 descripcion: dato.descripcion ? dato.descripcion : '',
+                id_requisicion: dato.requisicion ? adjuntos(dato) : 'N/A',  
+
                 // factura: dato.factura ? 'Con factura' : 'Sin factura',
-                semaforo: createStatusIndicator(dato),
+                // semaforo: createStatusIndicator(dato),
                 factura:label(dato),  
 
-                id_requisicion: dato.id_requisiciones ? dato.id_requisiciones : 's/n',
+                // id_requisicion: dato.id_requisiciones ? dato.id_requisiciones : 's/n',
 
             })
         }
         )
         return aux
     }
+    const adjuntos = (dato) => { 
+        // console.log(dato.requisicion.presu)
+            return(
+            <div>  
+                    <div key={dato.id}>
+                            <em>{dato.requisicion.orden_compra ? "R: " + dato.requisicion.orden_compra : ' N/A'}</em>   <br />                            
+
+                            <em>{dato.requisicion.presu ? "P: " + dato.requisicion.presu.nombre : ' N/A'}</em>  
+                    </div>
+                </div>      
+             )                
+    }
+
+  
 
     const label = (dato) => {  
         return(

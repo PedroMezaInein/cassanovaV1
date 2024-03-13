@@ -15,7 +15,7 @@ import { apiPutForm, apiGet, apiPostForm } from '../../../../functions/api'
 import CarruselAdjuntos from './CarruselAdjuntos'
 
 
-import './../../../../styles/_adjuntosRequisicion.scss'
+import style from './../../../../styles/_adjuntosRequisicion.scss'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -63,8 +63,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Adjuntos(props) {
-    const { data, nuevaRequisicion } = props
-    console.log('data', data)
+    const { data, nuevaRequisicion ,factura} = props
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
     const [value, setValue] = useState(0);
@@ -90,7 +89,7 @@ export default function Adjuntos(props) {
     }, [])
 
     const handleChange = (event, newValue) => {
-        console.log('newvalue', event) 
+        // console.log('newvalue', event) 
         setValue(newValue);
     };
 
@@ -108,7 +107,9 @@ export default function Adjuntos(props) {
                         Comprobante_pago: [],
                         Factura: [],
                     }
+                    // console.log(aux.Cotizaciones)
                     adjunAux.forEach((element) => {
+                        // console.log(element)
                         switch (element.pivot.nombre) {
                             case 'Ficha_tecnica':
                                 aux.Ficha_tecnica.push(element)
@@ -132,6 +133,7 @@ export default function Adjuntos(props) {
                                 break;
                         }
                     });
+                    // console.log(aux)
                     setAdjuntos(aux)
                 })
             
@@ -148,11 +150,16 @@ export default function Adjuntos(props) {
     }
 
     const handleTab = (e) => {
-        console.log('tab', e)
+        // console.log(e)
         setActiveTab(e)
+        form.tipo = ''
+        setForm({
+            ...form,
+        })
     }
 
     const handleFile = (e) => {
+        form.tipo = e.target.files[0]
         setForm({
             ...form,
             [activeTab]: [e.target.files[0]]
@@ -194,7 +201,7 @@ export default function Adjuntos(props) {
 
             data.append(`files_name_requisicion[]`, form[activeTab][0].name)
             data.append(`files_requisicion[]`, form[activeTab][0])
-            data.append('adjuntos[]', "requisicion")
+            data.append('adjuntos[]', activeTab)
             data.append('tipo', activeTab)
             
 
@@ -210,7 +217,7 @@ export default function Adjuntos(props) {
                         })
                         getAdjuntos()
 
-                        console.log('res', res)
+                        // console.log('res', res)
                         if (res.status === 200) {
                             Swal.fire({
                                 icon: 'success',
@@ -249,20 +256,21 @@ export default function Adjuntos(props) {
     }
 
     const getButtonOptions = (tipo) => { 
+        // console.log(form.tipo)
+        // console.log(tipo)
         return (
             <>
-                <div className='adjuntos_send'>
-                    <div className="file">
+                <div className={style.adjuntos_send}>
+                    <div className="file" >
 
-                        <label htmlFor="file">Selecciona el Comunicado</label>
-                        <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                        <label htmlFor="file">Selecciona el adjunto</label>
+                        <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar adjunto" />
                         <div>
-                            {form.tipo && form.tipo.length > 0 ? <p>{form.tipo[0].name}</p> : <p>No hay archivo seleccionado</p>}
+                            {form.tipo ? <div className='file-name'> {form.tipo.name} </div>: <p>No hay archivo seleccionado</p>}
                         </div>
-
                     </div>
                     <div>
-                        <button className='sendButton' onClick={handleSubmit}>Subir</button>
+                        <button  style={{ marginLeft: '1rem' }} className='sendButton' onClick={handleSubmit}>Subir</button>
                     </div>
                 </div>
             </>
@@ -284,6 +292,7 @@ export default function Adjuntos(props) {
         )
     }
 
+   
     return (
         <>
             <div className={classes.root}>
@@ -296,10 +305,12 @@ export default function Adjuntos(props) {
                     aria-label="Vertical tabs example"
                     className={classes.tabs}
                 >
-                    <Tab label="Comunicado" {...a11yProps(0)} name="ficha_tecnica" onClick={() => handleTab('ficha_tecnica')} />
+                    <Tab label="Adjunto" {...a11yProps(0)} name="ficha_tecnica" onClick={() => handleTab('Ficha_tecnica')} />
                     {nuevaRequisicion ? null : <Tab label="Solicitud" {...a11yProps(1)} name="solicitud" onClick={() => handleTab('Solicitud')} />}
-                    {nuevaRequisicion ? null : <Tab label="Cotizaciones" {...a11yProps(2)} name="cotizaciones" onClick={() => handleTab('Cotizaciones')} />}
+                    {nuevaRequisicion ? null : <Tab label="Cotizaciones" {...a11yProps(2)} name="Cotizaciones" onClick={() => handleTab('Cotizaciones')} />}
                     {nuevaRequisicion ? null : <Tab label="Orden de compra" {...a11yProps(3)} name="orden_compra" onClick={() => handleTab('Orden_compra')} />}
+                    {nuevaRequisicion ? null : <Tab label="Comprobante de pago" {...a11yProps(4)} name="comprobante_pago" onClick={() => handleTab('Comprobante_pago')} />}
+                    {factura ? null : <Tab label="Factura" {...a11yProps(5)} name="Factura" onClick={() => handleTab('Factura')} />} 
                     
                 </Tabs>
 

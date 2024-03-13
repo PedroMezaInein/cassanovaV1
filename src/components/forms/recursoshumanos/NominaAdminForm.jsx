@@ -9,11 +9,54 @@ import '../../../styles/_nominaAdmin.scss'
 
 class NominaAdminForm extends Component {
     state = {
-        formeditado: 0
+        formeditado: 0,
+        valoresPresuEmpresaSeleccionada: [], // Estado para almacenar los valores del segundo Select
+
     }
+  
     updateEmpresa = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value, name: 'empresa' } })
+        const { onChange, options } = this.props;
+        const empresaSeleccionadaId = value;    
+        // Encuentra la empresa seleccionada en el array de empresas
+        const empresaSeleccionada = options.empresas.find(
+            empresa => empresa.value === empresaSeleccionadaId
+        );
+    
+        if (empresaSeleccionada) {
+            const opcionesTransformadas = empresaSeleccionada.data.presu;
+
+            const presupuestosNomina = opcionesTransformadas.filter(item =>
+              item.nombre.toLowerCase().includes('nomina')
+            );            
+            const valoresPresuEmpresaSeleccionada = presupuestosNomina.map(item => ({
+              label: item.nombre,
+              value: item.id,
+              name: item.nombre,
+            }));           
+    
+            // Llama al onChange con el valor de la empresa seleccionada
+            onChange({ target: { value: value, name: 'empresa' } });
+            onChange({ target: { value: '', name: 'presupuesto' } });
+
+    
+            // Actualiza el estado con las opciones transformadas
+            this.setState({ valoresPresuEmpresaSeleccionada });
+        } else {
+            // Si no se encuentra la empresa, limpia los valores seleccionados
+            onChange({ target: { value: '', name: 'presupuesto' } });
+            onChange({ target: { value: value, name: 'empresa' } });
+
+            this.setState({ valoresPresuEmpresaSeleccionada: [] });
+           
+        }
+    };
+    
+   
+
+    updatePresu = value => {
+        const { onChange,options } = this.props     
+        onChange({ target: { value: value, name: 'presupuesto' } })
+        // onChange({ target: { value: '', name: 'presupuesto' } })        
     }
 
     updateUsuario = (value, key) => {
@@ -163,8 +206,10 @@ class NominaAdminForm extends Component {
         const { onSubmit } = this.props
         validateAlert2(onSubmit, e, 'form-nominaadmin', tipo, enviar)
     }
+
     render() {
         const {auth, options, addRowNominaAdmin, deleteRowNominaAdmin, onChangeNominasAdmin, form, onSubmit, formeditado, title, action, clearFiles, onChangeAdjunto } = this.props
+        const { valoresPresuEmpresaSeleccionada } = this.state; // Obtén los valores del segundo Select del estado
         return (
             <Form id="form-nominaadmin"
                 onSubmit={
@@ -207,6 +252,33 @@ class NominaAdminForm extends Component {
                                     <label className="label-custom">FECHA</label>
                                     <input type="date" className={`form-control ${form.fecha === ''? 'is-invalid': ""}`} name="fecha" value={form.fecha} onChange={this.updateFecha} />
                                 </div>
+                                {/* <div className="col-md-4">
+                                    <SelectSearchGray 
+                                        formeditado={formeditado} options={options.tipos} placeholder="Presupuesto"
+                                        name="presupuesto" value={form.presupuesto} 
+                                        onChange={this.updateTipo}
+                                        iconclass="far fa-building" messageinc="Selecciona el tipo de proyecto"
+                                    />
+                                </div> */}
+                                {
+                                 action == 'edit' ?
+                                 
+                                    <div className="col-md-3">
+                                        <InputGray formeditado={formeditado} placeholder="NOMBRE PRESUPUESTO"
+                                        name="presupuesto" value={form.nombre_presupuesto} withtaglabel={1} withtextlabel={1}
+                                        messageinc="NOMBRE PRESUPUESTO" withicon={1} customdiv="mb-0" disabled />
+                                    </div>
+                                    :
+                                    <div className="col-md-3">
+                                        <SelectSearchGray formeditado={formeditado} options={valoresPresuEmpresaSeleccionada}  placeholder="SELECCIONA EL PRESUPUESTO"
+                                        name="presupuesto" value={form.presupuesto} onChange={this.updatePresu}
+                                        withtaglabel={1} withtextlabel={1}
+                                        messageinc="Selecciona el presupuesto" withicon={1} customdiv="mb-0" />
+                                    </div>
+                                
+
+                                }
+                                 
                             </div>
                             <div className="separator separator-dashed mt-10 mb-2"></div>
                             {

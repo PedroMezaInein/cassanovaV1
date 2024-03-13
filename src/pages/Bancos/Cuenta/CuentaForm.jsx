@@ -17,7 +17,9 @@ class CuentaForm extends Component {
             bancos: [],
             estatus: [],
             tipos: [],
-            usuarios:[]
+            usuarios:[],
+            impuesto:[]
+
         },
         tipo: '',
         form: {
@@ -31,7 +33,11 @@ class CuentaForm extends Component {
             empresas: [],
             descripcion: '',
             usuarios: [],
-            clabe: ''
+            clabe: '',
+            empresas: [],
+            impuesto: '',
+            factura: '',
+
         }
     }
     componentDidMount() {
@@ -68,6 +74,7 @@ class CuentaForm extends Component {
                     if (state.cuenta) {
                         const { form } = this.state
                         const { cuenta } = state
+                        // console.log(cuenta)
                         form.nombre = cuenta.nombre
                         form.numero = cuenta.numero
                         form.clabe = cuenta.clabe_interbancaria
@@ -100,6 +107,9 @@ class CuentaForm extends Component {
                             form.usuarios = aux
                         }
                         form.descripcion = cuenta.descripcion
+                        form.impuesto = cuenta.id_impuesto ? cuenta.id_impuesto.toString() : '';
+                        form.factura = cuenta.factura ? cuenta.factura.toString(): '0';
+
                         this.setState({
                             /* ...this.state, */
                             title: 'Editar cuenta',
@@ -208,7 +218,7 @@ class CuentaForm extends Component {
         await axios.get(URL_DEV + 'cuentas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { bancos, estatus, tipos, empresas, users } = response.data
+                const { bancos, estatus, tipos, empresas, impuesto, users } = response.data
                 const { options, cuenta } = this.state
                 let aux = []
                 if (tipo === 'bancos') {
@@ -262,6 +272,7 @@ class CuentaForm extends Component {
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.estatus = setSelectOptions(estatus, 'estatus')
                 options.usuarios =  setOptions(users, 'name', 'id')
+                options.impuesto = setOptions(impuesto, 'tipo', 'id')
                 this.setState({
                     ...this.state,
                     options,

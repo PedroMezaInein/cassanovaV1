@@ -66,7 +66,7 @@ export default function CrearCompras(props) {
 
         // empresa: data.empresa.id ? data.empresa.id : '',
         estatusCompra: 2,
-        factura: false, 
+        factura: data.factura == 1 ? true : false, 
         facturaItem: '',
         facturaObject: {},
         fecha: data.created_at,
@@ -74,20 +74,22 @@ export default function CrearCompras(props) {
         leadId: "",
         nombre: "",
         numCuenta: "",
-        proveedor: data.proveedor.razon_social ? data.proveedor.id : '',
-        proveedor_nombre: data.proveedor.razon_social,
+        proveedor: data.proveedor ? data.proveedor.id : '',
+        proveedor_nombre:data.proveedor ? data.proveedor.razon_social : '',
         proyecto: data.proyecto.nombre ? data.proyecto.id : '',
         proyecto_nombre: data.proyecto.nombre,
         razonSocial: '',
-        rfc: null,
+        rfc:  data.proveedor ? data.proveedor.rfc : '',
         subarea: data.subarea ? data.subarea.id : '',
         telefono: '',
         tipo: 0,
-        tipoImpuesto: 1,
-        tipoPago: 4,
+        tipoImpuesto: data.tipo_impuesto ? data.tipo_impuesto.id : '' ,
+        tipoPago: data.tipo_pago ? data.tipo_pago.id : '' ,
         total: data.total ? data.total : '',
     })
 
+    // console.log(data)
+    // console.log(form)
     const [opciones, setOpciones] = useState({
         cuentas: [],
         empresas: [],
@@ -97,14 +99,15 @@ export default function CrearCompras(props) {
         tiposImpuestos: [],
         tiposPagos: [],
     })
+    // console.log(opciones)
 
     useEffect(() => {
         
-        if(opcionesData){
+        if(opcionesData){         
+           
             setOpciones(opcionesData)
         }
     }, [opcionesData])
-
     const handleChangeCheck = () => {
         setForm({
             ...form,
@@ -118,9 +121,20 @@ export default function CrearCompras(props) {
                 ...form,
                 [e.target.name]: e.target.value,
                 cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas,
-
             });
-        } else {
+        } else  if(e.target.name === 'cuenta') {
+           
+            form.cuentas =  opciones.empresas.find(empresa => empresa.id === form.empresa).cuentas
+            let cuenta = form.cuentas.find(empresa => empresa.id === e.target.value).factura
+            let impuesto = form.cuentas.find(empresa => empresa.id === e.target.value).id_impuesto
+            setForm({
+                ...form,
+                [e.target.name]: e.target.value,
+                factura: cuenta == 1 ? true : false,
+                tipoImpuesto: impuesto,
+                disabled: true
+            });
+        }else{
             setForm({
                 ...form,
                 [e.target.name]: e.target.value
@@ -144,6 +158,7 @@ export default function CrearCompras(props) {
                 ...form,
                 proveedor: value.id,
                 proveedor_nombre: value.name,
+                rfc:value.rfc
             })
         }
         if (value === null) {
@@ -569,16 +584,65 @@ export default function CrearCompras(props) {
                 <AccordionDetails> 
                     <div style={{ width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-evenly', marginRight: '10px', flexDirection: 'column' }}>
+                            <div className="container">
+                                <div className= "row">
+                                <div className= "col-md-4">
+                                                                    {
+                                        opciones.empresas.length > 0 ?
+                                            <div>
+                                                <InputLabel>Empresa</InputLabel>
+                                                <Select
+                                                    name="empresa"
+                                                    value={form.empresa}
+                                                    onChange={handleChange}
+                                                    style={{ width: 200, paddingRight: '1rem' }}
+                                                >
+                                                    {
+                                                        opciones.empresas.map((item, index) => (
+                                                            <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                                        ))
+                                                    }
+                                                </Select>
+                                            </div>
+                                        : null
+                                    }
+                                    </div> 
+                                    <div className= "col-md-4">
+                                        <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
+                                        <Select
+                                            value={form.cuenta}
+                                            name="cuenta"
+                                            onChange={handleChange}
+                                            style={{ width: 230, marginRight: '1rem' }}
+                                            error={errores.cuenta ? true : false}
+                                        >
+                                            {
+                                                opciones.empresas.map((item, index) => (
+                                                    form.empresa == item.id ?
+                                                        item.cuentas.map((cuenta, index2) => (
+                                                        form.cuenta == cuenta.id ?
+                                                        <MenuItem key={index2} value={cuenta.id}>{cuenta.nombre}</MenuItem>
+                                                        : 
+                                                        <MenuItem key={index2} value={cuenta.id}>{cuenta.nombre}</MenuItem>
+
+                                                        ))
+                                                    : <></>
+                                                ))                                                       
+                                            }
+                                        </Select>
+                                    </div>
+                                </div> 
+
                             <div>
                                 <InputLabel>¿Lleva factura?</InputLabel>
                                 <FormGroup row>
                                     <FormControlLabel
-                                        control={<Checkbox checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
+                                        control={<Checkbox disabled checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
                                         label="No"
 
                                     />
                                     <FormControlLabel
-                                        control={<Checkbox checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
+                                        control={<Checkbox disabled checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
                                         label="Si"
 
                                     />
@@ -615,7 +679,7 @@ export default function CrearCompras(props) {
                                             name="proveedor"
                                             options={opciones.proveedores}
                                             getOptionLabel={(option) => option.name}
-                                            style={{ width: 230, paddingRight: '1rem' }}
+                                            style={{ width: 300, paddingRight: '1rem' }}
                                             onChange={(event, value) => handleChangeProveedor(event, value)}
                                             renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
                                         />
@@ -633,7 +697,7 @@ export default function CrearCompras(props) {
                                             name="proyecto"
                                             options={proyectos}
                                             getOptionLabel={(option) => option.nombre}
-                                            style={{ width: 230, paddingRight: '1rem' }}
+                                            style={{ width: 300, paddingRight: '1rem' }}
                                             onChange={(event, value) => handleChangeProyecto(event, value)}
                                             renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proyecto_nombre ? form.proyecto_nombre : 'proyecto'} />}
                                         />
@@ -641,31 +705,12 @@ export default function CrearCompras(props) {
                                         : <></>
                                 }
                             </div>  
-
-                            <div>
-                                {
-                                    opciones.empresas.length > 0 ?
-                                        <div>
-                                            <InputLabel>Empresa</InputLabel>
-                                            <Select
-                                                name="empresa"
-                                                value={form.empresa}
-                                                onChange={handleChange}
-                                                style={{ width: 200, paddingRight: '1rem' }}
-                                            >
-                                                {
-                                                    opciones.empresas.map((item, index) => (
-                                                        <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </div>
-                                    : null
-                                }
-                            </div>  
+                           
                         </div> 
 
                     </div>
+                    </div>                         
+
                 </AccordionDetails>
             </Accordion>
 
@@ -801,50 +846,7 @@ export default function CrearCompras(props) {
                     <div style={{ width: '100%' }}>
                         
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <div>
-                                {/* {
-                                    form.empresa ? 
-                                        form.cuentas.length > 0 ? */}
-                                        
-                                            <div>
-                                                <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
-                                                <Select
-                                                    value={form.cuenta}
-                                                    name="cuenta"
-                                                    onChange={handleChange}
-                                                    style={{ width: 230, marginRight: '1rem' }}
-                                                    error={errores.cuenta ? true : false}
-                                                >
-                                                    {
-                                                        opciones.empresas.map((item, index) => (
-                                                            form.empresa == item.id ?
-                                                                item.cuentas.map((cuenta, index2) => (
-                                                                form.cuenta == cuenta.id ?
-                                                                <MenuItem key={index2} value={cuenta.id}>{cuenta.nombre}</MenuItem>
-                                                                : 
-                                                                <MenuItem key={index2} value={cuenta.id}>{cuenta.nombre}</MenuItem>
-
-                                                                ))
-                                                            : <></>
-                                                        ))
-
-                                                        // presupuestos.map((item, index) => ( 
-                                                        //     item.rel.map((item2, index2) => (
-                                                        //         item2.id_area == state.departamento ? 
-                                                        //         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                                        //         : <></>
-                                                        //     ))
-                                                            
-                                                        // ))
-                                                    }
-                                                </Select>
-                                            </div>
-                                        
-                                {/*         : null
-                                     : null
-                                 } */}
-
-                            </div> 
+                            
                             <div>
                                 {
                                     opciones.tiposPagos.length > 0 ?

@@ -9,6 +9,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 // import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 import Style from './NuevaRequisicion.module.css'
 
@@ -27,6 +28,7 @@ function EditarRequisicion (props) {
         descripcion: data.descripcion ? data.descripcion : 'no definido',
         tipoSubgasto: data.tipoSubEgreso_id,
         tipoPago: data.tipoPago_id,
+        monto:data.cantidad,
         // estatus: data.estatus ? data.estatus.estatus : 'no difinido',
         id: data.id
     })
@@ -81,6 +83,8 @@ function EditarRequisicion (props) {
                 id_subarea: form.tipoSubgasto,
                 id_pago: form.tipoPago,
                 id_solicitante: data.solicitante.id,
+                cantidad: form.monto,
+                form: "editar"
                 // estatus: data.estatus.estatus,
             }
 
@@ -117,6 +121,13 @@ function EditarRequisicion (props) {
                 text: 'Todos los campos son obligatorios',
             })
         }
+    }
+
+    const handleMoney = (e) => {
+        setForm({
+            ...form,
+            monto: e
+        })
     }
 
     return (
@@ -170,7 +181,7 @@ function EditarRequisicion (props) {
                             <form noValidate>
                                 <TextField
                                     id="fecha"
-                                    label="Fecha"
+                                    label="Fecha que lo requieres"
                                     type="date"
                                     name='fecha'
                                     onChange={handleChange}
@@ -218,7 +229,19 @@ function EditarRequisicion (props) {
                         />
                     </div>
                 </div>
-                
+                <div className={Style.container}>
+                    <div>
+                        <CurrencyTextField
+                            label="monto solicitado"
+                            variant="standard"
+                            value={form.monto}
+                            currencySymbol="$"
+                            outputFormat="number"
+                            onChange={(event, value) => handleMoney(value)}
+                            // error={errores.monto ? true : false}
+                        />
+                    </div>
+                </div>
 
                 
             </div>

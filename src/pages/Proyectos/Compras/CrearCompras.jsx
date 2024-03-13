@@ -86,10 +86,12 @@ export default function CrearCompras(props) {
         subarea: '', 
         telefono: '',
         tipo: 0,
-        tipoImpuesto: 1,
+        tipoImpuesto: '',
         tipoPago: 4,
         total: '',
         afectarCuentas: false,
+        disabled: true,
+
     })
 
     const [opciones, setOpciones] = useState({
@@ -161,7 +163,22 @@ export default function CrearCompras(props) {
                 [e.target.name]: e.target.value,
                 cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas,
             });
-        } else {
+        } else  if(e.target.name === 'cuenta') {
+
+            // console.log( opciones)
+            // console.log( form.cuentas)
+            let cuenta = form.cuentas.find(empresa => empresa.id === e.target.value).factura
+            let impuesto = form.cuentas.find(empresa => empresa.id === e.target.value).id_impuesto
+
+            // console.log(cuenta)
+            setForm({
+                ...form,
+                [e.target.name]: e.target.value,
+                factura: cuenta == 1 ? true : false,
+                tipoImpuesto: impuesto,
+                disabled: true
+            });
+        }else{
             setForm({
                 ...form,
                 [e.target.name]: e.target.value
@@ -169,6 +186,7 @@ export default function CrearCompras(props) {
         }
         
     };
+    // console.log(form)
 
     const handleChangeAreas=(e)=>{
         setForm({
@@ -806,16 +824,64 @@ export default function CrearCompras(props) {
                 <AccordionDetails> 
                     <div style={{ width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-evenly', marginRight: '10px', flexDirection: 'column' }}>
-                            <div>
+                        <div class="container">
+                            <div class= "row">
+                               <div class= "col-md-4">
+
+                                {
+                                    opciones.empresas.length > 0 ?
+                                        <div>
+                                            <InputLabel>Empresa</InputLabel>
+                                            <Select
+                                                name="empresa"
+                                                value={form.empresa}
+                                                onChange={handleChange}
+                                                style={{ width: 150, paddingRight: '1rem' }}
+                                                error={errores.empresa ? true : false}
+                                            >
+                                                {
+                                                    opciones.empresas.map((item, index) => (
+                                                        <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                                    ))
+                                                }
+                                            </Select>
+                                        </div>
+                                    : null
+                                }
+                                 </div> 
+                                 <div class= "col-md-4">
+                                {
+                                    form.cuentas.length > 0 ?
+                                        <div>
+                                            <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
+                                            <Select
+                                                value={form.cuenta}
+                                                name="cuenta"
+                                                onChange={handleChange}
+                                                style={{ width: 150, marginRight: '1rem' }}
+                                                error={errores.cuenta ? true : false}
+                                            >
+                                                {form.cuentas.map((item, index) => (
+                                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </div>
+                                        : null
+                                }
+                            </div>  
+                            </div> 
+                       
+                        </div>
+                         <div style={{ marginTop: '2rem' }}>
                                 <InputLabel>¿Lleva factura?</InputLabel>
                                 <FormGroup row>
                                     <FormControlLabel
-                                        control={<Checkbox checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
+                                        control={<Checkbox disabled={form.disabled} checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
                                         label="No"
 
                                     />
                                     <FormControlLabel
-                                        control={<Checkbox checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
+                                        control={<Checkbox disabled={form.disabled} checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
                                         label="Si"
 
                                     />
@@ -964,29 +1030,10 @@ export default function CrearCompras(props) {
                                 }
                             </div> 
 
-                            <div>
-                                {
-                                    opciones.empresas.length > 0 ?
-                                        <div>
-                                            <InputLabel>Empresa</InputLabel>
-                                            <Select
-                                                name="empresa"
-                                                value={form.empresa}
-                                                onChange={handleChange}
-                                                style={{ width: 150, paddingRight: '1rem' }}
-                                                error={errores.empresa ? true : false}
-                                            >
-                                                {
-                                                    opciones.empresas.map((item, index) => (
-                                                        <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </div>
-                                    : null
-                                }
-                            </div>  
+                             
                         </div> 
+
+                       
 
                     </div>
                 </AccordionDetails>
@@ -1127,7 +1174,7 @@ export default function CrearCompras(props) {
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             
                             <div>
-                                {
+                                {/* {
                                     form.cuentas.length > 0 ?
                                         <div>
                                             <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
@@ -1144,7 +1191,7 @@ export default function CrearCompras(props) {
                                             </Select>
                                         </div>
                                         : null
-                                }
+                                } */}
 
                             </div> 
                             <div>
@@ -1169,12 +1216,6 @@ export default function CrearCompras(props) {
                                 }
 
                             </div> 
-                            <div>
-                            
-                            </div> 
-                        </div>
-                        
-                        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '2rem'}}>
                             <div>
                                 {
                                     opciones.tiposImpuestos.length > 0 ?
@@ -1208,6 +1249,14 @@ export default function CrearCompras(props) {
                                     error={errores.total ? true : false}
                                 />
                             </div>
+                            <div>
+                            
+                            </div> 
+                        </div>
+                        
+                        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '2rem'}}>
+                           
+                          
                             <div>
                                 <CurrencyTextField
                                     label="comision"

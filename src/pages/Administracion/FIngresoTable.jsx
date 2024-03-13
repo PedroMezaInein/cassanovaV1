@@ -774,7 +774,7 @@ export default function FIngresoTable(props) {
     return (
         <>
             <TablaGeneralPaginado
-                titulo="Compras"
+                titulo="Ingresos"
                 subtitulo="listado de compras"
                 url={'facturas/facturaingreso'}
                 columnas={columns}

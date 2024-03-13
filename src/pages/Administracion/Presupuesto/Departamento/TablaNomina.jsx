@@ -16,12 +16,13 @@ import Swal from 'sweetalert2'
 
 
 
-function TablaMeses(props) {
+function TablaNomina(props) {
   const { reload, handleClose } = props
 
   const [empleadosPorDepartamento, setEmpleadosPorDepartamento] = useState({});
   const [meses, setMeses] = useState([]);
   const [departamento, setDepartamento] = useState(''); // Inicialmente vacío
+  const [empresa, setEmpresa] = useState(''); // Inicialmente vacío  
   const [empleadosAcumulados, setEmpleadosAcumulados] = useState([]); // Estado para los datos acumulados
   const [departamentosDeshabilitados, setDepartamentosDeshabilitados] = useState([]); // Departamentos seleccionados
   const [formData, setFormData] = useState(null); // Estado para los datos del formulario
@@ -32,6 +33,8 @@ function TablaMeses(props) {
   const [totalsByMonth, setTotalsByMonth] = useState({});
   const [departamentosData, setDepartamentosData] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [openn, setOpenn] = React.useState(false);
+
   const [addedDepartments, setAddedDepartments] = useState([]);
   const [totalesPorMes, setTotalesPorMes] = useState({});
   const [departamentosAgregados, setDepartamentosAgregados] = useState([]);
@@ -44,6 +47,8 @@ function TablaMeses(props) {
 
   // Utiliza useSelector para obtener los departamentos del estado de Redux.
   const departamentos = useSelector((state) => state.opciones.areas);
+  const empresas = useSelector((state) => state.opciones.empresas);
+
   const auth = useSelector((state) => state.authUser.access_token);
 
   useEffect(() => {
@@ -160,6 +165,13 @@ function TablaMeses(props) {
       return;
     }
 
+    if (empresa.length === 0) {
+      // Display an error message or perform any desired action
+      errorAlert('Debes seleccionar la empresa.');
+      return;
+    }
+
+
     let totalEmployees = 0; // Initialize the total employee count
 
   
@@ -206,7 +218,7 @@ function TablaMeses(props) {
       fecha_inicio: startDate,
       fecha_fin: endDate,
       modal: 'Presupuesto Nomina',
-
+      empresa: empresa
 
     };
   
@@ -218,7 +230,6 @@ function TablaMeses(props) {
       .then((response) => {
         console.log('Formulario enviado con éxito');
         // You can perform any other actions after sending the data here.
-        console.log(response)
         console.log('Formulario enviado con éxito');
 
         Swal.close()
@@ -247,6 +258,15 @@ function TablaMeses(props) {
     setOpen(true);
   };
 
+  const handleClosess = () => {
+    setOpenn(false);
+  };
+
+  const handleOpens = () => {
+    setOpenn(true);
+  };
+
+
   const handleRemoveDepartamento = (departamentoId) => {
     const updatedDepartamentosAgregados = departamentosAgregados.filter((depId) => depId !== departamentoId);
     setDepartamentosAgregados(updatedDepartamentosAgregados);
@@ -266,14 +286,19 @@ function TablaMeses(props) {
 
     
   };
-  
+
+  const handleChange = (event) => {
+    setEmpresa(event.target.value); // Assuming you're using state and a setter function
+  };
+
+    
   return (
     <div  className="form-group form-group-marginless row mx-0">
-      <div className="col-md-4"> 
+      <div className="col-md-3"> 
       <InputLabel id="demo-controlled-open-select-label">Departamento</InputLabel>
             <Select labelId="demo-controlled-open-select-label"   open={open}  onClose={handleCloses}  onOpen={handleOpen}
               name="departamento" value={departamento}   onChange={(e) => cargarDatosDesdeAPI(e.target.value)} placeholder="Departamento"
-              style={{ width: 230, paddingRight: '2px' }}
+              style={{ width: 230, paddingRight: '1px' }}
             >
               {
                 departamentos.map((dep, ) => (
@@ -282,7 +307,20 @@ function TablaMeses(props) {
               
           </Select>       
       </div>
-      <div className="col-md-4"> 
+      <div className="col-md-3"> 
+      <InputLabel id="demo-controlled-open-select-label">Empresa</InputLabel>
+            <Select labelId="demo-controlled-open-select-label" onChange={(event) => handleChange(event)}   open={openn}  onClose={handleClosess}  onOpen={handleOpens}
+              name="empresa" value={empresa}   placeholder="Empresa"
+              style={{ width: 230, paddingRight: '1px' }}
+            >
+              {
+                empresas.map((dep, ) => (
+                <MenuItem  key={dep.id} value={dep.id}>{dep.nombre}</MenuItem>
+              ))}
+              
+          </Select>       
+      </div>
+      <div className="col-md-2"> 
       <InputLabel htmlFor="budgetYear" id="demo-controlled-open-select-label">Año del Presupuesto:</InputLabel>
 
             <Select
@@ -386,4 +424,4 @@ function TablaMeses(props) {
   );
 }
 
-export default TablaMeses;
+export default TablaNomina;

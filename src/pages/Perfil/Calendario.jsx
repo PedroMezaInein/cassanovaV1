@@ -73,8 +73,14 @@ class Calendario extends Component {
             empleado: this.props.authUser.user.empleado_id,
             date_entrada: new Date('2022-01-01T09:00:00'),
             date_salida: new Date('2022-01-01T18:00:00'),
+            date_ir: new Date('2022-01-01T09:00:00'),
+            date_regresar: new Date('2022-01-01T18:00:00'),
             hora_salida: 0,
             hora_entrada: 0,
+            hora_ir:0,
+            hora_regresar:0,
+            minuto_ir: 0,
+            minuto_regresar: 0,
             minuto_entrada: 0,
             minuto_salida: 0,
             lider: '',
@@ -370,6 +376,10 @@ class Calendario extends Component {
         form.hora_entrada= 0
         form.minuto_entrada= 0
         form.minuto_salida= 0 
+        form.hora_ir= 0
+        form.minuto_ir = 0
+        form.hora_regresar= 0
+        form.minuto_regresar= 0
         form.lider= ''
         form.adjuntos= {
             adjuntos: {
@@ -496,15 +506,15 @@ class Calendario extends Component {
     }
 
     onChangeMessage = (value, tipo) => { 
-        console.log(value)
         const { form } = this.state
         form[tipo] = value
         this.setState({ ...this.state, form })
     }
 
     onChangeHora = (value, tipo) => { 
-        console.log(value.getHours())
-        console.log(value.getMinutes())
+        // console.log(value.getHours())
+        // console.log(value.getMinutes())
+        // console.log(tipo)
         const { form } = this.state
         if (tipo === 'hora_entrada') { 
             form.date_entrada = value
@@ -516,6 +526,19 @@ class Calendario extends Component {
             form.date_salida = value
             form.hora_salida = value.getHours()
             form.minuto_salida = value.getMinutes()
+            this.setState({ ...this.state, form })
+        }
+
+        if (tipo === 'hora_ir') { 
+            form.date_ir = value
+            form.hora_ir = value.getHours()
+            form.minuto_ir = value.getMinutes()
+            this.setState({ ...this.state, form })
+        }
+        if (tipo === 'hora_regresar') {
+            form.date_regresar = value
+            form.hora_regresar = value.getHours()
+            form.minuto_regresar = value.getMinutes()
             this.setState({ ...this.state, form })
         }
     }
@@ -746,6 +769,17 @@ class Calendario extends Component {
         let horaEntradaA = Math.floor((form.hora_entrada ) );
         data.append('hora_entrada', horaEntradaA)
         data.append('minuto_entrada', minutoEntradaA)
+
+        let minuto= Math.floor(form.minuto_ir);
+        let horaIr= Math.floor((form.hora_ir));
+        data.append('hora_ir', horaIr)
+        data.append('minuto_ir', minuto)
+
+        let minutoRegresar = Math.floor(form.minuto_regresar );
+        let horaRegrear = Math.floor((form.hora_regresar ) );
+        data.append('hora_regresar', horaRegrear)
+        data.append('minuto_regresar', minutoRegresar)
+        
         let comentarioA = form.descripcion
         data.append('descripcion', comentarioA)
         // let horaEntradaA = Math.floor((form.hora_entrada * 10000) + minutoEntradaA);

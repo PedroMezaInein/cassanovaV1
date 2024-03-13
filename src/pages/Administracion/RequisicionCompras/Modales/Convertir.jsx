@@ -18,6 +18,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {  printResponseErrorAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Button from '@material-ui/core/Button';
+import { Modal } from './../../../../components/singles'
+import CrearProveedor from './CrearProveedor' 
 
 import Style from './AprobarSolicitud.module.css'
 
@@ -30,11 +35,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Convertir(props) { 
-    const { data, handleClose, reload, opciones, estatusCompras } = props
+    const { data, handleClose, reload, opciones, estatusCompras ,getOpciones} = props
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector(state => state.authUser)
+    const [nuevoProveedor, setNuevoProveedor] = useState(false)
     const [form, setForm] = useState({
-        fecha: new Date(data.fecha),
+        fecha: new Date(data.fecha + 'T08:10:00.000Z'),
         departamento: data.departamento_id,
         tipoGasto: data.tipoEgreso_id,
         tipoSubgasto: data.tipoSubEgreso_id,
@@ -50,13 +56,19 @@ export default function Convertir(props) {
         id_estatus: data.id_estatus,
         checked: data.auto1 ? true : false,
         proveedor: data.proveedor,
-        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega+ 'T08:10:00.000Z') : '',
         empresa: "",
         conta: data.conta,
         factura: data.factura,
         orden_compra: data.orden_compra,
+        facturas: data.factura == 1 ? true : false,
         labelPorveedor: data.proveedor ? opciones.proveedores.find(proveedor => proveedor.value == data.proveedor).name : 'Proveedor',
+        facturaObject: {},
+
     })
+    // console.log(data.fecha)
+    // console.log(form)
+
     const [errores, setErrores] = useState({})
 
     const [file, setFile] = useState(null)
@@ -172,9 +184,15 @@ export default function Convertir(props) {
                             autorizacion_compras: true,
                             id_estatus_factura: form.factura,
                             id_estatus_conta: form.conta,
+                            facturas: form.facturas,
+                            fecha: form.fecha,
+                            form : 'convertir',
                         }
+                        //  console.log('esta')
                         apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then(
                             (response) => {
+                                // console.log(response)
+
                                 if (file) {
                                     handleSubmit()
                                 }
@@ -190,44 +208,108 @@ export default function Convertir(props) {
                                     timer: 2000,
                                     timerProgressBar: true,
                                 })
-                            }, (error) => { 
+                                handleClose('convertir')
 
-                                Swal.fire({
-                                    // icon: 'error',
-                                    title: 'Oops...',
-                                    text: error.response.data.message,
-                                    icon: 'warning',
-                                    showCancelButton: false,
-                                    confirmButtonColor: '#3085d6',
-                                    // cancelButtonColor: '#d33',
-                                    // cancelButtonText: 'Cancelar',
-                                    confirmButtonText: 'Aceptar'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
+                            }, (error) => { 
+                                    // console.log(error.response.status)
+                                    if(error.response.status == 400){
+                                        Swal.fire(error.response.data.message, "", "info");
+                                        handleClose('convertir')
+
+
+                                    }else{
                                         Swal.fire({
-                                            title: 'Enviando',
-                                            text: 'Espere un momento...',
-                                            allowOutsideClick: false,
-                                            allowEscapeKey: false,
-                                            allowEnterKey: false,
-                                            showConfirmButton: false,
-                                            onOpen: () => {
-                                                handleClose('convertir')
-                                                if (reload) {
-                                                    reload.reload()
-                                                }
-                                                Swal.showLoading()
+                                            title: error.response.data.message ,
+                                            showDenyButton: true,
+                                            // showCancelButton: true,
+                                            confirmButtonText: "Crear",
+                                            denyButtonText: `No Crear`,
+                                            text: "¿Deseas crear la partida en el presupuesto para aprobación?",
+                                          }).then((result) => {
+                                            /* Read more about isConfirmed, isDenied below */
+                                            if (result.isConfirmed) {
+                                                apiPutForm(`requisicion/${form.id}/presupuesto`, newForm, auth.access_token).then(
+                                                    res => {
+                                                    Swal.close()
+                                                    // Swal.fire("Saved!", "Se creo la partida pero necesita aprovacion", "success");
+        
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Guardado',
+                                                        text: 'Se creó la partida pero necesita aprobación',
+                                                        timer: 2000,
+                                                        timerProgressBar: true,
+                                                        onOpen: () => {
+                                                            handleClose('convertir')
+                                                            if (reload) {
+                                                                reload.reload()
+                                                            }
+                                                            Swal.showLoading()
+                                                        }
+                                                    })
+                                                })
+                                                .catch(err => {
+                                                    Swal.close()
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'El registro fue actualizado pero no fue posible subir la factura',
+                                                        text: 'Algo salio mal!',
+                                                        onOpen: () => {
+                                                            handleClose('convertir')
+                                                            if (reload) {
+                                                                reload.reload()
+                                                            }
+                                                            Swal.showLoading()
+                                                        }
+                                                    })
+                                                })
+        
+        
+                                            } else if (result.isDenied) {
+        
+                                              Swal.fire("Cambia el tipo de gasto para continuar", "", "info");
                                             }
-                                        })
-                                   
+                                          });
                                     }
-                                })
+                               
+
+                                // Swal.fire({
+                                //     // icon: 'error',
+                                //     title: 'Oops...',
+                                //     text: error.response.data.message,
+                                //     icon: 'warning',
+                                //     showCancelButton: false,
+                                //     confirmButtonColor: '#3085d6',
+                                //     // cancelButtonColor: '#d33',
+                                //     // cancelButtonText: 'Cancelar',
+                                //     confirmButtonText: 'Aceptar'
+                                // }).then((result) => {
+                                //     if (result.isConfirmed) {
+                                //         Swal.fire({
+                                //             title: 'Enviando',
+                                //             text: 'Espere un momento...',
+                                //             allowOutsideClick: false,
+                                //             allowEscapeKey: false,
+                                //             allowEnterKey: false,
+                                //             showConfirmButton: false,
+                                //             onOpen: () => {
+                                //                 handleClose('convertir')
+                                //                 if (reload) {
+                                //                     reload.reload()
+                                //                 }
+                                //                 Swal.showLoading()
+                                //             }
+                                //         })
+                                   
+                                //     }
+                                // })
                                    
                                     // console.log(error.response.data.message)
                                     // printResponseErrorAlert(error)
                                     // handleClose('convertir')
                             }
                         ).catch((error) => {
+                            console.log('errror')
                             Swal.close()
                             Swal.fire({
                                 icon: 'error',
@@ -247,7 +329,8 @@ export default function Convertir(props) {
                     confirmButtonText: 'Ok',
                 })
             }
-        } else {
+        } 
+        else {
             Swal.close()
             Swal.fire(
                 'Error!',
@@ -362,6 +445,33 @@ export default function Convertir(props) {
     const handleFile = (e) => {
         setFile(e.target.files[0])
     }
+
+    const handleChangeCheck = () => {
+        setForm({
+            ...form,
+            facturas: !form.facturas
+        });
+    };
+
+    const handleCloseProveedor = () => {
+        setNuevoProveedor(false)
+        setForm({
+            ...form,
+            proveedor: nuevoProveedor.id, // Establecer el proveedor recién creado
+            proveedor_nombre: nuevoProveedor.name,
+        });
+    }
+
+    const agregarProveedor = () => {
+        setNuevoProveedor(true)
+    }
+
+    const [proveedorSelect, setProveedorSelect] = useState({
+        preSelect: false,
+        id:null,
+        name: null,
+    })
+    
 
     return (
         <>
@@ -569,12 +679,18 @@ export default function Convertir(props) {
                                     style={{ width: 230, paddingRight: '1rem' }}
                                     onChange={(event, value) => handleChangeProveedor(event, value)}
                                     renderInput={(params) => <TextField {...params} label={form.labelPorveedor} variant="outlined" />}
-                                />
+                                />                                 
                             </>
                             : null
                     }
+                     <div >
+                        <Button variant="contained" color="primary" component="span" onClick={agregarProveedor}> 
+                            Agregar proveedor
+                        </Button>
+                    </div>
 
                 </div>
+               
 
 {/*                 <div>
                     {
@@ -658,6 +774,21 @@ export default function Convertir(props) {
                         style={{marginLeft: '20%'}}
                     />
                 </div>
+                <div>
+                    <InputLabel>¿Lleva factura?</InputLabel>
+                    <FormGroup row>
+                        <FormControlLabel
+                            control={<Checkbox checked={!form.facturas} onChange={handleChangeCheck} color='secondary' name='facturas' />}
+                            label="No"
+
+                        />
+                        <FormControlLabel
+                            control={<Checkbox checked={form.facturas} onChange={handleChangeCheck} color='primary' name='facturas' />}
+                            label="Si"
+
+                        />
+                    </FormGroup>
+                </div>  
 
                 <div className='adjuntos_send'>
                     <div className="file">
@@ -682,6 +813,14 @@ export default function Convertir(props) {
                     <button className={Style.sendButton} onClick={aprobar}>Convertir</button>
                 </div>
             </div>
+
+            <Modal size="md" title={"agregar proveedor"} handleClose={handleCloseProveedor} show={nuevoProveedor}>
+                <CrearProveedor data={form} setProveedorSelect={setProveedorSelect} handleClose={handleCloseProveedor} getOpciones={getOpciones}
+                reload={reload} handleCloseRecarga={setNuevoProveedor} auth={auth.access_token}/>
+            </Modal>
         </>
+        
     )
+    
 }
+

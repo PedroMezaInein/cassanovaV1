@@ -31,13 +31,14 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import j2xParser from 'fast-xml-parser'
 
 import Style from './CrearEgreso.module.css'
-
+ 
 export default function CrearEgreso(props) {
     const {opcionesData, reload, handleClose, getProveedores} = props
     const auth = useSelector((state) => state.authUser.access_token);
     const departamentos = useSelector(state => state.opciones.areas)
     const [nuevoProveedor, setNuevoProveedor] = useState(false)
     const [errores, setErrores] = useState({})
+    const presupuestos = useSelector(state => state.opciones.presupuestos)
 
     const [proveedorSelect, setProveedorSelect] = useState({
         preSelect: false,
@@ -102,10 +103,13 @@ export default function CrearEgreso(props) {
         subarea: '', 
         telefono: '',
         tipo: 0,
-        tipoImpuesto: 1,
+        tipoImpuesto: '',
         tipoPago: 4,
         total: '',
         afectarCuentas: false,
+        disabled: true,
+        presupuestos: ''
+
     })
 
     const handleChangeCheck = () => {
@@ -120,9 +124,24 @@ export default function CrearEgreso(props) {
             setForm({
                 ...form,
                 [e.target.name]: e.target.value,
-                cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas
+                cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas,
             });
-        } else {
+        } else  if(e.target.name === 'cuenta') {
+
+            // console.log( opciones)
+            // console.log( form.cuentas)
+            let cuenta = form.cuentas.find(empresa => empresa.id === e.target.value).factura
+            let impuesto = form.cuentas.find(empresa => empresa.id === e.target.value).id_impuesto
+
+            // console.log(cuenta)
+            setForm({
+                ...form,
+                [e.target.name]: e.target.value,
+                factura: cuenta == 1 ? true : false,
+                tipoImpuesto: impuesto,
+                disabled: true
+            });
+        }else{
             setForm({
                 ...form,
                 [e.target.name]: e.target.value
@@ -783,16 +802,64 @@ export default function CrearEgreso(props) {
                 <AccordionDetails> 
                     <div style={{ width: '100%' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-evenly', marginRight: '10px', flexDirection: 'column' }}>
+                        <div class="container">
+                            <div class= "row">
+                               <div class= "col-md-4">
+
+                                {
+                                    opciones.empresas.length > 0 ?
+                                        <div>
+                                            <InputLabel>Empresa</InputLabel>
+                                            <Select
+                                                name="empresa"
+                                                value={form.empresa}
+                                                onChange={handleChange}
+                                                style={{ width: 150, paddingRight: '1rem' }}
+                                                error={errores.empresa ? true : false}
+                                            >
+                                                {
+                                                    opciones.empresas.map((item, index) => (
+                                                        <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                                    ))
+                                                }
+                                            </Select>
+                                        </div>
+                                    : null
+                                }
+                                 </div> 
+                                 <div class= "col-md-4">
+                                {
+                                    form.cuentas.length > 0 ?
+                                        <div>
+                                            <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
+                                            <Select
+                                                value={form.cuenta}
+                                                name="cuenta"
+                                                onChange={handleChange}
+                                                style={{ width: 150, marginRight: '1rem' }}
+                                                error={errores.cuenta ? true : false}
+                                            >
+                                                {form.cuentas.map((item, index) => (
+                                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                                ))}
+                                            </Select>
+                                        </div>
+                                        : null
+                                }
+                            </div>  
+                            </div> 
+                       
+                        </div>
                             <div>
                                 <InputLabel>¿Lleva factura?</InputLabel>
                                 <FormGroup row>
                                     <FormControlLabel
-                                        control={<Checkbox checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
+                                        control={<Checkbox disabled={form.disabled}  checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
                                         label="No"
 
                                     />
                                     <FormControlLabel
-                                        control={<Checkbox checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
+                                        control={<Checkbox disabled={form.disabled} checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
                                         label="Si"
 
                                     />
@@ -915,6 +982,27 @@ export default function CrearEgreso(props) {
                                 }
                                 
                             </div> 
+                            <div>
+                                {presupuestos.length > 0 ?
+                                    <>
+                                        <InputLabel id="demo-simple-select-label">Presupuesto</InputLabel>
+                                        <Select
+                                            value={form.presupuestos}
+                                            name="presupuestos"
+                                            onChange={handleChange}
+                                            style={{ width: 230, marginRight: '1rem' }}
+                                            error={errores.presupuestos ? true : false}
+                                        >
+                                            {presupuestos.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))}
+
+                                        </Select>
+                                    </>
+                                    : null
+                                }
+
+                            </div>
 
                             {
                                 form.factura ? 
@@ -925,30 +1013,7 @@ export default function CrearEgreso(props) {
                                             </Button>
                                         </div>
                             }
-
-                            <div>
-                                {
-                                    opciones.empresas.length > 0 ?
-                                        <div>
-                                            <InputLabel>Empresa</InputLabel>
-                                            <Select
-                                                name="empresa"
-                                                value={form.empresa}
-                                                onChange={handleChange}
-                                                style={{ width: 230, paddingRight: '1rem' }}
-                                                error={errores.empresa ? true : false}
-                                            >
-                                                {
-                                                    opciones.empresas.map((item, index) => (
-                                                        <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </div>
-                                        : null
-
-                                }
-                            </div>    
+                           
                         </div>
                         
                     </div>
@@ -1087,27 +1152,7 @@ export default function CrearEgreso(props) {
                     <div style={{ width: '100%' }}>
                         
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <div>
-                                {
-                                    form.cuentas.length > 0 ?
-                                        <div>
-                                            <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
-                                            <Select
-                                                value={form.cuenta}
-                                                name="cuenta"
-                                                onChange={handleChange}
-                                                style={{ width: 230, marginRight: '1rem' }}
-                                                error={errores.cuenta ? true : false}
-                                            >
-                                                {form.cuentas.map((item, index) => (
-                                                    <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        </div>
-                                        : null
-                                }
-
-                            </div> 
+                           
                             <div>
                                 {
                                     opciones.tiposPagos.length > 0 ?
@@ -1139,12 +1184,6 @@ export default function CrearEgreso(props) {
 
                             </div> 
                             <div>
-                              
-                            </div> 
-                        </div>
-                        
-                        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '2rem'}}>
-                            <div>
                                 {
                                     opciones.tiposImpuestos.length > 0 ?
                                         <div>
@@ -1166,6 +1205,7 @@ export default function CrearEgreso(props) {
 
                             </div> 
                             <div>
+                            <div>
                                 <CurrencyTextField
                                     label="total"
                                     variant="standard"
@@ -1176,6 +1216,13 @@ export default function CrearEgreso(props) {
                                     error={errores.total ? true : false}
                                 />
                             </div>
+                              
+                            </div> 
+                        </div>
+                        
+                        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '2rem'}}>
+                            
+                           
                             <div>
                                 <CurrencyTextField
                                     label="comision"

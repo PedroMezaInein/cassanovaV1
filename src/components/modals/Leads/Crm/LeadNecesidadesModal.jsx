@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../../constants'
-import { apiGet, apiPutForm } from '../../../../functions/api'
+import { apiGet, apiPutForm, apiPostForm } from '../../../../functions/api'
 import Button from '@material-ui/core/Button';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import Select from '@material-ui/core/Select';
@@ -11,9 +11,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
+import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert} from '../../../../functions/alert'
 
 
-function LeadNecesidadesModal() {
+function LeadNecesidadesModal(props) {
+  const {lead ,handleClose} = props
+
   const [data, setData] = useState([]); // Almacena los datos de la API
   const [categorias, setCategorias] = useState([]); // Almacena las categorías
   const [tabla, setTabla] = useState([]); // Almacena los datos de la tabla
@@ -31,8 +34,10 @@ function LeadNecesidadesModal() {
   const [nuevoEstacionamiento, setNuevoEstacionamiento] = useState('');
 
   const [subareaTotals, setSubareaTotals] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const userAuth = useSelector((state) => state.authUser);
+  const [pdfUrl, setPdfUrl] = useState(null);
 
   const handleEstacionamientoChange = (e) => {
     const nuevoEstacionamientoValue = e.target.value;
@@ -46,41 +51,67 @@ function LeadNecesidadesModal() {
 
 
   useEffect(() => {
-    // Realiza una solicitud GET a tu API para obtener los datos de la tabla
-    apiGet(`crm/necesidades`, userAuth.access_token)
-      .then((response) => {
-        const datosDesdeAPI = response.data.necesidades;
-        console.log(datosDesdeAPI)
-        setData(datosDesdeAPI);
+    const fetchData = async () => {
+      try {
+        // First, attempt to fetch data from the first API
+        const responseFirstAPI =  await apiGet(`necesidades/ver/${lead.id}`, userAuth.access_token);
+        const dataFirstAPI = responseFirstAPI.data? responseFirstAPI.data.data : '';
+        console.log(dataFirstAPI)
+        // Check if there are any results from the first API
+        if (dataFirstAPI[0]) {
+                  // setLoading(false); // Set loading to false after data is fetched
 
-       // Extraer categorías de los datos
-       const categoriasUnicas = [...new Set(datosDesdeAPI.map((item) => item.area))];
-       setCategorias(categoriasUnicas);
+          // console.log(dataFirstAPI[0].veradjuntos[0].url)
+          if (dataFirstAPI[0] && dataFirstAPI[0].veradjuntos[0].url) {
+            console.log('PDF URL:', dataFirstAPI[0].veradjuntos[0].url);
+            setPdfUrl(dataFirstAPI[0].veradjuntos[0].url);
+          }
+          setLoading(false);
+  
+          
+        } else {
+          // If there are no results from the first API, fetch data from the second API
+          const responseSecondAPI =  await apiGet(`crm/necesidades`,  userAuth.access_token);
+          const dataSecondAPI = responseSecondAPI.data.necesidades
+          setData(responseSecondAPI);
 
-        console.log(categoriasUnicas)
-        // Inicializar la tabla por categoría
-        
-        const tablaInicial = {};
-        categoriasUnicas.forEach((categoria) => {
-          tablaInicial[categoria] = datosDesdeAPI.filter((item) => item.area === categoria).map((fila) => ({
-            subArea: fila.subarea || '',
-            areaMinima: fila.areamin || '',
-            medidaRecomendada: fila.medidareco || '',
-            norma: fila.norma || '',
-            cantidad: '',
-            totalM2: '',
-            parametricoXM2: fila.parametrico || '',
-            totales: '',
-          }));
-        });
-        setTabla(tablaInicial);
-      })
-      .catch((error) => {
-        console.error('Error al obtener datos de la API:', error);
-      });
-  }, []);
+          // Extract categories from the data
+          const categoriasUnicas = [...new Set(dataSecondAPI.map((item) => item.area))];
+          setCategorias(categoriasUnicas);
 
-  useEffect(() => {
+          // Initialize the table by category
+          const tablaInicial = {};
+                categoriasUnicas.forEach((categoria) => {
+                  tablaInicial[categoria] = dataSecondAPI.filter((item) => item.area === categoria).map((fila) => ({
+                    subArea: fila.subarea || '',
+                    areaMinima: fila.areamin || '',
+                    medidaRecomendada: fila.medidareco || '',
+                    norma: fila.norma || '',
+                    cantidad: '',
+                    totalM2: '',
+                    parametricoXM2: fila.parametrico || '',
+                    totales: '',
+                  }));
+                });
+                setTabla(tablaInicial);
+                setLoading(false);
+        }
+
+        setLoading(false); // Set loading to false after data is fetched
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false); // Set loading to false in case of an error
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array to run only once during component mount
+
+
+
+
+
+  useEffect(() => { 
     // Calculate totalM2Global by summing the totalM2 values from the tabla
     const newTotalM2Global = Object.keys(tabla).reduce((total, categoria) => {
       return (
@@ -251,17 +282,6 @@ const calcularValores = (categoria, filaIndex) => {
     }, 0);
     if (filaIndex !== -1) {
 
-      // const nuevaSumaTotalesGlobal = categoriasActuales.reduce((sumaGlobal, categoriaActual) => {
-      //   const filasCategoriaActual = prevTabla[categoriaActual];
-      //   return (
-      //     sumaGlobal +
-      //     filasCategoriaActual.reduce((sumaLocal, fila) => sumaLocal + (parseFloat(fila.totales) || 0), 0)
-      //   );
-      // }, 0)+
-      // (totalM2Global * 0.15 )* 12500 + // Add Flujo
-      // (totalM2Global * 0.05 )* 12500;  // Add Estructura
-
-       // Update the totals when the quantity changes in a different filaIndex
         if (filaIndex !== -1) {
           const nuevaSumaTotalesGlobal = categoriasActuales.reduce((sumaGlobal, categoriaActual) => {
             const filasCategoriaActual = prevTabla[categoriaActual];
@@ -285,8 +305,7 @@ const calcularValores = (categoria, filaIndex) => {
         setFlujoSum(flujoSumForCategory);
       }    
       
-      // console.log('Subarea:', fila.subArea);
-      // console.log('TotalM2:', totalM2);
+
       
        // Calculate the subarea total for the current category
       const subareaTotal = tablaCategoria.reduce((total, fila) => {
@@ -315,7 +334,7 @@ const calcularValores = (categoria, filaIndex) => {
   });
 };
 
-const handleClose = () => {
+const handleCloses = () => {
   setOpen(false);
 };
 
@@ -324,15 +343,130 @@ const handleOpen = (categoria) => {
 };
 
 const enviarFormulario = () => {
-  // Aquí puedes enviar los datos de la tabla al servidor o realizar la acción deseada
-  console.log('Datos de la tabla:', tabla);
+  // Filter out rows without quantities or square meters
+  const rowsWithQuantitiesAndM2 = Object.keys(tabla).reduce((acc, categoria) => {
+    const rowsWithQM2 = tabla[categoria].filter(
+      (fila) =>
+        parseFloat(fila.cantidad) > 0 &&
+        parseFloat(fila.totalM2) > 0 &&
+        subareaTotals[categoria] > 0
+    );
+    return rowsWithQM2.length > 0 ? { ...acc, [categoria]: rowsWithQM2 } : acc;
+  }, {});
+
+  // Create a new object to send to the API with filtered rows
+  // const dataToSend = { ...data, tabla: rowsWithQuantitiesAndM2 };
+
+  // Calculate and include values for Flujo, Estructura, Total m2, and SubTotal
+
+  const flujoValue = totalM2Global * 0.15;
+  const estructuraValue = totalM2Global * 0.05;
+  const totalM2Value = totalM2Global + flujoValue + estructuraValue;
+  const subTotalValue = totalesGlobal;
+
+  const formData = {
+    flujoValue: flujoValue.toFixed(0),
+    estructuraValue: estructuraValue.toFixed(0),
+    totalM2Value:totalM2Value.toFixed(0),
+    subTotalValue: totalesGlobal.toFixed(0), 
+    data: rowsWithQuantitiesAndM2,  
+    lead: lead,   
+  };
+  console.log(lead)
+
+  console.log(formData)
+
+  // Send the filtered data to the API
+  apiPostForm('necesidades', formData, userAuth.access_token)
+    .then((response) => {
+      console.log('Data successfully sent to the API:', response);
+      handleClose()
+      doneAlert('Agregado con éxito')
+
+      // You may want to perform additional actions after sending the data
+    })
+    .catch((error) => {
+      console.error('Error sending data to the API:', error);
+      // Handle the error as needed
+    });
 };
+
+const enviarCotizacionCliente = async () => {
+  // Mostrar un cuadro de diálogo de confirmación
+  const confirmacion = await Swal.fire({
+    title: 'Confirmar Envío',
+    text: '¿Estás seguro de que deseas enviar el programa de necesidades al cliente?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, enviar',
+    cancelButtonText: 'Cancelar',
+  });
+
+  // Verificar si el usuario confirmó la acción
+  if (confirmacion.isConfirmed) {
+    try {
+      console.log(lead)
+
+      // Realizar la solicitud a tu API para enviar la cotización al cliente
+      // const responseFirstAPI =  await apiGet(`necesidades/vsendEmailer/${lead.id}`, userAuth.access_token);
+
+      //  apiGet(`necesidades/sendEmail/${lead.id}`, userAuth.access_token)
+       apiPostForm('necesidades/sendEmail', lead, userAuth.access_token)
+        .then((response) => {
+          console.log('Data successfully sent to the API:', response);
+          handleClose()
+          doneAlert('Agregado con éxito')
+          Swal.fire('Cotización Enviada', 'La cotización ha sido enviada al correo del cliente.', 'success');
+
+        // You may want to perform additional actions after sending the data
+      })
+      .catch((error) => {
+        console.error('Error sending data to the API:', error);
+        // Handle the error as needed
+      });
+    } catch (error) {
+      // Manejar errores en caso de que la solicitud falle
+      console.error('Error al enviar la cotización:', error);
+
+      // Proporcionar retroalimentación al usuario sobre el error
+      Swal.fire('Error', 'Hubo un problema al enviar la cotización.', 'error');
+    }
+  } else {
+    // El usuario ha cancelado la acción
+    Swal.fire('Envío Cancelado', 'No se ha enviado el programa de necesidades.', 'info');
+  }
+};
+
 // console.log(filasEliminadas)
 // console.log(subareaTotals)
-
   return (
     
     <div className="table-responsive rounded">
+       {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+         {pdfUrl ? ( 
+          <div>            
+            {/* <h1>Programa de necesidades</h1> */}
+            {pdfUrl ? (
+                <div>
+                  <Button className="btn btn-light-primary mr-4 my-2" onClick={enviarCotizacionCliente}>
+                      Enviar al Cliente
+                    </Button>   
+                  <iframe src={pdfUrl} width="100%" height="500px" title="PDF Viewer" />
+                </div>
+
+              ) : (
+                <>
+                  <h1>En esta cotización se debe incluir </h1>
+                             
+                  </>
+              )}
+          </div>
+
+         ) : (
+          <>
       <tr>
             <th colSpan={12}>Totales</th>          
              <TextField  label="Flujo"  variant="standard" value={(totalM2Global * 0.15).toFixed(0)}  // Muestra la suma de "totales"
@@ -470,7 +604,7 @@ const enviarFormulario = () => {
                           labelId={`select-label-${categoria}`}
                           id={`select-${categoria}`}                          
                           open={  open === categoria ? true : false}
-                          onClose={handleClose}                        
+                          onClose={handleCloses}                        
                           onOpen={ ()=>{handleOpen(categoria)} }
                           name={filaSeleccionada[categoria] || ''}
                           value={filaSeleccionada[categoria] || ''}
@@ -520,6 +654,12 @@ const enviarFormulario = () => {
         </tbody>
       </table>
       <Button className = "btn btn-light-primary mr-4 my-2" onClick={enviarFormulario}>Enviar Formulario</Button>
+      </>
+      )}
+       </>
+
+      )}
+
     </div>
 
 

@@ -4,7 +4,7 @@ import style from './Ver.module.css'
 
 export default function Adjuntos(props) {
     const { data } = props
-    console.log(data)
+
     return (
         <>
             <div className={style.container}>
@@ -13,9 +13,9 @@ export default function Adjuntos(props) {
                     <span>
                         Solicitante:
                     </span>
-                    <p>{` ${data.solicitante}`}</p>
+                    <p>{` ${data.solicita}`}</p>
                 </div>
-
+ 
                 <div>
                     <span>
                         Fecha de solicitud:
@@ -32,10 +32,18 @@ export default function Adjuntos(props) {
 
                 <div>
                     <span>
-                        Tipo de Egreso:
+                        Tipo de Gasto:
                     </span>
                     <p>{`${data.tipoEgreso}`}</p>
                 </div>
+
+                <div>
+                    <span>
+                        Tipo de Subgasto:
+                    </span>
+                    <p>{`${data.data && data.data.subarea ? data.data.subarea.nombre : 'NO DEFINIDO'}`}</p>
+                </div>
+
 
                 <div>
                     <span>

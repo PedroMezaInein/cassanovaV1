@@ -32,7 +32,6 @@ import Style from './CrearEgreso.module.css'
 
 export default function VerEgreso(props) {
     const {opcionesData, reload, handleClose, data} = props
-    console.log(data)
     const auth = useSelector((state) => state.authUser.access_token)
     const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState({
@@ -44,7 +43,6 @@ export default function VerEgreso(props) {
         tiposPagos: [],
     })
 
-    console.log(opciones)
 
     useEffect(() => {
         
@@ -100,7 +98,6 @@ export default function VerEgreso(props) {
         total: data.total,
     })
 
-    console.log(form)
 
     const handleChangeCheck = () => {
         setForm({

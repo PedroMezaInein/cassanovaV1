@@ -233,7 +233,7 @@ class PaginaWeb extends Component {
                                             )
                                         })
                                     }
-                                    <Form.Check
+                                    {/* <Form.Check
                                         id="motivo-cancelado-7"
                                         type="radio"
                                         label="Otro"
@@ -241,7 +241,7 @@ class PaginaWeb extends Component {
                                         className="text-justify mb-3"
                                         value="Otro"
                                         onChange={this.onChangeMotivoCancelado}
-                                    />
+                                    /> */}
                                     <div id='customInputCancelado' className='d-none'>
                                         <Form.Control
                                             placeholder='MOTIVO DE CANCELACIÓN'
@@ -265,7 +265,7 @@ class PaginaWeb extends Component {
                                             )
                                         })
                                     }
-                                    <Form.Check
+                                    {/* <Form.Check
                                         id="motivo-rechazo-14"
                                         type="radio"
                                         label="Otro"
@@ -273,7 +273,7 @@ class PaginaWeb extends Component {
                                         className="text-justify mb-3"
                                         value="Otro"
                                         onChange={this.onChangeMotivoRechazo}
-                                    />
+                                    /> */}
                                     <div id='customInputRechazo' className='d-none'>
                                         <Form.Control
                                             placeholder='MOTIVO DE RECHAZO'
@@ -475,8 +475,14 @@ class PaginaWeb extends Component {
     }
     openModalNecesidades = lead => {
         const { modal, data } = this.state
-        modal.necesidades = true
-        data.lead = lead
+        if(lead.empresa.name !== 'INEIN'){
+            modal.necesidades = true
+            data.lead = lead
+        } else{
+            modal.necesidades = false
+            data.lead = lead
+        }
+       
         this.setState({ ...this.state, modal, data })
     }
 
@@ -811,14 +817,10 @@ class PaginaWeb extends Component {
                 <Modal title='Agenda llamada' show={modal.agendar} handleClose={this.closeModalAgendarLlamada}>
                     <AgendaLlamada form={form.agendar} onChange={this.onChangeAgendar} onSubmit={this.agendarLlamada} user={user} lead={data.lead} />
                 </Modal>
-                <LeadContactosModal lead = { data.lead } show={modal.historial} handleClose={this.closeModal}
-                    at = { at } options = { options } refresh = { this.refresh } />
+                <LeadContactosModal lead = { data.lead } show={modal.historial} handleClose={this.closeModal} at = { at } options = { options } refresh = { this.refresh } />
                
-                <Modal size="xl" title='Progama de necesidades' show={modal.necesidades} handleClose={this.closeModal}>
-                    <div className="mt-7">
-                    <LeadNecesidadesModal lead = { data.lead } show={modal.necesidades} handleClose={this.closeModal}
-                    at = { at } options = { options } refresh = { this.refresh } />
-                     </div>  
+                <Modal size="xl" title='Programa de necesidades' show={modal.necesidades} handleClose={this.closeModal}>
+                    <LeadNecesidadesModal lead = { data.lead } show={modal.necesidades} handleClose={this.closeModal} at = { at } options = { options } refresh = { this.refresh } />
                 </Modal>
                
             </div>

@@ -65,8 +65,7 @@ export default function FiltrarRequisicionesContabilidad(props) {
 
     const enviar = () =>{
         // if(validateForm()){
-        if(true){
-
+        // if(true){
 
             Swal.fire({
                 title: 'Cargando...',
@@ -155,15 +154,15 @@ export default function FiltrarRequisicionesContabilidad(props) {
                 })
                 console.log(error)
             }
-        } else{
-            Swal.fire({
-                title: 'Faltan campos',
-                text: 'Favor de llenar todos los campos',
-                icon: 'info',
-                showConfirmButton: false,
-                timer: 2000,
-            })
-        }
+        // } else{
+        //     Swal.fire({
+        //         title: 'Faltan campos',
+        //         text: 'Favor de llenar todos los campos',
+        //         icon: 'info',
+        //         showConfirmButton: false,
+        //         timer: 2000,
+        //     })
+        // }
     }
 
     const handleChangeDepartamento = (e) => {
@@ -358,7 +357,7 @@ export default function FiltrarRequisicionesContabilidad(props) {
                     <div className="col-md-3"></div>
 
                     <div className="col-md-3">
-                        <button className={Style.sendButton} onClick={enviar}>Agregar</button>
+                        <button className={Style.sendButton} onClick={enviar}>enviar</button>
                     </div>
                 </div>
                 

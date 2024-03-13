@@ -74,6 +74,8 @@ class Empleados extends Component {
             organigrama:'',
             checador: '',
             matricula: '',
+            password: '',
+            password2: '',
             adjuntos: {
                 acta: {
                     value: '',

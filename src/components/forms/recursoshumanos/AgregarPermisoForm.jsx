@@ -220,9 +220,9 @@ class AgregarPermisosForm extends Component {
                                     name='lider' iconclass="far fa-file-alt icon-lg text-dark-50" placeholder='LÍDER INMEDIATO' onChange={onChange}
                                     value={form.lider} messageinc="Incorrecto. Ingresa el líder inmediato" /> */}
                             </div>
-                            <div className="col-md-12 ">
-                                <label className="col-form-label font-weight-bolder text-dark-60">Entrada tardía</label>
-                                <div className="mb-3 row d-flex justify-content-center">
+                            <div className="col-md-5 ">
+                                <label className="col-form-label font-weight-bolder text-dark-30">Entrada </label>
+                                <div className="mb-1 row d-flex justify-content-center">
                                     {/* <SelectHorario
                                         onChange={onChange}
                                         minuto={{ value: form.minuto_entrada, name: 'minuto_entrada' }}
@@ -241,10 +241,12 @@ class AgregarPermisosForm extends Component {
                                             </MuiPickersUtilsProvider>
                                 </div>
                             </div>
-                         
-                            <div className="col-md-12 ">
-                                <label className="col-form-label font-weight-bolder text-dark-60">Salida anticipada</label>
-                                <div className="mb-3 row d-flex justify-content-center">
+                            <div className="col-md-1 ">
+                            </div>
+                        
+                            <div className="col-md-5 ">
+                                <label className="col-form-label font-weight-bolder text-dark-30">Salida</label>
+                                <div className="mb-1 row d-flex justify-content-center">
                                     {/* <SelectHorario
                                         onChange={onChange}
                                         minuto={{ value: form.minuto_salida, name: 'minuto_salida' }}
@@ -263,6 +265,45 @@ class AgregarPermisosForm extends Component {
                                     </MuiPickersUtilsProvider>
                                 </div>
                             </div>  
+
+                            <div className="col-md-5 ">
+                                <label className="col-form-label font-weight-bolder text-dark-30">Ir </label>
+                                <div className="mb-1 row d-flex justify-content-center">
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <Grid container justifyContent="space-around">
+                                                    <KeyboardTimePicker
+                                                        id="hora_ir"
+                                                        value={form.date_ir}
+                                                        onChange={e => onChangeHora(e, 'hora_ir')}
+                                                        KeyboardButtonProps={{
+                                                            'aria-label': 'change time',
+                                                        }}
+                                                    />
+                                                </Grid>
+                                            </MuiPickersUtilsProvider>
+                                </div>
+                            </div>
+                            <div className="col-md-1 ">
+                            </div>
+                        
+                            <div className="col-md-5 ">
+                                <label className="col-form-label font-weight-bolder text-dark-30">Regresar</label>
+                                <div className="mb-1 row d-flex justify-content-center">
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <Grid container justifyContent="space-around">
+                                            <KeyboardTimePicker
+                                                id="hora_regresar"
+                                                value={form.date_regresar}
+                                                onChange={e => onChangeHora(e, 'hora_regresar')}
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change time',
+                                                }}
+                                            />
+                                        </Grid>
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                            </div>  
+
                          <div className="col-md-12">
                             <InputGray 
                                 as='textarea'

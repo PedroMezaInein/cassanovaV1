@@ -1446,6 +1446,12 @@ class Incidencias extends Component {
                             { name: 'Hora salida', text: permiso.hora_salida ? permiso.hora_salida : '' },
                         ], '250px'
                     ),
+                    ir: setArrayTable(
+                        [
+                            { name: 'Hora ir', text: permiso.hora_ir ? permiso.hora_ir : '' },
+                            { name: 'Hora regresar', text: permiso.hora_regresar ? permiso.hora_regresar : '' },
+                        ], '250px'
+                    ),
                     fechas: setArrayTable(
                         [
                             { name: 'Fecha inicio', text: permiso.fecha_inicio ? dayDMY(permiso.fecha_inicio) : '' },

@@ -4,23 +4,18 @@ import style from './Ver.module.css'
 
 export default function Adjuntos(props) {
     const { data } = props
-    console.log(data)
+
     return (
         <>
             <div className={style.container}>
-                
+
                 <div>
                     <span>
                         Solicitante:
                     </span>
-                    <p>{` ${data.solicitante}`}</p>
+                    <p>{` ${data.solicita}`}</p>
                 </div>
-                <div>
-                    <span>
-                        Departamento:
-                    </span>
-                    <p>{`${data.departamento}`}</p>
-                </div>
+ 
                 <div>
                     <span>
                         Fecha de solicitud:
@@ -30,17 +25,25 @@ export default function Adjuntos(props) {
 
                 <div>
                     <span>
-                        Fecha de pago:
+                        Departamento:
                     </span>
-                    <p>{`${data.fecha_pago ? data.fecha_pago : 'Sin fecha'}`}</p>
+                    <p>{`${data.departamento}`}</p>
                 </div>
 
                 <div>
                     <span>
-                        Tipo de Egreso:
+                        Tipo de Gasto:
                     </span>
                     <p>{`${data.tipoEgreso}`}</p>
                 </div>
+
+                <div>
+                    <span>
+                        Tipo de SUBGASTO:
+                    </span>
+                    <p>{`${data.data && data.data.subarea ? data.data.subarea.nombre : 'NO DEFINIDO'}`}</p>
+                </div>
+
 
                 <div>
                     <span>
@@ -57,31 +60,16 @@ export default function Adjuntos(props) {
                 </div>
 
                 <div>
-                    <span>
-                        Monto pagado:
-                    </span>
-                    <p>{`$ ${data.monto}`}</p>
-                </div>
-
-                <div>
-                    <span>Estatus de compra</span>
+                    <span>Estatus</span>
                     <p>
                         {
-                            data.compra ? data.compra.estatus: 'estatus Pendiente'
+                            data.estatus
                         }
                     </p>
+                    
                 </div>
 
-                <div>
-                    <span>Estatus de facturación</span>
-                    <p>
-                        {
-                            data.conta ? data.conta.estatus : 'estatus Pendiente'
-                        }
-                    </p>
-                </div>
-
-                <div ClassName={style.div9}>
+                <div ClassName={style.div9}> 
                     <span>
                         Descripción:
                     </span>
@@ -92,7 +80,6 @@ export default function Adjuntos(props) {
                     <span>
                         Aprobación:
                     </span>
-                    <br />
                     <p>
                         {`Compras: ${data.auto1 && data.auto1.name ? data.auto1.name : 'Pendiente'}`}
                     </p>
@@ -100,7 +87,7 @@ export default function Adjuntos(props) {
                         {`Contabilidad: ${data.auto2 && data.auto2.name ? data.auto2.name : 'Pendiente'}`}
                     </p>
                 </div>
-                
+
             </div>
 
         </>

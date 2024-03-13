@@ -657,7 +657,7 @@ class LeadLlamadaSalida extends Component {
                                 )
                             })
                         }
-                        <Form.Check 
+                        {/* <Form.Check 
                             id="motivo-rechazo-14"
                             type="radio"
                             label="Otro"
@@ -665,7 +665,7 @@ class LeadLlamadaSalida extends Component {
                             className="text-justify mb-3"
                             value="Otro"
                             onChange = { this.onChangeMotivoRechazo }
-                        />
+                        /> */}
                         <div id = 'customInputRechazo' className = 'd-none'>
                             <Form.Control
                                 placeholder='MOTIVO DE RECHAZO'

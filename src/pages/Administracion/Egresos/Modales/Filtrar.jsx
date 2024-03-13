@@ -26,6 +26,7 @@ export default function CrearEgreso(props) {
     const {opcionesData, reload, handleClose, filtrarTabla,filtrada,setFiltrado, borrarTabla} = props
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector((state) => state.authUser.access_token);
+    const presupuestos = useSelector(state => state.opciones.presupuestos)
 
     const [opciones, setOpciones] = useState({
         cuentas: [],
@@ -59,6 +60,8 @@ export default function CrearEgreso(props) {
         id_partidas: "",
         proveedor: '',
         subarea: '',
+        presupuestos: ''
+
     })
 
     const handleChangeCheck = (tipo) => {
@@ -150,7 +153,7 @@ export default function CrearEgreso(props) {
 
     const filtrar = () => {
         
-            filtrarTabla(`&identificador=${form.identificador}&fecha_inicio=${changeDateFormat(form.fecha_inicio)}&fecha_fin=${changeDateFormat(form.fecha_fin)}&proveedor=${form.proveedor}&empresa=${form.empresa}&area=${form.area}&partida=${form.id_partidas}&subarea=${form.subarea}&cuenta=${form.cuenta}&monto=${form.monto}&factura=${form.factura}&descripcion=${form.descripcion}`)
+            filtrarTabla(`&identificador=${form.identificador}&fecha_inicio=${changeDateFormat(form.fecha_inicio)}&fecha_fin=${changeDateFormat(form.fecha_fin)}&proveedor=${form.proveedor}&empresa=${form.empresa}&area=${form.area}&partida=${form.id_partidas}&subarea=${form.subarea}&cuenta=${form.cuenta}&monto=${form.monto}&factura=${form.factura}&descripcion=${form.descripcion}&presupuestos=${form.presupuestos}`)
             // console.log('filtrar tabla')
             handleClose()
             // borrar(false)
@@ -280,6 +283,26 @@ export default function CrearEgreso(props) {
                             </div>
                         : null
                     }
+                     <div>
+                                {presupuestos.length > 0 ?
+                                    <>
+                                        <InputLabel id="demo-simple-select-label">Presupuesto</InputLabel>
+                                        <Select
+                                            value={form.presupuestos}
+                                            name="presupuestos"
+                                            onChange={handleChange}
+                                            style={{ width: 230, marginRight: '1rem' }}
+                                        >
+                                            {presupuestos.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))}
+
+                                        </Select>
+                                    </>
+                                    : null
+                                }
+
+                            </div>
 
                     {
                         form.cuentas.length > 0 ?

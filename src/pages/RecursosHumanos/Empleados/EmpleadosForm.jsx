@@ -69,6 +69,8 @@ class EmpleadosForm extends Component {
             total: 0.0,
             ispt: 0.0,
             estatus_imss: 'Activo',
+            empresas: [],
+            // empresas: '',
             // puesto: '',
             vacaciones_disponibles: 0,
             checador: "0",
@@ -77,6 +79,9 @@ class EmpleadosForm extends Component {
             // estudios: 0.0,
             // organigrama:'',
             // responsable:'',
+            password: '',
+            password2: '',
+            matricula: '',
             adjuntos: {
                 datosGenerales: {
                     value: '',
@@ -135,7 +140,6 @@ class EmpleadosForm extends Component {
                     if (state.empleado) {
                         const { form, options} = this.state
                         const { empleado } = state
-
                         form.nombre = empleado.nombre
                         form.curp = empleado.curp
                         form.rfc = empleado.rfc
@@ -184,6 +188,15 @@ class EmpleadosForm extends Component {
                                 label: elemento.nombre
                             })
                         })
+                        empleado.empleados_empresas.forEach((elemento) => {
+                            form.empresas.push({
+                                value: elemento.empresa_id.toString(),
+                                name: elemento.empresa[0].name,
+                                label: elemento.empresa[0].name,
+                            })
+                        })
+
+                        
                         form.ap_materno = empleado.apellido_paterno === null ? '' : empleado.apellido_paterno
                         form.ap_paterno = empleado.apellido_materno === null ? '' : empleado.apellido_materno
                         form.email_empresarial = empleado.email_empresarial === null ? '' : empleado.email_empresarial
@@ -202,7 +215,9 @@ class EmpleadosForm extends Component {
                             form.organigrama = empleado.organigrama[0].id_organigrama.toString()
                             form.responsable = empleado.organigrama[0].id_lider.toString()
                         }
-                      
+                        form.password = empleado.password
+                        form.password2 = empleado.password2
+                        form.matricula = empleado.matricula
                         form.imss = empleado.imss
                         form.rcv = empleado.rcv
                         form.infonavit = empleado.infonavit
@@ -303,6 +318,11 @@ class EmpleadosForm extends Component {
                     form.departamentos.forEach((elemento) => {
                         data.append(`${element}[]`, elemento.value)
                     }) 
+                    break;
+                case 'empresas':
+                form.empresas.forEach((elemento) => {
+                    data.append(`${element}[]`, elemento.value)
+                }) 
                     break;
                 default:
                     data.append(element, form[element])

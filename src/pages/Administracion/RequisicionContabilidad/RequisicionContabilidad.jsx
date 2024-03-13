@@ -12,6 +12,7 @@ import Editar from './Modales/Editar'
 import Adjuntos from './Modales/Adjuntos'
 import Ver from './Modales/Ver'
 import Crear from './../../../components/forms/administracion/NuevaRequisicion'
+import { apiDelete } from './../../../functions/api'
 
 import { apiOptions, apiPutForm } from '../../../functions/api'
 import { setOptions } from '../../../functions/setters'
@@ -19,6 +20,10 @@ import { setOptions } from '../../../functions/setters'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import StatusIndicator from './utils/StatusIndicator'
 import Autorizado from '@material-ui/icons/AssignmentTurnedInOutlined';
+import Autoriza from '../../../components/forms/administracion/Autorizar'
+import Historial from '../../../components/forms/administracion/Historial'
+import Comentarios from '../../../components/forms/administracion/comentarios'
+
 
 // import Layout from '../../../components/layout/layout'
 
@@ -57,7 +62,19 @@ export default function RequisicionContabilidad() {
         autorizar: {
             show: false,
             data: false
-        }
+        },
+        autoriza: {
+            show: false,
+            data: false
+        },
+        historial:{
+            show: false,
+            data: false
+        },
+        comentarios:{
+            show: false,
+            data: false
+        },
     })
 
     useEffect(() => {
@@ -89,13 +106,18 @@ export default function RequisicionContabilidad() {
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Orden no.', identificador: 'orden_compra' },
-        { nombre: 'Solicitante', identificador: 'solicitante', sort: false, stringSearch: false },
+        { nombre: 'Presupuesto', identificador: 'presupuesto', sort: false, },
+        { nombre: 'Solicitante', identificador: 'solicita', sort: false, stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha_view', sort: false, stringSearch: false },
+        //  userAuth.user.tipo.tipo === 'Administrador' ?? 
+        // { nombre: 'Fecha solicitud', identificador: 'solicitud', sort: false, stringSearch: false } ,
+   
         { nombre: 'Departamento', identificador: 'departamento', sort: false, stringSearch: false },
         { nombre: 'Tipo de Egreso', identificador: 'tipoEgreso', sort: false, stringSearch: false },
         /* { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false }, */
         { nombre: 'Tipo de pago  (*)', identificador: 'tipoPago', sort: false, stringSearch: false },
         { nombre: 'Monto pagado  (*)', identificador: 'monto_view', sort: false, stringSearch: false },
+        { nombre: 'Factura', identificador: 'factura',  sort: false, stringSearch: false },
         /* { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
         { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false }, */
         /* { nombre: 'Facturación', identificador: 'estatus_factura', sort: false, stringSearch: false },
@@ -117,13 +139,26 @@ export default function RequisicionContabilidad() {
                 })
             }
         },
+        // {
+        //     //filtrar
+        //     nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
+        //     funcion: (item) => {
+        //         setModal({
+        //             ...modal,
+        //             filtrar: {
+        //                 show: true,
+        //                 data: item
+        //             }
+        //         })
+        //     }
+        // },
         {
             //filtrar
-            nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
+            nombre: <div><i className="fas fa-filter mr-5"></i><span>Autorizar</span></div>,
             funcion: (item) => {
                 setModal({
                     ...modal,
-                    filtrar: {
+                    autoriza: {
                         show: true,
                         data: item
                     }
@@ -143,7 +178,7 @@ export default function RequisicionContabilidad() {
             aux.push({
                 id: item.id,
                 acciones: createAcciones(),
-                solicitante: item.solicitante.name,
+                solicita: item.solicitante.name,
                 solicitante_id: item.solicitante.id,
                 fecha: item.fecha,
                 fecha_view: reformatDate(item.fecha),
@@ -174,16 +209,34 @@ export default function RequisicionContabilidad() {
                 id_estatus_compra: item.id_estatus_compra ? item.id_estatus_compra : null,
                 id_estatus_factura: item.id_estatus_factura ? item.id_estatus_factura : null,
                 conta: item.estatus_conta ? item.estatus_conta.id : null,
-                factura: item.estatus_factura ? item.estatus_factura.id : null,
+                factura: item.facturas == 1 ? 'Con Factura' : 'Sin Factura' ,
                 afectacion_cuentas: item.auto2 ? "Cuentas afectadas" : "sin afectación",
                 semaforo: createStatusIndicator(item),
                 fecha_entrega: item.fecha_entrega ? item.fecha_entrega : null,
+                presupuesto: item.presu ? item.presu.nombre: '',
+                solicitud: item.created_at ? reformatDates(item.created_at) : '',
+
+                data: item
             })
         })
         // aux = aux.reverse()
         return aux
 
     }
+
+    const reformatDates = (dateString) => {
+        const dateObject = new Date(dateString);
+        const day = dateObject.getDate();
+        const month = dateObject.getMonth() + 1; // Months are zero-based
+        const year = dateObject.getFullYear();
+
+        // Ensure leading zeros for single-digit days and months
+        const formattedDay = day < 10 ? `0${day}` : day;
+        const formattedMonth = month < 10 ? `0${month}` : month;
+
+        return `${formattedDay}-${formattedMonth}-${year}`;
+      };
+
 
     function reformatDate(dateStr) {
         var dArr = dateStr.split("-");  // ex input: "2010-01-18"
@@ -224,7 +277,16 @@ export default function RequisicionContabilidad() {
                 icono: 'fas fa-exchange-alt',
                 color: 'greenButton',
                 funcion: (item) => {
-                    if (item.auto2) {
+                    // console.log(item)
+                    if( item.id_estatus == 12){
+                        Swal.fire({
+                            title: 'Requisición esta cancelada',
+                            text: 'La requisición ya fue cancelada, no se puede convertir',
+                            icon: 'warning',
+                            confirmButtonText: 'Aceptar'
+                        })
+                    }else
+                    if (item.auto2 ) {
                         Swal.fire({
                             title: 'Requisición ya aprobada',
                             text: 'La requisición ya fue aprobada, no se puede convertir',
@@ -247,13 +309,33 @@ export default function RequisicionContabilidad() {
                 icono: 'fas fa-edit',
                 color: 'blueButton',
                 funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        editar: {
-                            show: true,
-                            data: item
-                        }
-                    })
+                    if( item.id_estatus == 12){
+                        Swal.fire({
+                            title: 'Requisición esta cancelada',
+                            text: 'La requisición ya fue cancelada, no se puede convertir',
+                            icon: 'warning',
+                            confirmButtonText: 'Aceptar'
+                        })
+                    }else
+                    if (item.auto2 ) {
+                        Swal.fire({
+                            title: 'Requisición ya aprobada',
+                            text: 'La requisición ya fue aprobada, no se puede convertir',
+                            icon: 'warning',
+                            confirmButtonText: 'Aceptar'
+                        })
+                    } else 
+                    {
+                        setModal({
+                            ...modal,
+                            editar: {
+                                show: true,
+                                data: item
+                            }
+                        })
+
+                    }
+
                 }
             },
             {
@@ -284,90 +366,178 @@ export default function RequisicionContabilidad() {
                     })
                 }
             },
+            
+            // {
+            //     nombre: 'Autorizar',
+            //     color: 'perryButton',
+            //     icono: 'fas fa-check',
+            //     funcion: (item) => {
+            //         if (userAuth.user.tipo.tipo === 'Administrador') {
+            //             if (!item.estatus) {
+            //                 Swal.fire({
+            //                     title: '¿Estas seguro?',
+            //                     text: "¡No podrás revertir esto!",
+            //                     icon: 'warning',
+            //                     showCancelButton: true,
+            //                     confirmButtonColor: '#3085d6',
+            //                     cancelButtonColor: '#d33',
+            //                     cancelButtonText: 'Cancelar',
+            //                     confirmButtonText: 'Si, autorizar'
+            //                 }).then((result) => {
+            //                     if (result.isConfirmed) {
+            //                         Swal.fire({
+            //                             title: 'autorizando',
+            //                             text: 'Espere un momento...',
+            //                             allowOutsideClick: false,
+            //                             allowEscapeKey: false,
+            //                             allowEnterKey: false,
+            //                             showConfirmButton: false,
+            //                             onOpen: () => {
+            //                                 Swal.showLoading()
+            //                             }
+            //                         })
+            //                         try {
+            //                             apiPutForm(`requisicion/${item.id}/autorizar`, { aprobado: 1 }, userAuth.access_token).then(result => {
+            //                                 Swal.close()
+            //                                 Swal.fire(
+            //                                     '¡Autorizado!',
+            //                                     'El presupuesto ha sido Autorizado.',
+            //                                     'success'
+            //                                 )
+            //                                 setTimeout(() => {
+            //                                     Swal.fire({
+            //                                         title: 'Presupuesto aprobado',
+            //                                         text: 'El presupuesto fue aprobado exitosamente.',
+            //                                         icon: 'success',
+            //                                         confirmButtonColor: '#3085d6',
+            //                                         confirmButtonText: 'Ok'
+            //                                     });
+            //                                 }, 2000);
+            //                                 if (reloadTable) {
+            //                                     reloadTable.reload()
+            //                                 }
+
+            //                             })
+            //                         } catch (error) {
+            //                             Swal.close()
+            //                             Swal.fire(
+            //                                 '¡Error!',
+            //                                 'El presupuesto no ha sido Autorizado.',
+            //                                 'error'
+            //                             )
+
+            //                         }
+
+            //                     }
+            //                 })
+            //             } else {
+            //                 Swal.fire({
+            //                     title: 'Presupuesto ya autorizado',
+            //                     text: "¡El presupuesto ya ha sido autorizado!",
+            //                     icon: 'error',
+            //                     confirmButtonColor: '#3085d6',
+            //                     confirmButtonText: 'Ok'
+            //                 })
+            //             }
+
+            //         } else {
+            //             Swal.fire({
+            //                 title: '¡No tienes permisos!',
+            //                 text: "¡No tienes permisos para aprobar el presupuesto!",
+            //                 icon: 'error',
+            //                 confirmButtonColor: '#3085d6',
+            //                 confirmButtonText: 'Ok'
+            //             })
+            //         }
+            //     }
+            // },
             {
-                nombre: 'Autorizar',
-                color: 'perryButton',
-                icono: 'fas fa-check',
+                nombre: 'Cancelar',
+                color: 'redButton',
+                icono: 'fas fa-trash-alt',
                 funcion: (item) => {
-                    if (userAuth.user.tipo.tipo === 'Administrador') {
-                        if (!item.estatus) {
+                    // if (userAuth.user.tipo.tipo === 'Administrador') {
+                        if( item.id_estatus == 12){
                             Swal.fire({
-                                title: '¿Estas seguro?',
-                                text: "¡No podrás revertir esto!",
+                                title: 'Requisición esta cancelada',
+                                text: 'La requisición ya fue cancelada, no se puede convertir',
                                 icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                cancelButtonText: 'Cancelar',
-                                confirmButtonText: 'Si, autorizar'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    Swal.fire({
-                                        title: 'autorizando',
-                                        text: 'Espere un momento...',
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false,
-                                        allowEnterKey: false,
-                                        showConfirmButton: false,
-                                        onOpen: () => {
-                                            Swal.showLoading()
+                                confirmButtonText: 'Aceptar'
+                            })
+                        }else
+                        {   
+
+                        Swal.fire({
+                            title: '¿Estas seguro?',
+                            text: "¡No podrás revertir esto!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonText: 'Si, Cancelar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    apiDelete(`requisicion/${item.id}/cancelar`, userAuth.access_token).then(result => {
+                                        if (reloadTable) {
+                                            reloadTable.reload()
                                         }
-                                    })
-                                    try {
-                                        apiPutForm(`requisicion/${item.id}/autorizar`, { aprobado: 1 }, userAuth.access_token).then(result => {
-                                            Swal.close()
-                                            Swal.fire(
-                                                '¡Autorizado!',
-                                                'El presupuesto ha sido Autorizado.',
-                                                'success'
-                                            )
-                                            setTimeout(() => {
-                                                Swal.fire({
-                                                    title: 'Presupuesto aprobado',
-                                                    text: 'El presupuesto fue aprobado exitosamente.',
-                                                    icon: 'success',
-                                                    confirmButtonColor: '#3085d6',
-                                                    confirmButtonText: 'Ok'
-                                                });
-                                            }, 2000);
-                                            if (reloadTable) {
-                                                reloadTable.reload()
-                                            }
-
+                                        Swal.fire({
+                                            title: 'Cancelado!',
+                                            text: 'La requisición se ha cancelado',
+                                            icon: 'success',
+                                            confirmButtonColor: '#3085d6',
+                                            confirmButtonText: 'Ok',
+                                            timer: 2000
                                         })
-                                    } catch (error) {
-                                        Swal.close()
-                                        Swal.fire(
-                                            '¡Error!',
-                                            'El presupuesto no ha sido Autorizado.',
-                                            'error'
-                                        )
-
-                                    }
+                                    })
+                                } catch (error) {
 
                                 }
-                            })
-                        } else {
-                            Swal.fire({
-                                title: 'Presupuesto ya autorizado',
-                                text: "¡El presupuesto ya ha sido autorizado!",
-                                icon: 'error',
-                                confirmButtonColor: '#3085d6',
-                                confirmButtonText: 'Ok'
-                            })
-                        }
-
-                    } else {
-                        Swal.fire({
-                            title: '¡No tienes permisos!',
-                            text: "¡No tienes permisos para aprobar el presupuesto!",
-                            icon: 'error',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'Ok'
+                            }
                         })
                     }
+
+                    // } else {
+                    //     Swal.fire({
+                    //         title: '¡No tienes permisos!',
+                    //         text: "¡No tienes permisos para eliminar el presupuesto!",
+                    //         icon: 'error',
+                    //         confirmButtonColor: '#3085d6',
+                    //         confirmButtonText: 'Ok'
+                    //     })
+                    // }
                 }
             },
+            {
+                nombre: 'Historial',
+                icono: 'fas fa-paperclip',
+                color: 'reyButton',
+                funcion: (item) => {
+                    setModal({
+                        ...modal,
+                        historial: {
+                            show: true,
+                            data: item.data
+                        }
+                    })
+                }
+            }, 
+            {
+                nombre: 'Comentarios',
+                icono: 'fas fa-paperclip',
+                color: 'reyButton',
+                funcion: (item) => {
+                    setModal({
+                        ...modal,
+                        comentarios: {
+                            show: true,
+                            data: item.data
+                        }
+                    })
+                }
+            }, 
             // {
             //     nombre: 'Autorizar',
             //     color: 'perryButton',
@@ -489,7 +659,7 @@ export default function RequisicionContabilidad() {
                     columnas={columnas} 
                     url='requisicion/admin' 
                     ProccessData={ProccessData} 
-                    numItemsPagina={12} 
+                    numItemsPagina={20} 
                     acciones={createAcciones()} 
                     opciones={opciones} 
                     reload={setReloadTable} 
@@ -517,12 +687,24 @@ export default function RequisicionContabilidad() {
                     <Adjuntos data={modal.adjuntos.data} nuevaRequisicion={false} />
                 </Modal>
 
-                <Modal size="xl" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
+                <Modal size="md" title={"Ver requisición"} show={modal.ver.show} handleClose={handleClose('ver')}>
                     <Ver data={modal.ver.data} />
                 </Modal>
 
                 <Modal size="lg" title={"filtrar"} show={modal.filtrar.show} handleClose={handleClose('filtrar')}>
                     <FiltrarRequisicionesContabilidad data={modal.filtrar.data} handleClose={handleClose('filtrar')} opciones={opcionesApi} filtrarTabla={setFiltrado} borrarTabla={borrar} estatusCompras={estatusCompras} />
+                </Modal>
+
+                <Modal size="xl" title={"autoriza Requisicion"} show={modal.autoriza.show} handleClose={handleClose('autoriza')}>
+                    <Autoriza data={modal.autoriza.data} handleClose={handleClose('autoriza')} filtrarTabla={setFiltrado} />
+                </Modal>
+
+                <Modal size="lg" title={"Comentarios"} show={modal.comentarios.show}  handleClose={handleClose('comentarios')} >
+                    <Comentarios data={modal.comentarios.data} handleClose={e => handleClose('comentarios')} reload={reloadTable}/>
+                </Modal>
+                
+                <Modal size="lg" title={"Historial"} show={modal.historial.show}  handleClose={handleClose('historial')} >
+                    <Historial data={modal.historial.data} handleClose={e => handleClose('historial')} reload={reloadTable}/>
                 </Modal>
                 </>
                 : null

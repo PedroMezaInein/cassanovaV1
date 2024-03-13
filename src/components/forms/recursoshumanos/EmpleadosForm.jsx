@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { RadioGroupGray, Button, TagSelectSearchGray,  InputGray, InputPhoneGray, SelectSearchGray, InputNumberGray } from '../../form-components'
+import { RadioGroupGray, Button, TagSelectSearchGray,  InputGray, InputPhoneGray, SelectSearchGray, InputNumberGray, TagSelectSearch } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { RFC, NSS, CURP, TEL } from '../../../constants'
 import { openWizard1_4TABS, openWizard2_4TABS } from '../../../functions/wizard'
+// import { InputLEmail, InputLPassword } from '../../form-components'
+import InputPassword from '../../form-components/InputPassword'
+
 // import { openWizard1_4TABS, openWizard2_4TABS, openWizard3_4TABS, openWizard4_4TABS } from '../../../functions/wizard'
 
 import $ from "jquery";
@@ -67,6 +70,44 @@ class EmpleadosForm extends Component {
         onChange({ target: { value: value, name: 'empresa' } })
     }
 
+
+    nuevoUpdateEmpresa = seleccionados =>{
+         const { form, deleteOption } = this.props
+        seleccionados = seleccionados ? seleccionados : [];
+        if (seleccionados.length > form.empresas.length) {
+            let diferencia = $(seleccionados).not(form.empresas).get();
+            let val_diferencia = diferencia[0].value
+            this.updateEmpresas(val_diferencia)
+        }
+        else {
+            let diferencia = $(form.empresas).not(seleccionados).get();
+            diferencia.forEach(borrar => {
+                deleteOption(borrar, "empresas")
+            })
+        }
+    }
+
+    updateEmpresas = value => {
+        const { onChange, options, onChangeOptions, form } = this.props
+        options.empresas.map((empresa) => {
+            if (empresa.value === value) {
+                let aux = false;
+                // console.log(form.empresas)
+                form.empresas.map((element) => {
+                    if (element.value === value)
+                        aux = true
+                    return false
+                })
+                if (!aux)
+                    onChangeOptions({ target: { value: empresa.value, name: 'empresa' } }, 'empresas')
+            }
+            return false
+        })
+        // onChange({ target: { value: value, name: 'empresa' } })
+    }
+
+
+
     nuevoUpdateDepartamento = seleccionados => {
         const { form, deleteOption } = this.props
         seleccionados = seleccionados ? seleccionados : [];
@@ -100,6 +141,9 @@ class EmpleadosForm extends Component {
         })
         onChange({ target: { value: value, name: 'departamento' } })
     }
+
+
+
     transformarOptions = options => {
         options = options ? options : []
         options.map((value) => {
@@ -109,16 +153,28 @@ class EmpleadosForm extends Component {
         return options
     }
 
+    transformarOptionss = options => {
+        options = options ? options : []
+        options.map((value) => {
+            value.label = value.name
+            return ''
+        });
+        return options
+    }
+
+
     onChange = fecha => {
         const { form } = this.props
         form.fecha = fecha
         this.setState({ form })
     }
 
+  
+    
+    
     render() {
 
         const { options, onChange, form, onSubmit, formeditado } = this.props
-        console.log(form.tipo_empleado)
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -190,7 +246,7 @@ class EmpleadosForm extends Component {
                                                 type="text" value={form.curp} placeholder="CURP" iconclass="far fa-address-card" patterns={CURP} messageinc="Incorrecto. Ej. SIHC400128HDFLLR01" maxLength="18" />
                                         </div>
                                         <div className="col-md-2">
-                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange} name="rfc"
+                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1} formeditado={formeditado} onChange={onChange} name="rfc"
                                                 type="text" value={form.rfc} placeholder="RFC" iconclass="far fa-file-alt" patterns={RFC} messageinc="Incorrecto. Ej. ABCD001122ABC" maxLength="13" />
                                         </div>
                                         <div className="col-md-2">
@@ -251,6 +307,16 @@ class EmpleadosForm extends Component {
                                             <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={1} formeditado={formeditado} onChange={onChange}
                                                 name="email_empresarial" type="email" value={form.email_empresarial} placeholder="CORREO EMPRESARIAL" iconclass={"far fa-envelope"} messageinc="Incorrecto.Ej. usuario@dominio.com" />
                                         </div>
+                                        <div className="col-md-2">
+                                           <InputPassword withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0}  autocomplete='off'
+                                                        name='password' iconclass="fab fa-diaspora" placeholder='CONTRASEÑA DE CORREO' onChange={onChange} 
+                                                        value={form.password} messageinc="Ingresa el usuario" />   
+                                        </div>
+                                        <div className="col-md-2">
+                                           <InputPassword withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} 
+                                                        name='password2' iconclass="fab fa-diaspora" placeholder='CONTRASEÑA DE MAQUINA' onChange={onChange} 
+                                                        value={form.password2} messageinc="Ingresa el usuario" />   
+                                        </div>
                                         <div className="col-md-3">
                                             <TagSelectSearchGray placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)" options={this.transformarOptions(options.departamentos)} defaultvalue={this.transformarOptions(form.departamentos)}
                                                 onChange={this.nuevoUpdateDepartamento} iconclass="fas fa-layer-group" requirevalidation={0} messageinc="Incorrecto. Selecciona el(los) departamento(s)"
@@ -270,7 +336,12 @@ class EmpleadosForm extends Component {
                                                     onChange={onChange} iconclass={"fas fa-mobile-alt"} patterns={TEL} messageinc="Incorrecto. Ingresa el número de teléfono." thousandseparator={false} prefix={''}
                                                 />
                                             </div>
-                                        {/* </div> */}
+                                            <div className="col-md-3">
+                                            <TagSelectSearchGray placeholder="SELECCIONA EL(LOS) EMPRESA(S)" options={this.transformarOptionss(options.empresas)} defaultvalue={this.transformarOptionss(form.empresas)}
+                                                onChange={this.nuevoUpdateEmpresa} iconclass="fas fa-layer-group" requirevalidation={0} messageinc="Incorrecto. Selecciona el(los) EMPRESA(s)"
+                                                />
+                                            </div>
+                                           
 
                                         <div className="col-md-12">
                                             <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} requirevalidation={0} formeditado={formeditado} onChange={onChange}

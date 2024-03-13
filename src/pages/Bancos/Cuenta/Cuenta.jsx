@@ -32,6 +32,7 @@ class Cuenta extends Component {
             numero: '',
             estatus: 0,
             tipo: '',
+            impuesto: '',
             banco: '',
             empresa_principal: '',
             empresa: '',
@@ -51,7 +52,8 @@ class Cuenta extends Component {
             bancos: [],
             estatus: [],
             tipos: [],
-            usuarios:[]
+            usuarios:[],
+            impuesto:[]
         },
         data: {
             estados: []
@@ -77,7 +79,7 @@ class Cuenta extends Component {
         await axios.get(URL_DEV + 'cuentas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { bancos, estatus, tipos, empresas, users } = response.data
+                const { bancos, estatus, tipos, empresas, impuesto ,users } = response.data
                 const { options, cuenta } = this.state
                 let aux = []
                 if (tipo === 'bancos') {
@@ -131,6 +133,7 @@ class Cuenta extends Component {
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.estatus = setSelectOptions(estatus, 'estatus')
                 options.usuarios =  setOptions(users, 'name', 'id')
+                options.impuesto = setOptions(impuesto, 'name', 'id')
                 this.setState({
                     ...this.state,
                     options,
@@ -345,6 +348,8 @@ class Cuenta extends Component {
                 return options.bancos
             case 'tipo':
                 return options.tipos
+            case 'impuesto':
+                return options.impuesto
             default: return []
         }
     }

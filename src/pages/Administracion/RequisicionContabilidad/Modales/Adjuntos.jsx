@@ -64,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Adjuntos(props) {
     const { data, nuevaRequisicion } = props
-    console.log('data', data)
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
     const [value, setValue] = useState(0);
@@ -90,7 +89,7 @@ export default function Adjuntos(props) {
     }, [])
 
     const handleChange = (event, newValue) => {
-        console.log('newvalue', event) 
+        // console.log('newvalue', event) 
         setValue(newValue);
     };
 
@@ -148,11 +147,15 @@ export default function Adjuntos(props) {
     }
 
     const handleTab = (e) => {
-        console.log('tab', e)
         setActiveTab(e)
+        form.tipo = ''
+        setForm({
+            ...form,
+        })
     }
 
     const handleFile = (e) => {
+        form.tipo = e.target.files[0]
         setForm({
             ...form,
             [activeTab]: [e.target.files[0]]
@@ -212,7 +215,7 @@ export default function Adjuntos(props) {
                         })
                         getAdjuntos()
 
-                        console.log('res', res)
+                        // console.log('res', res)
                         if (res.status === 200) {
                             Swal.fire({
                                 icon: 'success',
@@ -254,16 +257,15 @@ export default function Adjuntos(props) {
         return (
             <>
                 <div className='adjuntos_send'>
-                    <div className="file">
+                    <div className="file" >
 
-                        <label htmlFor="file">Selecciona el Comunicado</label>
-                        <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                        <label htmlFor="file">Selecciona el adjunto</label>
+                        <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar adjunto" />
                         <div>
-                            {form[tipo] && form[tipo].length > 0 ? <p>{form[tipo][0].name}</p> : <p>No hay archivo seleccionado</p>}
+                            {form.tipo ? <div className='file-name'> {form.tipo.name} </div>: <p>No hay archivo seleccionado</p>}
                         </div>
-
                     </div>
-                    <div>
+                <div>
                         <button className='sendButton' onClick={handleSubmit}>Subir</button>
                     </div>
                 </div>
@@ -298,7 +300,7 @@ export default function Adjuntos(props) {
                     aria-label="Vertical tabs example"
                     className={classes.tabs}
                 >
-                    <Tab label="Comunicado" {...a11yProps(0)} name="ficha_tecnica" onClick={() => handleTab('ficha_tecnica')} />
+                    <Tab label="Adjunto" {...a11yProps(0)} name="ficha_tecnica" onClick={() => handleTab('ficha_tecnica')} />
                     {nuevaRequisicion ? null : <Tab label="Solicitud" {...a11yProps(1)} name="solicitud" onClick={() => handleTab('Solicitud')} />}
                     {nuevaRequisicion ? null : <Tab label="Cotizaciones" {...a11yProps(2)} name="cotizaciones" onClick={() => handleTab('Cotizaciones')} />}
                     {nuevaRequisicion ? null : <Tab label="Orden de compra" {...a11yProps(3)} name="orden_compra" onClick={() => handleTab('Orden_compra')} />}

@@ -11,7 +11,9 @@ import TablaPrestaciones from './Departamento/TablaPrestaciones'
 
 import TablaPresupuestoObra from './Obra/TablaPresupuestoObra'
 import Editar from './Departamento/EditarPresupuestoDepartamento'
-import Ver from './Departamento/VerPresupuestoDepartamento'
+// import Ver from './Departamento/VerPresupuestoDepartamento'
+import Ver from './Departamento/VerDetalle'
+
 
 import EditarObra from './Obra/EditarPresupuestoObra'
 import VerObra from './Obra/VerPresupuestoObra'
@@ -26,6 +28,7 @@ export default function Presupuesto() {
     const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState()
     const [reloadTableObra, setReloadTableObra] = useState()
+    const specificPermission = userAuth.user.permisos.find(permission => permission.modulo_id === 17);
 
     const [modal, setModal] = useState({
         nuevo: {
@@ -49,6 +52,7 @@ export default function Presupuesto() {
             data: null
         }
     })
+
 
     const [modalObra, setModalObra] = useState({
         nuevo: {
@@ -75,6 +79,7 @@ export default function Presupuesto() {
         setKey(key)
     }
 
+    
     const formatNumberCurrency = (number) => {
         return new Intl.NumberFormat('es-MX', {
             style: 'currency',
@@ -101,11 +106,17 @@ export default function Presupuesto() {
     const ProccessData = (e) => {
         let aux = []
         e.presupuesto.map(item => {
-            // console.log(item)
+
+            // console.log(item.empresa[0] && item.empresa[0].name  ) 
+
+            // console.log( Object.keys(item.empresa[0])&& item.empresa[0].name  ) 
+
+            // console.log(item.empresa[0] )
             aux.push({
                 id: item.id,
                 id_area: item.id_area,
                 nombre: item.nombre +' / '+ item.fecha_inicio,
+                empresa: item.empresa &&  item.empresa[0] ?  item.empresa[0].name : 'Sin Empresa',
                 fecha: formatDateString(item.fecha),
                 monto: item.presupuesto,
                 monto_show: formatNumberCurrency(item.presupuesto),
@@ -122,6 +133,7 @@ export default function Presupuesto() {
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Departamento', identificador: 'departamento', sort: false, },
+        { nombre: 'Empresa', identificador: 'empresa', sort: false, },
         { nombre: 'usuario', identificador: 'usuario', sort: false, },
         { nombre: 'Nombre', identificador: 'nombre', sort: false, },
         { nombre: 'Fecha', identificador: 'fecha', sort: false, stringSearch: false },
@@ -151,13 +163,23 @@ export default function Presupuesto() {
                 color: 'blueButton',
                 icono: 'fas fa-edit',
                 funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        editar: {
-                            show: true,
-                            data: item
-                        }
-                    })
+                    if (userAuth.user.tipo.tipo === 'Administrador') {
+                        setModal({
+                            ...modal,
+                            editar: {
+                                show: true,
+                                data: item
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            title: '¡No tienes permisos!',
+                            text: "¡No tienes permisos para editar el presupuesto!",
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Ok'
+                        })
+                    }
                 }
             },
             {
@@ -290,37 +312,43 @@ export default function Presupuesto() {
         {
             nombre: 'Nuevo presupuesto',
             funcion: (item) => {
-                setModal({
-                    ...modal,
-                    nuevo: {
-                        show: true,
-                        data: item
-                    }
-                })
+                if (userAuth.user.tipo.tipo === 'Administrador') {
+                    setModal({
+                        ...modal,
+                        nuevo: {
+                            show: true,
+                            data: item
+                        }
+                    })
+                }
             }
         },
         {
             nombre: 'Nueva nomina',
             funcion: (item) => {
-                setModal({
-                    ...modal,
-                    nomina: {
-                        show: true,
-                        data: item
-                    }
-                })
+                if (userAuth.user.tipo.tipo === 'Administrador') {
+                    setModal({
+                        ...modal,
+                        nomina: {
+                            show: true,
+                            data: item
+                        }
+                    })
+                }
             }
         },
         {
             nombre: 'Prestaciones',
             funcion: (item) => {
-                setModal({
-                    ...modal,
-                    prestaciones: {
-                        show: true,
-                        data: item
-                    }
-                })
+                if (userAuth.user.tipo.tipo === 'Administrador') {
+                    setModal({
+                        ...modal,
+                        prestaciones: {
+                            show: true,
+                            data: item
+                        }
+                    })
+                }
             }
         },
     ]
@@ -350,7 +378,9 @@ export default function Presupuesto() {
 
     const ProccessDataObras = (e) => {
         let aux = []
+        // console.log(e.presupuesto)
         e.presupuesto.map(item => {
+            // console.log(item)
             aux.push({
                 data: item,
                 id: item.id,
@@ -603,8 +633,8 @@ export default function Presupuesto() {
 
             {
                 modal.ver.data &&
-                <Modal size="xl" title={"Ver presupuesto"} show={modal.ver.show} handleClose={handleClose('ver')}>
-                    <Ver data={modal.ver.data} reload={reloadTable} handleClose={handleClose('ver')} />
+                <Modal size="xl"class="modal fade bd-example-modal-xl"  title={"Ver presupuesto"} show={modal.ver.show} handleClose={handleClose('ver')}>
+                    <Ver data={modal.ver.data} reload={reloadTable} acceso={specificPermission} handleClose={handleClose('ver')} />
                 </Modal>
             }
 
@@ -619,12 +649,12 @@ export default function Presupuesto() {
                 </Modal>
             }
 
-            {
+            {/* {
                 modalObra.ver.data &&
                 <Modal size="xl" title={"Ver presupuesto"} show={modalObra.ver.show} handleClose={handleCloseObra('ver')}>
                     <VerObra data={modalObra.ver.data} reload={reloadTableObra} handleClose={handleCloseObra('ver')} />
                 </Modal>
-            }
+            } */}
 
         </>
     );

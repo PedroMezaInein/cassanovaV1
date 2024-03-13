@@ -22,7 +22,9 @@ class LeadInfo extends Component {
             { eventKey: 'historial-contacto', icon: 'flaticon-folder-1', name: 'HISTORIAL DE CONTACTO', show_item:true },
             { eventKey: 'cotizacion', icon: 'flaticon-file-1', name: 'COTIZACIÓN', show_item:true},
             { eventKey: 'cotizacion-aceptada', icon: 'flaticon-list-1', name: 'COTIZACIÓN ACEPTADA', show_item:false },
-            { eventKey: 'facturación', icon: 'las la-file-invoice-dollar icon-xl', name: 'FACTURACIÓN', show_item:false }
+            { eventKey: 'facturación', icon: 'las la-file-invoice-dollar icon-xl', name: 'FACTURACIÓN', show_item:false },
+            { eventKey: 'necesidades', icon: 'flaticon-folder-1 icon-xl', name: 'PROGRAMA DE NECESIDADES', show_item:true }
+            
         ],
         solicitud: '',
         tipo: '',
@@ -973,7 +975,6 @@ class LeadInfo extends Component {
 
         limiteInf = parseInt(data.empresa.variaciones[0].inferior)
         limiteSup = parseInt(data.empresa.variaciones[data.empresa.variaciones.length - 1].superior)
-        console.log(data.empresa.variaciones)
         if (limiteInf <= m2Aux && limiteSup >= m2Aux) {
             data.empresa.variaciones.map((variacion, index) => {
                 if (index === 0) {
@@ -1055,8 +1056,8 @@ class LeadInfo extends Component {
                 // console.log( formDiseño.desglose)
                 return Math.round(sum.toFixed(2))
         }
-        console.log(limiteSup)
-        console.log(m2Aux)
+        // console.log(limiteSup)
+        // console.log(m2Aux)
 
         if (limiteSup < m2Aux) {
             errorAlert('Los m2 no están considerados en los límites')
@@ -1664,6 +1665,27 @@ class LeadInfo extends Component {
                                                     : <></>
                                             }
                                         </Tab.Pane>
+
+                                        <Tab.Pane eventKey="necesidades">
+                                            <Card className='card card-custom gutter-b'>
+                                                <Card.Header className="border-0 align-items-center pt-8 pt-md-0">
+                                                    <div className="font-weight-bold font-size-h4 text-dark">Programa de necesidades</div>
+                                                </Card.Header>
+                                                <Card.Body className=''>
+                                                    {
+                                                    lead.necesidades && lead.necesidades.length > 0 && lead.necesidades[0].veradjuntos && lead.necesidades[0].veradjuntos.length > 0 ? (
+                                                        <div className="font-weight-bold font-size-h4 text-dark">
+                                                             <iframe src={lead.necesidades[0].veradjuntos[0].url} width="100%" height="500px" title="PDF Viewer" />
+                                                        </div>                                                       
+                                                       ) : (
+                                                        <></>
+                                                      )}
+                                                
+
+                                                </Card.Body>
+                                            </Card>
+                                        </Tab.Pane>
+
                                         <Tab.Pane eventKey="cotizacion-aceptada">
                                             {
                                                 lead.estatus.estatus === 'Contratado'?

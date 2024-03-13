@@ -101,6 +101,7 @@ export default function ComprasTable() {
         { nombre: '', identificador: 'acciones', sort: false, stringSearch: false },
         { nombre: 'ID', identificador: 'id', stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha', stringSearch: false },
+        { nombre: 'Proyecto', identificador: 'proyecto', stringSearch: false },
         { nombre: 'Proveedor', identificador: 'proveedor', stringSearch: false },
         { nombre: 'Factura', identificador: 'factura', orderable: false },
         { nombre: 'Área', identificador: 'area', stringSearch: false },
@@ -118,7 +119,7 @@ export default function ComprasTable() {
     const deleteCompraAxios = (id) => {
         apiDelete(`compras/${id}`, auth).then(
             (response) => {
-                Swal.fire(
+                Swal.fire( 
                     '¡Eliminado!',
                     'El egreso ha sido eliminado.',
                     'success'
@@ -418,6 +419,7 @@ export default function ComprasTable() {
                 fecha: dato.created_at ? setDateTable(dato.created_at) : 's/i',
                 monto: dato.monto ? formatNumber(dato.monto) : 's/i',
                 area: dato.area ?  dato.area.nombre : 's/i',
+                proyecto: dato.proyecto ? dato.proyecto.nombre : 'N/A', 
                 partida: dato.partida ? dato.partida.nombre : 's/i',
                 subarea: dato.subarea ? dato.subarea.nombre : 's/i',
                 proveedor: dato.proveedor.razon_social ? dato.proveedor.razon_social : 's/i',
@@ -505,7 +507,7 @@ export default function ComprasTable() {
 
             {
                 modal.exportar.data &&
-                <Modal size="lg" title={"Exportar egreso"} show={modal.exportar?.show} handleClose={e => handleClose('exportar')} >
+                <Modal size="lg" title={"Exportar compras"} show={modal.exportar?.show} handleClose={e => handleClose('exportar')} >
                     {/* <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable}/> */}
                         <div className="form-group form-group-marginless  mx-0">
                                 <br></br> 
@@ -557,7 +559,7 @@ export default function ComprasTable() {
                                 <div className="col-md-6"> 
                                 </div>
                                 <div className="col-md-6">
-                                    <Button variant="contained" color="primary" onClick={exportEgresosAxios}>Filtrar</Button>
+                                    <Button variant="contained" color="primary" onClick={exportEgresosAxios}>Exportar</Button>
                                 </div>
                             </div>
 

@@ -10,6 +10,8 @@ export const SAVE_OPTIONS_VENTAS = 'SAVE_OPTIONS_VENTAS'
 export const SAVE_OPTIONS_INGRESOS = 'SAVE_OPTIONS_INGRESOS'
 export const SAVE_OPTIONS_COMPRAS = 'SAVE_OPTIONS_COMPRAS'
 export const SAVE_OPTIONS_PROYECTOS = 'SAVE_OPTIONS_PROYECTOS'
+export const SAVE_OPTIONS_EMPRESAS = 'SAVE_OPTIONS_EMPRESAS'
+
 
 
 export function getUser(id) {
@@ -98,3 +100,12 @@ export function Proyectos(proyectos) {
         })
     }
 }
+export function Empresas(empresas) {
+    return async function (dispatch) {
+        return dispatch({
+            type: SAVE_OPTIONS_EMPRESAS,
+            payload: empresas
+        })
+    }
+}
+

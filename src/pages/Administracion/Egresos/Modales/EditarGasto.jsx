@@ -34,6 +34,8 @@ export default function EditarEgreso(props) {
     const {opcionesData, reload, handleClose, data} = props
     const auth = useSelector((state) => state.authUser.access_token)
     const departamentos = useSelector(state => state.opciones.areas)
+    const presupuestos = useSelector(state => state.opciones.presupuestos)
+
     const [opciones, setOpciones] = useState({
         cuentas: [],
         empresas: [],
@@ -61,9 +63,11 @@ export default function EditarEgreso(props) {
 
     useEffect(() => {
           if(opciones.empresas.length > 0){
+
+                let cuenta= opciones.empresas.find(empresa => empresa.id === form.empresa).cuentas
             setForm({
                 ...form,
-                cuentas: opciones.empresas.find(empresa => empresa.id === form.empresa).cuentas
+                cuentas: cuenta ? cuenta : '',
             })
         }
         
@@ -112,7 +116,7 @@ export default function EditarEgreso(props) {
         descripcion: data.descripcion,
         empresa: data.empresa.id,
         estatusCompra: data.estatus_compra.id,
-        factura: data.factura === 1 ? true : false,
+        factura: data.factura == 1 ? true : false,
         facturaItem: '',
         facturaObject: {},
         fecha: new Date(data.created_at) ,
@@ -131,6 +135,8 @@ export default function EditarEgreso(props) {
         tipoImpuesto: data.tipo_impuesto.id,
         tipoPago: data.tipo_pago.id,
         total: data.total,
+        presupuestos:  data.requisicion ? data.requisicion.presupuesto :''
+
     })
 
     useEffect(() => {
@@ -689,6 +695,7 @@ export default function EditarEgreso(props) {
         })
     };
 
+
     return (
         <>
             
@@ -705,12 +712,12 @@ export default function EditarEgreso(props) {
                                 <InputLabel>¿Lleva factura?</InputLabel>
                                 <FormGroup row>
                                     <FormControlLabel
-                                        control={<Checkbox checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
+                                        control={<Checkbox disabled checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
                                         label="No"
                                         
                                     />
                                     <FormControlLabel
-                                        control={<Checkbox checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
+                                        control={<Checkbox disabled checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
                                         label="Si"
                                         
                                     />
@@ -844,6 +851,26 @@ export default function EditarEgreso(props) {
                                 
                             </div>   
                             <div>
+                                {presupuestos.length > 0 ?
+                                    <>
+                                        <InputLabel id="demo-simple-select-label">Presupuesto</InputLabel>
+                                        <Select disabled={data.id_requisiciones ? true : false}
+                                            value={form.presupuestos}
+                                            name="presupuestos"
+                                            onChange={handleChange}
+                                            style={{ width: 230, marginRight: '1rem' }}
+                                        >
+                                            {presupuestos.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))}
+
+                                        </Select>
+                                    </>
+                                    : null
+                                }
+
+                            </div>
+                            <div>
                                 {
                                     opciones.empresas.length > 0 ?
                                         <div>
@@ -903,43 +930,52 @@ export default function EditarEgreso(props) {
 
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                             <div>
-                                {departamentos.length > 0 ?
+                            {departamentos.length > 0 && data.id_requisiciones == null ?
                                     <>
                                         <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
-                                        <Select
-                                            value={form.area}
-                                            name="area"
-                                            onChange={handleChangeAreas}
-                                            style={{ width: 230, marginRight: '1rem' }}
-                                        >
+                                        <Select value={form.area}  name="area" onChange={handleChangeAreas} style={{ width: 230, marginRight: '1rem' }} >
                                             {departamentos.map((item, index) => (
                                                 <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
                                             ))}
 
                                         </Select>
                                     </>
-                                    : null
+                                   : 
+                                   <>
+                                   <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
+                                   <Select value={form.area} name="area" onChange={handleChangeAreas} style={{ width: 230, marginRight: '1rem' }} disabled >
+                                       {departamentos.map((item, index) => (
+                                           <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+                                       ))}
+
+                                   </Select>
+                                   </>
+
                                 }
 
                             </div>
 
                             <div>
-                                {departamentos.length > 0 && form.area !== '' ?
+                                {departamentos.length > 0 && form.area !== '' && data.id_requisiciones == null ?
                                     <>
                                         <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
-                                        <Select
-                                            value={form.id_partidas}
-                                            name="id_partidas"
-                                            onChange={handleChange}
-                                            style={{ width: 230, marginRight: '1rem' }}
-                                        >
+                                        <Select value={form.id_partidas} name="id_partidas" onChange={handleChange} style={{ width: 230, marginRight: '1rem' }}  >
                                           {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
                                                 <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                             ))}
 
                                         </Select>
                                     </>
-                                    : null
+                                    : 
+                                    <>
+                                    <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
+                                    <Select value={form.id_partidas} name="id_partidas"  onChange={handleChange} style={{ width: 230, marginRight: '1rem' }} disabled >
+                                      {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
+                                            <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                        ))}
+
+                                    </Select>
+                                </>
                                 }
                             </div>
 

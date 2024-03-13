@@ -6,6 +6,7 @@ import { Modal } from '../../../components/singles'
 
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import TablaGeneralPaginado from '../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
+import { apiDelete } from './../../../functions/api'
 
 import Convertir from './Modales/Convertir'
 import Editar from './Modales/Editar'
@@ -19,6 +20,9 @@ import { setOptions } from '../../../functions/setters'
 
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import StatusIndicator from './utils/StatusIndicator'
+import Autoriza from '../../../components/forms/administracion/Autorizar'
+import Historial from '../../../components/forms/administracion/Historial'
+import Comentarios from '../../../components/forms/administracion/comentarios'
 
 // import Layout from '../../../components/layout/layout'
 
@@ -28,7 +32,6 @@ export default function RequisicionCompras() {
     const [opcionesApi, setOpcionesApi] = useState(false)
     const [estatusCompras, setEstatusCompras] = useState(false)
     const [filtrado, setFiltrado] = useState('') 
-
     const [modal, setModal] = useState({
         convertir: {
             show: false,
@@ -54,7 +57,15 @@ export default function RequisicionCompras() {
             show: false,
             data: false
         },
-        autorizar: {
+        autoriza: {
+            show: false,
+            data: false
+        },
+        historial:{
+            show: false,
+            data: false
+        },
+        comentarios:{
             show: false,
             data: false
         },
@@ -89,14 +100,19 @@ export default function RequisicionCompras() {
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },
         { nombre: 'Orden no.', identificador: 'orden_compra', sort: false, },
-        { nombre: 'Solicitante', identificador: 'solicitante', sort: false, stringSearch: false },
+        { nombre: 'Presupuesto', identificador: 'presupuesto', sort: false, },
+        { nombre: 'Solicitante', identificador: 'solicita', sort: false, stringSearch: false },
         { nombre: 'Fecha', identificador: 'fecha_view', sort: false, stringSearch: false },
+        // userAuth.user.tipo.tipo === 'Administrador' ? 
+        // { nombre: 'Fecha solicitud', identificador: 'solicitud', sort: false, stringSearch: false } : '',
+   
         { nombre: 'Departamento', identificador: 'departamento', sort: false, stringSearch: false },
         { nombre: 'Tipo de Egreso', identificador: 'tipoEgreso', sort: false, stringSearch: false },
         /* { nombre: 'Descripción', identificador: 'descripcion', sort: false, stringSearch: false }, */
         { nombre: 'Tipo de pago (*)', identificador: 'tipoPago', sort: false, stringSearch: false },
         { nombre: 'Monto solicitado (*)', identificador: 'monto_view', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus', sort: false, stringSearch: false },
+        { nombre: 'Factura', identificador: 'factura',  sort: false, stringSearch: false },
         /* { nombre: 'E. Compra', identificador: 'estatus_compra', sort: false, stringSearch: false },
         { nombre: 'E. Conta', identificador: 'estatus_conta', sort: false, stringSearch: false }, */
         { nombre: 'Estatus', identificador: 'semaforo', sort: false, stringSearch: false },
@@ -116,13 +132,26 @@ export default function RequisicionCompras() {
                 })
             }
         },
+        // {
+        //     //filtrar
+        //     nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
+        //     funcion: (item) => {
+        //         setModal({
+        //             ...modal,
+        //             filtrar: {
+        //                 show: true,
+        //                 data: item
+        //             }
+        //         })
+        //     }
+        // },
         {
             //filtrar
-            nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
+            nombre: <div><i className="fas fa-filter mr-5"></i><span>Autorizar</span></div>,
             funcion: (item) => {
                 setModal({
                     ...modal,
-                    filtrar: {
+                    autoriza: {
                         show: true,
                         data: item
                     }
@@ -139,10 +168,11 @@ export default function RequisicionCompras() {
     let ProccessData = (data) => {
         let aux = []
         data.data.data.map((item, index) => {
+            // console.log(aux)
             aux.push({
                 id: item.id,
                 acciones: createAcciones(),
-                solicitante: item.solicitante.name,
+                solicita: item.solicitante.name,
                 solicitante_id: item.solicitante.id,
                 fecha: item.fecha,
                 fecha_view: reformatDate(item.fecha),
@@ -175,13 +205,28 @@ export default function RequisicionCompras() {
                 id_estatus_conta: item.id_estatus_conta ? item.id_estatus_conta : null,
                 fecha_entrega: item.fecha_entrega ? item.fecha_entrega : null,
                 conta: item.estatus_conta ? item.estatus_conta.id : null,
-                factura: item.estatus_factura ? item.estatus_factura.id : null,
+                factura: item.facturas == 1 ? 'Con Factura' : 'Sin Factura' ,
                 semaforo: createStatusIndicator(item),
+                presupuesto: item.presu ? item.presu.nombre: '',
+                solicitud: item.created_at ? reformatDates(item.created_at) : '',
+                data:item,
             })
         })
         // aux = aux.reverse()
         return aux
     }
+    const reformatDates = (dateString) => {
+        const dateObject = new Date(dateString);
+        const day = dateObject.getDate();
+        const month = dateObject.getMonth() + 1; // Months are zero-based
+        const year = dateObject.getFullYear();
+
+        // Ensure leading zeros for single-digit days and months
+        const formattedDay = day < 10 ? `0${day}` : day;
+        const formattedMonth = month < 10 ? `0${month}` : month;
+
+        return `${formattedDay}-${formattedMonth}-${year}`;
+      };
 
     function reformatDate(dateStr) {
         var dArr = dateStr.split("-");  // ex input: "2010-01-18"
@@ -209,6 +254,14 @@ export default function RequisicionCompras() {
                 icono: 'fas fa-exchange-alt',
                 color: 'greenButton',
                 funcion: (item) => {
+                    if( item.id_estatus == 12){
+                        Swal.fire({
+                            title: 'Requisición esta cancelada',
+                            text: 'La requisición ya fue cancelada, no se puede convertir',
+                            icon: 'warning',
+                            confirmButtonText: 'Aceptar'
+                        })
+                    }else
                     if (item.auto1) {
                         Swal.fire({
                             title: 'Requisición ya aprobada',
@@ -233,13 +286,32 @@ export default function RequisicionCompras() {
                 icono: 'fas fa-edit',
                 color: 'blueButton',
                 funcion: (item) => {
-                    setModal({
-                        ...modal,
-                        editar: {
-                            show: true,
-                            data: item
-                        }
-                    })
+                    if( item.id_estatus == 12){
+                        Swal.fire({
+                            title: 'Requisición esta cancelada',
+                            text: 'La requisición ya fue cancelada, no se puede convertir',
+                            icon: 'warning',
+                            confirmButtonText: 'Aceptar'
+                        })
+                    }else
+                    if (item.auto2 && item.id_estatus_compra == 11 ) {
+                        Swal.fire({
+                            title: 'Requisición ya aprobada',
+                            text: 'La requisición ya fue aprobada, no se puede convertir',
+                            icon: 'warning',
+                            confirmButtonText: 'Aceptar'
+                        })
+                    } else 
+                    {
+                        setModal({
+                            ...modal,
+                            editar: {
+                                show: true,
+                                data: item
+                            }
+                        })
+
+                    }
                 }
             },
             {
@@ -271,87 +343,175 @@ export default function RequisicionCompras() {
                 }
             },
             {
-                nombre: 'Autorizar',
-                color: 'perryButton',
-                icono: 'fas fa-check',
+                nombre: 'Historial',
+                icono: 'fas fa-paperclip',
+                color: 'reyButton',
                 funcion: (item) => {
-                    if (userAuth.user.tipo.tipo === 'Administrador') {
-                        // if (!item.estatus) {
+                    setModal({
+                        ...modal,
+                        historial: {
+                            show: true,
+                            data: item.data
+                        }
+                    })
+                }
+            }, 
+            {
+                nombre: 'Comentarios',
+                icono: 'fas fa-paperclip',
+                color: 'reyButton',
+                funcion: (item) => {
+                    setModal({
+                        ...modal,
+                        comentarios: {
+                            show: true,
+                            data: item.data
+                        }
+                    })
+                }
+            }, 
+            // {
+            //     nombre: 'Autorizar',
+            //     color: 'perryButton',
+            //     icono: 'fas fa-check',
+            //     funcion: (item) => {
+            //         if (userAuth.user.tipo.tipo === 'Administrador') {            
+
+            //             // if (!item.estatus) {
+            //                 Swal.fire({
+            //                     title: '¿Estas seguro?',
+            //                     text: "¡No podrás revertir esto!",
+            //                     icon: 'warning',
+            //                     showCancelButton: true,
+            //                     confirmButtonColor: '#3085d6',
+            //                     cancelButtonColor: '#d33',
+            //                     cancelButtonText: 'Cancelar',
+            //                     confirmButtonText: 'Si, autorizar'
+            //                 }).then((result) => {
+            //                     if (result.isConfirmed) {
+            //                         Swal.fire({
+            //                             title: 'autorizando',
+            //                             text: 'Espere un momento...',
+            //                             allowOutsideClick: false,
+            //                             allowEscapeKey: false,
+            //                             allowEnterKey: false,
+            //                             showConfirmButton: false,
+            //                             onOpen: () => {
+            //                                 Swal.showLoading()
+            //                             }
+            //                         })
+            //                         try {
+            //                             apiPutForm(`requisicion/${item.id}/autorizar`, { aprobado: 1 }, userAuth.access_token).then(result => {
+            //                                 Swal.close()
+            //                                 Swal.fire(
+            //                                     '¡Autorizado!',
+            //                                     'El presupuesto ha sido Autorizado.',
+            //                                     'success'
+            //                                 )
+            //                                 setTimeout(() => {
+            //                                     Swal.fire({
+            //                                         title: 'Presupuesto aprobado',
+            //                                         text: 'El presupuesto fue aprobado exitosamente.',
+            //                                         icon: 'success',
+            //                                         confirmButtonColor: '#3085d6',
+            //                                         confirmButtonText: 'Ok'
+            //                                     });
+            //                                 }, 2000);
+            //                                 if (reloadTable) {
+            //                                     reloadTable.reload()
+            //                                 }
+
+            //                             })
+            //                         } catch (error) {
+            //                             Swal.close()
+            //                             Swal.fire(
+            //                                 '¡Error!',
+            //                                 'El presupuesto no ha sido Autorizado.',
+            //                                 'error'
+            //                             )
+
+            //                         }
+
+            //                     }
+            //                 })
+            //             // } else {
+            //             //     Swal.fire({
+            //             //         title: 'Presupuesto ya autorizado',
+            //             //         text: "¡El presupuesto ya ha sido autorizado!",
+            //             //         icon: 'error',
+            //             //         confirmButtonColor: '#3085d6',
+            //             //         confirmButtonText: 'Ok'
+            //             //     })
+            //             // }
+
+            //         } else {
+            //             Swal.fire({
+            //                 title: '¡No tienes permisos!',
+            //                 text: "¡No tienes permisos para aprobar el presupuesto!",
+            //                 icon: 'error',
+            //                 confirmButtonColor: '#3085d6',
+            //                 confirmButtonText: 'Ok'
+            //             })
+            //         }
+            //     }
+            // },
+            {
+                nombre: 'Cancelar',
+                color: 'redButton',
+                icono: 'fas fa-trash-alt',
+                funcion: (item) => {
+                    // if (userAuth.user.tipo.tipo === 'Administrador') {
+                        if( item.id_estatus == 12){
                             Swal.fire({
-                                title: '¿Estas seguro?',
-                                text: "¡No podrás revertir esto!",
+                                title: 'Requisición esta cancelada',
+                                text: 'La requisición ya fue cancelada, no se puede convertir',
                                 icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                cancelButtonText: 'Cancelar',
-                                confirmButtonText: 'Si, autorizar'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    Swal.fire({
-                                        title: 'autorizando',
-                                        text: 'Espere un momento...',
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false,
-                                        allowEnterKey: false,
-                                        showConfirmButton: false,
-                                        onOpen: () => {
-                                            Swal.showLoading()
-                                        }
-                                    })
-                                    try {
-                                        apiPutForm(`requisicion/${item.id}/autorizar`, { aprobado: 1 }, userAuth.access_token).then(result => {
-                                            Swal.close()
-                                            Swal.fire(
-                                                '¡Autorizado!',
-                                                'El presupuesto ha sido Autorizado.',
-                                                'success'
-                                            )
-                                            setTimeout(() => {
-                                                Swal.fire({
-                                                    title: 'Presupuesto aprobado',
-                                                    text: 'El presupuesto fue aprobado exitosamente.',
-                                                    icon: 'success',
-                                                    confirmButtonColor: '#3085d6',
-                                                    confirmButtonText: 'Ok'
-                                                });
-                                            }, 2000);
-                                            if (reloadTable) {
-                                                reloadTable.reload()
-                                            }
-
+                                confirmButtonText: 'Aceptar'
+                            })
+                        }else
+                        { 
+                        Swal.fire({
+                            title: '¿Estas seguro?',
+                            text: "¡No podrás revertir esto!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonText: 'Si, Cancelar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    apiDelete(`requisicion/${item.id}/cancelar`, userAuth.access_token).then(result => {
+                                      
+                                        Swal.fire({
+                                            title: 'Cancelado!',
+                                            text: 'La requisición se ha cancelado',
+                                            icon: 'success',
+                                            confirmButtonColor: '#3085d6',
+                                            confirmButtonText: 'Ok',
+                                            timer: 2000
                                         })
-                                    } catch (error) {
-                                        Swal.close()
-                                        Swal.fire(
-                                            '¡Error!',
-                                            'El presupuesto no ha sido Autorizado.',
-                                            'error'
-                                        )
-
-                                    }
+                                        if (reloadTable) {
+                                            reloadTable.reload()
+                                        }
+                                        
+                                    })
+                                } catch (error) {
 
                                 }
-                            })
-                        // } else {
-                        //     Swal.fire({
-                        //         title: 'Presupuesto ya autorizado',
-                        //         text: "¡El presupuesto ya ha sido autorizado!",
-                        //         icon: 'error',
-                        //         confirmButtonColor: '#3085d6',
-                        //         confirmButtonText: 'Ok'
-                        //     })
-                        // }
-
-                    } else {
-                        Swal.fire({
-                            title: '¡No tienes permisos!',
-                            text: "¡No tienes permisos para aprobar el presupuesto!",
-                            icon: 'error',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'Ok'
+                            }
                         })
-                    }
+                    } 
+                    // } else {
+                    //     Swal.fire({
+                    //         title: '¡No tienes permisos!',
+                    //         text: "¡No tienes permisos para eliminar el presupuesto!",
+                    //         icon: 'error',
+                    //         confirmButtonColor: '#3085d6',
+                    //         confirmButtonText: 'Ok'
+                    //     })
+                    // }
                 }
             },
         ]
@@ -412,7 +572,7 @@ export default function RequisicionCompras() {
                     columnas={columnas} 
                     url='requisicion/admin' 
                     ProccessData={ProccessData} 
-                    numItemsPagina={12} 
+                    numItemsPagina={20} 
                     acciones={createAcciones()} 
                     opciones={opciones} 
                     reload={setReloadTable} 
@@ -425,7 +585,8 @@ export default function RequisicionCompras() {
                     <>
                         
                         <Modal size="xl" title={"Aprobar Requisición de compra"} show={modal.convertir.show} handleClose={handleClose('convertir')}>
-                            <Convertir data={modal.convertir.data} handleClose={handleClose('convertir')} reload={reloadTable} opciones={opcionesApi} estatusCompras={estatusCompras} />
+                            <Convertir data={modal.convertir.data} getProveedores={opcionesApi.proveedores} handleClose={handleClose('convertir')} 
+                            reload={reloadTable} opciones={opcionesApi} getOpciones={getOpciones} estatusCompras={estatusCompras} />
                         </Modal>
 
                         <Modal size="xl" title={"Editar requisición"} show={modal.editar.show} handleClose={handleClose('editar')}>
@@ -445,7 +606,20 @@ export default function RequisicionCompras() {
                         </Modal>
 
                         <Modal size="lg" title={"filtrar"} show={modal.filtrar.show} handleClose={handleClose('filtrar')}>
-                            <FiltrarRequisicionesCompras data={modal.filtrar.data} handleClose={handleClose('filtrar')} opciones={opcionesApi} filtrarTabla={setFiltrado} borrarTabla={borrar} estatusCompras={estatusCompras} />
+                            <FiltrarRequisicionesCompras data={modal.filtrar.data} handleClose={handleClose('filtrar')} opciones={opcionesApi} 
+                            filtrarTabla={setFiltrado} borrarTabla={borrar} estatusCompras={estatusCompras} />
+                        </Modal>
+                        
+                        <Modal size="xl" title={"autoriza Requisicion"} show={modal.autoriza.show} handleClose={handleClose('autoriza')}>
+                            <Autoriza data={modal.autoriza.data} handleClose={handleClose('autoriza')} filtrarTabla={setFiltrado} />
+                        </Modal>
+
+                        <Modal size="lg" title={"Comentarios"} show={modal.comentarios.show}  handleClose={handleClose('comentarios')} >
+                            <Comentarios data={modal.comentarios.data} handleClose={e => handleClose('comentarios')} reload={reloadTable}/>
+                        </Modal>
+
+                        <Modal size="lg" title={"Historial"} show={modal.historial.show}  handleClose={handleClose('historial')} >
+                            <Historial data={modal.historial.data} handleClose={e => handleClose('historial')} reload={reloadTable}/>
                         </Modal>
                     </>
                     : null

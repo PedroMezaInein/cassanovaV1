@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
-import { Form, Col, Row, Tab, Nav} from 'react-bootstrap'
-import { InputGray, SelectSearchGray, Button, InputNumberGray, OptionsCheckbox,OptionsCheckboxHeaders, InputMoneyGray, CalendarDay } from '../../form-components'
+import { Form, Col, Row, Tab, Nav } from 'react-bootstrap'
+import { InputGray, SelectSearchGray, Button, InputNumberGray, OptionsCheckbox, OptionsCheckboxHeaders, InputMoneyGray, CalendarDay } from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import { Calendar } from 'react-date-range'
 import es from "date-fns/locale/es";
 import ListGroup from 'react-bootstrap/ListGroup';
 class PresupuestoDiseñoCRMForm extends Component {
-    
+
     state = {
         date: new Date()
     }
-    
+
     updateEsquema = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'esquema' } })
@@ -55,7 +55,7 @@ class PresupuestoDiseñoCRMForm extends Component {
         });
         onChangeCheckboxes(aux, 'partidasObra')
     }
-    
+
     handleChangeCheckboxPlanos = e => {
         const { name, checked } = e.target
         const { formDiseño, onChangeCheckboxes } = this.props
@@ -75,13 +75,13 @@ class PresupuestoDiseñoCRMForm extends Component {
         aux.find(function (_aux, index) {
             if (_aux[0].id.toString() === name.toString()) {
                 _aux[0].checked = checked
-                if(checked == true){
+                if (checked == true) {
                     formDiseño.total = formDiseño.total + _aux[0].monto
                     formDiseño.MontoIngenerias[0][0].monto = formDiseño.MontoIngenerias[0][0].monto + _aux[0].monto
-                }else{
+                } else {
                     formDiseño.total = formDiseño.total - _aux[0].monto
                     formDiseño.MontoIngenerias[0][0].monto = formDiseño.MontoIngenerias[0][0].monto - _aux[0].monto
-                }                
+                }
 
             }
             return false
@@ -89,10 +89,39 @@ class PresupuestoDiseñoCRMForm extends Component {
         });
         onChangeCheckboxes(aux, 'desglose')
     }
-    
+
+    calculateTotalMontoSum = (desglose) => {
+        return desglose.reduce((sum, desglo) => sum + desglo[0].monto, 0);
+    };
+
+    handleChangeMonto = (id, e) => {
+        const { formDiseño } = this.props;
+        const nuevoFormDiseño = formDiseño.desglose.map(desglo => {
+            if (desglo[0].id === id) {
+                desglo[0].monto = parseFloat(e.target.value) || 0;
+            }
+            return desglo;
+        });
+
+        // Calculate the sum of all Monto values and update the totalMontoSum in the state
+        const totalMontoSum = this.calculateTotalMontoSum(nuevoFormDiseño);
+
+        formDiseño.MontoIngenerias[0][0].monto = totalMontoSum
+
+        formDiseño.total = Math.round(parseFloat(formDiseño.MontoEsquemas[0][0].monto + totalMontoSum)) 
+        this.setState({
+            formDiseño: nuevoFormDiseño,
+        });
+
+        // Rest of the method...
+    };
+
+
     render() {
-        const { options,key, formDiseño, onChange, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, onClickTab, activeKey, defaultKey, onChangePartidas, ...props } = this.props
+        const { options, key, formDiseño, onChange, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, onClickTab, activeKey, defaultKey, onChangePartidas, ...props } = this.props
         const { date } = this.state
+        // console.log(formDiseño)
+
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -120,9 +149,9 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <div className="wizard-bar"></div>
                                     </div>
                                 </div>
-                            : ''
+                                : ''
                         }
-                        
+
                     </div>
                 </div>
                 <div className="row justify-content-center">
@@ -142,7 +171,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <div className="col-md-12 col-xxl-8 mx-auto text-center px-0">
                                             <CalendarDay
                                                 value={formDiseño.fecha}
-                                                date = { formDiseño.fecha }
+                                                date={formDiseño.fecha}
                                                 onChange={onChange}
                                                 name='fecha'
                                                 withformgroup={1}
@@ -172,14 +201,14 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-6 col-xxl-4">
                                                 <SelectSearchGray
-                                                    formeditado = { formeditado }
+                                                    formeditado={formeditado}
                                                     requirevalidation={1}
-                                                    options = { options.esquemas }
-                                                    placeholder = "ESQUEMA"
-                                                    name = "esquema"
-                                                    value = { formDiseño.esquema }
-                                                    onChange = { this.updateEsquema }
-                                                    iconclass = "flaticon2-sheet"
+                                                    options={options.esquemas}
+                                                    placeholder="ESQUEMA"
+                                                    name="esquema"
+                                                    value={formDiseño.esquema}
+                                                    onChange={this.updateEsquema}
+                                                    iconclass="flaticon2-sheet"
                                                     messageinc="Ingresa selecciona el esquema."
                                                     withtaglabel={1}
                                                     withtextlabel={1}
@@ -231,7 +260,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             <div className="col-md-12 pt-5 d-xxl-none">
                                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                             </div>
-                                            
+
                                             <div className="col-md-12 pt-5 d-xxl-none">
                                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                             </div>
@@ -260,11 +289,11 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <label className="col-form-label text-dark-75 font-weight-bold font-size-lg">¿Se incluyen renders?</label>
                                                     <div className="radio-inline">
                                                         <label className="radio">
-                                                            <input type = "radio" name = 'si_renders' value = { true } onChange = { onChange } checked = { formDiseño.si_renders === true ? true : false } />Si
+                                                            <input type="radio" name='si_renders' value={true} onChange={onChange} checked={formDiseño.si_renders === true ? true : false} />Si
                                                             <span></span>
                                                         </label>
                                                         <label className="radio">
-                                                            <input type = "radio" name = 'si_renders' value = { false } onChange = { onChange } checked = { formDiseño.si_renders === false ? true : false } />No
+                                                            <input type="radio" name='si_renders' value={false} onChange={onChange} checked={formDiseño.si_renders === false ? true : false} />No
                                                             <span></span>
                                                         </label>
                                                     </div>
@@ -346,129 +375,145 @@ class PresupuestoDiseñoCRMForm extends Component {
                                 <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
                                     <Row>
                                         <Col sm={4}>
-                                        <ListGroup>
-                                             <ListGroup.Item action href="#link1">
-                                            Fases
-                                            </ListGroup.Item>
-                                            <ListGroup.Item action href="#link2">
-                                             Planos
-                                            </ListGroup.Item>
-                                            
-                                            <ListGroup.Item action href="#link3">
-                                            Desglose de ingenierias
-                                            </ListGroup.Item>
-                                        </ListGroup>
+                                            <ListGroup>
+                                                <ListGroup.Item action href="#link1">
+                                                    Fases
+                                                </ListGroup.Item>
+                                                <ListGroup.Item action href="#link2">
+                                                    Planos
+                                                </ListGroup.Item>
+
+                                                <ListGroup.Item action href="#link3">
+                                                    Desglose de ingenierias
+                                                </ListGroup.Item>
+                                            </ListGroup>
                                         </Col>
                                         <Col sm={8}>
-                                        <Tab.Content>
-                                            <Tab.Pane eventKey="#link2">
-                                             <div className="col-md-5 mb-1">
-                                                <OptionsCheckboxHeaders
-                                                    requirevalidation = { 0 }
-                                                    formeditado = { formeditado }
-                                                    placeholder = "SELECCIONA LAS PLANOS"
-                                                    options = { formDiseño.planos }
-                                                    name = 'planos' 
-                                                    value = { formDiseño.planos }
-                                                    onChange = { this.handleChangeCheckboxPlanos }
-                                                    />
-                                            </div>
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey="#link1">
-                                             <div className="col-md-6">
-                                                    <div className="form-group">
-                                                        <label className="font-weight-bolder m-0">Fases</label>
-                                                        <div className="checkbox-list pt-2">
-                                                            <label className="checkbox font-weight-light">
-                                                                <input
-                                                                    name = 'fase1'
-                                                                    type="checkbox"
-                                                                    checked = { formDiseño.fase1 }
-                                                                    onChange={onChange} 
-                                                                /> Fase 1
-                                                                <span></span>
-                                                            </label>
-                                                            <label className="checkbox font-weight-light">
-                                                                <input 
-                                                                    name = 'fase2'
-                                                                    type="checkbox"
-                                                                    checked = { formDiseño.fase2 }
-                                                                    onChange={onChange}
-                                                                /> 
-                                                                Fase 2
-                                                                <span></span>
-                                                            </label>  
+                                            <Tab.Content>
+                                                <Tab.Pane eventKey="#link2">
+                                                    <div className="col-md-5 mb-1">
+                                                        <OptionsCheckboxHeaders
+                                                            requirevalidation={0}
+                                                            formeditado={formeditado}
+                                                            placeholder="SELECCIONA LAS PLANOS"
+                                                            options={formDiseño.planos}
+                                                            name='planos'
+                                                            value={formDiseño.planos}
+                                                            onChange={this.handleChangeCheckboxPlanos}
+                                                        />
+                                                    </div>
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey="#link1">
+                                                    <div className="col-md-6">
+                                                        <div className="form-group">
+                                                            <label className="font-weight-bolder m-0">Fases</label>
+                                                            <div className="checkbox-list pt-2">
+                                                                <label className="checkbox font-weight-light">
+                                                                    <input
+                                                                        name='fase1'
+                                                                        type="checkbox"
+                                                                        checked={formDiseño.fase1}
+                                                                        onChange={onChange}
+                                                                    /> Fase 1
+                                                                    <span></span>
+                                                                </label>
+                                                                <label className="checkbox font-weight-light">
+                                                                    <input
+                                                                        name='fase2'
+                                                                        type="checkbox"
+                                                                        checked={formDiseño.fase2}
+                                                                        onChange={onChange}
+                                                                    />
+                                                                    Fase 2
+                                                                    <span></span>
+                                                                </label>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey="#link3">
-                                                <div className="col-md-6">
-                                                    <div className="form-group">
-                                                        <label className="font-weight-bolder ">desglose de montos</label>
-                                                        <div className="checkbox-list pt-3">                                                        
-                                                            {
-                                                            formDiseño.desglose.map((desglo,index) => {
-                                                                    return (
-                                                                    <label className=" ">
-                                                                          <Form.Check                                                                                 
-                                                                                type="checkbox"
-                                                                                label={  desglo[0].nombre + " -$" +desglo[0].monto.toFixed(2)}
-                                                                                name={ desglo[0].id }
-                                                                                checked= { desglo[0].checked }
-                                                                                onChange = { this.handleChangeCheckboxDesglose }
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey="#link3">
+                                                    <div className="col-md-12">
+                                                        <div className="form-group">
+                                                            <label className="font-weight-bolder ">desglose de montos</label>
+                                                            <div className="checkbox-list pt-3">
+                                                                {
+                                                                    formDiseño.desglose.map((desglo, index) => {
+                                                                        const inputId = `monto_${desglo[0].id}`;
 
-                                                                            />
-                                                                        <span></span>
-                                                                    </label> 
-                                                                    )
-                                                                })
-                                                            // :''
-                                                            }
-                                                        
+                                                                        return (
+                                                                            <label className=" ">
+                                                                                <Form.Check
+                                                                                    type="checkbox"
+                                                                                    label={desglo[0].nombre}
+                                                                                    name={desglo[0].id}
+                                                                                    checked={desglo[0].checked}
+                                                                                    onChange={this.handleChangeCheckboxDesglose}
+
+                                                                                />
+                                                                                <div className="col-md-8">
+                                                                                    <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} withformgroup={0} placeholder="Monto" 
+                                                                                            value={desglo[0].monto.toFixed(2)}  iconclass={"fas fa-dollar-sign"}
+                                                                                        // thousandseparator={true}
+                                                                                        onChange={(e) => this.handleChangeMonto(desglo[0].id, e)} name={inputId}  id={inputId}  messageinc="Ingresa los monto"
+                                                                                    />
+                                                                                </div>
+
+                                                                                {/* <input
+                                                                                    type="number"
+                                                                                    id={inputId}  // Add id attribute here
+                                                                                    value={desglo[0].monto.toFixed(2)}
+                                                                                    onChange={(e) => this.handleChangeMonto(desglo[0].id, e)}
+                                                                                /> */}
+                                                                                <span></span>
+                                                                            </label>
+                                                                        )
+                                                                    })
+                                                                    // :''
+                                                                }
+
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                  </div>
-                                                  <div className="col-md-6">
-                                                    <div className="form-group">
-                                                        <label className="font-weight-bolder m-0">desglose de Precios ingenerias</label>
-                                                        <div className="checkbox-list pt-3">
-                                                        
-                                                            {
-                                                            formDiseño.MontoIngenerias.map((desglo,index) => {
-                                                                    return (
-                                                                    <label className=" font-weight-light">
-                                                                          { desglo[0].nombre } <strong>- ${desglo[0].monto.toFixed(2) }</strong><br  ></br>
-                                                                        <span></span>
-                                                                    </label> 
-                                                                    )
-                                                                })
-                                                            }
-                                                        
+                                                    <div className="col-md-6">
+                                                        <div className="form-group">
+                                                            <label className="font-weight-bolder m-0">desglose de Precios ingenerias</label>
+                                                            <div className="checkbox-list pt-3">
+
+                                                                {
+                                                                    formDiseño.MontoIngenerias.map((desglo, index) => {
+                                                                        return (
+                                                                            <label className=" font-weight-light">
+                                                                                {desglo[0].nombre} <strong>- ${desglo[0].monto.toFixed(2)}</strong><br  ></br>
+                                                                                <span></span>
+                                                                            </label>
+                                                                        )
+                                                                    })
+                                                                }
+
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                  </div>
-                                                  <div className="col-md-6">
-                                                    <div className="form-group">
-                                                        <label className="font-weight-bolder m-0">desglose de Precios esquemas</label>
-                                                        <div className="checkbox-list pt-3">
-                                                        
-                                                            {
-                                                            formDiseño.MontoEsquemas.map((desglo,index) => {
-                                                                    return (
-                                                                    <label className=" font-weight-light">
-                                                                          { desglo[0].nombre } <strong>- ${desglo[0].monto.toFixed(2) }</strong><br  ></br>
-                                                                        <span></span>
-                                                                    </label> 
-                                                                    )
-                                                                })
-                                                            }
-                                                        
+                                                    <div className="col-md-6">
+                                                        <div className="form-group">
+                                                            <label className="font-weight-bolder m-0">desglose de Precios esquemas</label>
+                                                            <div className="checkbox-list pt-3">
+
+                                                                {
+                                                                    formDiseño.MontoEsquemas.map((desglo, index) => {
+                                                                        return (
+                                                                            <label className=" font-weight-light">
+                                                                                {desglo[0].nombre} <strong>- ${desglo[0].monto.toFixed(2)}</strong><br  ></br>
+                                                                                <span></span>
+                                                                            </label>
+                                                                        )
+                                                                    })
+                                                                }
+
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                  </div>
-                                            </Tab.Pane>
-                                        </Tab.Content>
+                                                </Tab.Pane>
+                                            </Tab.Content>
                                         </Col>
                                     </Row>
                                 </Tab.Container>
@@ -604,7 +649,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             <Calendar
                                                 locale={es}
                                                 date={date}
-                                                color = {"#2171c1"}
+                                                color={"#2171c1"}
                                             />
                                         </div>
                                     </div>
@@ -618,9 +663,9 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             <div>
                                                 <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
                                             </div>
-                                        :
+                                            :
                                             <div>
-                                                <Button 
+                                                <Button
                                                     icon=''
                                                     className="btn btn-light-primary btn-sm mr-2"
                                                     only_icon="far fa-save pr-0 mr-2"
@@ -632,7 +677,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                         }
                                                     }
                                                 />
-                                                <Button 
+                                                <Button
                                                     icon=''
                                                     className="btn btn-light-success btn-sm"
                                                     only_icon="far fa-file-pdf pr-0 mr-2"
@@ -642,17 +687,17 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                             e.preventDefault();
                                                             validateAlert(submitPDF, e, 'wizard-2-content')
                                                         }
-                                                    }                                            
+                                                    }
                                                 />
                                             </div>
                                     }
-                                    
+
                                 </div>
                             </div>
                             <div id="wizard-3-content" data-wizard-type="step-content">
-                                <Tab.Container 
-                                    defaultActiveKey={defaultKey?defaultKey:formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"}
-                                    activeKey={ activeKey?activeKey:formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio" }
+                                <Tab.Container
+                                    defaultActiveKey={defaultKey ? defaultKey : formDiseño.acabados ? "acabados" : formDiseño.mobiliario ? "mobiliario" : formDiseño.obra_civil ? "obra_civil" : "vacio"}
+                                    activeKey={activeKey ? activeKey : formDiseño.acabados ? "acabados" : formDiseño.mobiliario ? "mobiliario" : formDiseño.obra_civil ? "obra_civil" : "vacio"}
                                 >
                                     <div className="form-group row form-group-marginless d-flex justify-content-between">
                                         <div className="col-md-7">
@@ -669,26 +714,26 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                                 name='si_desglose'
                                                                 value={true}
                                                                 onChange={onChange}
-                                                                checked = { formDiseño.si_desglose === true ? true : false }
+                                                                checked={formDiseño.si_desglose === true ? true : false}
                                                             />Si
-																<span></span>
-                                                            </label>
+                                                            <span></span>
+                                                        </label>
                                                         <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
-                                                            <input 
+                                                            <input
                                                                 type="radio"
                                                                 name='si_desglose'
                                                                 value={false}
                                                                 onChange={onChange}
-                                                                checked = { formDiseño.si_desglose === false ? true : false }
+                                                                checked={formDiseño.si_desglose === false ? true : false}
                                                             />No
-															<span></span>
+                                                            <span></span>
                                                         </label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className={formDiseño.acabados || formDiseño.mobiliario || formDiseño.obra_civil ?"form-group row form-group-marginless":"row form-group-marginless"}>
+                                    <div className={formDiseño.acabados || formDiseño.mobiliario || formDiseño.obra_civil ? "form-group row form-group-marginless" : "row form-group-marginless"}>
                                         <div className="col-md-3" >
                                             <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1}
                                                 withicon={1} requirevalidation={1} withformgroup={1} formeditado={formeditado}
@@ -752,7 +797,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     {
                                         formDiseño.acabados || formDiseño.mobiliario || formDiseño.obra_civil ?
                                             <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        :""
+                                            : ""
                                     }
                                     <div className="form-group row form-group-marginless">
                                         <div className="col-md-2 align-self-center">
@@ -794,13 +839,13 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="ACAB. INTERIOR INF." value={formDiseño.construccion_interiores_inf}
                                                                     name="construccion_interiores_inf" onChange={onChange} iconclass="fas fa-dollar-sign"
                                                                     messageinc="Ingresa el precio de acab. interior inf." thousandseparator={true} customdiv={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="ACAB. INTERIOR SUP." value={formDiseño.construccion_interiores_sup}
                                                                     name="construccion_interiores_sup" onChange={onChange} iconclass="fas fa-dollar-sign"
                                                                     messageinc="Ingresa el precio de acab. de interiores sup." thousandseparator={true} customdiv={"mb-1"} />
@@ -816,14 +861,14 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="MOBILIARIO INF." value={formDiseño.mobiliario_inf}
                                                                     name="mobiliario_inf" onChange={onChange}
                                                                     messageinc="Ingresa el precio de mobiliario inf."
                                                                     iconclass="fas fa-dollar-sign" thousandseparator={true} customdiv={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="MOBILIARIO SUP." value={formDiseño.mobiliario_sup}
                                                                     name="mobiliario_sup" onChange={onChange}
                                                                     messageinc="Ingresa el precio de mobiliario sup."
@@ -840,14 +885,14 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="CONST. CIVIL INF." value={formDiseño.construccion_civil_inf}
                                                                     name="construccion_civil_inf" onChange={onChange}
                                                                     messageinc="Ingresa el precio de const. civil inf."
                                                                     iconclass="fas fa-dollar-sign" thousandseparator={true} customdiv={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
-                                                                <InputNumberGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon={1} requirevalidation={1} formeditado={formeditado}
+                                                                <InputNumberGray withtaglabel={1} withtextlabel={1} withplaceholder={1} withicon={1} requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="CONST. CIVIL SUP." value={formDiseño.construccion_civil_sup}
                                                                     name="construccion_civil_sup" onChange={onChange}
                                                                     messageinc="Ingresa el precio de const. civil sup."
@@ -869,7 +914,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button 
+                                        <Button
                                             icon=''
                                             className="btn btn-light-primary btn-sm mr-2"
                                             only_icon="far fa-save pr-0 mr-2"
@@ -881,7 +926,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 }
                                             }
                                         />
-                                        <Button 
+                                        <Button
                                             icon=''
                                             className="btn btn-light-success btn-sm mr-2"
                                             only_icon="far fa-file-pdf pr-0 mr-2"
@@ -891,7 +936,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     e.preventDefault();
                                                     validateAlert(submitPDF, e, 'wizard-3-content')
                                                 }
-                                            }                                            
+                                            }
                                         />
                                     </div>
                                 </div>

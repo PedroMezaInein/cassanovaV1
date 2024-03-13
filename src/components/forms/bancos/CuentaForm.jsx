@@ -68,9 +68,11 @@ export default class CuentaForm extends Component {
         } );
         return options
     }
-
+    
     render() {
         const { options, form, onChange, formeditado, onSubmit, removeEmpresa, tipo, ...props } = this.props
+        // console.log(form)
+
         return (
             <Form id="form-cuenta"
                 onSubmit={
@@ -198,6 +200,26 @@ export default class CuentaForm extends Component {
                             requirevalidation={0} iconclass="far fa-user"
                             messageinc= "Incorrecto. Selecciona lo(s) responsable(s)"
                         />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-3">                    
+                        <SelectSearch requirevalidation={1}  formeditado={formeditado} name='impuesto' options={options.impuesto}
+                            placeholder='SELECCIONA EL TIPO DE IMPUESTO.' value={form.impuesto}  onChange={(value) => { this.updateSelect(value, 'impuesto') }}
+                            iconclass='far fa-address-card'  messageinc='Incorrecto. Selecciona el tipo de impuesto.'
+                        />
+                    </div>
+                    
+                    <div className="col-md-3">                         
+                       <SelectSearch requirevalidation={1} formeditado={formeditado} name='factura'
+                        options={[
+                            { value: '1', name: 'Con Factura' },
+                            { value: '0', name: 'Sin Factura' },
+                        ]}
+                        placeholder='TIENE FACTURA' value={form.factura}  onChange={(value) => { this.updateSelect(value, 'factura') }} iconclass="fab fa-cc-discover"
+                        messageinc="Incorrecto. Selecciona la factura."
+                    />
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>

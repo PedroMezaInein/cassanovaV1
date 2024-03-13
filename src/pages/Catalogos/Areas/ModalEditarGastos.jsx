@@ -26,7 +26,6 @@ export default function ModalEditarGastos (props) {
     const classes = useStyles();
 
     const {data, handleClose, reload} = props
-    console.log(data)
     const user = useSelector(state => state.authUser)
 
     const [form, setForm] = useState({
@@ -34,7 +33,7 @@ export default function ModalEditarGastos (props) {
         partida: data.partida.nombre,
         subPartida: '',// en este se guarda la informacion que se esta escribiendo
         auxSubPartida: [], // aqui se guardan cuando doy enter
-        arraySubPartidas: [...data.partida.subpartidas], // este me sirve para mostrar todas las subpartidas, tanto las que ya existen como las nuevas
+        arraySubPartidas: [...data.partida.subpartidas ? data.partida.subpartidas : ''], // este me sirve para mostrar todas las subpartidas, tanto las que ya existen como las nuevas
     })
 
     const [modal, setModal] = useState({
@@ -74,7 +73,6 @@ export default function ModalEditarGastos (props) {
     }
 
     const handleOpenPartida = (info) =>{
-        console.log(info)
         setModal({
             ...modal,
             modificarSubGasto:{
@@ -328,15 +326,15 @@ export default function ModalEditarGastos (props) {
                     {
                         form.arraySubPartidas.length > 0 ? 
                             form.arraySubPartidas.map((item,index) => {
-                                if(item.nombre){
+                                if(item.nombre && item.nombre != 'null'){
                                     return <span key={index} className='sub_partida'>
                                                 <span className='sub_eliminar' onClick={()=>{handleOpenPartida(item)}}>X</span>
-                                                <span className=''>{item.nombre}</span>
+                                                <span className=''>{item.nombre ? item.nombre : ''}</span>
                                             </span>
                                 } else{
                                     return <span key={index} className='sub_partida'>
-                                                <span className='sub_eliminar' onClick={(e)=>handleDeleteSub(item)}>X</span>
-                                                <span className=''>{item}</span>
+                                                <span className='sub_eliminar' onClick={(e)=>handleDeleteSub(item ? item : '')}>X</span>
+                                                <span className=''>{item ? item : ''}</span>
                                             </span>
                                 }
                             })
@@ -355,7 +353,7 @@ export default function ModalEditarGastos (props) {
             </div>
 
             <Modal size="lg" title={"Editar Sub gasto"} show={modal.modificarSubGasto.show} handleClose={()=>handleCloseGastos ('modificarSubGasto')}>
-                <ModalModificarSubGasto data={modal.modificarSubGasto.data} dataGeneral={data} handleClose={()=>handleCloseGastos ('modificarSubGasto')} reload={reloadTable}/>
+                <ModalModificarSubGasto data={modal.modificarSubGasto.data} dataGeneral={data} handleClose={()=>handleCloseGastos ('modificarSubGasto')} reload={reload}/>
             </Modal>
         </>
 

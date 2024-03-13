@@ -54,6 +54,7 @@ function App(props) {
   const [tables, setTables] = useState([]); // Estado para almacenar las tablas
   const [tableData, setTableData] = useState([]);
   const departamentos = useSelector(state => state.opciones.areas)
+  const [empresa, setEmpresa] = useState(''); // Inicialmente vacío  
   const auth = useSelector(state => state.authUser.access_token)
   const [departmentTotals, setDepartmentTotals] = useState({});
   const [monthlyTotals, setMonthlyTotals] = useState({});
@@ -65,10 +66,12 @@ function App(props) {
 
 // Define un estado para las subpartidas seleccionadas en cada fila
   const [selectedSubpartidas, setSelectedSubpartidas] = useState({});
-  
+  const empresas = useSelector((state) => state.opciones.empresas);
+
   const classes = useStyles();
   const [age, setAge] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const [openn, setOpenn] = React.useState(false);
 
   const [state, setState] = React.useState({
     checkedA: true,
@@ -98,12 +101,25 @@ function App(props) {
     setAge(event.target.value);
   };
 
+  const handleChanges = (event) => {
+    setEmpresa(event.target.value); // Assuming you're using state and a setter function
+  };
+
+
   const handleClosee = () => {
     setOpen(false);
   };
 
   const handleOpen = () => {
     setOpen(true);
+  };
+
+  const handleClosess = () => {
+    setOpenn(false);
+  };
+
+  const handleOpens = () => {
+    setOpenn(true);
   };
 
 
@@ -354,7 +370,9 @@ const sendTableDataToAPI = async (tables) => {
                 fecha_fin: endDate, // Agrega la fecha de fin
                 nombre: comment, // Agrega el comentario
                 tab: 'departamento', // Agrega el comentario
-                id_departamento:usuario.id
+                id_departamento:usuario.id,
+                empresa: empresa
+
             };
         // console.log(usuario)
             apiPostForm(`presupuestosdep?departamento_id=${usuario.id}`, dataToSend, auth)
@@ -457,7 +475,7 @@ const calculateMonthlyTotals = () => {
   
   return (
     <div className="form-group form-group-marginless row mx-0">    
-        <div className="col-md-3">
+        <div className="col-md-2">
               <InputLabel id="demo-controlled-open-select-label">Departamento</InputLabel>
                 <Select labelId="demo-controlled-open-select-label" id="demo-controlled-open-select" open={open}  onClose={handleClosee} onOpen={handleOpen}
                   name="tabla" value={tableName} onChange={(e) => setTableName(e.target.value)} placeholder="Nombre de la tabla" style={{ width: 230, paddingRight: '2px' }} >
@@ -468,6 +486,19 @@ const calculateMonthlyTotals = () => {
               </Select>
               <Button  className = "btn btn-light-primary mr-4 my-2" color="primary" onClick={handleAddTable}>Agregar Departamento</Button>
         </div>       
+        <div className="col-md-2"> 
+      <InputLabel id="demo-controlled-open-select-label">Empresa</InputLabel>
+            <Select labelId="demo-controlled-open-select-label" onChange={(event) => handleChanges(event)}   open={openn}  onClose={handleClosess}  onOpen={handleOpens}
+              name="empresa" value={empresa}   placeholder="Empresa"
+              style={{ width: 230, paddingRight: '1px' }}
+            >
+              {
+                empresas.map((dep, ) => (
+                <MenuItem  key={dep.id} value={dep.id}>{dep.nombre}</MenuItem>
+              ))}
+              
+          </Select>       
+      </div>
         <div  className="col-md-2">
 
         <InputLabel >Fecha Inicio</InputLabel>

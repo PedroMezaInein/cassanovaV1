@@ -244,7 +244,6 @@ export default function ProyectosTable() {
         data.data.data.forEach((item) => {
             if (item.proyectos.length > 0) {
                 let tipoAux = opciones.tipos.find(tipo => parseInt(tipo.value) === item.proyectos[0].tipo_proyecto_id)
-                console.log(item)
                 aux.push({
                     id: item.id,
                     // nombre: item.proyectos[0].simpleName,

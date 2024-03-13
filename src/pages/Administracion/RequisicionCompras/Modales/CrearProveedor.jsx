@@ -4,13 +4,13 @@ import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import Swal from 'sweetalert2'
 
-import { apiPostForm, apiGet, apiPutForm} from './../../../functions/api';
-import Style from './../../Administracion/Egresos/Modales/CrearEgreso.module.css'
+import { apiPostForm, apiGet, apiPutForm} from  '../../../../functions/api'
+import Style from './../../../Administracion/Egresos/Modales/CrearEgreso.module.css'
 import { fromJS } from 'immutable';
 
 export default function  CrearProveedor(props) {
 
-    const { reload, handleCloseRecarga, auth, getProveedores, data, setProveedorSelect} = props
+    const { reload, handleCloseRecarga, auth, getOpciones, data, setProveedorSelect} = props
 
     const [telefono, setTelefono] = useState('');
     const [telefonoError, setTelefonoError] = useState('');
@@ -83,8 +83,6 @@ export default function  CrearProveedor(props) {
     const validateForm = () => {
         let validar = true
         let error = {}
-        console.log(nuevo)
-        console.log(telefono)
         // if(nuevo.nombre == '' || nuevo.nombre == null){
         //     error.nombre = "Escriba un nombre"
         //     validar = false
@@ -109,7 +107,7 @@ export default function  CrearProveedor(props) {
             error.telefono = "Escriba un télefono del proveedor"
             validar = false
         }
-        console.log(error)
+        // console.log(error)
 
         setErrores(error)
         return validar
@@ -159,7 +157,7 @@ export default function  CrearProveedor(props) {
                                 name: data.data.proveedor.razon_social
                             })
                             handleCloseRecarga(false)
-                            getProveedores()
+                            getOpciones()
                         })
                     })
                     .catch((error) => {

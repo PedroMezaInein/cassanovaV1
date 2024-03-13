@@ -80,6 +80,7 @@ function App(props) {
 
   const [totalGlobal, setTotalGlobal] = useState(0);
   const [totalesPorMes, setTotalesPorMes] = useState({});
+  const [empresa, setEmpresa] = useState({});
   const [departamentosData, setDepartamentosData] = useState([]);
   const [departamentosAgregados, setDepartamentosAgregados] = useState([]);
   const [empleadosPorDepartamento, setEmpleadosPorDepartamento] = useState({});
@@ -170,11 +171,11 @@ function App(props) {
         const apiDepartments = response.data.presupuesto[0].rel;
         const apiData = response.data.presupuesto[0];
         const nomina = response.data;
-
+        console.log(apiData)
         const updatedDepartmentTotals = {};
         const { fecha_inicio, fecha_fin, nombre } = apiData;
         setIdPresu(apiData.id); // Assuming fecha_inicio is a valid date string
-
+        setEmpresa(apiData.empresa[0] ? apiData.empresa[0].name : '');
         setStartDate(new Date(apiData.fecha_inicio)); // Assuming fecha_inicio is a valid date string
         setEndDate(new Date(apiData.fecha_fin)); // Assuming fecha_fin is a valid date string
         setComment(apiData.nombre);
@@ -652,14 +653,15 @@ function App(props) {
   // console.log(tables)
   // console.log(departamentos)
   // console.log(departamentosData)
-
+console.log(selectedTable)
 
   return (
     <div>
       {selectedTable === 'Presupuesto' && (
+         
         <div className="form-group form-group-marginless row mx-0">
 
-          <div className="col-md-3">
+          <div className="col-md-2">
             <InputLabel id="demo-controlled-open-select-label">Departamento</InputLabel>
             <Select labelId="demo-controlled-open-select-label" id="demo-controlled-open-select" open={open} onClose={handleClosee} onOpen={handleOpen}
               name="tabla" value={tableName} onChange={(e) => setTableName(e.target.value)} placeholder="Nombre de la tabla" style={{ width: 230, paddingRight: '2px' }} >
@@ -670,6 +672,7 @@ function App(props) {
             </Select>
             <Button className="btn btn-light-primary mr-4 my-2" color="primary" onClick={handleAddTable}>Agregar Departamento</Button>
           </div>
+          
           <div className="col-md-2">
 
             <InputLabel >Fecha Inicio</InputLabel>
@@ -697,6 +700,7 @@ function App(props) {
 
           </div>
           <div className="col-md-3">
+              <h2>{empresa}</h2> <br></br>
             <h2>Total Global: {calculateTotalGlobal().toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2, })}</h2>
           </div>
           <div className="col-md-12">
@@ -842,6 +846,9 @@ function App(props) {
         <div className="form-group form-group-marginless row mx-0">
           <div className="col-md-4">
             <h2>Presupuesto de nomina</h2>
+          </div>
+          <div className="col-md-2">
+            <h2>{empresa}</h2>
           </div>
           <div className="col-md-4">
             <h3>Total Global: {totalGlobal.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2, })} </h3>

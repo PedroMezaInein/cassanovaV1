@@ -15,8 +15,10 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Swal from 'sweetalert2'
+import Checkbox from '@material-ui/core/Checkbox';
 
 import Style from './AprobarSolicitud.module.css'
 
@@ -33,8 +35,9 @@ export default function Editar(props) {
     const { data, handleClose, reload, opciones, estatusCompras } = props
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector(state => state.authUser)
+    
     const [form, setForm] = useState({
-        fecha: new Date(data.fecha),
+        fecha: new Date(data.fecha+ 'T08:10:00.000Z'),
         departamento: data.departamento_id,
         tipoGasto: data.tipoEgreso_id,
         tipoSubgasto: data.tipoSubEgreso_id,
@@ -43,7 +46,7 @@ export default function Editar(props) {
         descripcion: data.descripcion,
         id: data.id,
         orden_compra: data.orden_compra,
-        fecha_pago: data.fecha_pago ? new Date(data.fecha_pago) : '',
+        fecha_pago: data.fecha_pago ? new Date(data.fecha_pago+ 'T08:10:00.000Z') : '',
         id_cuenta: data.cuenta ? data.cuenta.id : null,
         monto_solicitado: data.monto_solicitado,
         auto1: data.auto1 ? data.auto1 : false,
@@ -58,7 +61,9 @@ export default function Editar(props) {
         factura: data.factura,
         empresa: "",
         labelCuenta: data.cuenta ? data.cuenta.nombre : 'cuenta',
-        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega) : '',
+        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega+ 'T08:10:00.000Z') : '',
+        facturas: data.factura == 1 ? true : false,
+
     })
 
     const [errores, setErrores] = useState({})
@@ -129,6 +134,10 @@ export default function Editar(props) {
                                 id_estatus_factura: form.factura,
                                 id_estatus_conta: form.conta,
                                 fecha_entrega: form.fecha_entrega,
+                                form : 'editar',
+                                facturas: form.facturas,
+
+
                             }
 
                             apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
@@ -187,6 +196,10 @@ export default function Editar(props) {
                         id_estatus_factura: form.factura,
                         id_estatus_conta: form.conta,
                         fecha_entrega: form.fecha_entrega,
+                        form : 'editar',
+                        facturas: form.facturas,
+
+
                     }
 
                     apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
@@ -335,6 +348,14 @@ export default function Editar(props) {
             })
         }
     }
+
+    const handleChangeCheck = () => {
+        setForm({
+            ...form,
+            facturas: !form.facturas
+        });
+    };
+
 
     return (
         <>
@@ -675,6 +696,22 @@ export default function Editar(props) {
                         }}
                     />
                 </div>
+
+                <div>
+                    <InputLabel>¿Lleva factura?</InputLabel>
+                    <FormGroup row>
+                        <FormControlLabel
+                            control={<Checkbox checked={!form.facturas} onChange={handleChangeCheck} color='secondary' name='facturas' />}
+                            label="No"
+
+                        />
+                        <FormControlLabel
+                            control={<Checkbox checked={form.facturas} onChange={handleChangeCheck} color='primary' name='facturas' />}
+                            label="Si"
+
+                        />
+                    </FormGroup>
+                </div>  
 
             </div>
             <div className="row justify-content-end">

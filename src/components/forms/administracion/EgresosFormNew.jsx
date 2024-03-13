@@ -43,6 +43,7 @@ class EgresosFormNew extends Component {
             comision: 0,
             factura: 'Sin factura',
             fecha: new Date(),
+            presupuesto: '',
             facturaItem: {
                 nombre_emisor: '',
                 nombre_receptor: '',
@@ -77,6 +78,7 @@ class EgresosFormNew extends Component {
             estatusCompras: [],
             bancos: [],
             tipos: [],
+            presupuesto: []
         },
         data: { proveedores: [], empresas: [] },
         formeditado: 0,
@@ -234,6 +236,8 @@ class EgresosFormNew extends Component {
 
     updateSelect = (value, name) => {
         const { form, options, data } = this.state
+        const empresaSeleccionadaId = value;    
+
         form[name] = value
         let item = ''
         switch (name) {
@@ -247,9 +251,23 @@ class EgresosFormNew extends Component {
                 }
                 break;
             case 'empresa':
+
                 item = options.empresas.find((elemento) => {
                     return elemento.value === value
                 })
+                const empresaSeleccionada = data.empresas.find(empresa => empresa.id === parseInt(empresaSeleccionadaId));
+
+                const opcionesTransformadas = empresaSeleccionada.presu || []; 
+
+                if(opcionesTransformadas.length > 0){
+                    options.presupuesto = setOptions(opcionesTransformadas, 'nombre', 'id');               
+
+                }else{
+                    form.presupuesto = '';
+                    options.presupuesto = setOptions([], 'nombre', 'id');                
+
+                }
+        
                 if (item) {
                     form.cuenta = ''
                     options.cuentas = setOptions(item.cuentas, 'nombre', 'id')
@@ -1263,15 +1281,21 @@ class EgresosFormNew extends Component {
                             <div className="col-md-12 mt-5">
                                 <div className="separator separator-dashed mt-1 mb-2" />
                             </div>
-                            <div className="col-md-6">
+                            <div className="col-md-4">
                                 <SelectSearchGray options={options.proveedores} placeholder='Selecciona el proveedor' value={form.proveedor}
                                     onChange={(value) => { this.updateSelect(value, 'proveedor') }} withtaglabel={1} withtextlabel={1}
                                     withicon={1} iconclass="far fa-user" messageinc="Selecciona el proveedor" formeditado={formeditado} />
                             </div>
-                            <div className="col-md-6">
+                            <div className="col-md-4">
                                 <SelectSearchGray options={options.empresas} placeholder='Selecciona la empresa' value={form.empresa}
                                     onChange={(value) => { this.updateSelect(value, 'empresa') }} withtaglabel={1} withtextlabel={1}
                                     withicon={1} iconclass="far fa-building" messageinc="Selecciona la empresa"
+                                    formeditado={formeditado} />
+                            </div>
+                            <div className="col-md-4">
+                                <SelectSearchGray   options={options.presupuesto.length > 0 ? options.presupuesto : 'Sin presupuesto'} placeholder='Selecciona el presupuesto' value={form.presupuesto}
+                                    onChange={(value) => { this.updateSelect(value, 'presupuesto') }} withtaglabel={1} withtextlabel={1}
+                                    withicon={1} iconclass="far fa-building" messageinc="Selecciona el presupuesto"
                                     formeditado={formeditado} />
                             </div>
                         </div>
