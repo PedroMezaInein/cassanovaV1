@@ -3,12 +3,15 @@ import Modal from 'react-bootstrap/Modal'
 
 class modal extends Component {
     
-    componentDidUpdate(){
-        var elementos = document.getElementsByClassName('modal');
-        for(let cont = 0; cont < elementos.length; cont ++){
-            elementos[cont].removeAttribute("tabindex")
+    componentDidUpdate() {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        if (modal && modal.hasAttribute("tabindex")) {
+            modal.removeAttribute("tabindex");
         }
-    }
+    });
+}
+
 
     render() {
         const { show, handleClose, children, title, size, icon, customcontent, contentcss, classBody, bgHeader } = this.props
