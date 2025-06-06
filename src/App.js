@@ -15,6 +15,9 @@ import NominaPrestaciones from './pages/RecursosHumanos/NominaPrestaciones/Nomin
 import { Requisiciones } from './pages/Administracion/Requisiciones/Requisiciones'
 import RequisicionCompras from './pages/Administracion/RequisicionCompras/RequisicionCompras'
 import RequisicionContabilidad from './pages/Administracion/RequisicionContabilidad/RequisicionContabilidad'
+import { Requisicionesautoriza } from './pages/Administracion/Requisiciones/Requisicionesautoriza'
+
+
 import TablaVehiculos from './pages/RecursosHumanos/Vehiculos/TablaVehiculos';
 import TablaOperadores from './pages/RecursosHumanos/Vehiculos/TablaOperadores';
 import TablaSolicitudes from './pages/RecursosHumanos/Vehiculos/TablaSolicitudes';
@@ -25,6 +28,8 @@ import TicketsTi from './pages/Ti/Tickets/TicketsTiTable';
 import Manuales from './pages/Ti/Manuales/Manuales';
 
 import TablaInsumos from './pages/RecursosHumanos/Insumos/TablaInsumos';
+import TablaPagos from './pages/RecursosHumanos/pagos/TablaPagos';
+
 
 import PresupuestoAnual from './pages/Administracion/Presupuesto/Presupuesto'
 
@@ -34,6 +39,10 @@ import { VacacionesPermisos } from './pages/RecursosHumanos/VacacionesPermisos'
 import Permisos from './pages/RecursosHumanos/PermisosVacaciones'
 import ClimaLaboral from './pages/RecursosHumanos/Encuestas/ClimaLaboral/ClimaLaboral'
 import Comunicados from "./pages/Comunicados/Comunicados";
+import Politicas from "./pages/Comunicados/Politicas";
+
+import Equipos from './pages/RecursosHumanos/Computo/Equipos'
+
 
 const Login = React.lazy(() => import('./pages/Login') )
 const Home = React.lazy(() => import('./pages/Home') )
@@ -369,6 +378,7 @@ class App extends Component{
                     <Route path="/rh/permisos-vacaciones" exact component={ Permisos } />
                     <Route path = "/encuesta" exact component = { Satisfaccion } />
                     <Route path="/rh/comunicados" exact component={Comunicados} />
+                    <Route path="/rh/politicas" exact component={Politicas} />
                     <Route path="/rh/encuestas/clima-laboral" exact component={ClimaLaboral} />
                             
                     <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
@@ -405,8 +415,8 @@ class App extends Component{
 
                     {/*  ANCHOR Routes for proyectos */}
 
-                    <Route path = "/proyectos/proyectos/" exact component = { Proyectos } />
-                    <Route path="/proyectos/proyectos/nuevo" exact component={ProyectosNuevo } />
+                    <Route path = "/proyectos/proyectos/nuevo" exact component = { ProyectosNuevo } />
+                    <Route path="/proyectos/proyectos/" exact component={Proyectos } />
                     
                     <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
                     <Route path = "/proyectos/proyectos/single/:id" exact component ={ SingleProyecto } />
@@ -561,6 +571,8 @@ class App extends Component{
                     {/* <Route path = "/rh/colaboradores" exact component ={ Empleados } /> */}
                     <Route path = "/rh/colaboradores" exact component ={ Empleados } />
                     <Route path = "/rh/colaboradores/:action" exact component ={ EmpleadosForm } />
+                    <Route path="/rh/inventario" exact component={Equipos} />
+
 
                     {/* <Route path = "/rh/pago-impuestos" exact component ={ PagoImpuestos } /> */}
                     {/* <Route path = "/rh/pago-impuestos/:action" exact component ={ PagoImpuestosForm } />
@@ -589,6 +601,7 @@ class App extends Component{
                     <Route path="/rh/solicitudes-vehiculo" exact component={TablaSolicitudes} />
 
                     <Route path="/rh/insumos" exact component={TablaInsumos} />
+                    <Route path="/rh/pagos" exact component={TablaPagos} />
 
                     {/* ANCHOR Routes for calidad */}
 
