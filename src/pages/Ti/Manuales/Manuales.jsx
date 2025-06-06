@@ -3,22 +3,17 @@ import {useSelector} from 'react-redux'
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2'
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 
-import { apiGet, apiPutForm, apiPostForm } from './../../../functions/api'
-
-import CarruselAdjuntos from './CarruselAdjuntos'
-
+import { apiGet, apiPostForm } from './../../../functions/api'
 import Layout from '../../../components/layout/layout'
 import Style from './Manuales.module.css'
 
 import './../../../styles/_adjuntosVehiculos.scss'
-import { setCustomeDescripcionReactDom } from '../../../functions/setters';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -73,7 +68,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Manuales(props) {
-    const { data } = props
     const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
     const [value, setValue] = React.useState(0);

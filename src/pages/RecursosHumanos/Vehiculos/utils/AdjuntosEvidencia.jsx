@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import Swal from 'sweetalert2'
-import S3 from 'react-aws-s3';
-import axios from 'axios'
-
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
@@ -13,9 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 
-import { apiGet, apiPutForm, apiPostForm } from '../../../../functions/api'
-import { URL_DEV } from '../../../../constants'
-import { setSingleHeader } from '../../../../functions/routers'
+import { apiGet, apiPostForm } from '../../../../functions/api'
 
 import CarruselAdjuntos from './CarruselAdjuntosEvidencias'
 import './../../../../styles/_adjuntosVehiculos.scss'
@@ -187,7 +182,6 @@ export default function Adjuntos(props) {
                     Swal.showLoading()
                 }
             })
-            console.log(form)
 
             let datas = new FormData()
 

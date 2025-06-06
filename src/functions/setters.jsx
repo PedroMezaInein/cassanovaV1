@@ -7,22 +7,22 @@ import { SingleTagify } from '../components/singles';
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import $ from "jquery";
 import moment from 'moment'
-import 'moment/locale/es' 
+import 'moment/locale/es'
 
-function compare( a, b ) {
-    if ( a.name < b.name ){
+function compare(a, b) {
+    if (a.name < b.name) {
         return -1;
     }
-    if ( a.name > b.name ){
+    if (a.name > b.name) {
         return 1;
     }
     return 0;
 }
-export const ordenamiento = ( a, b ) => {
-    if ( a.name < b.name ){
+export const ordenamiento = (a, b) => {
+    if (a.name < b.name) {
         return -1;
     }
-    if ( a.name > b.name ){
+    if (a.name > b.name) {
         return 1;
     }
     return 0;
@@ -30,50 +30,50 @@ export const ordenamiento = ( a, b ) => {
 
 export const transformarOptions = (options) => {
     options = options ? options : []
-    options.map((value)=>{
-        value.label = value.name 
+    options.map((value) => {
+        value.label = value.name
         return ''
-    } );
+    });
     return options
 }
-function setHiddenPassword(pwd){
+function setHiddenPassword(pwd) {
     let aux = ''
     for (let i = 0; i < pwd.length; i++)
         aux += '*'
-    return(
+    return (
         <OverlayTrigger rootClose overlay={<Tooltip>{pwd}</Tooltip>}>
             <span>{aux}</span>
         </OverlayTrigger>
-    ) 
+    )
 }
-function substrCadena( cadena ) {
+function substrCadena(cadena) {
     let pantalla = $(window).width()
     let aux = ''
     if (pantalla < 1400) {
         if (cadena.length > 15) {
             aux = cadena.substr(0, 15) + "..."
-            return(
+            return (
                 <OverlayTrigger rootClose overlay={<Tooltip>{cadena}</Tooltip>}>
                     <span>{aux}</span>
                 </OverlayTrigger>
             )
         } else {
             aux = cadena
-            return(
+            return (
                 <span>{aux}</span>
             )
         }
     } else {
         if (cadena.length > 29) {
             aux = cadena.substr(0, 29) + "..."
-            return(
+            return (
                 <OverlayTrigger rootClose overlay={<Tooltip>{cadena}</Tooltip>}>
                     <span>{aux}</span>
                 </OverlayTrigger>
             )
         } else {
             aux = cadena
-            return(
+            return (
                 <span>{aux}</span>
             )
         }
@@ -89,9 +89,9 @@ export function setOptions(arreglo, name, value) {
             if (element.hasOwnProperty('subareas')) {
                 aux.push({ name: element[name], value: element[value].toString(), subareas: element['subareas'] })
             } else {
-                if(element.hasOwnProperty('tipos')) {
+                if (element.hasOwnProperty('tipos')) {
                     aux.push({ name: element[name], value: element[value].toString(), tipos: element['tipos'] })
-                }else{
+                } else {
                     if (element.hasOwnProperty('proyectos')) {
                         if (element.hasOwnProperty('contratos')) {
                             aux.push({ name: element[name], value: element[value].toString(), proyectos: element['proyectos'], contratos: element['contratos'] })
@@ -105,7 +105,7 @@ export function setOptions(arreglo, name, value) {
                             if (name === "m2") {
                                 aux.push({ name: "" + element[name], value: element[value].toString() })
                             } else {
-                                aux.push({ name: element[name], value: element[value].toString(), data: element })   
+                                aux.push({ name: element[name], value: element[value].toString(), data: element })
                             }
                         }
                     }
@@ -116,9 +116,9 @@ export function setOptions(arreglo, name, value) {
     })
 
     var hash = {};
-    aux = aux.filter(function(current) {
+    aux = aux.filter(function (current) {
         var exists = !hash[current.value];
-            hash[current.value] = true;
+        hash[current.value] = true;
         return exists;
     });
 
@@ -154,28 +154,28 @@ export function setSelectOptions(arreglo, name) {
             value: element.id,
             text: element[name],
             label: element[name],
-            name:element[name],
+            name: element[name],
         })
         return false
     })
     return aux
 }
 
-export function setDireccion (cliente) {
+export function setDireccion(cliente) {
     return (
         <div className="font-size-11px text-justify min-width-180px">
-            {cliente.calle ? cliente.calle + ', colonia ': ''}
+            {cliente.calle ? cliente.calle + ', colonia ' : ''}
             {cliente.colonia ? cliente.colonia + ', ' : ''}
             {cliente.municipio ? cliente.municipio + ', ' : ''}
-            {cliente.estado ? cliente.estado : '' }
-            {cliente.cp ?  ', CP: ' + cliente.cp:''}
+            {cliente.estado ? cliente.estado : ''}
+            {cliente.cp ? ', CP: ' + cliente.cp : ''}
         </div>
     )
 }
 
 export function setTextTable(text, minwidth) {
     return (
-        <div className="font-size-11px" style={{minWidth:minwidth}}>
+        <div className="font-size-11px" style={{ minWidth: minwidth }}>
             {text}
         </div>
     )
@@ -183,73 +183,73 @@ export function setTextTable(text, minwidth) {
 
 export function setTextTableCenter(text, minwidth) {
     return (
-        <div className="font-size-11px text-center" style={{minWidth:minwidth}}>
+        <div className="font-size-11px text-center" style={{ minWidth: minwidth }}>
             {text}
         </div>
     )
 }
 
-export function setTextTableReactDom(text, doubleClick, data, tipo, style){
-    return(
-        <div className = {`text-hover ${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
-            onClick = { (e) => { 
-                e.preventDefault(); 
-                if(isMobile){
+export function setTextTableReactDom(text, doubleClick, data, tipo, style) {
+    return (
+        <div className={`text-hover ${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick={(e) => { e.preventDefault(); doubleClick(data, tipo) }}
+            onClick={(e) => {
+                e.preventDefault();
+                if (isMobile) {
                     doubleClick(data, tipo)
                 }
-            } } > 
-            <span className="font-size-11px line-height-xl"> {text} </span> 
+            }} >
+            <span className="font-size-11px line-height-xl"> {text} </span>
         </div>
     )
 }
 
-export function setCustomeDescripcionReactDom(text, doubleClick, data, tipo, style){
-    if(text === null)
-            return ''
+export function setCustomeDescripcionReactDom(text, doubleClick, data, tipo, style) {
+    if (text === null)
+        return ''
     let valor = text.split("\n")
     let arreglo = valor.map((element, index) => {
-        if(element.length > 0){
+        if (element.length > 0) {
             return (
-                <div key = { index } className = 'font-size-11px line-height-xl mb-3'> {element} </div>
+                <div key={index} className='font-size-11px line-height-xl mb-3'> {element} </div>
             )
         }
-        return <div key = { index } className = 'd-none' />
+        return <div key={index} className='d-none' />
     })
-    return(
-        <div className = {`text-hover custom-td-descripcion ${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
-            onClick = { (e) => { 
-                e.preventDefault(); 
-                if(isMobile){
+    return (
+        <div className={`text-hover custom-td-descripcion ${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick={(e) => { e.preventDefault(); doubleClick(data, tipo) }}
+            onClick={(e) => {
+                e.preventDefault();
+                if (isMobile) {
                     doubleClick(data, tipo)
                 }
-            } } > 
-            { arreglo }
+            }} >
+            {arreglo}
         </div>
     )
 }
 
 export function setColorTableReactDom(text, doubleClick, data, tipo) {
     return (
-        <div className={`dot mx-auto ${(text === '' ? 'm-5 p-5' : '')}`} style={{backgroundColor: `${text}`}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
-        onClick = { (e) => { 
-            e.preventDefault(); 
-            if(isMobile){
-                doubleClick(data, tipo)
-            }
-        } }></div>
-    )
-}
-export function setMoneyTableReactDom(text, doubleClick, data, tipo){
-    let cantidad = 0
-    cantidad = parseFloat(text).toFixed(2)
-    return(
-        <div className = {`text-hover text-center ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
-            onClick = { (e) => { 
-                e.preventDefault(); 
-                if(isMobile){
+        <div className={`dot mx-auto ${(text === '' ? 'm-5 p-5' : '')}`} style={{ backgroundColor: `${text}` }} onDoubleClick={(e) => { e.preventDefault(); doubleClick(data, tipo) }}
+            onClick={(e) => {
+                e.preventDefault();
+                if (isMobile) {
                     doubleClick(data, tipo)
                 }
-            } } > 
+            }}></div>
+    )
+}
+export function setMoneyTableReactDom(text, doubleClick, data, tipo) {
+    let cantidad = 0
+    cantidad = parseFloat(text).toFixed(2)
+    return (
+        <div className={`text-hover text-center ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick={(e) => { e.preventDefault(); doubleClick(data, tipo) }}
+            onClick={(e) => {
+                e.preventDefault();
+                if (isMobile) {
+                    doubleClick(data, tipo)
+                }
+            }} >
             <NumberFormat value={cantidad} displayType='text' thousandSeparator={true} prefix='$'
                 renderText={cantidad => <span className="font-size-11px "> {cantidad} </span>} />
         </div>
@@ -259,13 +259,13 @@ export function setDateTableReactDom(date, doubleClick, data, tipo, style) {
     let seconds = new Date(date);
     seconds = seconds.getTime() / 1000;
     return (
-        <div className = {`text-hover ${style} font-size-11px ${(date === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
-            onClick = { (e) => { 
+        <div className={`text-hover ${style} font-size-11px ${(date === '' ? 'm-5 p-5' : '')}`} onDoubleClick={(e) => { e.preventDefault(); doubleClick(data, tipo) }}
+            onClick={(e) => {
                 /* e.preventDefault();  */
-                if(isMobile){
+                if (isMobile) {
                     doubleClick(data, tipo)
                 }
-            } } >
+            }} >
             <span className="d-none">
                 {
                     seconds
@@ -285,19 +285,19 @@ export function setDateTableReactDom(date, doubleClick, data, tipo, style) {
 
 export function setListTableReactDom(arreglo, nombre, minwidth, doubleClick, data, tipo, style) {
     return (
-        <div className = {`${style} font-size-11px ${(arreglo === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
-            onClick = { (e) => { 
-                e.preventDefault(); 
-                if(isMobile){
+        <div className={`${style} font-size-11px ${(arreglo === '' ? 'm-5 p-5' : '')}`} onDoubleClick={(e) => { e.preventDefault(); doubleClick(data, tipo) }}
+            onClick={(e) => {
+                e.preventDefault();
+                if (isMobile) {
                     doubleClick(data, tipo)
                 }
-            } } >
-            <div className="setListTable" style={{minWidth:minwidth}}>
+            }} >
+            <div className="setListTable" style={{ minWidth: minwidth }}>
                 {
-                    arreglo.map((element,  key ) => {
+                    arreglo.map((element, key) => {
                         return (
                             <>
-                                <span key = { key }>&#8226; {element[nombre]}</span><br/>
+                                <span key={key}>&#8226; {element[nombre]}</span><br />
                             </>
                         )
                     })
@@ -307,13 +307,13 @@ export function setListTableReactDom(arreglo, nombre, minwidth, doubleClick, dat
     )
 }
 
-export function setTagLabelReactDom (data, arreglo, tipo, deleteElement, style, doubliClick){
+export function setTagLabelReactDom(data, arreglo, tipo, deleteElement, style, doubliClick) {
     return (
-        <div className={`${style} ${(tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'tr-hover text-center-webkit':'tr-hover w-max-content'}`}>
+        <div className={`${style} ${(tipo === 'departamento_empleado') || (tipo === 'empresa_acceso') || (tipo === 'departamento_acceso') || (tipo === 'responsables_acceso') ? 'tr-hover text-center-webkit' : 'tr-hover w-max-content'}`}>
             {
                 arreglo.map((element, index) => {
-                    let textAlert =''
-                    switch(tipo){
+                    let textAlert = ''
+                    switch (tipo) {
                         case 'proyecto':
                             textAlert = `ELIMINARÁS ${element.nombre} DEL USUARIO ${data.name}`
                             break
@@ -345,18 +345,19 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement, style, 
                             textAlert = `ELIMINARÁS EL DEPARTAMENTO ${element.nombre} DE LA EMPRESA ${data.name}`
                             break
                         default:
-                            textAlert =''
+                            textAlert = ''
                             break
                     }
-                    return(
-                        <div key = { index } className={`d-table ${(tipo==='departamento_empleado') || (tipo==='empresa_acceso') || (tipo==='departamento_acceso') || (tipo==='responsables_acceso') ? 'mb-1 ' : 'mb-2'}`}> 
-                            <SingleTagify edithSubpartida={doubliClick} element = { element } color = { index % 2 ? 'success' : 'primary' } 
-                                    onClick = { (e) => {
-                                        questionAlert(
-                                            '¿ESTÁS SEGURO?', 
-                                            `${textAlert}`,
-                                            () => deleteElement(data, element, tipo)
-                                        )}} tipo={tipo}  
+                    return (
+                        <div key={index} className={`d-table ${(tipo === 'departamento_empleado') || (tipo === 'empresa_acceso') || (tipo === 'departamento_acceso') || (tipo === 'responsables_acceso') ? 'mb-1 ' : 'mb-2'}`}>
+                            <SingleTagify edithSubpartida={doubliClick} element={element} color={index % 2 ? 'success' : 'primary'}
+                                onClick={(e) => {
+                                    questionAlert(
+                                        '¿ESTÁS SEGURO?',
+                                        `${textAlert}`,
+                                        () => deleteElement(data, element, tipo)
+                                    )
+                                }} tipo={tipo}
                             />
                         </div>
                     )
@@ -366,15 +367,15 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement, style, 
     )
 }
 
-export function setTagLabelAreaReactDom (data, arreglo, tipo, deleteElement, doubleClickSubArea){
+export function setTagLabelAreaReactDom(data, arreglo, tipo, deleteElement, doubleClickSubArea) {
     return (
         <div className="tr-hover w-max-content">
             {
                 arreglo.map((element, index) => {
-                    return(
-                        <div key = { index } className="d-table mb-2">
-                            <SingleTagify doubleClickSubArea={doubleClickSubArea} element = { element } color = { index % 2 ? 'success' : 'primary' } 
-                                onClick = { (e) => {  deleteElement(data, element, tipo) } } tipo={tipo}/>
+                    return (
+                        <div key={index} className="d-table mb-2">
+                            <SingleTagify doubleClickSubArea={doubleClickSubArea} element={element} color={index % 2 ? 'success' : 'primary'}
+                                onClick={(e) => { deleteElement(data, element, tipo) }} tipo={tipo} />
                         </div>
                     )
                 })
@@ -382,18 +383,18 @@ export function setTagLabelAreaReactDom (data, arreglo, tipo, deleteElement, dou
         </div>
     )
 }
-export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElement, nombre){
+export function setTagLabelProyectoReactDom(proyecto, arreglo, tipo, deleteElement, nombre) {
     return (
         <div className="">
             {
                 arreglo.map((element, index) => {
-                    return(
-                        <div className="tagify align-items-center border-0 d-inline-block" key = { index } >
-                            <div className = {`d-flex flex-row-reverse align-items-center tagify__tag tagify__tag--${index % 2 ? 'primary' : 'dark-75'} tagify__tag__newtable px-3px border-radius-3px m-0`}>
-                                <div className="tagify__tag__removeBtn ml-0 px-0 mx-1" aria-label = 'remove tag' onClick = { (e) => { questionAlert( '¿ESTÁS SEGURO?', `ELIMINARÁS ${element.nombre} DEL PROYECTO ${proyecto.nombre}`, () => deleteElement(proyecto, element, tipo) ) } }/>
-                                <div style={{padding:'1px'}}>
+                    return (
+                        <div className="tagify align-items-center border-0 d-inline-block" key={index} >
+                            <div className={`d-flex flex-row-reverse align-items-center tagify__tag tagify__tag--${index % 2 ? 'primary' : 'dark-75'} tagify__tag__newtable px-3px border-radius-3px m-0`}>
+                                <div className="tagify__tag__removeBtn ml-0 px-0 mx-1" aria-label='remove tag' onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', `ELIMINARÁS ${element.nombre} DEL PROYECTO ${proyecto.nombre}`, () => deleteElement(proyecto, element, tipo)) }} />
+                                <div style={{ padding: '1px' }}>
                                     <span className="tagify__tag-text p-1 white-space font-weight-bold letter-spacing-0-4 font-size-11px text-center">
-                                        { nombre ? element[nombre] : element.nombre }
+                                        {nombre ? element[nombre] : element.nombre}
                                     </span>
                                 </div>
                             </div>
@@ -404,7 +405,7 @@ export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElem
         </div>
     )
 }
-export function setTagLabelClienteReactDom (cliente, arreglo, tipo, deleteElement){
+export function setTagLabelClienteReactDom(cliente, arreglo, tipo, deleteElement) {
 
     // {
     //     arreglo.map((element,  key ) => { 
@@ -434,25 +435,26 @@ export function setTagLabelClienteReactDom (cliente, arreglo, tipo, deleteElemen
         <div className="">
             {
                 arreglo.map((element, index) => {
-                    return(
-                        <div key = { index } >
+                    return (
+                        <div key={index} >
                             <div className="container px-0 font-size-11px mb-3">
                                 <div className="container-fluid px-0">
                                     <div className="row mx-0 row-paddingless">
                                         <span className="w-100">
-                                            <span className="text-hover"  onClick = { (e) => { 
+                                            <span className="text-hover" onClick={(e) => {
                                                 questionAlert(
-                                                    '¿ESTÁS SEGURO?', 
+                                                    '¿ESTÁS SEGURO?',
                                                     `ELIMINARÁS ${element.nombre} DEL CLIENTE ${cliente.nombre}`,
                                                     () => deleteElement(cliente, element, tipo)
-                                                ) } }>
+                                                )
+                                            }}>
                                                 <span className="bg-gray-100 text-center py-1">
                                                     <i className="flaticon2-delete icon-xs text-dark-50 text-hover-danger mx-2"></i>
                                                 </span>
                                             </span>
                                             <span className="text-truncate py-1 ">
                                                 <span className="bg-gray-100 pr-2 py-1 font-weight-bolder text-dark-50 letter-spacing-0-4 ">
-                                                    { element.nombre } &nbsp;-
+                                                    {element.nombre} &nbsp;-
                                                 </span>
                                                 {
                                                     element.estatus ?
@@ -465,7 +467,7 @@ export function setTagLabelClienteReactDom (cliente, arreglo, tipo, deleteElemen
                                                                 {element.estatus.estatus}
                                                             </span>
                                                         </>
-                                                    :''
+                                                        : ''
                                                 }
                                             </span>
                                         </span>
@@ -479,26 +481,26 @@ export function setTagLabelClienteReactDom (cliente, arreglo, tipo, deleteElemen
         </div>
     )
 }
-export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, data, tipo) {
-    
+export function setClipboardArrayTableReactDom(arreglo, minwidth, doubleClick, data, tipo) {
+
     return (
-        <div className = {`text-hover ${(arreglo === '' ? 'm-5 p-5' : '')}`}  style={{minWidth:minwidth}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
-            onClick = { (e) => { 
-                e.preventDefault(); 
-                if(isMobile){
+        <div className={`text-hover ${(arreglo === '' ? 'm-5 p-5' : '')}`} style={{ minWidth: minwidth }} onDoubleClick={(e) => { e.preventDefault(); doubleClick(data, tipo) }}
+            onClick={(e) => {
+                e.preventDefault();
+                if (isMobile) {
                     doubleClick(data, tipo)
                 }
-            } } > 
+            }} >
             {
                 arreglo.map((element, key) => {
-                    if(element.text !== '-')
+                    if (element.text !== '-')
                         return (
-                            <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
+                            <div key={key} className={`mb-2 ${minwidth ? '' : 'center-td'}`}>
                                 {
                                     element.name ?
                                         <span className="mr-1 font-size-11px" >
                                             <span className="font-weight-bold" onClick={() => { navigator.clipboard.writeText(element.name) }}>
-                                                { element.lista ? element.name + '.' : element.name + ':' }
+                                                {element.lista ? element.name + '.' : element.name + ':'}
                                             </span>
                                         </span>
                                         : ''
@@ -506,18 +508,18 @@ export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, 
                                 {
                                     element.url ?
                                         <a href={element.url} target="_blank" rel="noopener noreferrer">
-                                            <span className="font-size-11px"  onClick={() => { navigator.clipboard.writeText(element.text) }}>
-                                                { element.text }
+                                            <span className="font-size-11px" onClick={() => { navigator.clipboard.writeText(element.text) }}>
+                                                {element.text}
                                             </span>
                                         </a>
-                                    :
+                                        :
                                         <span className={`font-size-11px  ${(element.name === 'CONTRASEÑA' || element.name === 'USUARIO' || element.name === 'CORREO' ? 'text-transform-none' : '')}`} onClick={() => { navigator.clipboard.writeText(element.text) }}>
                                             {
-                                                element.name === 'CONTRASEÑA'?
+                                                element.name === 'CONTRASEÑA' ?
                                                     setHiddenPassword(element.text)
-                                                : element.name === 'CORREO' ?
-                                                    substrCadena(element.text)
-                                                : element.text
+                                                    : element.name === 'CORREO' ?
+                                                        substrCadena(element.text)
+                                                        : element.text
                                             }
                                         </span>
                                 }
@@ -529,19 +531,19 @@ export function setClipboardArrayTableReactDom (arreglo, minwidth, doubleClick, 
         </div>
     )
 }
-export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tipo) {
+export function setArrayTableReactDom(arreglo, minwidth, doubleClick, data, tipo) {
     return (
-        <div className = {`text-hover ${(arreglo === '' ? 'm-5 p-5' : '')}`}  style={{minWidth:minwidth}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
-            onClick = { (e) => { 
-                e.preventDefault(); 
-                if(isMobile){
+        <div className={`text-hover ${(arreglo === '' ? 'm-5 p-5' : '')}`} style={{ minWidth: minwidth }} onDoubleClick={(e) => { e.preventDefault(); doubleClick(data, tipo) }}
+            onClick={(e) => {
+                e.preventDefault();
+                if (isMobile) {
                     doubleClick(data, tipo)
                 }
-            } } > 
+            }} >
             {
                 arreglo.map((element, key) => {
                     return (
-                        <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
+                        <div key={key} className={`mb-2 ${minwidth ? '' : 'center-td'}`}>
                             {
                                 element.name ?
                                     <span className="mr-1 font-size-11px" >
@@ -549,7 +551,7 @@ export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tip
                                             {
                                                 element.lista ?
                                                     element.name + '.'
-                                                : element.name + ':'
+                                                    : element.name + ':'
                                             }
                                         </span>
                                     </span>
@@ -578,7 +580,7 @@ export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tip
         </div>
     )
 }
-export function setLabelTableReactDom (data, changeEstatus) {
+export function setLabelTableReactDom(data, changeEstatus) {
     return (
         data ?
             data.estatus ?
@@ -605,7 +607,7 @@ export function setLabelTableReactDom (data, changeEstatus) {
                                         </span>
                                     </span>
                                 </Dropdown.Item>
-                            : <></>
+                                : <></>
                         }
                         {
                             data.estatus.estatus !== 'Terminado' ?
@@ -616,7 +618,7 @@ export function setLabelTableReactDom (data, changeEstatus) {
                                         </span>
                                     </span>
                                 </Dropdown.Item>
-                            : <></>
+                                : <></>
                         }
                         {
                             data.estatus.estatus !== 'Mantenimiento' ?
@@ -627,7 +629,7 @@ export function setLabelTableReactDom (data, changeEstatus) {
                                         </span>
                                     </span>
                                 </Dropdown.Item>
-                            : <></>
+                                : <></>
                         }
                         {
                             data.estatus.estatus !== 'En proceso' ?
@@ -638,18 +640,18 @@ export function setLabelTableReactDom (data, changeEstatus) {
                                         </span>
                                     </span>
                                 </Dropdown.Item>
-                            : <></>
+                                : <></>
                         }
                     </Dropdown.Menu>
                 </Dropdown>
+                : ''
             : ''
-        : ''
     )
 }
-export function setEstatusBancoTableReactDom (data, changeEstatus) {
-    let estatus =  data.estatus? data.estatus.estatus !== undefined ? data.estatus.estatus : data.estatus_empleado:data.estatus_empleado
+export function setEstatusBancoTableReactDom(data, changeEstatus) {
+    let estatus = data.estatus ? data.estatus.estatus !== undefined ? data.estatus.estatus : data.estatus_empleado : data.estatus_empleado
     let text = {}
-    if ( estatus === "Activo" ) {
+    if (estatus === "Activo") {
         text.letra = '#388E3C'
         text.fondo = '#E8F5E9'
         text.estatus = 'Activo'
@@ -691,17 +693,17 @@ export function setEstatusBancoTableReactDom (data, changeEstatus) {
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
+                : ''
             : ''
-        : ''
     )
 }
 
-export function setEstatusTableReactDom (data, changeEstatus) {
-    
-    let estatus =   data.estatus !== undefined ? data.estatus : 0
+export function setEstatusTableReactDom(data, changeEstatus) {
+
+    let estatus = data.estatus !== undefined ? data.estatus : 0
     let text = {}
-    
-    if ( estatus === 1 ) {
+
+    if (estatus === 1) {
         text.letra = '#388E3C'
         text.fondo = '#E8F5E9'
         text.estatus = 'Activo'
@@ -713,7 +715,7 @@ export function setEstatusTableReactDom (data, changeEstatus) {
 
     return (
         data ?
-            (data)?
+            (data) ?
                 <Dropdown className="text-center">
                     <Dropdown.Toggle
                         style={
@@ -744,14 +746,14 @@ export function setEstatusTableReactDom (data, changeEstatus) {
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
+                : ''
             : ''
-        : ''
     )
 }
 
 export function setColor(text) {
     return (
-        <div className="dot mx-auto" style={{backgroundColor: `${text}`}} ></div>
+        <div className="dot mx-auto" style={{ backgroundColor: `${text}` }} ></div>
     )
 }
 export function setLabelTable(text) {
@@ -762,14 +764,14 @@ export function setLabelTable(text) {
                 padding: '0.5em 0.85em',
                 fontSize: '.65rem',
                 fontWeight: 600,
-                lineHeight:1,
-                backgroundColor:`${text.fondo}`,
+                lineHeight: 1,
+                backgroundColor: `${text.fondo}`,
                 color: `${text.letra}`,
-                textAlign:'center',
+                textAlign: 'center',
                 border: 'transparent',
-                whiteSpace:'nowrap',
-                verticalAlign:'baseline',
-                borderRadius:'0.475rem',
+                whiteSpace: 'nowrap',
+                verticalAlign: 'baseline',
+                borderRadius: '0.475rem',
                 justifyContent: 'center',
                 alignItems: 'center'
             }} >
@@ -790,34 +792,35 @@ export function setLabelVentas(text) {
         </>
     )
 }
+
 export function setDateTable(date) {
     let seconds = new Date(date);
     seconds = seconds.getTime() / 1000;
     return (
         <div className="font-size-11px text-center">
             {
-                date !== null?
-                <>
-                    <span className="d-none">
-                        {
-                            seconds
-                        }
-                    </span>
-                    <span className="d-none">
-                        <Moment format="YYYY/MM/DD">
+                date !== null ?
+                    <>
+                        <span className="d-none">
+                            {
+                                seconds
+                            }
+                        </span>
+                        <span className="d-none">
+                            <Moment format="YYYY/MM/DD">
+                                {date}
+                            </Moment>
+                        </span>
+                        <Moment format="DD/MM/YYYY">
                             {date}
                         </Moment>
-                    </span>
-                    <Moment format="DD/MM/YYYY">
-                        {date}
-                    </Moment>
-                </>
-                :'-'
+                    </>
+                    : '-'
             }
         </div>
     )
 }
-export function setAdjuntoDocumento (adjunto){
+export function setAdjuntoDocumento(adjunto) {
     return (
         <div className="text-center">
             {
@@ -829,7 +832,7 @@ export function setAdjuntoDocumento (adjunto){
                                     Adjunto
                                 </span>
                             </a>
-                            <br/>
+                            <br />
                         </>
                     )
                 })
@@ -883,7 +886,7 @@ export function setMoneyTableForNominas(value) {
     cantidad = parseFloat(value).toFixed(2)
     return (
         <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
-            renderText={cantidad => <p className="font-weight-bolder mb-0" style={{fontSize: "1.01rem"}}> {cantidad} </p>} />
+            renderText={cantidad => <p className="font-weight-bolder mb-0" style={{ fontSize: "1.01rem" }}> {cantidad} </p>} />
     )
 }
 
@@ -906,11 +909,11 @@ export function setPercent(value) {
 
 export function setListTable(arreglo, nombre, minwidth) {
     return (
-        <div className="setListTable" style={{minWidth:minwidth}}>
+        <div className="setListTable" style={{ minWidth: minwidth }}>
             {
-                arreglo.map((element,  key ) => {
+                arreglo.map((element, key) => {
                     return (
-                        <span key = { key }>&#8226; {element[nombre]}<br/></span>
+                        <span key={key}>&#8226; {element[nombre]}<br /></span>
                     )
                 })
             }
@@ -919,11 +922,11 @@ export function setListTable(arreglo, nombre, minwidth) {
 }
 export function setArrayTable(arreglo, minwidth) {
     return (
-        <div style={{minWidth:minwidth}}>
+        <div style={{ minWidth: minwidth }}>
             {
                 arreglo.map((element, id) => {
                     return (
-                        <div key = { id } className={`mb-2 ${minwidth?'':'center-td'}`}>
+                        <div key={id} className={`mb-2 ${minwidth ? '' : 'center-td'}`}>
                             {
                                 element.name ?
                                     <span className="mr-1 font-size-11px" >
@@ -931,7 +934,7 @@ export function setArrayTable(arreglo, minwidth) {
                                             {
                                                 element.lista ?
                                                     element.name + '.'
-                                                : element.name + ':'
+                                                    : element.name + ':'
                                             }
                                         </span>
                                     </span>
@@ -963,8 +966,8 @@ export function setArrayTable(arreglo, minwidth) {
 export function setAdjuntoTable(adjunto) {
     return (
         <div className="text-center">
-            <a href = { adjunto.url } target = "_blank" rel = "noopener noreferrer">
-                <span className="font-size-11px">{ adjunto.name } </span>
+            <a href={adjunto.url} target="_blank" rel="noopener noreferrer">
+                <span className="font-size-11px">{adjunto.name} </span>
             </a>
         </div>
     )
@@ -1007,7 +1010,7 @@ export function setContactoTable(contacto) {
                 contacto.nombre ?
                     <span className="text-dark-75 text-hover-primary">
                         <i className="las la-user-alt icon-md mr-2"></i>
-                        { contacto.nombre }
+                        {contacto.nombre}
                     </span>
                     : ''
             }
@@ -1036,16 +1039,16 @@ export function setContactoTable(contacto) {
         </div>
     )
 }
-export function getQuincena(){
+export function getQuincena() {
     return [
         { name: '1', value: '1' },
         { name: '2', value: '2' }
     ]
 }
-export function getMeses(){
+export function getMeses() {
     return [
         { name: 'Enero', value: 'Enero', label: 'Enero' },
-        {  name: 'Febrero', value: 'Febrero', label: 'Febrero' },
+        { name: 'Febrero', value: 'Febrero', label: 'Febrero' },
         { name: 'Marzo', value: 'Marzo', label: 'Marzo' },
         { name: 'Abril', value: 'Abril', label: 'Abril' },
         { name: 'Mayo', value: 'Mayo', label: 'Mayo' },
@@ -1058,7 +1061,7 @@ export function getMeses(){
         { name: 'Diciembre', value: 'Diciembre', label: 'Diciembre' }
     ]
 }
-export function getFases(){
+export function getFases() {
     return [
         { name: 'Fase 1', value: '1', label: 'Fase 1' },
         { name: 'Fase 2', value: '2', label: 'Fase 2' },
@@ -1081,7 +1084,7 @@ export const getAños = () => {
     return arreglo
 }
 
-export function getEstados (){
+export function getEstados() {
     return [
         { name: "Aguascalientes", value: "Aguascalientes" },
         { name: "Baja California", value: "Baja California" },
@@ -1119,21 +1122,21 @@ export function getEstados (){
 }
 
 export function setEmpresaLogo(lead) {
-    if(lead)
-        if(lead.empresa)
-            if(lead.empresa.logo_principal)
-                if(lead.empresa.logo_principal.length)
+    if (lead)
+        if (lead.empresa)
+            if (lead.empresa.logo_principal)
+                if (lead.empresa.logo_principal.length)
                     return lead.empresa.logo_principal[0].url
     return ''
 }
 
-export function dayDMY (fecha){
+export function dayDMY(fecha) {
     let fecha_moment = moment(fecha);
     let format = fecha_moment.locale('es').format("DD MMM YYYY");
     return format.replace('.', '');
 }
 
-export function setDateText(dato){
+export function setDateText(dato) {
     let fecha = new Date(moment(dato))
     let day = fecha.getDate()
     let anio = fecha.getFullYear()
@@ -1142,8 +1145,8 @@ export function setDateText(dato){
     return `${day} ${meses[mes]} ${anio}`
 }
 
-export function setMoneyText(money){
-    return '$'+money.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+export function setMoneyText(money) {
+    return '$' + money.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
 }
 
 export function setFase(proyecto) {
@@ -1175,7 +1178,7 @@ export function setNaviIcon(icon, text) {
         </span>
     )
 }
-export function printTableCP (key, cliente) {
+export function printTableCP(key, cliente) {
     return (
         <tbody key={key}>
             <tr className="border-top-2px">
@@ -1246,29 +1249,29 @@ export function printTableCP (key, cliente) {
     )
 }
 
-export function setContactoIcon(contacto){
-    if(contacto)
-        if(contacto.tipo_contacto)
-            if(contacto.tipo_contacto.tipo){
-                switch(contacto.tipo_contacto.tipo){
+export function setContactoIcon(contacto) {
+    if (contacto)
+        if (contacto.tipo_contacto)
+            if (contacto.tipo_contacto.tipo) {
+                switch (contacto.tipo_contacto.tipo) {
                     case 'Llamada':
-                        return(<i className={contacto.success ? "fas fa-phone-volume text-success icon-16px" : "fas fa-phone-volume text-danger icon-16px"} />);
+                        return (<i className={contacto.success ? "fas fa-phone-volume text-success icon-16px" : "fas fa-phone-volume text-danger icon-16px"} />);
                     case 'Correo':
-                        return(<i className={contacto.success ? "fas fa-envelope text-success icon-16px" : "fas fa-envelope text-danger icon-16px"} />);
+                        return (<i className={contacto.success ? "fas fa-envelope text-success icon-16px" : "fas fa-envelope text-danger icon-16px"} />);
                     case 'VIDEO LLAMADA':
-                        return(<i className={contacto.success ? "fas fa-video text-success icon-16px" : "fas fa-video text-danger icon-16px"} />);
+                        return (<i className={contacto.success ? "fas fa-video text-success icon-16px" : "fas fa-video text-danger icon-16px"} />);
                     case 'Whatsapp':
-                        return(<i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"} />);
+                        return (<i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"} />);
                     case 'TAWK TO ADS':
-                        return(<i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"} />);
+                        return (<i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"} />);
                     case 'REUNIÓN PRESENCIAL':
-                        return(<i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"} />);
+                        return (<i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"} />);
                     case 'Visita':
-                        return(<i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"} />);
+                        return (<i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"} />);
                     case 'TAWK TO ORGANICO':
-                        return(<i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"} />);
+                        return (<i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"} />);
                     default:
-                        return(<i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"} />);
+                        return (<i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"} />);
                 }
             }
     return ''
@@ -1284,11 +1287,11 @@ export function setDate(date) {
 
 export function setEsquema(text) {
     let esquema = ''
-    if(text === 'esquema_1'){
+    if (text === 'esquema_1') {
         esquema = 'Esquema 1'
-    }else if(text === 'esquema_2'){
+    } else if (text === 'esquema_2') {
         esquema = 'Esquema 2'
-    }else{
+    } else {
         esquema = 'Esquema 3'
     }
     return esquema

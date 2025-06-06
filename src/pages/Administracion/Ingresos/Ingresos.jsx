@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
 import $ from 'jquery'
 import S3 from 'react-aws-s3'
 import Swal from 'sweetalert2'
@@ -18,62 +20,41 @@ import { InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } 
 import { apiOptions, apiGet, apiDelete, apiPostFormData, apiPutForm, catchErrors, apiPostFormResponseBlob } from '../../../functions/api'
 import { waitAlert, deleteAlert, doneAlert, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert, errorAlert, } from '../../../functions/alert'
 import { setNaviIcon, setOptions, setDateTableReactDom, setMoneyTable, setArrayTable, setSelectOptions, setTextTableCenter, setTextTableReactDom, setOptionsWithLabel } from '../../../functions/setters'
-class Ingresos extends Component {
-    state = {
-        modal: {
-            see: false,
-            facturas: false,
-            adjuntos: false,
-            facturaExtranjera: false,
-            filters: false
-        },
-        selectValido: false,
-        ingresos: [],
-        title: 'Nuevo ingreso',
-        ingreso: '',
-        data: {
-            proveedores: [],
-            empresas: [],
-            ingresos: [],
-            adjuntos: [],
-            clientes: []
-        },
-        form: {
-            formaPago: '',
-            metodoPago: '',
-            estatusFactura: '',
-            facturaObject: '',
-            cliente: '',
-            empresa: '',
-            concepto: '',
-            email: '',
-            rfc: '',
-            total: '',
-            fecha: new Date(),
-            adjuntos: {
-                factura: {
-                    value: '',
-                    placeholder: 'Factura',
-                    files: []
-                },
-                pago: {
-                    value: '',
-                    placeholder: 'Pago',
-                    files: []
-                },
-                presupuesto: {
-                    value: '',
-                    placeholder: 'Presupuesto',
-                    files: []
-                },
-                facturas_pdf: {
-                    value: '',
-                    placeholder: 'Factura extranjera',
-                    files: []
-                }
-            }
-        },
-        formeditado: 0,
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
+import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
+import TablaGeneralPaginado from './../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
+import { setDateTable } from '../../../functions/setters'
+import Button from '@material-ui/core/Button';
+import CrearIngreso from './CrearIngreso'
+import FacturasIngresos from './FacturasIngresos'
+import AdjuntosIngresos from './AdjuntosIngresos'
+import EditarIngreso from './EditarIngreso'
+import InputLabel from '@material-ui/core/InputLabel';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { es } from 'date-fns/locale'
+import Grid from '@material-ui/core/Grid';
+import FiltrarIngresos from './FiltrarIngresos'
+
+
+
+
+export default function ComprasTable(props) { 
+    const auth = useSelector((state) => state.authUser.access_token);
+    const authUser = useSelector((state) => state.authUser);
+    const [opcionesData, setOpcionesData] = useState()
+    const [filtrado, setFiltrado] = useState('') 
+    const [reloadTable, setReloadTable] = useState()
+    const areaCompras = useSelector(state => state.opciones.ingresos)
+    const clientes = useSelector((state) => state.opciones.clientes);
+    const empresas = useSelector((state) => state.opciones.empresa);
+
+    const [form, setForm] = useState({     
+        fecha_fin: '',
+        fecha_inicio: '',
+        idSeleccionado: '',
         options: {
             formasPago: [],
             metodosPago: [],
@@ -82,768 +63,583 @@ class Ingresos extends Component {
             clientes: []
         },
         filters: {}
-    }
+    })
 
-    componentDidMount() {
-        const { authUser: { user: { permisos } }, ingresosAdmin} = this.props
-        const { history: { location: { pathname } } } = this.props
-        const { history } = this.props
-        const ingresos = permisos.find(function (element, index) {
-            const { modulo: { url } } = element
-            return pathname === url
-        });
-        if (!ingresos)
-            history.push('/')
-        this.getOptionsAxios()
-        let queryString = this.props.history.location.search
-        if (queryString) {
-            let params = new URLSearchParams(queryString)
-            let id = parseInt(params.get("id"))
-            if (id) {
-                const { modal, filters } = this.state
-                filters.identificador = id
-                modal.see = true
-                this.setState({ ...this.state, modal, filters })
-                this.reloadTable(filters)
-                this.getIngresoAxios(id)
+    const [modal, setModal] = useState({
+        ver: {
+            show: false,
+            data: null
+        },
+        editar: {
+            show: false,
+            data: null
+        },
+        crear: {
+            show: false,
+            data: null
+        },
+        eliminar: {
+            show: false,
+            data: false
+        },
+        filtrar: {
+            show: false,
+            data: null
+        }, 
+        adjuntos: {
+            show: false,
+            data: null
+        },
+        facturas: {
+            show: false,
+            data: null
+        },
+        exportar: {
+            show: false,
+            data: null
+        }
+    })
+
+    useEffect(() => {
+        // getProveedores()
+        // setFiltrado()
+        if (filtrado) {
+            reloadTable.reload(filtrado)
+            //  setFiltrado('')
+            if(borrar == false){
+                setFiltrado('')   
+
             }
         }
-        // console.log(ingresosAdmin)
-    }
+    }, [filtrado])
 
-    getOptionsAxios = async () => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        apiOptions(`v2/administracion/ingresos`, access_token).then(
+    const borrar = ( id) =>{
+        if(id == false){
+            reloadTable.reload(filtrado)
+            setFiltrado('')   
+        }
+    }
+    
+
+    const columns = [
+        { nombre: '', identificador: 'acciones', sort: false, stringSearch: false },
+        { nombre: 'ID', identificador: 'id', stringSearch: false },
+        { nombre: 'Fecha', identificador: 'fecha', stringSearch: false },
+        { nombre: 'Cliente', identificador: 'cliente', stringSearch: false },
+        { nombre: 'Factura', identificador: 'factura', stringSearch: false },
+        { nombre: 'Área', identificador: 'area', stringSearch: false },
+        { nombre: 'partida', identificador: 'partida', stringSearch: false },
+        { nombre: 'Sub-partida', identificador: 'subarea', stringSearch: false },
+        { nombre: 'Total', identificador: 'total', stringSearch: false },
+        { nombre: 'Cuenta', identificador: 'cuenta', stringSearch: false },
+        { nombre: 'Pago', identificador: 'tipoPago', stringSearch: false },
+        { nombre: 'Impuesto', identificador: 'impuesto', stringSearch: false },
+        { nombre: 'Descripción', identificador: 'descripcion', stringSearch: false }, //quitar
+
+        // { nombre: 'Estatus', identificador: 'estatusCompra', stringSearch: false },
+    ]
+
+    const deleteCompraAxios = (id) => {
+        apiDelete(`ingresos/${id}`, auth).then(
             (response) => {
-                const { data, options } = this.state
-                const { clientes, empresas, formasPago, metodosPago, estatusFacturas, estatusCompras, tiposPagos, tiposImpuestos, areas } = response.data
-                options['metodosPago'] = setOptionsWithLabel(metodosPago, 'nombre', 'id')
-                options['formasPago'] = setOptionsWithLabel(formasPago, 'nombre', 'id')
-                options['estatusFacturas'] = setOptionsWithLabel(estatusFacturas, 'estatus', 'id')
-                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
-                options['empresas'] = setOptionsWithLabel(empresas, 'name', 'id')
-                options['clientes'] = setOptionsWithLabel(clientes, 'empresa', 'id')
-                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
-                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
-                options['areas'] = setOptionsWithLabel(areas, 'nombre', 'id')
-                data.clientes = clientes
-                data.empresas = empresas
-                Swal.close()
-                this.setState({
-                    ...this.state,
-                    data,
-                    options
-                })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    getIngresoAxios = async (id) => {
-        
-        const { access_token } = this.props.authUser
-        apiGet(`ingresos/single/${id}`, access_token).then(
-            (response) => {
-                const { ingreso } = response.data
-                this.setState({
-                    ...this.state,
-                    ingreso: ingreso
-                })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    clearForm = () => {
-        const { form } = this.state
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'fecha':
-                    form[element] = new Date()
-                    break;
-                case 'adjuntos':
-                    form[element] = {
-                        factura: {
-                            value: '',
-                            placeholder: 'Factura',
-                            files: []
-                        },
-                        pago: {
-                            value: '',
-                            placeholder: 'Pago',
-                            files: []
-                        },
-                        presupuesto: {
-                            value: '',
-                            placeholder: 'Presupuesto',
-                            files: []
-                        },
-                        facturas_pdf: {
-                            value: '',
-                            placeholder: 'Factura extranjera',
-                            files: []
-                        }
-                    }
-                    break;
-                default:
-                    form[element] = ''
-                    break;
-            }
-            return false
-        })
-        return form;
-    }
-    handleChange = (files, item) => {
-        const { form } = this.state
-        let aux = form.adjuntos[item].files
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
+                Swal.fire( 
+                    '¡Eliminado!',
+                    'El Ingreso ha sido eliminado.',
+                    'success'
+                )                
+                if (reloadTable) {
+                    reloadTable.reload()
                 }
-            )
+            }, (error) => { }
+        ).catch((error) => { catchErrors(error) })
+    }
+
+    const acciones = [
+        {
+            nombre: 'Editar',
+            icono: 'fas fa-edit',
+            color: 'blueButton',
+            funcion: (item) => {
+                openModal('editar', item)
+
+            }
+        },
+
+        {
+            nombre: 'Ver ingreso',
+            icono: 'fas fa-eye',
+            color: 'greenButton',
+            funcion: (item) => {
+                openModal('ver', item)
+            }
+        },
+    
+        {
+            nombre: 'Adjuntos',
+            icono: 'fas fa-paperclip',
+            color: 'yellowButton',
+            funcion: (item) => {
+                openModal('adjuntos', item)
+            }
+        },
+
+        {
+            nombre: 'Facturas',
+            icono: 'fas fa-file-invoice',
+            color: 'perryButton',
+            funcion: (item) => {
+                openModal('facturas', item)
+            }
+        },
+        // {
+        //     nombre: 'Factura extranjera',
+        //     icono: 'fas fa-file-invoice',
+        //     color: 'perryButton',
+        //     funcion: (item) => {
+        //         openModal('facturas_estra', item)
+        //     }
+        // },
+        {
+            nombre: 'Eliminar',
+            icono: 'fas fa-trash-alt',
+            color: 'redButton',
+            funcion: (item) => {
+                authUser.user.tipo.tipo === 'Administrador' ?
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "¡No podrás revertir esto!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonText: 'Sí, bórralo',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteCompraAxios(item.id)
+                    }
+                })
+                :   
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No tienes permiso',
+                    text: 'Lo sentimos no tienes permiso para borrar...',
+                    showConfirmButton: false,
+                    timer: 4000
+                })
+                
+            }
+        },
+    ]
+
+    // if (proyecto.bitacora) {
+    //     handleOpen.push({
+    //         nombre: 'ver bitácora',
+    //         funcion: (item) => {
+    //             window.open(proyecto.bitacora, '_blank');
+    //         }
+    //     });
+    // } 
+
+    const  exportEgresosAxios = () => {
+        if(form.fecha_fin && form.fecha_inicio){
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Descargar compra',
+                text: 'Exportando compras espere...',
+                showConfirmButton: false,
+                timer: 4000
+            })
+            
+            apiPostFormResponseBlob(`v3/administracion/ingresos/exportar`,{ columnas: form },  auth).then(
+                (response) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', 'ingresos.xlsx');
+                    document.body.appendChild(link);
+                    link.click();
+                    doneAlert(
+                        response.data.message !== undefined ? 
+                            response.data.message 
+                        : 'Ingresos exportadas con éxito.'
+                    )
+                    setModal({
+                        ...modal,
+                        ['exportar']: {
+                            show: false,
+                            data: null
+                        }
+                    })
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => { catchErrors(error) })
+
+        }else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Campos obligatorios',
+                text: 'Por favor, completa las fechas de inicio y fin.',
+            });
+            return; // Detén la función si los campos están vacíos
+
+
         }
-        form['adjuntos'][item].value = files
-        form['adjuntos'][item].files = aux
-        this.setState({ ...this.state, form })
-        createAlertSA2WithActionOnClose(
-            '¿DESEAS AGREGAR EL ARCHIVO?',
-            '',
-            () => this.attachFiles(files, item),
-            () => this.cleanAdjuntos(item)
+    }
+
+    const opciones = [
+        {
+            nombre: <div><i className="fas fa-plus mr-5"></i><span>Nuevo</span></div>,
+            funcion: (item) => {
+                openModal('crear', item)
+            }
+        },
+        {
+            //filtrar
+            nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
+            funcion: (item) => {
+                openModal('filtrar', item)
+            }
+        },
+        {
+            //exportar
+            nombre: <div><i className="fas fa-file-export mr-5"></i><span>Exportar</span></div>,
+            funcion: (item) => {
+                openModal('exportar', item)
+
+                // exportEgresosAxios(item.id)
+
+            }
+        },
+    ]
+
+    const openModal = (tipo, data) => {
+            form.fecha_inicio = ''
+            form.fecha_fin = ''
+        if(data.factura == 'Sin factura' && tipo == 'facturas'){
+            Swal.fire({
+                icon: 'error',
+                title: 'No tiene facura',
+                text: 'El registro es sin factura',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            
+        }else{
+            setModal({
+                ...modal,
+                [tipo]: {
+                    show: true,
+                    data: data
+                }
+            })
+        }
+    }
+
+    const handleClose = (tipo) => {
+        setModal({
+            ...modal,
+            [tipo]: {
+                show: false,
+                data: null
+            }
+        })
+    }
+
+    const handleChangeFecha = (date, tipo) => {
+        setForm({
+            ...form,
+            [tipo]: new Date(date)
+        })
+    };
+
+
+    const HtmlTooltip = withStyles((theme) => ({
+        tooltip: {
+          backgroundColor: '#f5f5f9',
+          color: 'rgba(0, 0, 0, 0.87)',
+          maxWidth: 500,
+          maxHeight: 500,
+          fontSize: theme.typography.pxToRem(14),
+          border: '1px solid #dadde9',
+        },
+      }))(Tooltip);
+
+
+    useEffect(() => {
+        getProveedores()
+    }, [filtrado])
+
+    const getProveedores = () => {
+        Swal.fire({
+            title: 'Cargando...',
+            allowOutsideClick: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+        })
+        apiOptions(`v2/administracion/egresos`, auth)
+            .then(res => {
+                let data = res.data
+
+                let aux = {
+                    cuentas: [],
+                    empresas: [],
+                    estatusCompras: [],
+                    proveedores: [],
+                    tiposImpuestos: [],
+                    tiposPagos: [],
+                }
+
+                data.proveedores.map((proveedor) => {
+                    if (proveedor.razon_social !== null) {
+                        aux.proveedores.push({
+                            id: proveedor.id,
+                            name: proveedor.razon_social,
+                            rfc: proveedor.rfc,
+                        })   
+                    }  
+                })
+
+                data.empresas.map((empresa) => {
+                    if (empresa.nombre !== null) {
+                        aux.empresas.push({
+                            id: empresa.id,
+                            name: empresa.name,
+                            rfc: empresa.rfc,
+                            cuentas: empresa.cuentas,
+                        })
+                    }
+                })
+
+                data.estatusCompras.map((estatusCompra) => {
+                    if (estatusCompra.estatus !== null) {
+                        aux.estatusCompras.push({
+                            id: estatusCompra.id,
+                            name: estatusCompra.estatus,
+                        })
+                    }
+                })
+
+                data.tiposImpuestos.map((tipoImpuesto) => {
+                    if (tipoImpuesto.tipo !== null) {
+                        aux.tiposImpuestos.push({
+                            id: tipoImpuesto.id,
+                            name: tipoImpuesto.tipo,
+                        })
+                    }
+                })
+
+                data.tiposPagos.map((tipoPago) => {
+                    if (tipoPago.tipo !== null) {
+                        aux.tiposPagos.push({
+                            id: tipoPago.id,
+                            name: tipoPago.tipo,
+                        })
+                    }
+                })
+
+                Swal.close()
+                setOpcionesData(aux)
+                // setProveedoresData(aux);
+
+            }
         )
     }
-    cleanAdjuntos = (item) => {
-        const { form } = this.state
-        let aux = []
-        form.adjuntos[item].files.map((file) => {
-            if (file.id) aux.push(file)
-            return ''
-        })
-        form.adjuntos[item].value = ''
-        form.adjuntos[item].files = aux
-        this.setState({ ...this.state, form })
+
+    const formatNumber = (num) => {
+        return `$${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
     }
 
-    
-    getNombrePartida = (ingreso) => {
-        const {ingresosAdmin} = this.props
-        /* console.log(ingreso) */
-        let aux = ''
-        ingresosAdmin.map((item)=>{
-            if(parseInt(item.id_area) === ingreso.area.id){
-                if(ingreso.partida_id !== ''  && ingreso.partida_id){
-                    
-                    item.partidas.find(partida=>{
-                        if(parseInt(partida.id) === ingreso.partida_id){
-                            
-                            aux = partida.nombre
-                        }
-                    })
-                }
+    const proccessData = (datos) => { 
 
-            }
-        })
+        let aux = []
+        datos.data.data.map((dato) => {
+            aux.push({
+                data: dato,
+                id: dato.id ? dato.id : 's/i',
+                fecha: dato.created_at ? setDateTable(dato.created_at) : 's/i',
+                // monto: dato.monto ? formatNumber(dato.monto) : 's/i',
+                area: dato.area ?  dato.area.nombre : 's/i',
+                cliente: dato.cliente ? dato.cliente.empresa : 'N/A', 
+                partida: dato.partidas ? dato.partidas.nombre : 's/i',
+                subarea: dato.subarea ? dato.subarea.nombre : 's/i',
+                tipoPago: dato.tipo_pago ? dato.tipo_pago.tipo : 's/i',
+                cuenta: dato.empresa ? dato.empresa.name : 's/i',
+                pago: dato.tipo_pago.tipo ? dato.tipo_pago.tipo : 's/i',
+                impuesto: dato.tipo_impuesto.tipo ? dato.tipo_impuesto.tipo : 's/i',
+                total: dato.total ? formatNumber(dato.total) : 's/i',
+                descripcion: dato.descripcion ? descripcion(dato.descripcion) : 'N/A',
+                // // factura: dato.factura ? 'Con factura' : 'Sin factura',
+                factura:label(dato),  
+            })
+        }
+        )
         return aux
     }
 
-    setIngresos = ingresos => {
-        let aux = []
-        let _aux = []
-        ingresos.map((ingreso) => {
-            _aux = []
-            if (ingreso.presupuestos) {
-                ingreso.presupuestos.map((presupuesto) => {
-                    _aux.push({
-                        name: 'Presupuesto', text: presupuesto.name, url: presupuesto.url
-                    })
-                    return false
-                })
-            }
-            if (ingreso.pagos) {
-                ingreso.pagos.map((pago) => {
-                    _aux.push({
-                        name: 'Pago', text: pago.name, url: pago.url
-                    })
-                    return false
-                })
-            }
-            aux.push(
-                {
-                    actions: this.setActions(ingreso),
-                    identificador: setTextTableCenter(ingreso.id),
-                    cuenta: setArrayTable(
-                        [
-                            { name: 'Empresa', text: ingreso.empresa ? ingreso.empresa.name : '' },
-                            { name: 'Cuenta', text: ingreso.cuenta ? ingreso.cuenta.nombre : '' },
-                            { name: '# de cuenta', text: ingreso.cuenta ? ingreso.cuenta.numero : '' }
-                        ], '200px'
-                    ),
-                    cliente: setTextTableCenter(ingreso.cliente ? ingreso.cliente.empresa : ''),
-                    factura: setTextTableCenter(ingreso.factura ? 'Con factura' : 'Sin factura'),
-                    monto: setMoneyTable(ingreso.monto),
-                    impuesto: setTextTableReactDom(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, ingreso, 
-                        'tipoImpuesto', 'text-center'),
-                    tipoPago: setTextTableReactDom(ingreso.tipo_pago.tipo, this.doubleClick, ingreso, 'tipoPago', 'text-center'),
-                    descripcion: setTextTableReactDom(ingreso.descripcion !== null ? ingreso.descripcion : '', this.doubleClick, ingreso, 'descripcion', 
-                        'text-justify'),
-                    area: setTextTableReactDom(ingreso.area ? ingreso.area.nombre : '', this.doubleClick, ingreso, 'area', 'text-center'),
-                    partida: this.getNombrePartida(ingreso),
-                    subarea: setTextTableReactDom(ingreso.subarea ? ingreso.subarea.nombre : '', this.doubleClick, ingreso, 'subarea', 'text-center'),
-                    estatusCompra: setTextTableReactDom(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '', this.doubleClick, ingreso, 
-                        'estatusCompra', 'text-center'),
-                    total: setMoneyTable(ingreso.total),
-                    fecha: setDateTableReactDom(ingreso.created_at, this.doubleClick, ingreso, 'fecha', 'text-center'),
-                    id: ingreso.id,
-                    objeto: ingreso
-                }
-            )
-            return false
-        })
-        return aux
-    }
-
-    setActions = ingreso => {
-        const { history } = this.props
-        return (
-            <div className="w-100 d-flex justify-content-center">
-                <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={(e) => { e.preventDefault(); 
-                            history.push({ pathname: '/administracion/ingresos/edit', state: { ingreso: ingreso }, formeditado: 1 }) }} >
-                        {setNaviIcon('flaticon2-pen', 'editar')}
-                    </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-danger dropdown-danger" onClick={(e) => { e.preventDefault(); 
-                        deleteAlert('¿DESEAS CONTINUAR?', `ELIMINARÁS EL INGRESO CON IDENTIFICADOR: ${ingreso.id}`, () => this.deleteIngresoAxios(ingreso.id)) }}>
-                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
-                    </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(ingreso) }}>
-                        {setNaviIcon('flaticon2-magnifier-tool', 'Ver ingreso')}
-                    </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(ingreso) }}>
-                        {setNaviIcon('flaticon-attachment', 'Adjuntos')}
-                    </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={(e) => { e.preventDefault(); this.openFacturaExtranjera(ingreso) }}>
-                        {setNaviIcon('flaticon-interface-10', 'Factura extranjera')}
-                    </Dropdown.Item>
-                    {
-                        ingreso.factura ?
-                            <Dropdown.Item className="text-hover-dark dropdown-dark" onClick={(e) => { e.preventDefault(); this.openModalFacturas(ingreso) }}>
-                                {setNaviIcon('flaticon2-download-1', 'Facturas')}
-                            </Dropdown.Item>
-                            : <></>
-                    }
-                </DropdownButton>
+    const descripcion = (dato) => {  
+        return(            
+           <div>        
+            <div>
+                <HtmlTooltip
+                title={
+                    <React.Fragment>                 
+                        {"Descripcion: " + dato }
+                    </React.Fragment>
+                } >
+                <Button>{dato} </Button>
+                </HtmlTooltip>
+            </div>              
             </div>
         )
     }
-    openModalSee = async (ingreso) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        apiGet(`v2/administracion/ingresos/${ingreso.id}`, access_token).then(
-            (response) => {
-                const { ingreso } = response.data
-                const { modal } = this.state
-                modal.see = true
-                Swal.close()
-                this.setState({ ...this.state, modal, ingreso })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    openModalAdjuntos = async (ingreso) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        apiGet(`v2/administracion/ingresos/adjuntos/${ingreso.id}`, access_token).then(
-            (response) => {
-                const { ingreso } = response.data
-                const { modal } = this.state
-                let { form } = this.state
-                form = this.fillAdjuntos(ingreso)
-                Swal.close()
-                modal.adjuntos = true
-                this.setState({ ...this.state, form, modal, ingreso })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    openFacturaExtranjera = async (ingreso) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        apiGet(`v2/administracion/ingresos/adjuntos/${ingreso.id}`, access_token).then(
-            (response) => {
-                const { ingreso } = response.data
-                const { modal } = this.state
-                let { form } = this.state
-                form = this.fillAdjuntos(ingreso)
-                Swal.close()
-                modal.facturaExtranjera = true
-                this.setState({ ...this.state, form, modal, ingreso })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    openModalFacturas = async (ingreso) => {
-        const { modal } = this.state
-        modal.facturas = true
-        this.setState({ ...this.state, modal, ingreso:ingreso })
-    }
-    openModalFiltros = () => {
-        const { modal } = this.state
-        modal.filters = true
-        this.setState({ ...this.state, modal })
-    }
-    openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
-    }
-    handleClose = () => {
-        const { modal, data } = this.state
-        data.adjuntos = []
-        modal.see = false
-        modal.adjuntos = false
-        modal.facturaExtranjera = false
-        modal.filters = false
-        modal.facturas = false
-        this.setState({
-            ...this.state,
-            data,
-            modal,
-            ingreso: '',
-            adjuntos: [],
-            form: this.clearForm()
-        })
-    }
-    reloadTableFacturas = () => {
-        const { filters } = this.state
-        this.reloadTable(filters)
-    }
-    async deleteIngresoAxios(id) {
-        const { access_token } = this.props.authUser
-        const { filters } = this.state
-        apiDelete(`ingresos/${id}`, access_token).then(
-            (response) => {
-                this.setState({
-                    ...this.state,
-                    ingreso: ''
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.', 
-                    () => { this.reloadTable(filters) })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    exportIngresosAxios = async() => {
-        waitAlert()
-        const { filters } = this.state
-        const { access_token } = this.props.authUser
-        apiPostFormResponseBlob(`v3/administracion/ingresos/exportar`, { columnas: filters }, access_token).then(
-            (response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'ingresos.xlsx');
-                document.body.appendChild(link);
-                link.click();
-                doneAlert(
-                    response.data.message !== undefined ? 
-                        response.data.message 
-                    : 'Ingresos exportados con éxito.'
-                )
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    attachFiles = async(files, item) => {
-        waitAlert()
-        const { ingreso } = this.state
-        const { access_token } = this.props.authUser
-        apiGet(`v1/constant/admin-proyectos`, access_token).then(
-            (response) => {
-                const { alma } = response.data
-                let filePath = `ingresos/${ingreso.id}/`
-                let aux = ''
-                switch(item){
-                    case 'presupuesto':
-                    case 'pago':
-                        aux = files.map( ( file ) => {
-                            return {
-                                name: `${filePath}${item}s/${Math.floor(Date.now() / 1000)}-${file.name}`,
-                                file: file,
-                                tipo: item
-                            }
-                        })
-                        break;
-                    case 'facturas_pdf':
-                        aux = files.map( ( file ) => {
-                            return {
-                                name: `${filePath}facturas-extranjeras/${Math.floor(Date.now() / 1000)}-${file.name}`,
-                                file: file,
-                                tipo: 'factura-extranjera'
-                            }
-                        })
-                        break;
-                    default: break;
-                }
-                let auxPromises  = aux.map((file) => {
-                    return new Promise((resolve, reject) => {
-                        new S3(alma).uploadFile(file.file, file.name)
-                            .then((data) =>{
-                                const { location,status } = data
-                                if(status === 204) resolve({ name: file.name, url: location, tipo: file.tipo })
-                                else reject(data)
-                            })
-                            .catch((error) => {
-                                catchErrors(error)
-                                errorAlert(`Ocurrió un error al subir el archivo ${file.name}`)
-                                reject(error)
-                            })
-                    })
-                })
-                Promise.all(auxPromises).then(values => { this.attachFilesS3(values, item)}).catch(err => console.error(err)) 
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
 
-    attachFilesS3 = async(files, item) => {
-        const { ingreso, filters } = this.state
-        const { access_token } = this.props.authUser
-        apiPutForm( `v3/administracion/ingresos/${ingreso.id}/archivos/s3`, { archivos: files }, access_token ).then(
-            ( response ) => {
-                doneAlert(`Archivos adjuntados con éxito`, 
-                    () => { 
-                        switch(item){
-                            case 'presupuesto':
-                            case 'pago':
-                                this.openModalAdjuntos(ingreso)         
-                                break;
-                            case 'facturas_pdf':
-                                this.openFacturaExtranjera(ingreso)
-                                this.reloadTable(filters)
-                                break;
-                            default: break;
-                        }
-                        
-                    }
-                )
-            }, ( error ) => { printResponseErrorAlert( error ) }
-        ).catch( ( error ) => { catchErrors( error ) } )
-    }
-    deleteAdjuntoAxios = async (id) => {
-        const { access_token } = this.props.authUser
-        const { ingreso, filters } = this.state
-        apiDelete(`v2/administracion/ingresos/${ingreso.id}/adjuntos/${id}`, access_token).then(
-            (response) => {
-                const { ingreso } = response.data
-                let { form } = this.state
-                form = this.fillAdjuntos(ingreso)
-                this.setState({ ...this.state, form })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.', () => { this.reloadTable(filters) })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    addFacturaExtranjera = async (files, item) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        files.map((file) => {
-            data.append(`files_name_${item}[]`, file.name)
-            data.append(`files_${item}[]`, file)
-            return ''
-        })
-        apiPostFormData(`ingresos/adjuntos`, data, access_token).then(
-            (response) => {
-                const { filters } = this.state
-                this.setState({ ...this.state })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.', () => { this.reloadTable(filters) })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    doubleClick = (data, tipo) => {
-        const { form, options } = this.state
-        let busqueda = undefined
-        let flag = false
-        switch (tipo) {
-            case 'subarea':
-                options.subareas = []
-                flag = false
-                if (data.area) {
-                    busqueda = options.areas.find((elemento) => { return elemento.value === data.area.id.toString() })
-                    if (busqueda) {
-                        options.subareas = setOptions(busqueda.subareas, 'nombre', 'id')
-                        if (data.subarea) {
-                            busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
-                            if (busqueda) { form.subarea = busqueda.value }
-                        }
-                    }
-                } else {
-                    flag = true
-                    if (data.area) {
-                        form.area = data.area.id.toString()
-                        options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
-                    }
-                    if (data.subarea) {
-                        busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
-                        if (busqueda) form.subarea = data.subarea.id.toString()
-                    }
-                }
-                break
-            case 'area':
-                options.subareas = []
-                if (data.area) {
-                    form.area = data.area.id.toString()
-                    options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
-                }
-                if (data.subarea) {
-                    busqueda = options.subareas.find((elemento) => { return elemento.value === data.subarea.id.toString() })
-                    if (busqueda) form.subarea = data.subarea.id.toString()
-                }
-                break
-            case 'fecha':
-                form.fecha = new Date(data.created_at)
-                break
-            case 'tipoImpuesto':
-                if (data.tipo_impuesto)
-                    form[tipo] = data.tipo_impuesto.id
-                break
-            case 'tipoPago':
-                if (data.tipo_pago)
-                    form[tipo] = data.tipo_pago.id
-                break
-            case 'estatusCompra':
-                if (data.estatus_compra)
-                    form[tipo] = data.estatus_compra.id
-                break
-            default:
-                form[tipo] = data[tipo]
-                break
-        }
-        this.setState({ form, options })
-        customInputAlert(
-            <div>
-                <h2 className='swal2-title mb-4 mt-2'> {printSwalHeader(tipo)} </h2>
-                {
-                    tipo === 'descripcion' &&
-                    <InputGray withtaglabel={0} withtextlabel={0} withplaceholder={0} withicon={0}
-                        requirevalidation={0} value={form[tipo]} name={tipo} rows={6} as='textarea'
-                        onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} swal={true} />
-                }
-                {
-                    (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra') ?
-                        <div className="input-icon my-3">
-                            <span className="input-icon input-icon-right">
-                                <span>
-                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
-                                </span>
-                            </span>
-                            <Form.Control className="form-control text-uppercase form-control-solid"
-                                onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo}
-                                defaultValue={form[tipo]} as="select">
-                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
-                                {
-                                    this.setOptions(data, tipo).map((tipo, key) => {
-                                        return (
-                                            <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>
-                                        )
-                                    })
-                                }
-                            </Form.Control>
-                        </div>
-                        : <></>
-                }
-                {
-                    tipo === 'fecha' ?
-                        <CalendarDaySwal value={form[tipo]} onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo} date={form[tipo]} 
-                        withformgroup={0} />
-                    : <></>
-                }
-                {
-                    tipo === 'subarea' ?
-                        flag ?
-                            <DoubleSelectSearchGray options={options} form={form} onChange={this.onChangeSwal}
-                                one={{ placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas' }}
-                                two={{ placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas' }} />
-                            :
-                            <SelectSearchGray options={options.subareas} placeholder='Selecciona el subárea' value={form.subarea}
-                                onChange={(value) => { this.onChangeSwal(value, tipo) }} withtaglabel={1}
-                                name={tipo} customdiv="mb-3" withicon={1} />
-                        : ''
-                }
-                {
-                    tipo === 'area' &&
-                    <DoubleSelectSearchGray options={options} form={form} onChange={this.onChangeSwal}
-                        one={{ placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas' }}
-                        two={{ placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas' }} />
-                }
-            </div>,
-            <Update />,
-            () => { this.patchIngresos(data, tipo, flag) },
-            () => { this.setState({ ...this.state, form: this.clearForm() }); Swal.close(); },
-        )
-    }
-    setSwalPlaceholder = (tipo) => {
-        switch (tipo) {
-            case 'tipoImpuesto':
-                return 'SELECCIONA EL IMPUESTO'
-            case 'tipoPago':
-                return 'SELECCIONA EL TIPO DE PAGO'
-            case 'estatusCompra':
-                return 'SELECCIONA EL ESTATUS DE COMPRA'
-            default:
-                return ''
-        }
-    }
-    onChangeSwal = (value, tipo) => {
-        const { form } = this.state
-        form[tipo] = value
-        this.setState({ ...this.state, form })
-    }
-    setOptions = (data, tipo) => {
-        const { options } = this.state
-        switch (tipo) {
-            case 'estatusCompra':
-                return options.estatusCompras
-            case 'tipoPago':
-                return options.tiposPagos
-            case 'tipoImpuesto':
-                return options.tiposImpuestos
-            case 'subarea':
-                if (data.subarea)
-                    if (data.subarea.area)
-                        if (data.subarea.area.subareas)
-                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
-                return []
-            default: return []
-        }
-    }
-    patchIngresos = async (data, tipo, flag) => {
-        const { access_token } = this.props.authUser
-        const { form, filters } = this.state
-        let value = ''
-        let newType = tipo
-        switch (tipo) {
-            case 'area':
-                value = { area: form.area, subarea: form.subarea }
-                break
-            case 'subarea':
-                if (flag === true) {
-                    value = { area: form.area, subarea: form.subarea }
-                    newType = 'area'
-                } else {
-                    value = form[tipo]
-                }
-                break
-            default:
-                value = form[tipo]
-                break
-        }
-        waitAlert()
-        apiPutForm(`v2/administracion/ingresos/${newType}/${data.id}`, { value: value }, access_token).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.', 
-                    () => { this.reloadTable(filters) })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => { catchErrors(error) })
-    }
-    setOptionsArray = (name, array) => {
-        const { options } = this.state
-        options[name] = setOptionsWithLabel(array, 'nombre', 'id')
-        this.setState({ ...this.state, options })
-    }
-    sendFilters = filter => {
-        const { modal } = this.state
-        modal.filters = false
-        this.setState({
-            ...this.state,
-            filters: filter,
-            modal
-        })
-        this.reloadTable(filter)
-    }
 
-    reloadTable = (filter) => {
-        let arregloFilterKeys = Object.keys(filter)
-        let aux = {}
-        arregloFilterKeys.forEach((elemento) => {
-            switch(elemento){
-                case 'area':
-                case 'cliente':
-                case 'cuenta':
-                case 'empresa':
-                case 'estatusCompra':
-                case 'proyecto':
-                case 'subarea':
-                case 'factura':
-                    aux[elemento] = {
-                        value: filter[elemento]['value'],
-                        name: filter[elemento]['name'],
-                    }
-                    break;
-                default:
-                    aux[elemento] = filter[elemento]
-                    break;
-            }
-        })
-        $(`#ingresos`).DataTable().search(JSON.stringify(aux)).draw();
-    }
-    fillAdjuntos = ingreso => {
-        const { form } = this.state
-        form.adjuntos.pago.value = null
-        form.adjuntos.presupuesto.value = null
-        form.adjuntos.facturas_pdf.value = null
-        form.adjuntos.pago.files = []
-        form.adjuntos.presupuesto.files = []
-        form.adjuntos.facturas_pdf.files = []
-        ingreso.pagos.forEach(element => {
-            form.adjuntos.pago.files.push(element);
-        });
-        ingreso.presupuestos.forEach(element => {
-            form.adjuntos.presupuesto.files.push(element);
-        });
-        ingreso.facturas_pdf.forEach(element => {
-            form.adjuntos.facturas_pdf.files.push(element);
-        });
-        return form
-    }
-
-    render() {
-        const { form, options, modal, ingreso, filters } = this.state
-        const { access_token } = this.props.authUser
-        const {ingresosAdmin} = this.props
-
-        // createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
+    const label = (dato) => {
+        if (!dato) {
+            console.error("dato es undefined o null");
+            return null;
+        }
         return (
-            <Layout active='administracion'  {...this.props}>
-                <NewTable
-                    tableName='ingresos'
-                    subtitle='Listado de ingresos'
-                    title='Ingresos'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    accessToken={access_token}
-                    columns={INGRESOS_COLUMNS}
-                    setter={this.setIngresos}
-                    url='/administracion/ingresos/add'
-                    urlRender={`${URL_DEV}v3/administracion/ingreso`}
-                    filterClick={this.openModalFiltros}
-                    exportar_boton={true}
-                    onClickExport={() => this.exportIngresosAxios()}
-                />
-                <Modal size="xl" title={"Facturas"} show={modal.facturas} handleClose={this.handleClose}>
-                    <FacturasFormTable at = { access_token } tipo_factura='ingresos' id={ingreso.id} dato={ingreso} reloadTable = {this.reloadTableFacturas}/>
+            <div title={`${dato?.factura === 1 ? 'Con factura' : 'Sin factura'}`}>
+                {dato?.factura ? (
+                    dato.facturas?.length > 0 || dato.facturas_pdf?.length > 0 ? (
+                        <span style={{ color: 'green' }}>
+                            <DoneAllIcon />
+                        </span>
+                    ) : (
+                        <span style={{ color: 'red' }}>
+                            <DoneAllIcon />
+                        </span>
+                    )
+                ) : (
+                    <span>
+                        <DescriptionOutlinedIcon />
+                    </span>
+                )}
+            </div>
+        );
+    };
+
+    return (
+        <>
+        <Layout active="administracion" {...props}>
+
+            <TablaGeneralPaginado
+                titulo="ingresos"
+                subtitulo="listado de ingresos"
+                url={`v3/administracion/ingresos/ingreso`}
+                //url={'v3/proyectos/compra'}
+                columnas={columns}
+                numItemsPagina={50}
+                ProccessData={proccessData}
+                opciones={opciones}
+                acciones={acciones}
+                reload={setReloadTable} 
+                filtros={filtrado}
+            />
+        </Layout>
+
+        <Modal size="lg" title={"Nuevo ingreso"} show={modal.crear?.show} handleClose={e => handleClose('crear')} >
+            <CrearIngreso handleClose={e => handleClose('crear')} reload={reloadTable} opcionesData={opcionesData} getProveedores={getProveedores}/> 
+        </Modal>
+
+        {
+                modal.filtrar.data &&
+                <Modal size="lg" title={"Filtrar gastos"} show={modal.filtrar?.show} handleClose={e => handleClose('filtrar')} >
+                    <FiltrarIngresos handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable}/>
                 </Modal>
-                <Modal size="xl" title="Adjuntos" show={modal.adjuntos} handleClose={this.handleClose} >
-                    <AdjuntosForm form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos}  />
+            }
+
+        {
+            modal.facturas?.data &&
+            <Modal size="xl" title={"facturas"} show={modal.facturas?.show} handleClose={e => handleClose('facturas')} >
+                <FacturasIngresos handleClose={e => handleClose('facturas')} opcionesData={opcionesData} reload={reloadTable} compra={modal.facturas?.data?.data}/>
+            </Modal>
+        }
+        {
+            modal.adjuntos?.data &&
+            <Modal size="lg" title={"adjuntos"} show={modal.adjuntos?.show} handleClose={e => handleClose('adjuntos')} >
+                <AdjuntosIngresos handleClose={e => handleClose('adjuntos')} opcionesData={opcionesData} reload={reloadTable} data={modal.adjuntos?.data?.data}/>
+            </Modal>
+        }
+
+        {
+            modal.editar?.data &&
+            <Modal size="lg" title={"Editar compra"} show={modal.editar?.show} handleClose={e => handleClose('editar')} >
+                <EditarIngreso handleClose={e => handleClose('editar')} opcionesData={opcionesData} reload={reloadTable} data={modal.editar?.data?.data}/>
+            </Modal>
+        }
+
+{
+                modal.exportar.data &&
+                <Modal size="lg" title={"Exportar compras"} show={modal.exportar?.show} handleClose={e => handleClose('exportar')} >
+                    {/* <Filtrar handleClose={e => handleClose('filtrar')} opcionesData={opcionesData} filtrarTabla={setFiltrado} borrarTabla={borrar}  reload={reloadTable}/> */}
+                        <div className="form-group form-group-marginless  mx-0">
+                                <br></br> 
+                            <div className="row">
+                            <div className="col-md-3">
+                            </div> 
+
+                                <div className="col-md-3">
+                                    <InputLabel >FECHA INICIAL</InputLabel>
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                                        <Grid container >
+                                            <KeyboardDatePicker
+
+                                                format="dd/MM/yyyy"
+                                                name="fecha_inicio"
+                                                value={form.fecha_inicio !== '' ? form.fecha_inicio : null}
+                                                placeholder="dd/mm/yyyy"
+                                                onChange={e => handleChangeFecha(e, 'fecha_inicio')} 
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change date',
+                                                }}
+                                            />
+                                        </Grid>
+                                    </MuiPickersUtilsProvider>
+                                </div> 
+
+                                <div className="col-md-3">
+                                    <InputLabel >FECHA FINAL</InputLabel>
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                                        <Grid container >
+                                            <KeyboardDatePicker
+
+                                                format="dd/MM/yyyy"
+                                                name="fecha_fin"
+                                                value={form.fecha_fin !== '' ? form.fecha_fin : null}
+                                                placeholder="dd/mm/yyyy"
+                                                onChange={e => handleChangeFecha(e, 'fecha_fin')} 
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change date',
+                                                }}
+                                            />
+                                        </Grid>
+                                    </MuiPickersUtilsProvider>
+                                </div>     
+                            </div>
+                            <br></br> 
+
+                            <div className=" row ">
+                                <div className="col-md-6"> 
+                                </div>
+                                <div className="col-md-6">
+                                    <Button variant="contained" color="primary" onClick={exportEgresosAxios}>Exportar</Button>
+                                </div>
+                            </div>
+
+                        </div>
                 </Modal>
-                <Modal size="lg" title="Ingreso" show={modal.see} handleClose={this.handleClose} >
-                    <IngresosCard ingreso={ingreso} ingresosAdmin={ingresosAdmin}/>
-                </Modal>
-                <Modal size="lg" title="Factura extranjera" show={modal.facturaExtranjera} handleClose={this.handleClose} >
-                    <FacturaExtranjera form={form} onChangeAdjunto={this.handleChange} deleteFile={this.openModalDeleteAdjuntos} />
-                </Modal>
-                <Modal size='xl' show={modal.filters} handleClose={this.handleClose} title='Filtros'>
-                    <IngresosFilters at={access_token} sendFilters={this.sendFilters} filters={filters} options={options} setOptions={this.setOptionsArray} />
-                </Modal>
-            </Layout>
-        )
-    }
+            }
+
+
+
+
+                
+        </>
+    )
+
 }
-
-const mapStateToProps = state => { return { authUser: state.authUser, ingresosAdmin: state.opciones.ingresos} }
-const mapDispatchToProps = dispatch => ({})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Ingresos);

@@ -138,32 +138,60 @@ class MaterialEmpresa extends Component {
         })
     }
     
-    /* ANCHOR ADD ADJUNTO SINGLE */
-    addAdjunto = async() => {
+     /* ANCHOR ADD ADJUNTO SINGLE */
+     addAdjunto = async() => {
         const { access_token } = this.props.authUser
+        const data = new FormData();
         const { form, menuactive, opciones_adjuntos, empresa } = this.state
-        const tipo = opciones_adjuntos[menuactive].slug
-        const filePath = `empresas/${empresa.id}/adjuntos/${tipo}/`
-        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+        data.append('tipo', opciones_adjuntos[menuactive].slug)
+        form.adjuntos.adjuntos.files.map((file)=>{
+            data.append(`files_name[]`, file.name)
+            data.append(`files[]`, file.file)
+            return ''
+        })
+        data.append('empresa', empresa.id)
+        await axios.post(`${URL_DEV}mercadotecnia/material-empresas`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { alma } = response.data
-                let auxPromises  = form.adjuntos.adjuntos.files.map((file) => {
-                    return new Promise((resolve, reject) => {
-                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
-                            .then((data) =>{
-                                const { location,status } = data
-                                if(status === 204) resolve({ name: file.name, url: location })
-                                else reject(data)
-                            }).catch(err => reject(err))
-                    })
-                })
-                Promise.all(auxPromises).then(values => { this.addAdjuntosFromS3(values, tipo)}).catch(err => console.error(err))        
-            }, (error) => { printResponseErrorAlert(error) }
+                Swal.close()
+                const { empresa } = response.data
+                form.adjuntos.adjuntos.files = []
+                form.adjuntos.adjuntos.value = ''
+                this.setState({...this.state,modal:false,form,empresa:empresa})
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
+            console.log(error, 'error')
         })
     }
+    /* ANCHOR ADD ADJUNTO SINGLE */
+    // addAdjunto = async() => {
+    //     const { access_token } = this.props.authUser
+    //     const { form, menuactive, opciones_adjuntos, empresa } = this.state
+    //     const tipo = opciones_adjuntos[menuactive].slug
+    //     const filePath = `empresas/${empresa.id}/adjuntos/${tipo}/`
+    //     await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(access_token) }).then(
+    //         (response) => {
+    //             const { alma } = response.data
+    //             let auxPromises  = form.adjuntos.adjuntos.files.map((file) => {
+    //                 return new Promise((resolve, reject) => {
+    //                     new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+    //                         .then((data) =>{
+    //                             const { location,status } = data
+    //                             if(status === 204) resolve({ name: file.name, url: location })
+    //                             else reject(data)
+    //                         }).catch(err => reject(err))
+    //                 })
+    //             })
+    //             Promise.all(auxPromises).then(values => { this.addAdjuntosFromS3(values, tipo)}).catch(err => console.error(err))        
+    //         }, (error) => { printResponseErrorAlert(error) }
+    //     ).catch((error) => {
+    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+    //         console.error(error, 'error')
+    //     })
+    // }
 
     addAdjuntosFromS3 = async(values, type) => {
         const { access_token } = this.props.authUser

@@ -15,7 +15,7 @@ import Style from './TicketsTi.module.css'
 export default function VerTicketTi(props) {
     const { data } = props
 
-    const [form, setForm] = useState({
+    const [form] = useState({
         fecha: new Date(data.fecha),
         tipo: data.tipo,
         estatus: data.estatus,

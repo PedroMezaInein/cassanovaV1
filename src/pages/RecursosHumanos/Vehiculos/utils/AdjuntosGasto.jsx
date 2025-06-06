@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-
-import Swal from 'sweetalert2'
-import S3 from 'react-aws-s3';
-import axios from 'axios'
-
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-
-import { apiGet } from '../../../../functions/api'
-import { URL_DEV } from '../../../../constants'
-import { setSingleHeader } from '../../../../functions/routers'
-
-import CarruselAdjuntos from './CarruselAdjuntos'
 import './../../../../styles/_adjuntosVehiculos.scss'
 
 function TabPanel(props) {
@@ -67,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Adjuntos(props) {
 
     /* const { proyecto } = props */
-    const authUser = useSelector(state => state.authUser.access_token)
+    // const authUser = useSelector(state => state.authUser.access_token)
     const classes = useStyles();
     const [value, setValue] = useState(0);
     const [form, setForm] = useState({
@@ -75,7 +63,7 @@ export default function Adjuntos(props) {
         file: [],
     })
     const [activeTab, setActiveTab] = useState('datos_de_cliente')
-    const [adjuntos, setAdjuntos] = useState(false)
+    // const [adjuntos, setAdjuntos] = useState(false)
     useEffect(() => {
         /* Swal.fire({
             title: 'Cargando...',
@@ -141,13 +129,13 @@ export default function Adjuntos(props) {
         })
     }
 
-    const validate = () => {
-        if (activeTab && form.file.length > 0) {
-            return true
-        } else {
-            return false
-        }
-    }
+    // const validate = () => {
+    //     if (activeTab && form.file.length > 0) {
+    //         return true
+    //     } else {
+    //         return false
+    //     }
+    // }
 
 
     /* const handleSubmit = (e) => {

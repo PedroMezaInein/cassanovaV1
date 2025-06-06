@@ -1,18 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect,useCallback } from 'react';
 import { useSelector } from 'react-redux'
 
 import { apiPutForm, apiPostForm } from '../../../../functions/api'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
-import Grid from '@material-ui/core/Grid';
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
@@ -24,8 +20,22 @@ import Swal from 'sweetalert2'
 
 import Style from './AprobarSolicitud.module.css'
 
+
+import { useDropzone } from "react-dropzone";
+
+import Button from '@material-ui/core/Button';
+import Select from '@mui/material/Select';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper,Box,InputLabel  } from '@mui/material';
+import Container from '@material-ui/core/Container';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+// import Style from './AprobarSolicitud.module.css'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import Typography from '@material-ui/core/Typography';
+
 import j2xParser from 'fast-xml-parser'
-import { CONTRATOS_CLIENTES_COLUMNS } from '../../../../constants';
 
 const useStyles = makeStyles((theme) => ({
     textField: {
@@ -37,44 +47,112 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Convertir(props) {
-    const { data, handleClose, reload, opciones, estatusCompras } = props
+    const { data, handleClose, reload, opciones, estatusCompras ,getOpciones} = props
     const departamentos = useSelector(state => state.opciones.areas)
+    const proveedores = useSelector((state) => state.opciones.proveedores);
+
     const auth = useSelector(state => state.authUser)
-    // console.log(data)
-    const [form, setForm] = useState({
-        fecha: new Date(data.fecha+ 'T08:10:00.000Z'),
-        departamento: data.departamento_id,
-        tipoGasto: data.tipoEgreso_id,
-        tipoSubgasto: data.tipoSubEgreso_id,
-        tipoPago: data.tipoPago_id,
-        monto: data.monto,
-        descripcion: data.descripcion,
-        id: data.id,
-        orden_compra: data.orden_compra,
-        fecha_pago: data.fecha_pago ? new Date(data.fecha_pago+ 'T08:10:00.000Z') : '',
-        id_cuenta: data.cuenta ? data.cuenta.id : null,
-        monto_solicitado: data.monto_solicitado,
-        auto1: data.auto1 ? data.auto1 : false,
-        auto2: data.auto2 ? data.auto2 : false,
-        auto3: data.auto3 ? data.auto3 : false,
-        /* id_estatus: data.id_estatus_compra, */
-        proveedor: data.proveedor,
-        estatus_compra: data.estatus_compra,
-        estatus_conta: data.estatus_conta,
-        afectarCuentas: false,
-        compra: data.compra,
-        conta: data.conta,
-        // factura: data.factura,
-        facturas: data.factura == 'Con Factura' ? true : false,
-        empresa: "",
-        labelPorveedor: data.proveedor ? opciones.proveedores.find(proveedor => proveedor.value == data.proveedor).name : 'Proveedor',
-        labelCuenta: data.cuenta ? data.cuenta.nombre : 'cuenta',
-        fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega+ 'T08:10:00.000Z') : '',
-    })
+    console.log(data)
+    // const [form, setForm] = useState({
+    //     fecha: new Date(data.fecha+ 'T08:10:00.000Z'),
+    //     departamento: data.data?.id_departamento,
+    //     tipoGasto: data.tipoEgreso_id,
+    //     tipoSubgasto: data.tipoSubEgreso_id,
+    //     tipoPago: data.tipoPago_id,
+    //     monto: data.data.monto,
+    //     descripcion: data.descripcion,
+    //     id: data.id,
+    //     orden_compra: data.orden_compra,
+    //     fecha_pago: data.fecha_pago ? new Date(data.fecha_pago+ 'T08:10:00.000Z') : '',
+    //     id_cuenta: data.cuenta ? data.cuenta.id : null,
+    //     monto_solicitado: data.monto_solicitado,
+    //     auto1: data.auto1 ? data.auto1 : false,
+    //     auto2: data.auto2 ? data.auto2 : false,
+    //     auto3: data.auto3 ? data.auto3 : false,
+    //     /* id_estatus: data.id_estatus_compra, */
+    //     proveedor: data.proveedor,
+    //     estatus_compra: data.estatus_compra,
+    //     estatus_conta: data.estatus_conta,
+    //     afectarCuentas: false,
+    //     compra: data.compra,
+    //     conta: data.conta,
+    //     // factura: data.factura,
+    //     facturas: data.factura == 'Con Factura' ? true : false,
+    //     empresa: "",
+    //     labelPorveedor: data.proveedor ? opciones.proveedores.find(proveedor => proveedor.value == data.proveedor).name : 'Proveedor',
+    //     labelCuenta: data.cuenta ? data.cuenta.nombre : 'cuenta',
+    //     fecha_entrega: data.fecha_entrega ? new Date(data.fecha_entrega+ 'T08:10:00.000Z') : '',
+    // })
+
+    useEffect(() => {
+        if (data && opciones) {
+            console.log("Actualizando formulario con data:", data);
+    
+            const empresaSeleccionada = opciones.empresas?.find((empresa) => empresa.nombre === data.data?.empresa);
+            const cuentas = empresaSeleccionada?.cuentas || [];
+            const cuentaSeleccionada = cuentas?.find((cuenta) => cuenta.nombre === data.data?.cuenta);
+    
+            setForm((prevForm) => ({
+                ...prevForm,
+                cuentas,
+                cuenta: cuentaSeleccionada?.id || '',
+                area: departamentos?.find((area) => area.nombreArea === data.data?.departamento.nombre)?.id_area || '',
+                descripcion: data.data?.descripcion || '',
+                factura: data.data?.factura === 'Con factura',
+                fecha: data.data?.fecha ? new Date(data.data?.fecha) : '',
+                id_partidas: departamentos?.find((area) => area.nombreArea === data.data?.departamento.nombre)
+                    ?.partidas?.find((partida) => partida.nombre === data.data?.gasto.nombre)?.id || '',
+                subarea: departamentos?.find((area) => area.nombreArea === data.data?.departamento.nombre)
+                    ?.partidas?.find((partida) => partida.nombre === data.data?.gasto.nombre)
+                    ?.subpartidas?.find((subarea) => subarea.nombre === data.data?.subarea)?.id || '',
+                proveedor: proveedores?.find((proveedor) => proveedor.name === data.data?.proveedor)?.id || '',
+                tipoImpuesto: opciones.tiposImpuestos?.find((impuesto) => impuesto.id === data?.data?.tipo_impuesto?.id)?.id || '',
+                orden_compra: data?.orden || '',
+                fecha_pago: data.data?.fecha_pago ? new Date(data.data?.fecha_pago) : '',
+                monto: data.data?.cantidad || '',
+                id_cuenta: data.data?.cuenta?.id || null,
+                monto_solicitado: data.data?.monto_solicitado || '',
+                compra: data.data?.compra,
+            }));
+        }
+    }, [data, opciones, departamentos]); // 🔥 Se ejecutará cada vez que `data` o `opciones` cambien
+    
+
 
     const [file, setFile] = useState({
         factura: '',
         xml: ''
+    })
+
+    const [form, setForm] = useState({
+        fecha: '',
+        departamento:'',
+        tipoGasto:'',
+        tipoSubgasto: '',
+        tipoPago: '',
+        monto: '',
+        descripcion:'',
+        id: data.id,
+        orden_compra:'',
+        fecha_pago: '',
+        id_cuenta: '',
+        monto_solicitado: '',
+        auto1:'',
+        auto2: '',
+        auto3:'',
+        proveedor: '',
+        estatus_compra: '',
+        estatus_conta:'',
+        afectarCuentas: false,
+        compra:'',
+        conta:'',
+        // factura: data.factura,
+        facturas: '',
+        empresa: "",
+        labelPorveedor: '',
+        labelCuenta: '',
+        fecha_entrega:'',
+        cuentas: [],
     })
 
     const [errores, setErrores] = useState({})
@@ -127,24 +205,24 @@ export default function Convertir(props) {
                                 })
 
                                 let newForm = {
-                                    id_departamento: form.departamento,
-                                    id_gasto: form.tipoGasto,
+                                    id_departamento: form.area,
+                                    id_gasto: form.id_partidas,
                                     descripcion: form.descripcion,
-                                    id_subarea: form.tipoSubgasto,
+                                    id_subarea: form.subarea,
                                     id_pago: form.tipoPago,
                                     id_solicitante: data.solicitante_id,
                                     monto_pagado: form.monto,
                                     cantidad: form.monto_solicitado,
-                                    autorizacion_1: form.auto1 ? form.auto1.id: null,
+                                    // autorizacion_1: form.auto1 ? form.auto1.id: null,
                                     autorizacion_2: form.auto2 ? auth.user.id : null,
                                     orden_compra: form.orden_compra,
                                     fecha_pago: form.fecha_pago,
-                                    id_cuenta: form.id_cuenta,
+                                    id_cuenta: form.cuenta,
                                     /* id_estatus: form.id_estatus, */
                                     id_proveedor: form.proveedor,
-                                    id_estatus_compra: form.compra,
+                                    id_estatus_compra: form.id_estatus,
                                     id_estatus_factura: form.factura,
-                                    id_estatus_conta: form.conta,
+                                    id_estatus_conta: form.id_estatus,
                                     afectar_cuentas: form.afectarCuentas,
                                     empresa: form.empresa,
                                     autorizacion_conta: true,
@@ -167,57 +245,55 @@ export default function Convertir(props) {
                                             timer: 2000,
                                             timerProgressBar: true,
                                         })
-                                        if (reload) {
-                                            reload.reload()
-                                        }
+                                        reload();
                                         
 
-                                        handleClose('convertir')
-                                        Swal.fire({
-                                            title: 'Subiendo factura..',
-                                            allowOutsideClick: false,
-                                            didOpen: () => {
-                                                Swal.showLoading()
-                                            }
-                                        })
+                                        handleClose()
+                                        // Swal.fire({
+                                        //     title: 'Subiendo factura..',
+                                        //     allowOutsideClick: false,
+                                        //     didOpen: () => {
+                                        //         Swal.showLoading()
+                                        //     }
+                                        // })
 
 
-                                        if (form.factura && file.factura && file.factura !== '' && file.xml && file.xml !== '') {
-                                            let archivo = new FormData();
-                                            let aux = [...file.xml, ...file.factura]
-                                            archivo.append(`files_name_requisicion[]`, file.factura.name)
-                                            archivo.append(`files_requisicion[]`, aux)
-                                            archivo.append('adjuntos[]', "requisicion")
-                                            archivo.append('tipo', 'Factura')
-                                            try {
-                                                apiPostForm(`requisicion/${props.data.id}/archivos/s3`, archivo, auth.access_token)
-                                                    .then(res => {
-                                                        Swal.close()
-                                                        Swal.fire({
-                                                            icon: 'success',
-                                                            title: 'Guardado',
-                                                            text: 'Se ha guardado correctamente',
-                                                            timer: 2000,
-                                                            timerProgressBar: true,
-                                                        })
-                                                    })
-                                                    .catch(err => {
-                                                        Swal.close()
-                                                        Swal.fire({
-                                                            icon: 'error',
-                                                            title: 'El registro fue actualizado pero no fue posible subir la factura',
-                                                            text: 'Algo salio mal!',
-                                                        })
-                                                    })
-                                            } catch (error) {
-                                                Swal.close()
-                                                Swal.fire({
-                                                    icon: 'error',
-                                                    title: 'Oops...',
-                                                    text: 'Algo salio mal!',
-                                                })
-                                            }
-                                        }
+                                        // if (form.factura && file.factura && file.factura !== '' && file.xml && file.xml !== '') {
+                                        //     let archivo = new FormData();
+                                        //     let aux = [...file.xml, ...file.factura]
+                                        //     archivo.append(`files_name_requisicion[]`, file.factura.name)
+                                        //     archivo.append(`files_requisicion[]`, aux)
+                                        //     archivo.append('adjuntos[]', "requisicion")
+                                        //     archivo.append('tipo', 'Factura')
+                                        //     try {
+                                        //         apiPostForm(`requisicion/${props.data.id}/archivos/s3`, archivo, auth.access_token)
+                                        //             .then(res => {
+                                        //                 Swal.close()
+                                        //                 Swal.fire({
+                                        //                     icon: 'success',
+                                        //                     title: 'Guardado',
+                                        //                     text: 'Se ha guardado correctamente',
+                                        //                     timer: 2000,
+                                        //                     timerProgressBar: true,
+                                        //                 })
+                                        //             })
+                                        //             .catch(err => {
+                                        //                 Swal.close()
+                                        //                 Swal.fire({
+                                        //                     icon: 'error',
+                                        //                     title: 'El registro fue actualizado pero no fue posible subir la factura',
+                                        //                     text: 'Algo salio mal!',
+                                        //                 })
+                                        //             })
+                                        //     } catch (error) {
+                                        //         Swal.close()
+                                        //         Swal.fire({
+                                        //             icon: 'error',
+                                        //             title: 'Oops...',
+                                        //             text: 'Algo salio mal!',
+                                        //         })
+                                        //     }
+                                        // }
                                         
                                     }, (error) => { 
                                         // printResponseErrorAlert(error)
@@ -244,9 +320,7 @@ export default function Convertir(props) {
                                                 Swal.close()
                                             handleClose('convertir')
 
-                                                if (reload) {
-                                                    reload.reload()
-                                                }
+                                            reload();
                                                 apiPutForm(`requisicion/${form.id}/presupuesto`, newForm, auth.access_token).then(
                                                     res => {
                                                         Swal.close()
@@ -295,9 +369,7 @@ export default function Convertir(props) {
                                                         text: 'Algo salio mal!',
                                                         onOpen: () => {
                                                             handleClose('convertir')
-                                                            if (reload) {
-                                                                reload.reload()
-                                                            }
+                                                            reload();
                                                             Swal.showLoading()
                                                         }
                                                     })
@@ -371,7 +443,7 @@ export default function Convertir(props) {
         } else {
             Swal.fire({
                 title: 'Faltan datos por llenar!',
-                text: 'Debes llenar todos los campos para poder convertirla',
+                text: 'Debes llenar todos los campos para poder convertirla',errores,
                 icon: 'error',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
@@ -383,6 +455,7 @@ export default function Convertir(props) {
     const validateForm = () => {
         let valid = true
         let aux = {}
+        console.log(form)
         if (form.fecha === '' || form.fecha === null) {
             valid = false
             aux.fecha = true
@@ -391,17 +464,17 @@ export default function Convertir(props) {
             valid = false
             aux.fecha_pago = true
         }
-        if (form.departamento === '' || form.departamento === null) {
+        if (form.area === '' || form.area === null) {
             valid = false
-            aux.departamento = true
+            aux.area = true
         }
-        if (form.tipoGasto === '' || form.tipoGasto === null) {
+        if (form.id_partidas === '' || form.id_partidas === null) {
             valid = false
-            aux.tipoGasto = true
+            aux.id_partidas = true
         }
-        if (form.tipoSubgasto === '' || form.tipoSubgasto === null) {
+        if (form.subarea === '' || form.subarea === null) {
             valid = false
-            aux.tipoSubgasto = true
+            aux.subarea = true
         }
         if (form.tipoPago === '' || form.tipoPago === null) {
             valid = false
@@ -411,6 +484,12 @@ export default function Convertir(props) {
             valid = false
             aux.monto = true
         }
+        if (form.monto_solicitado === '' || form.monto_solicitado === null || form.monto_solicitado === 0) {
+            valid = false
+            aux.monto_solicitado = true
+        }
+
+        
         if (form.descripcion === '' || form.descripcion === null) {
             valid = false
             aux.descripcion = true
@@ -437,31 +516,21 @@ export default function Convertir(props) {
             valid = false
             aux.proveedor = true
         }
-        if (form.compra === '' || form.compra === null) {
-            valid = false
-            aux.compra = true
-        }
+       
         if (form.factura === '' || form.factura === null) {
             valid = false
             aux.conta = true
         }
-        if( form.tipoGasto === '' || form.tipoGasto === null){
-            valid = false
-            aux.tipoGasto = true
-        }
-        if( form.tipoSubgasto === '' || form.tipoSubgasto === null){
-            valid = false
-            aux.tipoSubgasto = true
-        }
+        
         if( form.tipoPago === '' || form.tipoPago === null){
             valid = false
             aux.tipoPago = true
         }
-        if (form.id_cuenta === '' || form.id_cuenta === null) {
+        if (form.cuenta === '' || form.cuenta === null) {
             valid = false
-            aux.id_cuenta = true
+            aux.cuenta = true
         }
-
+        console.log(aux)
         setErrores(aux) 
         return valid
     }
@@ -514,6 +583,12 @@ export default function Convertir(props) {
         setForm({
             ...form,
             monto: e
+        })
+    }
+    const monto_solicitado = (e) => {
+        setForm({
+            ...form,
+            monto_solicitado: e
         })
     }
 
@@ -648,14 +723,23 @@ export default function Convertir(props) {
     }
 
     const handleChangeProveedor = (e, value) => {
+    
         if (value && value.name) {
-            setForm({
-                ...form,
-                proveedor: value.value,
-                labelPorveedor: opciones.proveedores.find(proveedor => proveedor.value == value.value).name
-            })
+            // console.log("ID del proveedor:", value.data?.id); // ✅ Acceder a ID dentro de `data`
+    
+            setForm((prevForm) => ({
+                ...prevForm,
+                proveedor: value.data?.id || '', // Usa `?.` para evitar errores si `data` es `undefined`
+                proveedor_nombre: value.name,
+            }));
+        } else {
+            setForm((prevForm) => ({
+                ...prevForm,
+                proveedor: '',
+                proveedor_nombre: '',
+            }));
         }
-    }
+    };
 
     const handleChangeCheck = () => {
         setForm({
@@ -664,474 +748,531 @@ export default function Convertir(props) {
         });
     };
 
+    const handleAutocompleteChange = (event, value) => {
+        if (value) {
+            // console.log("Empresa seleccionada:", value); // 🔥 Depuración en consola
+    
+            setForm((prevForm) => ({
+                ...prevForm,
+                empresa: value.value, // 🔥 Solo actualiza empresa cuando el usuario la selecciona
+                cuentas: value.cuentas || [], // 🔥 Carga las cuentas de la empresa
+                cuenta: '', // 🔥 Reinicia la cuenta cuando cambia la empresa
+            }));
+        } else {
+            setForm((prevForm) => ({
+                ...prevForm,
+                empresa: '', // 🔥 Se mantiene vacío si se deselecciona
+                cuentas: [],
+                cuenta: '',
+            }));
+        }
+    };
+    
+
+
+    const handleCuentaChange = (event) => {
+        const { value } = event.target;
+        setForm((prevForm) => ({
+            ...prevForm,
+            cuenta: value, // 🔥 Asigna la cuenta seleccionada
+        }));
+    };
+    
+    
+
     // console.log(data)
-    // console.log(form)
+//     console.log(form)
 
-
+// console.log(departamentos)
+// console.log(opciones)
 
 
     return (
         <>
-            <div>
-                {/* <div className={Style.container_factura}>
-                    <div>
-                        <InputLabel id="demo-simple-select-label">Lleva facura</InputLabel>
-                        <FormGroup aria-label="position" row>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={form.factura}
-                                        onChange={e => handleFactura(e, true)}
-                                        name="factura"
-                                        color="primary"
-                                        style={{ marginLeft: '20%' }}
-                                    />
-                                }
-                                label="Si"
-                            />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={!form.factura}
-                                        onChange={e => handleFactura(e, false)}
-                                        name="factura"
-                                        color="primary"
-                                        style={{ marginLeft: '20%' }}
-                                    />
-                                }
-                                label="No"
-                            />
-                        </FormGroup>
+        <Box>   
+          <Container maxWidth="lg">
+          <DialogTitle  >Nueva Requisicion</DialogTitle>
+          <DialogContent >
+            <Grid container spacing={3}> 
 
-                    </div>
-                    <div className={Style.files}>
-                        {
-                            form.factura &&
-                            <>
-                                <div className={Style.nuevaRequisicion_adjunto}>
-                                    <label htmlFor="file_factura">Agregar factura pdf</label>
-                                    <input id="file_factura" className={Style.nuevaRequisicion_adjunto_input} type='file' onChange={e => handleFile(e, "factura")}></input>
-                                    <div>
-                                        {file.factura && file.factura.name ? <div className={Style.adjunto_nombre}><span className={Style.adjunto_delete} onClick={e => handleDeleteAdjunto('factura')}>X</span>{file.factura.name}</div> : null}
-                                    </div>
-                                </div>
-                                <div className={Style.nuevaRequisicion_adjunto}>
-                                    <label htmlFor="file_xml">Agregar XML</label>
-                                    <input id="file_xml" className={Style.nuevaRequisicion_adjunto_input} type='file' onChange={onChangeFactura}></input>
-                                    {
-                                        file.xml !== '' &&
-                                            file.xml.name ? <div className={Style.adjunto_nombre}><span className={Style.adjunto_delete} onClick={e => handleDeleteAdjunto('xml')}>X</span>{file.xml.name}</div> : null
-                                    }
-                                    
-                                </div>
-                            </>
-                        }    
-                    </div>
-                    
-                </div> */}
-
-                <div className={Style.container}>
-                    <div>
-                        <InputLabel>Fecha de solicitud</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                            <Grid container >
-                                <KeyboardDatePicker
-
-                                    format="dd/MM/yyyy"
-                                    name="fecha"
-                                    value={form.fecha !== '' ? form.fecha : null}
-                                    placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha')}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-                    </div>
-
-                    <div>
-                        <InputLabel className={`${errores.fecha_pago ? classes.error : ''}`}>Fecha de Pago</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                            <Grid container >
-                                <KeyboardDatePicker
-
-                                    format="dd/MM/yyyy"
-                                    name="fecha_pago"
-                                    value={form.fecha_pago !== '' ? form.fecha_pago : null}
-                                    placeholder="dd/mm/yyyy"
-                                    onChange={e => handleChangeFecha(e, 'fecha_pago')}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                /* error={errores.fecha_pago ? true : false} */
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-                    </div>
-
-                    <div>
-                    <InputLabel >Fecha de entrega</InputLabel>
+                 <Grid item  xs={12} sm={6} md={3}>
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    <InputLabel>N. orden de Compra</InputLabel>
+                    <TextField
+                        name="orden_compra"
+                        label="Orden de compra"
+                        type="text"
+                        value={form.orden_compra !== '' ? form.orden_compra : null}
+                        onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        multiline
+                        disabled
+                        className="w-100"
+                        error={errores.orden_compra ? true : false}
+                    />
+                    </Paper>
+                </Grid>   
+                 <Grid item  xs={12} sm={6} md={3} justifyContent="space-around">
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    {/* <InputLabel>Fecha de Compra</InputLabel> */}
                     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                        <Grid container >
-                            <KeyboardDatePicker
-
-                                format="dd/MM/yyyy"
-                                name="fecha_entrega"
-                                value={form.fecha_entrega !== '' ? form.fecha_entrega : null}
-                                placeholder="dd/mm/yyyy"
-                                onChange={e => handleChangeFecha(e, 'fecha_entrega')}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            /* error={errores.fecha_entrega ? true : false} */
-                            />
-                        </Grid>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            label="Fecha de solicitud"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            name="fecha"
+                            value={form.fecha !== '' ? form.fecha : null}
+                            placeholder="dd/mm/yyyy"
+                            onChange={(e) => handleChangeFecha(e, 'fecha')}
+                            className="w-100"
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                            error={errores.fecha ? true : false}
+                        />
                     </MuiPickersUtilsProvider>
-                </div>
+                    </Paper>
+                </Grid>   
 
-                    <div>
-                        <TextField
-                            label="N. Orden de compra"
-                            name='orden_compra'
-                            defaultValue={form.orden_compra}
-                            className={classes.textField}
-                            disabled
+                <Grid item  xs={12} sm={6} md={3} justifyContent="space-around">
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    {/* <InputLabel>Fecha de Compra</InputLabel> */}
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            label="Fecha de pago"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            name="fecha_pago"
+                            value={form.fecha_pago !== '' ? form.fecha_pago : null}
+                            placeholder="dd/mm/yyyy"
+                            onChange={(e) => handleChangeFecha(e, 'fecha_pago')}
+                            className="w-100"
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                            error={errores.fecha_pago ? true : false}
                         />
-                    </div>
+                    </MuiPickersUtilsProvider>
+                    </Paper>
+                </Grid>   
 
-                    <div>
-                        <CurrencyTextField
-                            label="monto Solicitado"
-                            variant="standard"
-                            value={form.monto_solicitado}
-                            currencySymbol="$"
-                            outputFormat="number"
-                            onChange={(event, value) => handleMoney(value)}
-                            disabled
+                <Grid item  xs={12} sm={6} md={3} justifyContent="space-around">
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    {/* <InputLabel>Fecha de Compra</InputLabel> */}
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            label="Fecha de entrega"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            name="fecha_entrega"
+                            value={form.fecha_entrega !== '' ? form.fecha_entrega : null}
+                            placeholder="dd/mm/yyyy"
+                            onChange={(e) => handleChangeFecha(e, 'fecha_entrega')}
+                            className="w-100"
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                            error={errores.fecha_entrega ? true : false}
                         />
-                    </div>
-
-                    <div>
-                        {departamentos.length > 0 ?
-                            <>
-                                <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
-                                <Select
-                                    value={form.departamento}
-                                    name="departamento"
-                                    onChange={handleChangeDepartamento}
-                                    disabled
-                                    className={classes.textField}
-                                    error={errores.departamento ? true : false}
-                                >
-                                    {departamentos.map((item, index) => (
-                                        <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
-                                    ))}
-
-                                </Select>
-                            </>
-                            : null
-                        }
-                    </div>
-
-                    <div>
-                        {departamentos.length > 0 ?
-                            <>
-                                <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
-                                <Select
-                                    value={form.tipoGasto}
-                                    name="tipoGasto"
-                                    onChange={handleChange}
-
-                                    className={classes.textField}
-                                >
-                                    {departamentos.find(item => item.id_area == form.departamento).partidas.map((item, index) => (
-                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                    ))}
-
-                                </Select>
-                            </>
-                            : null
-                        }
-                    </div>
-
-                    <div>
-                        {departamentos.length && form.tipoGasto ?
-                            <>
-                                <InputLabel>Tipo de Subgasto</InputLabel>
-                                <Select
-                                    name="tipoSubgasto"
-                                    onChange={handleChange}
-                                    value={form.tipoSubgasto}
-                                    className={classes.textField}
-                                    error={errores.tipoSubgasto ? true : false}
-                                >
-                                    {departamentos.find(item => item.id_area == form.departamento).partidas.find(item => item.id == form.tipoGasto).subpartidas.map((item, index) => (
-                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                    ))}
-
-                                </Select>
-                            </>
-                            : null
-                        }
-                    </div>
-
-                    <div>
+                    </MuiPickersUtilsProvider>
+                    </Paper>
+                </Grid>   
+                    
+            </Grid>
+            <Grid container spacing={3}> 
+                <Grid item  xs={12} sm={6} md={3} justifyContent="space-around">
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    <InputLabel>Monto solicitado</InputLabel>
                         <CurrencyTextField
-                            label="monto pagado"
+                            label="Monto solicitado"
                             variant="standard"
+                            name="monto"
                             value={form.monto}
                             currencySymbol="$"
                             outputFormat="number"
+                            disabled
+                            modifyValueOnWheel={false}
                             onChange={(event, value) => handleMoney(value)}
+                            className="form-control"
                             error={errores.monto ? true : false}
-                        />
-                    </div>
+                        />                        
+                    </Paper>
+                </Grid>        
 
-                    <div>
-                        {
-                            opciones ?
-                                <>
-                                    <InputLabel id="demo-simple-select-label">Empresa</InputLabel>
-                                    <Select
-                                        name="empresa"
-                                        value={form.empresa}
-                                        onChange={handleChange}
-                                        className={classes.textField}
-                                        error={errores.empresa ? true : false}
-                                    >
-                                        {opciones.empresas.map((item, index) => (
-                                            <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
-                                        ))}
-                                    </Select>
-
-                                </>
-                                : null
-                        }
-                    </div>
-
-                    <div>
-                        {
-                            opciones && form.empresa !== "" ?
-                                <>
-                                    {/* <InputLabel>Cuenta de salida</InputLabel>
-                                    <Select
-                                        name="id_cuenta"
-                                        value={form.id_cuenta}
-                                        onChange={handleChange}
-                                        className={classes.textField}
-                                        error={errores.id_cuenta ? true : false}
-                                    >
-                                        {opciones.empresas.find(item => item.value == form.empresa).cuentas.map((item, index) => (
-                                            <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                        ))}
-                                    </Select> */}
-                                    <InputLabel>Cuenta de salida</InputLabel>
-                                    <Autocomplete
-                                        name="cuenta"
-                                        options={opciones.empresas.find(item => item.value == form.empresa).cuentas}
-                                        getOptionLabel={(option) => option.nombre}
-                                        style={{ width: 230, paddingRight: '1rem' }}
-                                        onChange={(event, value) => handleChangeCuenta(event, value)}
-                                        renderInput={(params) => <TextField {...params} label={form.labelCuenta} variant="outlined" />}
+                <Grid item  xs={12} sm={8} md={3} justifyContent="space-around">
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    {departamentos.length > 0 && (
+                        <>
+                            <InputLabel>Departamento</InputLabel>
+                            <Autocomplete
+                                name="area"
+                                options={departamentos.sort((a, b) => a.nombreArea.localeCompare(b.nombreArea))} // Ordena alfabéticamente por nombreArea
+                                groupBy={(option) => option.nombreArea.charAt(0).toUpperCase()} // Agrupa por la primera letra de nombreArea
+                                getOptionLabel={(option) => option.nombreArea || ''} // Muestra el nombre del área
+                                isOptionEqualToValue={(option, value) => option.id_area === value?.id_area} // Compara por ID del área
+                                value={departamentos.find((item) => item.id_area === form.area) || null} // Selecciona el valor actual del formulario
+                                onChange={(event, value) => {
+                                    setForm((prevForm) => ({
+                                    ...prevForm,
+                                    area: value ? value.id_area : '', // Actualiza el ID del área seleccionada
+                                    }));
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    label="Departamento"
+                                    error={!!errores.area}
+                                    helperText={errores.area || ''}
                                     />
-                                </>
-                                : opciones ?
-                                    <>
-                                        <InputLabel>Cuenta de Salida</InputLabel>
-                                        <Select
-                                            name="id_cuenta"
-                                            value={form.id_cuenta}
-                                            onChange={handleChange}
-                                            className={classes.textField}
-                                            error={errores.id_cuenta ? true : false}
-                                        >
-                                            {opciones.cuentas.map((item, index) => {
-                                                if (item.value == form.id_cuenta) {
-                                                    return <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
-                                                }
-                                            })}
-
-                                        </Select>
-                                    </>
-                                    : null
-                        }
-                    </div>
-
-                    <div>
-                        {
-                            opciones ?
-                                <>
-                                    <InputLabel >Tipo de Pago</InputLabel>
-                                    <Select
-                                        name="tipoPago"
-                                        value={form.tipoPago}
-                                        onChange={handleChange}
-                                        className={classes.textField}
-                                        error={errores.tipoPago ? true : false}
-                                    >
-                                        {opciones.tiposPagos.map((item, index) => (
-                                            <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
-                                        ))}
-
-                                    </Select>
-                                </>
-                                : null
-                        }
-                    </div>
-
-                    <div>
-                        {
-                            estatusCompras ?
-                                <>
-                                    <InputLabel>Estatus de pago</InputLabel>
-                                    <Select
-                                        name="conta"
-                                        value={form.conta}
-                                        onChange={handleChange}
-                                        className={classes.textField}
-                                        error={errores.conta ? true : false}
-                                    >
-                                        {estatusCompras.map((item, index) => {
-                                            if (item.nivel === 2) {
-                                                return <MenuItem key={index} value={item.id}>{item.estatus}</MenuItem>
-                                            }
-                                        })}
-                                    </Select>
-                                </>
-                                : null
-                        }
-
-                    </div>
-
-                    <div>
-                        {
-                            estatusCompras ?
-                                <>
-                                    <InputLabel >Estatus de facturación</InputLabel>
-                                    <Select
-                                        name="factura"
-                                        value={form.factura}
-                                        onChange={handleChange}
-                                        className={classes.textField}
-                                        error={errores.conta ? true : false}
-                                    >
-                                        {estatusCompras.map((item, index) => {
-                                            if (item.nivel === 3) {
-                                                return <MenuItem key={index} value={item.id}>{item.estatus}</MenuItem>
-                                            }
-                                        })}
-                                    </Select>
-                                </>
-                                : null
-                        }
-
-                    </div>
-
-                    <div>
-                    {
-                        estatusCompras ?
-                            <>
-                                <InputLabel id="demo-simple-select-label">Estatus de entrega</InputLabel>
-                                <Select
-                                    name="id_estatus"
-                                    value={form.id_estatus}
-                                    onChange={handleChange}
-                                    className={classes.textField}
-                                    error={errores.id_estatus ? true : false}
-                                >
-                                    {estatusCompras.map((item, index) => {
-                                        if (item.nivel === 1) {
-                                            return <MenuItem key={index} value={item.id}>{item.estatus}</MenuItem>
-                                        }
-                                    })}
-                                </Select>
-                            </>
-                            : null
-                    }
-
-                </div>
-
-                    <div>
-                    {
-                        opciones ?
-                            <>
-                                {/* <InputLabel id="demo-simple-select-label">Proveedor</InputLabel>
-                                <Select
-                                    name="proveedor"
-                                    value={form.proveedor}
-                                    onChange={handleChange}
-                                    className={classes.textField}
-                                    error={errores.proveedor ? true : false}
-                                >
-                                    {opciones.proveedores.map((item, index) => (
-                                        <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
-                                    ))}
-
-                                </Select> */}
-                                <Autocomplete
-                                    name="proveedor"
-                                    options={opciones.proveedores}
-                                    getOptionLabel={(option) => option.name}
-                                    style={{ width: 230, paddingRight: '1rem' }}
-                                    onChange={(event, value) => handleChangeProveedor(event, value)}
-                                    renderInput={(params) => <TextField {...params} label={form.labelPorveedor} variant="outlined" />}
+                                )}
+                                sx={{ width: '100%' }} // Ajusta el ancho del componente
                                 />
+
+                        </>
+                    )}
+                    </Paper>
+                </Grid>    
+                 <Grid item  xs={12} sm={8} md={3} justifyContent="space-around">
+                        <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                        {departamentos.length > 0 && form.area !== '' && (
+                            <>
+                                <InputLabel>Tipo de Gasto</InputLabel>
+                                <Autocomplete
+                                    name="id_partidas"
+                                    options={
+                                        departamentos
+                                        .find((item) => item.id_area === form.area)?.partidas || []
+                                    } // Filtra partidas según el área seleccionada
+                                    getOptionLabel={(option) => option.nombre || ''} // Muestra el nombre de la partida
+                                    isOptionEqualToValue={(option, value) => option.id === value?.id} // Compara las partidas por ID
+                                    value={
+                                        departamentos
+                                        .find((item) => item.id_area === form.area)
+                                        ?.partidas.find((partida) => partida.id === form.id_partidas) || null
+                                    } // Establece el valor seleccionado
+                                    onChange={(event, value) => {
+                                        setForm((prevForm) => ({
+                                        ...prevForm,
+                                        id_partidas: value ? value.id : '', // Actualiza el ID de la partida seleccionada
+                                        }));
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                        {...params}
+                                        variant="outlined"
+                                        label="Partida"
+                                        error={!!errores.id_partidas}
+                                        helperText={errores.id_partidas || ''}
+                                        />
+                                    )}
+                                    />
+
                             </>
-                            : null
-                    }
+                        )}
+                        </Paper>
+                    </Grid>
+                        <Grid item  xs={12} sm={8} md={3} justifyContent="space-around">
+                        <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >                    
+                            <InputLabel>Tipo de Subgasto</InputLabel>
+                            <Autocomplete
+                                name="subarea"
+                                options={
+                                    departamentos
+                                    .find((item) => item.id_area === form.area) // Filtra por área seleccionada
+                                    ?.partidas.find((item) => item.id === form.id_partidas) // Filtra por partida seleccionada
+                                    ?.subpartidas || [] // Obtiene las subpartidas o un array vacío
+                                }
+                                getOptionLabel={(option) => option.nombre || ''} // Muestra el nombre de la subpartida
+                                isOptionEqualToValue={(option, value) => option.id === value?.id} // Compara las opciones por ID
+                                value={
+                                    departamentos
+                                    .find((item) => item.id_area === form.area) // Encuentra el área seleccionada
+                                    ?.partidas.find((item) => item.id === form.id_partidas) // Encuentra la partida seleccionada
+                                    ?.subpartidas.find((subpartida) => subpartida.id === form.subarea) || null // Encuentra la subpartida seleccionada
+                                }
+                                onChange={(event, value) => {
+                                    setForm((prevForm) => ({
+                                    ...prevForm,
+                                    subarea: value ? value.id : '', // Actualiza el ID de la subpartida seleccionada
+                                    }));
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    label="Subárea"
+                                    error={!!errores.subarea}
+                                    helperText={errores.subarea || ''}
+                                    />
+                                )}
+                                />
+                        </Paper>
+                    </Grid>
+                    
+            </Grid>
 
-                </div>
-
-                    {/* <div>
-                        {
-                            opciones ?
+            <Grid container spacing={3}>
+            
+            <Grid item  xs={12} sm={6} md={3} justifyContent="space-around">
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    <InputLabel>Monto Pagado</InputLabel>
+                        <CurrencyTextField
+                            label="Monto solicitado"
+                            variant="standard"
+                            name="monto_solicitado"
+                            value={form.monto_solicitado}
+                            currencySymbol="$"
+                            outputFormat="number"
+                            modifyValueOnWheel={false}
+                            onChange={(event, value) => monto_solicitado(value)}
+                            className="form-control"
+                            error={errores.monto_solicitado ? true : false}
+                        />                        
+                    </Paper>
+                </Grid>  
+                <Grid item  xs={12} sm={8} md={3}>
+                    <Paper sx={{padding: 2,  textAlign: 'center', }} elevation={0} >
+                            {opciones.empresas.length > 0 && (
                                 <>
-                                    <InputLabel className={`${errores.proveedor ? classes.error : ''}`}>Proveedor</InputLabel>
-                                    <Select
-                                        name="proveedor"
-                                        value={form.proveedor}
-                                        onChange={handleChange}
-                                        className={classes.textField}
-                                    >
-                                        {opciones.proveedores.map((item, index) => (
-                                            <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
-                                        ))}
+                                <InputLabel>Empresa</InputLabel>
+                                <div> 
+                                <Autocomplete
+                                    id="empresas-autocomplete"
+                                    name="empresa"
+                                    options={opciones.empresas}
+                                    getOptionLabel={(option) => option.name || ''} // 🔥 Muestra el nombre correctamente
+                                    isOptionEqualToValue={(option, value) => option.id === value?.id} // 🔥 Compara correctamente los IDs
+                                    value={opciones.empresas.find((item) => item.value === form.empresa) || null} // 🔥 Seleccionar la empresa correcta
+                                    onChange={handleAutocompleteChange} 
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Empresa"
+                                            variant="outlined"
+                                            error={!!errores.empresa}
+                                            helperText={errores.empresa || ''}
+                                        />
+                                    )}
+                                />
 
-                                    </Select>
-                                </>
-                                : null
-                        }
-                    </div> */}
 
-                    <div>
-                        <TextField
-                            name='descripcion'
-                            label="Descripción"
-                            type="text"
-                            defaultValue={form.descripcion}
-                            onChange={handleChange}
-                            className={classes.textField}
-                            InputLabelProps={{
-                                shrink: true,
+                            </div>
+                            </>
+                            )}
+
+                        </Paper>
+                </Grid>   
+                 <Grid item  xs={12} sm={8} md={3}>
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    {form.cuentas.length > 0 && (
+                        <div>
+                            <InputLabel>Cuenta</InputLabel>
+                            <Select
+                                name="cuenta"
+                                value={form.cuenta}
+                                onChange={handleCuentaChange}
+                                className="w-100"
+                                error={!!errores.cuenta}
+                            >
+                                {form.cuentas.map((item, index) => (
+                                    <MenuItem key={index} value={item.id}>
+                                        {item.nombre}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </div>
+                    )}
+
+                    </Paper>
+                </Grid>
+
+                <Grid item xs={12} sm={8} md={3} justifyContent="space-around">
+                    <Paper sx={{ padding: 2, textAlign: 'center' }} elevation={0}>
+                        <InputLabel>Tipo de Pago</InputLabel>
+                        {opciones?.tiposPagos?.length > 0 && ( // 🔥 Verificamos que haya opciones
+                            <Autocomplete
+                                id="tipo-pago-autocomplete"
+                                name="tipoPago"
+                                options={opciones.tiposPagos} // 🔥 Opciones de tipo de pago
+                                getOptionLabel={(option) => option.name || ""} // 🔥 Muestra el nombre correcto
+                                isOptionEqualToValue={(option, value) => option.id === value?.id} // 🔥 Comparación correcta por ID
+                                value={opciones.tiposPagos.find((item) => item.data?.id === form.tipoPago) || null} // 🔥 Selecciona el valor correcto
+                                onChange={(event, value) => {
+                                    console.log("Valor seleccionado:", value); // 🔥 Ver qué valor está seleccionado
+
+                                    setForm((prevForm) => ({
+                                        ...prevForm,
+                                        tipoPago: value ? value.data.id : "", // 🔥 Guarda el ID seleccionado
+                                    }));
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Tipo de Pago"
+                                        variant="outlined"
+                                        name="tipoPago"
+                                        error={!!errores.tipoPago} // 🔥 Muestra error si es necesario
+                                        helperText={errores.tipoPago || ""} // 🔥 Mensaje de error si lo hay
+                                    />
+                                )}
+                            />
+                        )}
+                    </Paper>
+                </Grid>
+
+ 
+                
+
+
+            </Grid>
+
+            <Grid container spacing={3}>
+
+
+                <Grid item xs={12} sm={8} md={3} justifyContent="space-around">
+                    <Paper sx={{ padding: 2, textAlign: "center" }} elevation={0}>
+                        <InputLabel>Estatus de pago</InputLabel>
+                        <Autocomplete
+                            id="estatus-pago-autocomplete"
+                            options={estatusCompras.filter((item) => item.nivel === 2)} // 🔥 Filtramos solo los de nivel 2
+                            getOptionLabel={(option) => option.estatus || ""} // Muestra el estatus en el dropdown
+                            isOptionEqualToValue={(option, value) => option.id === value?.id} // Compara por ID
+                            value={estatusCompras.find((item) => item.id === form.conta) || null} // Selecciona el valor actual
+                            onChange={(event, value) => {
+                                setForm((prevForm) => ({
+                                    ...prevForm,
+                                    conta: value ? value.id : "", // 🔥 Actualiza el ID seleccionado
+                                }));
                             }}
-                            error={errores.descripcion ? true : false}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Estatus de pago"
+                                    variant="outlined"
+                                    name="conta"
+                                    error={!!errores.conta} // Muestra error si existe
+                                    helperText={errores.conta || ""} // Muestra mensaje de error
+                                />
+                            )}
                         />
-                    </div>
+                    </Paper>
+                </Grid>
 
-                    <div>
-                        <InputLabel >Aprobar Requsición</InputLabel>
-                        <Checkbox
-                            checked={form.auto2}
-                            onChange={handleAprueba}
-                            name="auto2"
-                            color="primary"
-                            style={{ marginLeft: '20%' }}
+
+                <Grid item  xs={12} sm={8} md={3} justifyContent="space-around">
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    <InputLabel>Estatus de facturación</InputLabel>
+                    <Autocomplete
+                            id="estatus-pago-autocomplete"
+                            options={estatusCompras.filter((item) => item.nivel === 3)} // 🔥 Filtramos solo los de nivel 2
+                            getOptionLabel={(option) => option.estatus || ""} // Muestra el estatus en el dropdown
+                            isOptionEqualToValue={(option, value) => option.id === value?.id} // Compara por ID
+                            value={estatusCompras.find((item) => item.id === form.factura) || null} // Selecciona el valor actual
+                            onChange={(event, value) => {
+                                setForm((prevForm) => ({
+                                    ...prevForm,
+                                    factura: value ? value.id : "", // 🔥 Actualiza el ID seleccionado
+                                }));
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Estatus de facturación"
+                                    variant="outlined"
+                                    name="factura"
+                                    error={!!errores.factura} // Muestra error si existe
+                                    helperText={errores.factura || ""} // Muestra mensaje de error
+                                />
+                            )}
                         />
-                    </div>
 
-                    <div>
-                        <InputLabel className={`${errores.afectarCuentas ? classes.error : ''}`}>AFECTAR CUENTAS</InputLabel>
+                    </Paper>
+                </Grid> 
+
+                <Grid item  xs={12} sm={8} md={3} justifyContent="space-around">
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    <InputLabel>Estatus de entrega</InputLabel>
+                    <Autocomplete
+                            id="estatus-pago-autocomplete"
+                            name="id_estatus"
+                            options={estatusCompras.filter((item) => item.nivel === 1)} // 🔥 Filtramos solo los de nivel 2
+                            getOptionLabel={(option) => option.estatus || ""} // Muestra el estatus en el dropdown
+                            isOptionEqualToValue={(option, value) => option.id === value?.id} // Compara por ID
+                            value={estatusCompras.find((item) => item.id === form.id_estatus) || null} // Selecciona el valor actual
+                            onChange={(event, value) => {
+                                setForm((prevForm) => ({
+                                    ...prevForm,
+                                    id_estatus: value ? value.id : "", // 🔥 Actualiza el ID seleccionado
+                                }));
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Estatus de facturación"
+                                    variant="outlined"
+                                    name="id_estatus"
+                                    error={!!errores.id_estatus} // Muestra error si existe
+                                    helperText={errores.id_estatus || ""} // Muestra mensaje de error
+                                />
+                            )}
+                        />
+
+                    </Paper>
+                </Grid> 
+
+                 <Grid item xs={12} sm={8} md={3}>
+                    <Paper sx={{ padding: 2, textAlign: 'center' }} elevation={0}>
+                        <InputLabel>Proveedor</InputLabel>
+                        <Autocomplete
+                            name="proveedor"
+                            options={opciones.proveedores.sort((a, b) => a.name.localeCompare(b.name))} // Orden alfabético
+                            getOptionLabel={(option) => option.name || ''} // Muestra el nombre del proveedor
+                            isOptionEqualToValue={(option, value) => option.data?.id === value?.data?.id} // Comparar por ID dentro de `data`
+                            value={opciones.proveedores.find((item) => item.data?.id === form.proveedor) || null} // Ajustar el valor actual
+                            onChange={(event, value) => handleChangeProveedor(event, value)} // Manejar cambios
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    label="Proveedor"
+                                    error={!!errores.proveedor}
+                                    helperText={errores.proveedor || ''}
+                                />
+                            )}
+                        />
+                    </Paper>
+                </Grid>
+
+
+            </Grid>
+            <Grid container spacing={3}>
+                 <Grid item  xs={12} sm={8} md={4}>
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                    <InputLabel>Descripción</InputLabel>
+                    <TextField
+                        name="descripcion"
+                        label="Descripción"
+                        type="text"
+                        value={form.descripcion !== '' ? form.descripcion : null}
+                        onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        multiline
+                        className="w-100"
+                        error={errores.descripcion ? true : false}
+                    />
+                    </Paper>
+                </Grid> 
+                <Grid item  xs={12} sm={8} md={2}>
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                     <InputLabel className={`${errores.afectarCuentas ? classes.error : ''}`}>AFECTAR CUENTAS</InputLabel>
                         <Checkbox
                             checked={form.afectarCuentas}
                             onChange={handleCuentas}
@@ -1140,9 +1281,25 @@ export default function Convertir(props) {
                             style={{ marginLeft: '15%' }}
                             disabled={form.afectarCuentas}
                         />
-                    </div>
-                </div>
-                <div>
+                    </Paper>
+                    
+
+                </Grid> 
+                <Grid item  xs={12} sm={8} md={2}>
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                        <InputLabel >Aprobar Requsición</InputLabel>
+                            <Checkbox
+                                checked={form.auto2}
+                                onChange={handleAprueba}
+                                name="auto2"
+                                color="primary"
+                                style={{ marginLeft: '20%' }}
+                            />
+                    </Paper>
+                </Grid> 
+
+                <Grid item  xs={12} sm={8} md={2}>
+                    <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
                     <InputLabel>¿Lleva factura?</InputLabel>
                     <FormGroup row>
                         <FormControlLabel
@@ -1156,15 +1313,32 @@ export default function Convertir(props) {
 
                         />
                     </FormGroup>
-                </div>  
+                    </Paper>
+                </Grid> 
 
-            </div>
+            </Grid>
 
-            <div className="row justify-content-end">
-                <div className="col-md-4">
-                    <button className={Style.sendButton} onClick={aprobar}>Convertir</button>
-                </div>
-            </div>
-        </>
+
+
+
+
+          </DialogContent>
+
+          <DialogActions>
+              <Button style={{ backgroundColor: '#F96D49', color: '#fff', '&:hover': { backgroundColor: '#F96D49', }, }} variant="contained"  onClick={() => handleClose()}>
+                  Cancelar
+                  </Button>
+              {/* <Button color="primary" variant="contained" onClick={e => handleSend(form)}>
+                  Enviar
+              </Button> */}
+              <Button style={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#0A3E27', }, }} variant="contained" onClick={e => aprobar(form)}>
+              Guardar
+              </Button>
+          </DialogActions>
+
+          </Container>
+          </Box>
+
+      </>
     )
 }

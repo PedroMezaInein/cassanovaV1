@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import Swal from 'sweetalert2'
-import S3 from 'react-aws-s3';
-import axios from 'axios'
-
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
@@ -12,9 +9,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { apiGet, apiPutForm, apiPostForm } from '../../../../functions/api'
-import { URL_DEV } from '../../../../constants'
-import { setSingleHeader } from '../../../../functions/routers'
+import { apiGet,  apiPostForm } from '../../../../functions/api'
 
 import CarruselAdjuntos from './CarruselAdjuntos'
 import './../../../../styles/_adjuntosVehiculos.scss'

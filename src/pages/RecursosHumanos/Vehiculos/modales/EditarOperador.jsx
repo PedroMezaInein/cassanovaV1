@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiGet, apiPostForm, apiPutForm } from '../../../../functions/api'
+import { apiGet, apiPutForm } from '../../../../functions/api'
 
 import Style from './NuevoVehiculo.module.css'
 import DateFnsUtils from '@date-io/date-fns';
@@ -15,15 +15,6 @@ import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import Checkbox from '@material-ui/core/Checkbox';
-
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 export default function EditarOperador(props) {
     const { reload, handleClose, vehiculos, operador } = props
@@ -85,9 +76,9 @@ export default function EditarOperador(props) {
             [tipo]: new Date(date)
         })
     };
-    console.log(operador)
+    // console.log(operador)
 
-    console.log(opcionesVehiculos)
+    // console.log(opcionesVehiculos)
 
     const validate = () => {
         let errores = {}

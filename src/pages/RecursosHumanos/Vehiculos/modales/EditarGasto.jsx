@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { apiPutForm, apiPostForm } from '../../../../functions/api'
+import { apiPutForm } from '../../../../functions/api'
 
 import Style from './NuevoVehiculo.module.css'
 import DateFnsUtils from '@date-io/date-fns';
@@ -15,20 +15,12 @@ import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import Checkbox from '@material-ui/core/Checkbox';
-
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 export default function EditarGasto(props) {
     const { reload, handleClose, vehiculo, gasto } = props
     const authUser = useSelector(state => state.authUser)
-    const opcionesAreas = useSelector(state => state.opciones.areas)
+    // const opcionesAreas = useSelector(state => state.opciones.areas)
     const [form, setForm] = useState({
         id_vehiculo: vehiculo.id,
         fecha: gasto.fecha,
@@ -126,7 +118,6 @@ export default function EditarGasto(props) {
                         apiPutForm(`servicios/edit/${gasto.id}`, form, authUser.access_token)
                             .then(res => {
                                 Swal.close()
-                                console.log(res)
                                 Swal.fire({
                                     title: 'Gasto Editado con éxito',
                                     text: "El gasto se ha editado correctamente",

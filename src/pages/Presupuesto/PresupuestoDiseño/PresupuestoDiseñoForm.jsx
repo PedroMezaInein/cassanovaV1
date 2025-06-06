@@ -42,6 +42,7 @@ class PresupuestoDiseñoForm extends Component {
             mobiliario: true,
             obra_civil: true,
             precio_dolar: 0,
+            cliente:'',
             MontoIngenerias: [],
             MontoEsquemas: [],
             conceptos: [

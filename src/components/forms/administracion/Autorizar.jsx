@@ -33,6 +33,7 @@ const [reloadTable, setReloadTable] = useState()
     // Llama a tu función para obtener datos de la API y actualiza el estado de las tablas
     apiOptions(`requisicion/autoriza/presupuesto`, user.access_token)
         .then((data) => {
+          // console.log(data)
 
             const datosConTotalMeses = data.data.autoriza.map((result) => {
                 let totalMeses = 0;
@@ -97,9 +98,7 @@ const [reloadTable, setReloadTable] = useState()
                   }, 2000);
                   handleClose('autoriza')
 
-                  if (reloadTable) {
-                      reloadTable.reload()
-                  }
+                  reload();
               
             })
             .catch((error) => {
@@ -142,9 +141,7 @@ const [reloadTable, setReloadTable] = useState()
                 }, 2000);
                 handleClose('autoriza')
 
-                if (reloadTable) {
-                    reloadTable.reload()
-                }
+                reload();
             
           })
           .catch((error) => {
@@ -155,7 +152,6 @@ const [reloadTable, setReloadTable] = useState()
     });
   };
 
-  
 
   return (
     <>
@@ -177,10 +173,10 @@ const [reloadTable, setReloadTable] = useState()
               <tbody>
                 {datosTabla1.map((item) => (
                   <tr key={item.id} onClick={() => handleSeleccionTabla1(item)}>
-                    <td>{item.presupuesto.nombre}</td>
-                    <td>{item.areas.nombre}</td>
-                    <td>{item.partidas.nombre}</td>
-                    <td>{item.subpartidas.nombre}</td>
+                    <td>{item.presupuesto?.nombre || ''}</td>
+                    <td>{item.areas?.nombre || ''}</td>
+                    <td>{item.partidas?.nombre || ''}</td>
+                    <td>{item.subpartidas?.nombre || ''}</td>
                     <td>{item.totalMeses}</td>
                     <td>
                     <Button variant="success" onClick={() => handleAutorizar(item.id)}>

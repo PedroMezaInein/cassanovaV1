@@ -175,10 +175,10 @@ class PresupuestoDiseñoForm extends Component {
                                                     name = "tipoProyecto" value = { form.tipoProyecto } onChange = { this.updateTipoProyecto } 
                                                     iconclass = "far fa-building" messageinc = "Selecciona el tipo de proyecto" />
                                             </div>
-                                            {/* <div className="col-md-4">
-                                                <Input requirevalidation = { 1 } formeditado = { formeditado } placeholder = "NOMBRE DEL PROYECTO"
-                                                    value = { form.proyecto } name = "proyecto" onChange = { onChange } iconclass = "far fa-folder-open"/>
-                                            </div> */}
+                                            <div className="col-md-4">
+                                                <Input requirevalidation = { 1 } formeditado = { formeditado } placeholder = "NOMBRE DEL CLIENTE"
+                                                    value = { form.cliente } name = "cliente" onChange = { onChange } iconclass = "far fa-folder-open"/>
+                                            </div>
                                         {/* </div> */}
                                         
                                         {/* <div className="form-group row form-group-marginless"> */}

@@ -97,7 +97,7 @@ class FormularioContrato extends Component {
     }
 
     tagInputChange = (nuevoTipos) => {
-        console.log(nuevoTipos)
+        // console.log(nuevoTipos)
         const uppercased = nuevoTipos.map(tipo => tipo.toUpperCase()); 
         const { form } = this.props
         let unico = {};
@@ -190,20 +190,32 @@ class FormularioContrato extends Component {
                                                         <div className="text-center d-flex justify-content-center">
                                                             <OverlayTrigger rootClose overlay={<Tooltip>ADJUNTAR CONTRATO FIRMADO</Tooltip>}>
                                                                 <div>
-                                                                    <FileInput requirevalidation = { 0 } onChangeAdjunto = { onChangeAdjuntos } 
-                                                                        value = { form.adjuntos.contrato.value } name = {contrato.id} id = 'adjunto-contrato'
-                                                                        accept = "application/pdf" files = { form.adjuntos.contrato.files }
-                                                                        classbtn = 'btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
-                                                                        iconclass = 'la la-file-signature text-dark-50 icon-2x' />
+                                                                    <FileInput
+                                                                    requirevalidation={0}
+                                                                    onChangeAdjunto={(e) => onChangeAdjuntos(e, empleado)} // 👈 aquí pasas el colaborador
+                                                                    value={form.adjuntos.contrato.value}
+                                                                    name={contrato.id}
+                                                                    id='adjunto-contrato'
+                                                                    accept="application/pdf"
+                                                                    files={form.adjuntos.contrato.files}
+                                                                    classbtn='btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
+                                                                    iconclass='la la-file-signature text-dark-50 icon-2x'
+                                                                    />
                                                                 </div>
                                                             </OverlayTrigger>
                                                             <OverlayTrigger rootClose overlay={<Tooltip>ADJUNTAR CARTA FIRMADA</Tooltip>}>
                                                                 <div>
-                                                                    <FileInput requirevalidation = { 0 } onChangeAdjunto = { onChangeAdjuntos }
-                                                                        value = { form.adjuntos.carta.value } name = {contrato.id} id = 'adjunto-carta'
-                                                                        accept = "application/pdf" files = { form.adjuntos.carta.files }
-                                                                        classbtn = 'btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
-                                                                        iconclass = 'la la-file-alt text-dark-50 icon-2x' />
+                                                                   <FileInput
+                                                                    requirevalidation={0}
+                                                                    onChangeAdjunto={(e) => onChangeAdjuntos(e, empleado)} // 👈 también aquí
+                                                                    value={form.adjuntos.carta.value}
+                                                                    name={contrato.id}
+                                                                    id='adjunto-carta'
+                                                                    accept="application/pdf"
+                                                                    files={form.adjuntos.carta.files}
+                                                                    classbtn='btn btn-hover-icon-success font-weight-bolder text-dark-50 mb-0 p-0'
+                                                                    iconclass='la la-file-alt text-dark-50 icon-2x'
+                                                                    />
                                                                 </div>
                                                             </OverlayTrigger>
                                                         </div>
@@ -239,7 +251,7 @@ class FormularioContrato extends Component {
                                                         {
                                                             contrato.terminado === 0 ?
                                                                 <OverlayTrigger rootClose overlay={<Tooltip>TERMINAR</Tooltip>}>
-                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2 my-1"  onClick={() => { cancelarContrato(contrato) }} >
+                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2 my-1"  onClick={() => { cancelarContrato(contrato.id, empleado) }} >
                                                                         <span className="svg-icon svg-icon-lg svg-icon-danger">
                                                                             <SVG src={toAbsoluteUrl('/images/svg/Deleted-file.svg')} />
                                                                         </span>
@@ -250,7 +262,7 @@ class FormularioContrato extends Component {
                                                         {
                                                             contrato.contrato_firmado === null ? 
                                                                 <OverlayTrigger rootClose overlay={<Tooltip>REGENERAR PDF</Tooltip>}>
-                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2 my-1" onClick = { (e) => { e.preventDefault(); regeneratePdf(contrato)   }}>
+                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2 my-1" onClick = { (e) => { e.preventDefault(); regeneratePdf(empleado, contrato);   }}>
                                                                         <span className="svg-icon svg-icon-lg svg-icon-info">
                                                                             <i className="far fa-file-pdf svg-icon-info"></i>
                                                                         </span>
@@ -260,13 +272,22 @@ class FormularioContrato extends Component {
                                                         }
                                                         {
                                                             this.isAdmin(contrato) ? 
-                                                                <OverlayTrigger rootClose overlay={<Tooltip>ELIMINAR CONTRATO</Tooltip>}>
-                                                                    <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2 my-1" 
-                                                                        onClick = { (e) => { e.preventDefault(); deleteAlert(`¿Estás seguro?`, `Eliminarás el contrato`, () => { deleteContrato(contrato) } ) }}>
-                                                                        <span className="svg-icon svg-icon-lg svg-icon-danger text-danger">
-                                                                            <i className="far fa-trash-alt svg-icon-danger text-danger"></i>
-                                                                        </span>
+                                                               <OverlayTrigger rootClose overlay={<Tooltip>ELIMINAR CONTRATO</Tooltip>}>
+                                                                <span
+                                                                    className="btn btn-light btn-icon h-35px font-weight-bolder ml-2 my-1"
+                                                                    onClick={(e) => {
+                                                                    e.preventDefault();
+                                                                    deleteAlert(
+                                                                        `¿Estás seguro?`,
+                                                                        `Eliminarás el contrato`,
+                                                                        () => deleteContrato(contrato, empleado) // ✅ pasar `empleado`
+                                                                    );
+                                                                    }}
+                                                                >
+                                                                    <span className="svg-icon svg-icon-lg svg-icon-danger text-danger">
+                                                                    <i className="far fa-trash-alt svg-icon-danger text-danger"></i>
                                                                     </span>
+                                                                </span>
                                                                 </OverlayTrigger>
                                                             : ''
                                                         }
@@ -383,141 +404,7 @@ class FormularioContrato extends Component {
                                                 <TagInput tags={form.tipos}  onChange={this.tagInputChange}  placeholder={"Actividades"} iconclass={"far fa-folder-open"} />
                                             </div>     
                                         </div>
-                                    // :
-                                    // ''
-                                        // <div className="form-group row form-group-marginless mt-8">
-                                        //     <div className="col-md-6 text-align-last-center align-self-center">
-                                        //         <label className="text-center font-weight-bolder text-bodymb-2">Fecha de inicio - Fecha final</label><br />
-                                        //         <RangeCalendar
-                                        //             onChange={onChangeRange}
-                                        //             start={form.fechaInicio}
-                                        //             end={form.fechaFin}
-                                        //         />
-                                        //     </div>
-                                        //     <div className="col-md-6 align-self-center">
-                                        //         <div className="col-md-12 mb-4">
-                                        //             <InputGray
-                                        //                 withtaglabel={1}
-                                        //                 withtextlabel={1}
-                                        //                 withplaceholder={1}
-                                        //                 withicon={1}
-                                        //                 withformgroup={0}
-                                        //                 requirevalidation={1}
-                                        //                 onChange={onChangeContrato}
-                                        //                 name="periodo_pago"
-                                        //                 type="text"
-                                        //                 value={form.periodo_pago}
-                                        //                 placeholder="PERIODO DE PAGO"
-                                        //                 iconclass="flaticon2-calendar-4"
-                                        //                 messageinc="Incorrecto. Ingresa el periodo de pago."
-                                        //             />
-                                        //         </div>
-                                        //         <div className="form-group col-md-12 mb-4">
-                                        //             <InputNumberGray
-                                        //                 withtaglabel = { 1 }
-                                        //                 withtextlabel = { 1 }
-                                        //                 withplaceholder = { 1 }
-                                        //                 withicon={1}
-                                        //                 requirevalidation={1}
-                                        //                 onChange={onChangeContrato}
-                                        //                 name="pagos_hr_extra"
-                                        //                 type="text"
-                                        //                 value={form.pagos_hr_extra}
-                                        //                 placeholder="PAGOS DE HORA EXTRA "
-                                        //                 iconclass="far fa-money-bill-alt"
-                                        //                 messageinc="Incorrecto. Ingresa el pago de hora extra."
-                                        //                 thousandseparator = { true }
-                                        //             />
-                                        //         </div>
-                                        //         <div className="form-group col-md-12 mb-4">
-                                        //             <InputNumberGray
-                                        //                 withtaglabel = { 1 }
-                                        //                 withtextlabel = { 1 }
-                                        //                 withplaceholder = { 1 }
-                                        //                 withicon={1}
-                                        //                 requirevalidation={1}
-                                        //                 onChange={onChangeContrato}
-                                        //                 name="total_obra"
-                                        //                 type="text"
-                                        //                 value={form.total_obra}
-                                        //                 placeholder="TOTAL DE LA OBRA"
-                                        //                 iconclass="fas fa-dollar-sign"
-                                        //                 messageinc="Incorrecto. Ingresa el total de la obra."
-                                        //                 thousandseparator = { true }
-                                        //             />
-                                        //         </div>
-                                        //         <div className="form-group col-md-12 mb-4">
-                                        //             <InputNumberGray
-                                        //                 withtaglabel = { 1 }
-                                        //                 withtextlabel = { 1 }
-                                        //                 withplaceholder = { 1 }
-                                        //                 withicon={1}
-                                        //                 requirevalidation={1}
-                                        //                 onChange={onChangeContrato}
-                                        //                 name="dias"
-                                        //                 type="text"
-                                        //                 value={form.dias}
-                                        //                 placeholder="DÍAS DEL CONTRATO"
-                                        //                 iconclass="flaticon2-calendar-6"
-                                        //                 messageinc="Incorrecto. Ingresa el número de días del contrato."
-                                        //             />
-                                        //         </div>
-                                        //         <div className="form-group col-md-12">
-                                        //             <InputGray
-                                        //                 withtaglabel={1}
-                                        //                 withtextlabel={1}
-                                        //                 withplaceholder={1}
-                                        //                 withicon={1}
-                                        //                 withformgroup={0}
-                                        //                 requirevalidation={1}
-                                        //                 onChange={onChangeContrato}
-                                        //                 name="dias_laborables"
-                                        //                 type="text"
-                                        //                 value={form.dias_laborables}
-                                        //                 placeholder="DÍAS LABORABLES"
-                                        //                 iconclass="flaticon2-calendar-9"
-                                        //                 messageinc="Incorrecto. Ingresa el número de días laborables."
-                                        //             />
-                                        //         </div>
-                                        //     </div>
-                                        //     <div className="col-md-12 mb-4">
-                                        //         <div className="col-md-12 mb-4">
-                                        //             <InputGray
-                                        //                 withtaglabel={1}
-                                        //                 withtextlabel={1}
-                                        //                 withplaceholder={1}
-                                        //                 withicon={1}
-                                        //                 withformgroup={0}
-                                        //                 requirevalidation={1}
-                                        //                 onChange={onChangeContrato}
-                                        //                 name="ubicacion_obra"
-                                        //                 type="text"
-                                        //                 value={form.ubicacion_obra}
-                                        //                 placeholder="UBICACIÓN DE LA OBRA"
-                                        //                 iconclass="flaticon2-map"
-                                        //                 messageinc="Incorrecto. Ingresa la ubicación de la obra."
-                                        //             />
-                                        //         </div>
-                                        //         <div className="col-md-12">
-                                        //             <InputGray
-                                        //                 withtaglabel={1}
-                                        //                 withtextlabel={1}
-                                        //                 withplaceholder={1}
-                                        //                 withicon={1}
-                                        //                 withformgroup={0}
-                                        //                 requirevalidation={1}
-                                        //                 formeditado={formeditado}
-                                        //                 onChange={onChangeContrato}
-                                        //                 name="direccion_contrato"
-                                        //                 type="text"
-                                        //                 value={form.direccion_contrato}
-                                        //                 placeholder="DIRECCIÓN DEL CONTRATO"
-                                        //                 iconclass="las la-map-marked-alt icon-xl p-0"
-                                        //                 messageinc="Incorrecto. Ingresa la dirección del contrato."
-                                        //             />
-                                        //         </div>
-                                        //     </div>
-                                        // </div>
+                                  
                                 }      
                                 {
                                     this.canSendContrado() ?
@@ -530,10 +417,11 @@ class FormularioContrato extends Component {
                                                             onClick={
                                                                 (e) => {
                                                                     e.preventDefault();
-                                                                    if(empleado.contratos.length === 0)
-                                                                        validateAlert(generarContrato, e, 'form-empleados-contrato')
-                                                                    else
-                                                                        validateAlert(renovarContrato, e, 'form-empleados-contrato')
+                                                                 if (empleado.contratos.length === 0) {
+                                                                    validateAlert(generarContrato, e, 'form-empleados-contrato');
+                                                                    } else {
+                                                                    validateAlert(() => renovarContrato(empleado), e, 'form-empleados-contrato'); // ✅ Aquí corregido
+                                                                    }
                                                                 }
                                                             }>
                                                             <span className={`svg-icon svg-icon-lg svg-icon-${renovar ? 'info' : 'success'}`}>

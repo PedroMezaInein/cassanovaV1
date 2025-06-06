@@ -1,12 +1,8 @@
 import React, {useState} from 'react';
 import { useSelector } from 'react-redux';
-
 import {useEffect} from 'react';
-
 import { apiPostForm, apiGet } from '../../../../functions/api'
-
 import Swal from 'sweetalert2';
-
 
 export default function EnrollUser({close}) {
     const userAuth = useSelector((state) => state.authUser);

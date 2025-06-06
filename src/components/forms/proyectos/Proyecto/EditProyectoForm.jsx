@@ -416,7 +416,6 @@ class EditProyectoForm extends Component {
     async editProyectoAxios() {
         const { at, proyecto, refresh } = this.props
         const { form } = this.state
-        console.log(form)
         await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}`, form, { headers: { Authorization: `Bearer ${at}` } }).then(
             (response) => {
                 const { proyecto } = response.data
@@ -519,8 +518,7 @@ class EditProyectoForm extends Component {
     }
     render() {
         const { /*showModal,*/ form, formeditado, modal, navInfo, formContratar, stateOptions } = this.state
-        const { proyecto, options } = this.props
-        console.log(options)
+        const { proyecto, options, user, modulo } = this.props
         return (
             <>
                 {
@@ -546,9 +544,12 @@ class EditProyectoForm extends Component {
                                             }
                                             {
                                                 navInfo === 'edit'?<></>:
+                                                modulo.edit == 1 ?
                                                 <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.onClickInfo('edit') }}>
                                                     {setNaviIcon('las la-pencil-alt icon-xl', 'EDITAR PROYECTO')}
                                                 </Dropdown.Item>
+                                                :
+                                                <></>
                                             }
                                             {
                                                 (proyecto.fase3 !== 1 && navInfo !== 'contratar')?

@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2'
 
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { apiPostForm, apiDelete } from '../../../functions/api'
-import { setOptions } from '../../../functions/setters'
-import useOptionsArea from '../../../hooks/useOptionsArea'
-import Layout from '../../../components/layout/layout'
 
 import Adjuntos from './Adjuntos/Adjuntos'
 import Editar from './Modales/Editar'
@@ -43,9 +40,9 @@ export default function SoporteTecnicoTable() {
         }
     })
 
-    let prop = {
-        pathname: '/ti/soporte',
-    }
+    // let prop = {
+    //     pathname: '/ti/soporte',
+    // }
 
     const columnas = [
         { nombre: 'Acciones', identificador: 'acciones' },

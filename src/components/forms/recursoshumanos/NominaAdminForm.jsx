@@ -369,9 +369,9 @@ class NominaAdminForm extends Component {
                                             this.getTotalExtra("extras") > 0 ?
                                                 <th className="py-2 border-bottom-0">
                                                     <div className="py-1 my-0 font-weight-bolder">
-                                                        <SelectSearchGray formeditado={formeditado} options={options.cuentas} name="cuentaExtras"
+                                                        <SelectSearchGray formeditado={formeditado} options={options.cuentas} name="cuentaextraImss"
                                                             placeholder="SELECCIONA LA CUENTA" value={form.cuentaExtras} messageinc="SELECCIONA LA CUENTA"
-                                                            onChange={(value) => { this.updateCuenta(value, 'cuentaExtras') }} withtaglabel={0} withtextlabel={0}
+                                                            onChange={(value) => { this.updateCuenta(value, 'cuentaextraImss') }} withtaglabel={0} withtextlabel={0}
                                                             withicon={0} customclass="form-control-sm text-center" customdiv="mb-0" iconvalid={1} />
                                                     </div>
                                                 </th>

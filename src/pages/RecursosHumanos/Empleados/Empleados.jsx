@@ -1,1409 +1,1183 @@
-import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
-import { connect } from 'react-redux'
-import axios from 'axios'
-// import { Form, DropdownButton, Dropdown } from 'react-bootstrap'
-// import { NewTable } from '../../../components/NewTables'
-import Swal from 'sweetalert2'
-import Layout from '../../../components/layout/layout'
-import { Modal, ModalDelete } from '../../../components/singles'
-import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS, TEL } from '../../../constants'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { AdjuntosForm } from '../../../components/forms'
-import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTableReactDom, setArrayTableReactDom, setTextTableReactDom, setEstatusBancoTableReactDom, setTextTableCenter, setTagLabelReactDom,
-    // setNaviIcon
- } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert, sendFileAlert } from '../../../functions/alert'
-import { Tabs, Tab } from 'react-bootstrap'
-import TableForModals from '../../../components/tables/TableForModals'
-import { EmpleadosCard } from '../../../components/cards'
-import { printSwalHeader } from '../../../functions/printers'
-import { Update } from '../../../components/Lottie'
-import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPhoneGray } from '../../../components/form-components'
-import moment from 'moment'
-import $ from "jquery";
-import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import React, {useState, useEffect, useCallback} from 'react'
+import { useLocation, useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import Swal from 'sweetalert2';
+import Layout from '../../../components/layout/layout';
+import { MaterialReactTable } from 'material-react-table';
+import { Box } from '@mui/material';
+import { emphasize, styled } from '@mui/material/styles';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Chip from '@mui/material/Chip';
+import HomeIcon from '@mui/icons-material/Home';
+import Tooltip from '@mui/material/Tooltip';
+import ContentCopy from '@mui/icons-material/ContentCopy';
 import { FormularioContrato, LicenciasEquiposForm, HistorialVacaciones, PrestacionesRHList } from "../../../components/forms"
-class Empleados extends Component {
-    state = {
-        formeditado: 0,
-        key: 'administrativo',
-        data: {
-            adjuntos: []
-        },
-        adjuntos: [],
-        modal: {
-            delete: false,
-            adjuntos: false,
-            see: false,
-            contrato: false,
-            licencias: false,
-            vacaciones: false,
-            prestaciones: false
-        },
-        title: 'Nuevo colaborador',
-        form: {
-            nombre: '',
-            curp: '',
-            rfc: '',
-            nss: '',
-            nombre_emergencia: '',
-            telefono_emergencia: '',
-            nombre_emergencia2: '',
-            telefono_emergencia2: '',
-            banco: '',
-            cuenta: '',
-            clabe: '',
-            tipo_empleado: 'Administrativo',
-            estatus_empleado: 'Activo',
-            empresa: '',
-            fechaInicio: new Date(),
-            fechaFin: '',
-            fecha_egreso:'',
-            estatus_imss: 'Activo',
-            puesto: '',
-            vacaciones_disponibles: 0,
-            fecha_alta_imss: '',
-            numero_alta_imss: '',
-            nomina_imss: 0.0,
-            nomina_extras: 0.0,
-            salario_hr: 0.0,
-            salario_hr_extra: 0.0,
-            imss: 0.0,
-            rcv: 0.0,
-            organigrama:'',
-            checador: '',
-            matricula: '',
-            password: '',
-            password2: '',
-            adjuntos: {
-                acta: {
-                    value: '',
-                    placeholder: 'Acta de nacimiento',
-                    files: []
-                },
-                curp: {
-                    value: '',
-                    placeholder: 'CURP',
-                    files: []
-                },
-                rfc: {
-                    value: '',
-                    placeholder: 'RFC',
-                    files: []
-                },
-                nss: {
-                    value: '',
-                    placeholder: 'NSS',
-                    files: []
-                },
-                identificacion: {
-                    value: '',
-                    placeholder: 'Identificación Oficial',
-                    files: []
-                },
-                domicilio: {
-                    value: '',
-                    placeholder: 'Comprobante Domicilio',
-                    files: []
-                },
-                estudios: {
-                    value: '',
-                    placeholder: 'Comprobante Estudios',
-                    files: []
-                },
-                bancaria: {
-                    value: '',
-                    placeholder: 'Cuenta Bancaria',
-                    files: []
-                },
-                retencion: {
-                    value: '',
-                    placeholder: 'Aviso Retención INFONAVIT',
-                    files: []
-                },
-                firma: {
-                    value: '',
-                    placeholder: 'Firma electrónica',
-                    files: []
-                },
-                foto: {
-                    value: '',
-                    placeholder: 'Foto de ingreso',
-                    files: []
-                },
-                imss: {
-                    value: '',
-                    placeholder: 'IMSS',
-                    files: []
-                },
-                bajaimss: {
-                    value: '',
-                    placeholder: 'Baja IMSS',
-                    files: []
-                },
-                responsiva: {
-                    value: '',
-                    placeholder: 'Responsiva',
-                    files: []
-                },
-                cv: {
-                    value: '',
-                    placeholder: 'Curriculum Vitae',
-                    files: []
-                },
-            }
-        },
-        options: {
-            empresas: [],
-            bancos: [],
-            estado_civil: [
-                { value: 'Soltero(a)', name: 'Soltero(a)', label: 'Soltero(a)' },
-                { value: 'Casado(a)', name: 'Casado(a)', label: 'Casado(a)' },
-                { value: 'Divorciado(a)', name: 'Divorciado(a)', label: 'Divorciado(a)' },
-                { value: 'Viudo(a)', name: 'Viudo(a)', label: 'Viudo(a)' },
-                { value: 'Union libre', name: 'Unión libre', label: 'Unión libre' },
-            ]
-        },
-        formContrato: {
-            fechaInicio: new Date(),
-            fechaFin: new Date(),
-            periodo: '',
-            dias: '',
-            periodo_pago:'',
-            ubicacion_obra:'',
-            pagos_hr_extra:'',
-            total_obra:'',
-            dias_laborables:'',
-            genero: '',
-            tipos: [],
+import moment from 'moment';
+import { setFormHeader, setSingleHeader } from '../../../functions/routers'
+import { Modal, ModalDelete } from '../../../components/singles';
+import TextField from '@mui/material/TextField';
 
-            adjuntos: {
-                contrato: {
-                    value: '',
-                    placeholder: 'Contrato',
-                    files: []
-                },
-                carta: {
-                    value: '',
-                    placeholder: 'Carta',
-                    files: []
-                }
-            },
-            direccion_contrato:''
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import MobileStepper from '@mui/material/MobileStepper';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+
+import Grid from '@mui/material/Grid';
+import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
+import { es } from 'date-fns/locale'
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
+import { waitAlert, errorAlert, printResponseErrorAlert, deleteAlert,sendFileAlert } from '../../../functions/alert'; // importa tus helpers
+import { setOptions} from '../../../functions/setters'
+import { URL_DEV } from '../../../constants'
+import axios from 'axios'
+import {
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Select,
+  MenuItem, 
+  Button,
+} from '@mui/material';
+import { Typography } from '@material-ui/core';
+import EmpleadosAgregar from './EmpleadosAgregar'; // ajusta la ruta si está en otro nivel
+import Menu from '@mui/material/Menu';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AttachFile from '@mui/icons-material/AttachFile';
+import IconButton from '@mui/material/IconButton';
+import ComponenteAdjuntos  from './ComponenteAdjuntos'
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+
+
+const Empleados = () => {
+  const history = useHistory();
+  const location = useLocation();
+  const authUser = useSelector(state => state.authUser);
+  const auth = authUser?.access_token;
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 50 });
+  const [totalRows, setTotalRows] = useState(0);
+  const [empleados, setEmpleados] = useState([]);
+  const [data, setData] = useState([]);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState('');
+
+
+  const [modals, setModals] = useState({
+        crearColaborador: { show: false, data: null },
+        editarColaborador: { show: false, data: null },
+        vacacionesColaborador: { show: false, data: null },
+        exportar: { show: false },
+        adjuntos: { show: false, data: null },   
+        contratoColaborador: { show: false, data: null }, // ← nuevo
+        licenciasEquipos: { show: false, data: null }, // ✅ NUEVO
+        prestacionesColaborador: { show: false, data: null }, // ✅ NUEVO
+        deleteColaborador: { show: false, data: null }, // ✅ NUEVO
+
+    });
+
+    const [formContrato, setFormContrato] = useState({
+      fechaInicio: new Date(),
+      fechaFin: new Date(),
+      periodo: '',
+      dias: '',
+      periodo_pago: '',
+      ubicacion_obra: '',
+      pagos_hr_extra: '',
+      total_obra: '',
+      dias_laborables: '',
+      genero: '',
+      tipos: [],
+      direccion_contrato: '',
+      adjuntos: {
+        contrato: {
+          value: '',
+          placeholder: 'Contrato',
+          files: []
         },
+        carta: {
+          value: '',
+          placeholder: 'Carta',
+          files: []
+        }
+      }
+    });
+
+
+const [tiposAdjuntos, setTiposAdjuntos] = useState([]);
+
+useEffect(() => {
+  const fetchTipos = async () => {
+    try {
+      const res = await apiGet('v2/rh/empleados/tipos-adjuntos', auth);
+      setTiposAdjuntos(res.data.data || []);
+    } catch (error) {
+      Swal.fire('Error', 'No se pudieron cargar los tipos de adjuntos.', 'error');
     }
-    componentDidMount() {
-        const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
-        const { history } = this.props
-        const empleados = permisos.find(function (element, index) {
-            const { modulo: { url } } = element
-            return pathname === url
+  };
+
+  fetchTipos();
+}, []);
+
+
+  const StyledBreadcrumb = styled(Chip)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[800],
+    height: theme.spacing(3),
+    color: theme.palette.text.primary,
+    fontWeight: theme.typography.fontWeightRegular,
+    '&:hover, &:focus': { backgroundColor: emphasize(theme.palette.grey[100], 0.06) },
+    '&:active': { boxShadow: theme.shadows[1], backgroundColor: emphasize(theme.palette.grey[100], 0.12) },
+  }));
+
+  const [anchorElMenuAcciones, setAnchorElMenuAcciones] = useState(null);
+  const [empleadoMenu, setEmpleadoMenu] = useState(null);
+
+  const abrirMenuAcciones = (event, empleado) => {
+    setAnchorElMenuAcciones(event.currentTarget);
+    setEmpleadoMenu(empleado);
+  };
+
+  const cerrarMenuAcciones = () => {
+    setAnchorElMenuAcciones(null);
+    setEmpleadoMenu(null);
+  };
+
+
+  const transformarEmpleados = (empleadosData) => {
+    const campos = [
+      { group: 'Datos Personales', label: 'Nombre', field: 'nombre' },
+      { group: 'Datos Personales', label: 'RFC', field: 'rfc' },
+      { group: 'Datos Personales', label: 'CURP', field: 'curp' },
+      { group: 'Datos Personales', label: 'NSS', field: 'nss' },
+      { group: 'Datos Personales', label: 'Fecha nacimiento', field: 'fecha_nacimiento' },
+      { group: 'Datos Personales', label: 'Nacionalidad', field: 'nacionalidad' },
+      { group: 'Datos Personales', label: 'Estado civil', field: 'estado_civil' },
+      { group: 'Datos Personales', label: 'Domicilio', field: 'domicilio' },
+      { group: 'Datos Personales', label: 'CEL', field: 'telefono_movil' },
+      { group: 'Datos Personales', label: 'Correo', field: 'email_personal' },
+      { group: 'Datos Personales', label: 'Tel', field: 'telefono_particular' },  
+      { group: 'Datos Personales', label: 'Cuenta', field: 'banco_nombre' },
+      { group: 'Datos Personales', label: 'Numero', field: 'cuenta' },
+      { group: 'Datos Personales', label: 'Clabe', field: 'clabe' },
+      { group: 'Datos Personales', label: 'Co. Emerg', field: 'nombre_emergencia' },
+      { group: 'Datos Personales', label: 'Tel', field: 'telefono_emergencia' },
+      { group: 'Datos Personales', label: 'Co. Emerg 2', field: 'nombre_emergencia2' },
+      { group: 'Datos Personales', label: 'Tel 2', field: 'telefono_emergencia2' },
+      { group: 'Datos Personales', label: 'Carrera', field: 'estudios_carreras' },
+      { group: 'Datos Personales', label: 'No.cedula', field: 'estudios_cedulas' },
+
+      { group: 'Datos Empresa', label: 'Estatus', field: 'estatus_empleado' },
+      { group: 'Datos Empresa', label: 'Empresa', field: 'empresa' },
+      { group: 'Datos Empresa', label: 'Departamento', field: 'departamento' },
+      { group: 'Datos Empresa', label: 'Puesto', field: 'puesto' },
+      { group: 'Datos Empresa', label: 'Fecha Alta', field: 'fecha_inicio' },
+      { group: 'Datos Empresa', label: 'Matricula', field: 'matricula' },
+      { group: 'Datos Empresa', label: 'No. Empleado', field: 'no_empleado' },
+      { group: 'Datos Empresa', label: 'Organigrama', field: 'organigrama' },
+      { group: 'Datos Empresa', label: 'Jefe directo', field: 'lider' },
+      { group: 'Datos Empresa', label: 'Correo insitucional', field: 'email_empresarial' },
+      { group: 'Datos Empresa', label: 'Pass correo', field: 'password' },
+      { group: 'Datos Empresa', label: 'Pass equipo', field: 'password2' },
+      { group: 'Datos Empresa', label: 'Fecha baja imss', field: 'fecha_baja_imss' },
+      { group: 'Datos Empresa', label: 'Fechas de Incremento', field: 'incrementos_fechas' },
+      { group: 'Datos Empresa', label: 'Montos de Incremento', field: 'incrementos_montos' },
+      { group: 'Datos Nomina', label: 'SDIMSS', field: 'salario_diario' },
+      { group: 'Datos Nomina', label: 'SCM', field: 'total' },
+      { group: 'Datos Nomina', label: 'SCQ', field: 'salario_bruto' },
+      { group: 'Datos Nomina', label: 'ISR', field: 'isr' },
+      { group: 'Datos Nomina', label: 'Infonavit', field: 'infonavit' },
+      { group: 'Datos Nomina', label: 'RCV', field: 'rcv' },
+      { group: 'Datos Nomina', label: 'ISN', field: 'isn' },
+
+
+      // { group: 'Datos Empresa', label: 'Checador', field: 'checador' },
+
+      // { group: 'Datos Empresa', label: 'Tipo', field: 'tipo_empleado' },
+      // { group: 'Datos Empresa', label: 'Vacaciones', field: 'vacaciones_disponibles' },
+    ];
+  
+    const formattedData = [];
+      let lastGroup = '';
+
+    campos.forEach((campo, idx) => {
+      if (campo.group !== lastGroup) {
+        formattedData.push({
+          field: campo.group,
+          isGroup: true,
+          values: empleadosData.map(() => ''),
         });
-        if (!empleados)
-            history.push('/')
-        this.getOptionsAxios()
-    }
-    changePageEdit = colaborador => {
-        const { history } = this.props
-        history.push({
-            pathname: '/rh/colaboradores/edit',
-            state: { empleado: colaborador }
-        });
-    }
-    openModalDelete = colaborador => {
-        const { modal } = this.state
-        modal.delete = true
-        this.setState({
-            ...this.state,
-            modal,
-            empleado: colaborador
-        })
-    }
-    openModalAdjuntos = colaborador => {
-        const { modal, data } = this.state
-        modal.adjuntos = true
-        data.adjuntos = colaborador.datos_generales.concat(colaborador.recibos_nomina).concat(colaborador.altas_bajas)
-        this.setState({
-            ...this.state,
-            modal,
-            empleado: colaborador,
-            data,
-            form: this.clearForm(),
-            adjuntos: this.setAdjuntosTable(data.adjuntos)
-        })
-    }
-    openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
-    }
-    openModalSee = colaborador => {
-        const { modal } = this.state
-        modal.see = true
-        this.setState({
-            ...this.state,
-            modal,
-            empleado: colaborador
-        })
-    }
-    openModalContrato = colaborador => {
-        const { modal, formContrato } = this.state
-        modal.contrato = true
-        formContrato.direccion_contrato = colaborador.empresa.direccion
-        this.setState({
-            ...this.state,
-            modal,
-            empleado: colaborador,
-            formeditado:1
-        })
-    }
-    handleCloseModalDelete = () => {
-        const { modal } = this.state
-        modal.delete = false
-        this.setState({
-            ...this.state,
-            form: this.clearForm(),
-            modal,
-            empleado: ''
-        })
-    }
-    handleCloseAdjuntos = () => {
-        const { modal } = this.state
-        modal.adjuntos = false
-        this.setState({
-            ...this.state,
-            form: this.clearForm(),
-            modal,
-            empleado: ''
-        })
-    }
-    handleCloseSee = () => {
-        const { modal } = this.state
-        modal.see = false
-        this.setState({
-            ...this.state,
-            modal,
-            empleado: ''
-        })
-    }
-    handleCloseContrato = () => {
-        const { modal } = this.state
-        modal.contrato = false
-        this.setState({
-            ...this.state,
-            modal,
-            empleado: '',
-            formContrato: this.clearFormContrato()
-        })
-    }
-    clearFormContrato = () => {
 
-        const { formContrato } = this.state
-        let aux = Object.keys(formContrato)
-        aux.map((element) => {
-            switch (element) {
-                case 'fechaInicio':
-                case 'fechaFin':
-                    formContrato[element] = new Date()
-                    break;
-                case 'adjuntos':
-                    formContrato[element] = {
-                        contrato: {
-                            value: '',
-                            placeholder: 'Contrato',
-                            files: []
-                        },
-                        carta: {
-                            value: '',
-                            placeholder: 'Carta',
-                            files: []
-                        }
-                    }
-                break;
-                
-                case 'tipos':
-                    formContrato[element] = []
-                    break;
-                default:
-                    formContrato[element] = ''
-                    break;
-            }
-            return false
-        })
-        return formContrato;
-    }
-
-    async getOptionsAxios() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                Swal.close()
-                const { empresas } = response.data
-                const { options } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    async deleteEmpleadoAxios() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { empleado } = this.state
-        await axios.delete(URL_DEV + 'rh/empleado/' + empleado.id, { headers: { Accept: '/', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { modal, key } = this.state
-                if (key === 'administrativo') {
-                    this.getEmpleadosAxios()
-                }
-                if (key === 'obra') {
-                    this.getEmpleadosObraAxios()
-                }
-                modal.delete = false
-                this.setState({
-                    ...this.state,
-                    modal,
-                    empleado: '',
-                    form: this.clearForm()
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue eliminado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    clearForm = () => {
-        const { form, key } = this.state
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'fechaInicio':
-                    form[element] = new Date()
-                    break;
-                case 'adjuntos':
-                    form[element] = {
-                        acta: {
-                            value: '',
-                            placeholder: 'Acta de nacimiento',
-                            files: []
-                        },
-                        curp: {
-                            value: '',
-                            placeholder: 'CURP',
-                            files: []
-                        },
-                        rfc: {
-                            value: '',
-                            placeholder: 'RFC',
-                            files: []
-                        },
-                        nss: {
-                            value: '',
-                            placeholder: 'NSS',
-                            files: []
-                        },
-                        identificacion: {
-                            value: '',
-                            placeholder: 'Identificación Oficial',
-                            files: []
-                        },
-                        domicilio: {
-                            value: '',
-                            placeholder: 'Comprobante Domicilio',
-                            files: []
-                        },
-                        estudios: {
-                            value: '',
-                            placeholder: 'Comprobante Estudios',
-                            files: []
-                        },
-                        bancaria: {
-                            value: '',
-                            placeholder: 'Cuenta Bancaria',
-                            files: []
-                        },
-                        retencion: {
-                            value: '',
-                            placeholder: 'Aviso Retención INFONAVIT',
-                            files: []
-                        },
-                        firma: {
-                            value: '',
-                            placeholder: 'Firma electrónica',
-                            files: []
-                        },
-                        foto: {
-                            value: '',
-                            placeholder: 'Foto de ingreso',
-                            files: []
-                        },
-                        imss: {
-                            value: '',
-                            placeholder: 'IMSS ALTA',
-                            files: []
-                        },
-                        bajaimss: {
-                            value: '',
-                            placeholder: 'IMSS BAJA',
-                            files: []
-                        },
-                        responsiva: {
-                            value: '',
-                            placeholder: 'Responsiva',
-                            files: []
-                        },
-                        cv: {
-                            value: '',
-                            placeholder: 'Curriculum Vitae',
-                            files: []
-                        },
-                    }
-                    break;
-                case 'estatus_empleado':
-                case 'estatus_imss':
-                    form[element] = 'Activo'
-                    break;
-                case 'nomina_imss':
-                case 'salario_hr':
-                case 'salario_hr_extra':
-                case 'vacaciones_tomadas':
-                    form[element] = 0
-                    break;
-                case 'tipo_empleado':
-                    if (key === 'obra')
-                        form[element] = 'Obra'
-                    else
-                        form[element] = 'Administrativo'
-                    break;
-                default:
-                    form[element] = ''
-                    break;
-            }
-            return false
-        })
-        return form;
-    }
-    setEmpleado = colaboradores => {
-        let aux = []
-        if (colaboradores)
-            colaboradores.map((colaborador) => {
-                aux.push(
-                    {
-                        actions: this.setActions(colaborador),
-                        nombre: setTextTableReactDom(`${colaborador.nombre} ${colaborador.apellido_paterno} ${colaborador.apellido_materno}`, this.doubleClick, colaborador, 'nombre', 'text-center'),
-                        empresa: setTextTableReactDom(colaborador.empresa ? colaborador.empresa.name : '', this.doubleClick, colaborador, 'empresa', 'text-center '),
-                        departamento: colaborador.departamentos.length === 0 ? setTextTableCenter("Sin definir") 
-                        : setTagLabelReactDom(colaborador, colaborador.departamentos, 'departamento_empleado', this.deleteElementAxios, ''),
-                        puesto: setTextTableReactDom(colaborador.puesto, this.doubleClick, colaborador, 'puesto', 'text-center'),
-                        rfc: setTextTableReactDom(colaborador.rfc, this.doubleClick, colaborador, 'rfc', 'text-center'),
-                        nss: setTextTableReactDom(colaborador.nss, this.doubleClick, colaborador, 'nss', 'text-center'),
-                        curp: setTextTableReactDom(colaborador.curp, this.doubleClick, colaborador, 'curp', 'text-center'),
-                        estatus: setEstatusBancoTableReactDom(colaborador, this.changeEstatus ),
-                        fechaInicio: setDateTableReactDom(colaborador.fecha_inicio, this.doubleClick, colaborador, 'fecha', 'text-center'),
-                        cuenta: renderToString(setArrayTable(
-                            [
-                                { 'name': 'Banco', 'text': colaborador.banco_nombre ? colaborador.banco_nombre : 'Sin definir' },
-                                { 'name': 'No. Cuenta', 'text': colaborador.cuenta ? colaborador.cuenta : 'Sin definir' },
-                                { 'name': 'Clabe', 'text': colaborador.clabe ? colaborador.clabe : 'Sin definir' },
-                            ], '180px'
-                        )),
-                        nombre_emergencia:setArrayTableReactDom(
-                            [
-                                { 'name': 'Nombre', 'text': colaborador.nombre_emergencia ? colaborador.nombre_emergencia : 'Sin definir' },
-                                { 'name': 'Teléfono', 'text': colaborador.telefono_emergencia ? colaborador.telefono_emergencia : 'Sin definir' }
-                            ],'120px', this.doubleClick, colaborador, 'nombre_emergencia'
-                        ),
-                        nombre_emergencia2:setArrayTableReactDom(
-                            [
-                                { 'name': 'Nombre', 'text': colaborador.nombre_emergencia2 ? colaborador.nombre_emergencia2 : 'Sin definir' },
-                                { 'name': 'Teléfono', 'text': colaborador.telefono_emergencia2 ? colaborador.telefono_emergencia2 : 'Sin definir' }
-                            ],'120px', this.doubleClick, colaborador, 'nombre_emergencia2'
-                        ),
-                        vacaciones_tomadas: setTextTableReactDom(colaborador.vacaciones_disponibles, this.doubleClick, colaborador, 'vacaciones_disponibles', 'text-center'),
-                        id: colaborador.id
-                    }
-                )
-                return false
-            })
-            localStorage.setItem('activeKeyTabColaboradores', 'administrativo')
-        return aux
-    }
-    setEmpleadoObra = colaboradores => {
-        let aux = []
-        if (colaboradores)
-            colaboradores.map((colaborador) => {
-                aux.push(
-                    {
-                        actions: this.setActions(colaborador),
-                        nombre: setTextTableReactDom(`${colaborador.nombre} ${colaborador.apellido_paterno} ${colaborador.apellido_materno}`, this.doubleClick, colaborador, 'nombre', 'text-center'),
-                        empresa: setTextTableReactDom(colaborador.empresa ? colaborador.empresa.name : '', this.doubleClick, colaborador, 'empresa', 'text-center '),
-                        departamento: colaborador.departamentos.length === 0 ? setTextTableCenter("Sin definir") 
-                        : setTagLabelReactDom(colaborador, colaborador.departamentos, 'departamento_empleado', this.deleteElementAxios, ''),
-                        puesto: setTextTableReactDom(colaborador.puesto, this.doubleClick, colaborador, 'puesto', 'text-center'),
-                        rfc: setTextTableReactDom(colaborador.rfc, this.doubleClick, colaborador, 'rfc', 'text-center'),
-                        nss: setTextTableReactDom(colaborador.nss, this.doubleClick, colaborador, 'nss', 'text-center'),
-                        curp: setTextTableReactDom(colaborador.curp, this.doubleClick, colaborador, 'curp', 'text-center'),
-                        estatus: setEstatusBancoTableReactDom(colaborador, this.changeEstatus ),
-                        fechaInicio: setDateTableReactDom(colaborador.fecha_inicio, this.doubleClick, colaborador, 'fecha', 'text-center'),
-                        cuenta: renderToString(setArrayTable(
-                            [
-                                { 'name': 'Banco', 'text': colaborador.banco ? colaborador.banco : 'Sin definir' },
-                                { 'name': 'No. Cuenta', 'text': colaborador.cuenta ? colaborador.cuenta : 'Sin definir' },
-                                { 'name': 'Clabe', 'text': colaborador.clabe ? colaborador.clabe : 'Sin definir' },
-                            ], '180px'
-                        )),
-                        nombre_emergencia:setArrayTableReactDom(
-                            [
-                                { 'name': 'Nombre', 'text': colaborador.nombre_emergencia ? colaborador.nombre_emergencia : 'Sin definir' },
-                                { 'name': 'Teléfono', 'text': colaborador.telefono_emergencia ? colaborador.telefono_emergencia : 'Sin definir' }
-                            ],'120px', this.doubleClick, colaborador, 'nombre_emergencia'
-                        ),
-                        nombre_emergencia2:setArrayTableReactDom(
-                            [
-                                { 'name': 'Nombre', 'text': colaborador.nombre_emergencia2 ? colaborador.nombre_emergencia2 : 'Sin definir' },
-                                { 'name': 'Teléfono', 'text': colaborador.telefono_emergencia2 ? colaborador.telefono_emergencia2 : 'Sin definir' }
-                            ],'120px', this.doubleClick, colaborador, 'nombre_emergencia2'
-                        ),
-                        vacaciones_tomadas: setTextTableReactDom(colaborador.vacaciones_disponibles, this.doubleClick, colaborador, 'vacaciones_disponibles', 'text-center'),
-                        id: colaborador.id
-                    }
-                )
-                return false
-            })
-            localStorage.setItem('activeKeyTabColaboradores', 'obra')
-        return aux
-    }
-    doubleClick = (data, tipo) => {
-        const { form } = this.state
-        switch(tipo){
-            case 'empresa':
-                if(data[tipo])
-                    form[tipo] = data[tipo].id.toString()
-                break
-            case 'fecha':
-                form.fechaInicio = new Date(moment(data.fecha_inicio))
-                break
-            case 'nombre_emergencia':
-                form.nombre_emergencia = data.nombre_emergencia
-                form.telefono_emergencia = data.telefono_emergencia
-                break
-            case 'nombre_emergencia2':
-                form.nombre_emergencia2 = data.nombre_emergencia2
-                form.telefono_emergencia2 = data.telefono_emergencia2
-                break
-            default:
-                form[tipo] = data[tipo]
-                break
+        // Insertamos la fila del semáforo después del grupo "Datos Personales"
+        if (campo.group === 'Datos Personales') {
+          formattedData.push({
+            field: 'Estatus Documental',
+            isSemaforo: true,
+            values: empleadosData.map(emp => emp),
+          });
         }
-        this.setState({form})
-        customInputAlert(
-            <div>
-                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
-                {
-                    (tipo === 'nombre') || (tipo === 'puesto') || (tipo === 'rfc') || (tipo === 'curp') ?
-                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
-                        />
-                    :<></>
-                }
-                {
-                    tipo === 'nombre_emergencia' &&
-                    <>
-                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } placeholder="NOMBRE DEL CONTACTO DE EMERGENCIA"
-                            requirevalidation = { 0 }  value = { form.nombre_emergencia } name = { 'nombre_emergencia' } letterCase = { false }
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
-                        
-                        <InputPhoneGray withicon={1} iconclass="fas fa-mobile-alt" name="telefono_emergencia" value={form.telefono_emergencia} 
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'telefono_emergencia')} }
-                            patterns={TEL} thousandseparator={false} prefix=''  swal = { true } 
-                        />
-                    </>
-                }
-                 {
-                    tipo === 'nombre_emergencia2' &&
-                    <>
-                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } placeholder="NOMBRE DEL CONTACTO DE EMERGENCIA 2"
-                            requirevalidation = { 0 }  value = { form.nombre_emergencia2 } name = { 'nombre_emergencia2' } letterCase = { false }
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
-                        
-                        <InputPhoneGray withicon={1} iconclass="fas fa-mobile-alt" name="telefono_emergencia2" value={form.telefono_emergencia2} 
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'telefono_emergencia2')} }
-                            patterns={TEL} thousandseparator={false} prefix=''  swal = { true } 
-                        />
-                    </>
-                }
-                {
-                    tipo === 'fecha' ?
-                        <CalendarDaySwal value = { form.fechaInicio } onChange = { (e) => {  this.onChangeSwal(e.target.value, 'fechaInicio')} } name = { 'fechaInicio' } date = { form.fechaInicio } withformgroup={0} />
-                    :<></>
-                }
-                {
-                    (tipo === 'empresa')  ?
-                        <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv="mb-2 mt-7"
-                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } requirevalidation={1} 
-                            placeholder={this.setSwalPlaceholder(tipo)} withicon={1}
-                        />
-                    :<></>
-                }
-                {
-                    (tipo === 'nss') || (tipo ==='vacaciones_disponibles') ?
-                        <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } type="text"
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } customlabel="d-none"
-                        />
-                    :<></>
-                }
-            </div>,
-            <Update />,
-            () => { this.patchEmpleados(data, tipo) },
-            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
-        )
-    }
-    changeEstatus = (estatus, colaborador) =>  {
-        estatus === 'Activo'?
-            questionAlert('¿ESTÁS SEGURO?', 'ACTIVARÁS EL COLABORADOR', () => this.changeEstatusAxios(estatus, colaborador))
-        : 
-            questionAlert('¿ESTÁS SEGURO?', 'INHABILITARÁS EL COLABORADOR', () => this.changeEstatusAxios(estatus, colaborador))
-    }
+
+        lastGroup = campo.group;
+      }
+      
+      
+  
+      formattedData.push({
+        field: campo.label,
+        isGroup: false,
+        values: empleadosData.map(emp => {
+          switch (campo.field) {
+            case 'empresa':
+              return emp?.empresa?.name ?? 'N/A';
+            case 'departamento':
+              return emp?.departamentos?.[0]?.nombre ?? 'N/A';
+            case 'nombre':
+              return `${emp?.nombre ?? ''} ${emp?.apellido_paterno ?? ''} ${emp?.apellido_materno ?? ''}`.trim() || 'N/A';
+            case 'estado_civil':
+              return emp?.estado_civil?.nombre_ec ?? 'N/A';
+            case 'organigrama':
+              return emp?.organigrama?.[0]?.organigrama?.nombre ?? 'N/A';
+            case 'lider':
+              const lider = emp?.organigrama?.[0]?.liders;
+              return `${lider?.nombre ?? ''} ${lider?.apellido_paterno ?? ''} ${lider?.apellido_materno ?? ''}`.trim() || 'N/A';
+            case 'estudios_carreras':
+              return (emp?.estudios || []).map(e => e.carrera).join(', ') || 'N/A';
+            case 'estudios_cedulas':
+              return (emp?.estudios || []).map(e => e.cedula).join(', ') || 'N/A';
+            case 'incrementos_fechas':
+              return (emp?.incrementos || [])
+                .map(i => moment(i.fecha).format('YYYY-MM-DD'))
+                .join(', ') || 'N/A';
+
+            case 'incrementos_montos':
+              return (emp?.incrementos || [])
+                .map(i => `$${parseFloat(i.monto_incremento).toFixed(2)}`)
+                .join(', ') || 'N/A';
+
+            default:
+              return emp[campo.field] ?? 'N/A';
+          }
+        }),
+      });
+    });
+  
+    return formattedData;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const page = pagination.pageIndex + 1;
+        const pageSize = pagination.pageSize;
+        const response = await apiGet(`v2/rh/empleados?type=admin&page=${page}&page_size=${pageSize}`, auth);
+        const { data: empleadosData, total } = response.data.data;
+        // console.log(empleadosData.datos_generales)
+        setEmpleados(empleadosData);
+        const datosFormateados = transformarEmpleados(empleadosData);
+        setData(datosFormateados);
+        setTotalRows(total);
+      } catch (error) {
+        console.error(error);
+        Swal.fire('Error', 'No se pudieron cargar los datos.', 'error');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, [pagination.pageIndex, pagination.pageSize, globalFilter, columnFilters]);
+  
+  
+
+
+  const columns = [
+   
+
+    {
+      accessorKey: 'field',
+      header: 'Campo',
+      muiTableHeadCellProps: {
+      sx: {
+      position: 'sticky',
+      left: 0,
+      zIndex: 10,
+      backgroundColor: 'white', // Fondo blanco para que no se tape
+      },
+      },
+      muiTableBodyCellProps: {
+      sx: {
+      position: 'sticky',
+      left: 0,
+      zIndex: 5,
+      backgroundColor: 'white',
+      },
+      },
+    },
+    ...empleados.map((emp, index) => ({
+    accessorKey: `${index}`,
+    header: `Colaborador ${emp.id}`,
+    size: 200,
+    Cell: ({ row }) => {
+      const value = row.original.values[index];
+      const fieldName = row.original.field;
+      const noCopyFields = ['Datos Personales', 'Datos Administrativos', 'Datos Nomina', 'ID'];
     
-    setSwalPlaceholder = (tipo) => {
-        switch(tipo){
-            case 'empresa':
-                return 'SELECCIONA LA EMPRESA'
-            default:
-                return ''
-        }
-    }
-
-    onChangeSwal = (value, tipo) => {
-        const { form } = this.state
-        form[tipo] = value
-        this.setState({...this.state, form})
-    }
+      // Mostrar menú de acciones solo en la fila "Datos Personales"
+      if (row.original.isGroup && fieldName === 'Datos Personales') {
+        let colorFondo = '#e3f2fd';
     
-    setOptions = (data, tipo) => {
-        const { options } = this.state
-        switch(tipo){
-            case 'empresa':
-                return options.empresas
-            default: return []
+        return (
+          <Box
+            sx={{
+              fontWeight: 'bold',
+              backgroundColor: colorFondo,
+              py: 1,
+              px: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            {row.original.field}
+            <IconButton
+              size="small"
+              onClick={(e) => abrirMenuAcciones(e, empleados[index])}
+            >
+              <MoreVertIcon fontSize="small" />
+            </IconButton>
+          </Box>
+        );
+      }
+    
+      if (row.original.isGroup || noCopyFields.includes(fieldName)) {
+        let colorFondo = '#f0f0f0';
+        if (fieldName === 'Datos Administrativos') colorFondo = '#fce4ec';
+    
+        return (
+          <Box sx={{ fontWeight: 'bold', backgroundColor: colorFondo, py: 1, px: 1 }}>
+            {row.original.field}
+          </Box>
+        );
+      }
+        if (row.original.isSemaforo && row.original.field === 'Estatus Documental') {
+          const empleado = row.original.values[index];
+          return (
+            <SemaforoDocumentosPorCodigo empleado={empleado} tiposAdjuntos={tiposAdjuntos} />
+          );
+        }
+
+    
+      return (
+        <Tooltip title={value || 'Sin información'} arrow>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              gap: '8px',
+            }}
+            onClick={() => navigator.clipboard.writeText(value || '')}
+          >
+            <ContentCopy style={{ fontSize: 16, color: '#888' }} />
+            <span>{value || 'N/A'}</span>
+          </Box>
+        </Tooltip>
+      );
+    },
+    
+    })),    
+    ];
+    
+
+  
+  
+
+  const toggleModal = (key) => {
+    setModals(prev => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        show: !prev[key]?.show,
+      },
+    }));
+  };
+
+  const [modalDinamico, setModalDinamico] = useState({
+    show: false,
+    tipo: '',
+    data: null,
+  });
+  
+  const abrirModalDinamico = (tipo, data) => {
+    setModalDinamico({
+      show: true,
+      tipo,
+      data,
+    });
+  };
+  
+  const cerrarModalDinamico = () => {
+    setModalDinamico({
+      show: false,
+      tipo: '',
+      data: null,
+    });
+  };
+
+
+  const cerrarModalYRefrescar = (key) => {
+    setModals(prev => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        show: false,
+        data: null
+      }
+    }));
+    // fetchData();
+    reloadData(); // ← Usamos la nueva función reutilizable
+
+  };
+ 
+
+  const reloadData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const page = pagination.pageIndex + 1;
+      const pageSize = pagination.pageSize;
+      const searchQuery = globalFilter ? `&search=${globalFilter}` : '';
+      const response = await apiGet(`v2/rh/empleados?type=admin&page=${page}&page_size=${pageSize}${searchQuery}`, auth);
+      const { data: empleadosData, total } = response.data.data;
+      // console.log(empleadosData)
+      setEmpleados(empleadosData);
+      const datosFormateados = transformarEmpleados(empleadosData);
+      setData(datosFormateados);
+      setTotalRows(total);
+    } catch (error) {
+      console.error(error);
+      Swal.fire('Error', 'No se pudieron cargar los datos.', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [pagination.pageIndex, pagination.pageSize, globalFilter, auth]);
+
+  
+  useEffect(() => {
+    reloadData();
+  }, [reloadData, columnFilters]);
+
+  const onChangeRange = (range) => {
+  const { startDate, endDate } = range;
+  const dias = moment(endDate).diff(moment(startDate), 'days') + 1;
+
+  setFormContrato(prev => ({
+    ...prev,
+    fechaInicio: startDate,
+    fechaFin: endDate,
+    dias
+  }));
+};
+
+const onChangeContrato = (e) => {
+  const { name, value, type } = e.target;
+
+  setFormContrato(prev => {
+    let updated = { ...prev, [name]: value };
+
+    if (type === 'radio') {
+      updated.periodo = value;
+      if (value === 'indefinido') {
+        updated.dias = '';
+      }
+    }
+
+    if (name === 'pagos_hr_extra' || name === 'total_obra') {
+      updated[name] = value.replace(/[,]/gi, '');
+    }
+
+    if (name === 'periodo') {
+      const contratos = empleadoMenu?.contratos ?? [];
+      if (contratos.length === 0) {
+        updated.fechaInicio = new Date(moment(empleadoMenu?.fecha_inicio));
+      } else {
+        const fechasFin = contratos.map(c => c.fecha_fin).filter(f => f);
+        fechasFin.sort((a, b) => new Date(b) - new Date(a));
+        updated.fechaInicio = new Date(moment(fechasFin[0]));
+      }
+    }
+
+    return updated;
+  });
+};
+
+const generarContrato = async () => {
+
+   const empleado = modals.contratoColaborador?.data;
+  if (!empleado || !empleado.id) {
+    return errorAlert('No hay un colaborador seleccionado para generar el contrato.');
+  }
+  waitAlert();
+  try {
+    // console.log(empleadoMenu)
+    const response = await axios.put(
+      `${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar?tipo_contrato=${'administrativo'}`,
+      formContrato,
+      { headers: setSingleHeader(auth) }
+    );
+
+    const { contrato } = response.data;
+    // console.log(response);
+    // doneAlert(response.data.message ?? 'El contrato fue generado con éxito.');
+
+    Swal.close()
+    Swal.fire({
+        icon: 'success',
+        title: 'Contrato generado',
+        text: 'El contrato fue generado con éxito.',
+        showConfirmButton: false,
+        timer: 1500
+    })
+
+    if (contrato?.contrato) window.open(contrato.contrato, '_blank');
+    if (contrato?.carta) window.open(contrato.carta, '_blank');
+
+    setFormContrato(prev => ({ ...prev, tipos: [] }));
+    reloadData(); // Refrescar tabla si es necesario
+    toggleModal('contratoColaborador');
+
+  } catch (error) {
+     console.log(error)
+      if (error.response) {
+        printResponseErrorAlert(error);
+      } else {
+        errorAlert('Ocurrió un error de red o sin respuesta del servidor.');
+      }
+  }
+};
+
+
+const clearFiles = (name, key) => {
+  setFormContrato(prev => {
+    const adjuntos = { ...prev.adjuntos };
+    const files = [...adjuntos[name].files].filter((_, i) => i !== key);
+
+    adjuntos[name].files = files;
+    if (files.length === 0) {
+      adjuntos[name].value = '';
+    }
+
+    return {
+      ...prev,
+      adjuntos
+    };
+  });
+};
+
+
+const onChangeAdjuntos = (valor, colaborador) => {
+  const tipo = valor.target.id;
+
+  if (!colaborador || !colaborador.id) {
+    return errorAlert('Colaborador inválido');
+  }
+
+  sendFileAlert(valor, (success) => {
+    addAdjuntoAxios(success, tipo, colaborador);
+  });
+};
+
+const addAdjuntoAxios = async (valor, tipo, colaborador) => {
+    if (!colaborador?.id) {
+    return errorAlert('Colaborador inválido.');
+  }
+
+  waitAlert();
+
+  const file = valor?.target?.file || valor?.file;
+  const name = valor?.target?.name || valor?.name;
+
+  if (!file) {
+    return errorAlert('Adjunta solo un archivo');
+  }
+
+  try {
+    const data = new FormData();
+    data.append('file', file);
+
+    const response = await axios.post(
+      `${URL_DEV}v2/rh/empleados/${colaborador.id}/contratos/${name}/adjuntar?tipo=${tipo}`,
+      data,
+      { headers: setFormHeader(auth) }
+    );
+
+    const { empleado } = response.data;
+
+    // Opcional: Si necesitas actualizar el empleado en el estado
+    setEmpleadoMenu(empleado); // Si usas useState para esto
+
+        Swal.close()
+    Swal.fire({
+        icon: 'success',
+        title: 'Adjunto subido',
+        text: 'El adjunto fue registrado con éxito.',
+        showConfirmButton: false,
+        timer: 1500
+    })
+
+    // Opcional: recargar la lista de empleados
+    reloadData();
+
+  } catch (error) {
+       console.log(error)
+        if (error.response) {
+          printResponseErrorAlert(error);
+        } else {
+          errorAlert('Ocurrió un error de red o sin respuesta del servidor.');
         }
     }
+};
 
-    setActions = colaborador => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
-                action: 'edit',
-                tooltip: { id: 'edit', text: 'Editar' },
-            },
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'delete',
-                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' },
-            },
-            {
-                text: 'Mostrar&nbsp;información',
-                btnclass: 'primary',
-                iconclass: 'flaticon2-magnifier-tool',
-                action: 'see',
-                tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
-            },
-            {
-                text: 'Adjuntos',
-                btnclass: 'info',
-                iconclass: 'flaticon-attachment',
-                action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            }
-        )
-        if (colaborador.estatus_empleado === 'Activo') {
-            aux.push(
-                {
-                    text: 'Contrato',
-                    btnclass: 'warning',
-                    iconclass: 'flaticon2-file-1',
-                    action: 'contrato',
-                    tooltip: { id: 'adjuntos', text: 'Contrato' }
-                },
-                {
-                    text: 'Licencias y equipos',
-                    btnclass: 'dark',
-                    iconclass: 'flaticon-imac',
-                    action: 'licencias',
-                    tooltip: { id: 'licencias', text: 'Licencias y equipos' }
-                },
-                {
-                    text: 'Historial de vacaciones',
-                    btnclass: 'success',
-                    iconclass: 'la-umbrella-beach',
-                    action: 'historial-vacaciones',
-                    tooltip: { id: 'historial-vacaciones', text: 'Historial de vacaciones' }
-                },
-                {
-                    text: 'Prestaciones',
-                    btnclass: 'primary',
-                    iconclass: 'la-hand-holding-usd',
-                    action: 'prestaciones',
-                    tooltip: { id: 'prestaciones', text: 'Prestaciones' }
-                }
-            )
-        }
-        return aux
-    }
 
-    setAdjuntosTable = adjuntos => {
-        let aux = []
-        adjuntos.map((adjunto) => {
-            aux.push({
-                actions: this.setActionsAdjuntos(adjunto),
-                url: renderToString(
-                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
-                ),
-                tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
-                id: 'adjuntos-' + adjunto.id
-            })
-            return false
-        })
-        return aux
-    }
+const cancelarContrato = (contratoId ,empleado) => {
+  deleteAlert(
+    '¿DESEAS TERMINAR EL CONTRATO?',
+    '',
+    () => cancelarContratoAxios(contratoId, empleado), // ✅ esta sí es la función real que hace la petición
+    'SI, TERMINAR'
+  );
+};
 
-    setActionsAdjuntos = () => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'deleteAdjunto',
-                tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
-            })
-        return aux
-    }
 
-    async getEmpleadosAxios() {
-        $('#empleados_admin_table').DataTable().ajax.reload();
-    }
-    async getEmpleadosObraAxios() {
-        $('#empleados_obra_table').DataTable().ajax.reload();
-    }
+const cancelarContratoAxios = async (idContrato, empleado) => {
+  waitAlert();
+  // console.log(idContrato)
+  // console.log(empleado.id)
+  try {
+    const response = await axios.get(
+      `${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${idContrato}/terminar`,
+      { headers: setSingleHeader(auth) }
+    );
 
-    controlledTab = value => {
-        const { form } = this.state
-        if (value === 'administrativo') { this.getEmpleadosAxios() }
-        if (value === 'obra') {
-            this.getEmpleadosObraAxios()
-            form.tipo_empleado = 'Obra'
-        }
-        if (value === 'prestaciones'){
+     Swal.close()
+    Swal.fire({
+        icon: 'success',
+        title: 'Contrato Terminado',
+        text: 'Contrato terminado con éxito.',
+        showConfirmButton: false,
+        timer: 1500
+    })
+    // await reloadEmpleado(); // ✅ actualiza los contratos del formulario
 
-        }
-        this.setState({ ...this.state, key: value, form })
-    }
+    // doneAlert(response.data.message ?? 'Contrato terminado con éxito.');
+    reloadData();
 
-    async addAdjuntoEmpleadoAxios() {
-        const { access_token } = this.props.authUser
-        const { form, empleado } = this.state
-        const data = new FormData();
-        let aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-            
-            return false
-        })
-        data.append('id', empleado.id)    
-        await axios.post(URL_DEV + 'rh/empleado/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                //console.log(response)               
-                const { empleado } = response.data
-                const { data, key } = this.state
-                data.adjuntos = empleado.datos_generales.concat(empleado.recibos_nomina).concat(empleado.altas_bajas)
-                // console.log(data.adjuntos)
-                if (key === 'administrativo') { this.getEmpleadosAxios() }
-                if (key === 'obra') { this.getEmpleadosObraAxios() }
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    empleado: empleado,
-                    adjuntos: this.setAdjuntosTable(data.adjuntos),
-                    data
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+  } catch (error) {
+    console.log(error)
+     if (error.response) {
+      printResponseErrorAlert(error);
+    } else {
+      errorAlert('Ocurrió un error de red o sin respuesta del servidor.');
     }
+    // printResponseErrorAlert(error);
+  }
+};
 
-    async deleteAdjuntoAxios(id) {
-        const { access_token } = this.props.authUser
-        const { empleado } = this.state
-        await axios.delete(URL_DEV + 'rh/empleado/' + empleado.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empleado } = response.data
-                const { data, key } = this.state
-                data.adjuntos = empleado.datos_generales.concat(empleado.recibos_nomina).concat(empleado.altas_bajas)
-                if (key === 'administrativo') { this.getEmpleadosAxios() }
-                if (key === 'obra') { this.getEmpleadosObraAxios() }
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue eliminado con éxito.')
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    empleado: empleado,
-                    adjuntos: this.setAdjuntosTable(data.adjuntos),
-                    data
-                })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
 
-    patchEmpleados = async( data,tipo ) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        let value = ''
-        switch(tipo){
-            case 'fecha':
-                value = form.fechaInicio
-            break
-            case 'nombre_emergencia':
-                value = { nombre: form.nombre_emergencia, telefono: form.telefono_emergencia }
-            break;
-            case 'nombre_emergencia2':
-                value = { nombre: form.nombre_emergencia2, telefono: form.telefono_emergencia2 }
-            break;
-            default:
-                value = form[tipo]
-            break;
-        }
-        waitAlert()
-        await axios.put(`${URL_DEV}v2/rh/empleados/${tipo}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { key } = this.state
-                if (key === 'administrativo')
-                    this.getEmpleadosAxios()
-                if (key === 'obra')
-                    this.getEmpleadosObraAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La colaborador fue editado con éxito')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
+const renovarContrato = async (empleado) => {
+  waitAlert();
+  // console.log(empleado.id)
+  try {
+    const response = await axios.put(
+      `${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/renovar?tipo_contrato=administrativo`,
+      formContrato,
+      { headers: setSingleHeader(auth) }
+    );
 
-    async changeEstatusAxios(estatus, colaborador){
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/empleados/update/${colaborador.id}/estatus`,{estatus: estatus}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                Swal.close()
-                doneAlert('Estatus actualizado con éxito')
-                const { key } = this.state
-                if (key === 'administrativo')
-                    this.getEmpleadosAxios()
-                if (key === 'obra')
-                    this.getEmpleadosObraAxios()
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
+    const { contrato } = response.data;
+    
+     Swal.close()
+    Swal.fire({
+        icon: 'success',
+        title: 'Contrato actualizado',
+        text: 'El contrato fue generado con éxito',
+        showConfirmButton: false,
+        timer: 1500
+    })
+    // doneAlert(response.data.message ?? 'El contrato fue generado con éxito.');
 
-    deleteElementAxios = async(user, element) => {
-        const { access_token } = this.props.authUser
-        waitAlert()
-        await axios.delete(`${URL_DEV}v2/rh/empleados/${user.id}/departamento/${element.id}`, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { key } = this.state
-                if (key === 'administrativo') {
-                    this.getEmpleadosAxios()
-                }
-                if (key === 'obra') {
-                    this.getEmpleadosObraAxios()
-                }
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El departamento fue eliminado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
+    if (contrato?.contrato) window.open(contrato.contrato, '_blank');
+    if (contrato?.carta) window.open(contrato.carta, '_blank');
 
-    clearFiles = (name, key) => {
-        const { form } = this.state
-        let aux = []
-        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
-            if (counter !== key) { aux.push(form.adjuntos[name].files[counter]) }
-        }
-        if (aux.length < 1) { form.adjuntos[name].value = '' }
-        form.adjuntos[name].files = aux
-        this.setState({ ...this.state, form })
-    }
+    setFormContrato(prev => ({ ...prev, tipos: [] }));
+    setModals(prev => ({
+      ...prev,
+      contratoColaborador: { show: false, data: null }
+    }));
 
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form.adjuntos[name].value = value
-        form.adjuntos[name].files = aux
-        this.setState({ ...this.state, form })
-    }
-    exportRHAxios = async() =>{
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/exportar/rh/empleados`, { responseType:'blob', headers: setSingleHeader(access_token)}).then(
-            (response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'empleados.xlsx');
-                document.body.appendChild(link);
-                link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El documento fue generado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    onChangeContrato= e => {
-        
-        const { name, value, type } = e.target
-        let { formContrato, empleado } = this.state
-        formContrato[name] = value
-        if(type === 'radio'){
-            formContrato.periodo = value
-            if(formContrato.periodo === 'indefinido'){
-                formContrato.dias = ''
-            }
-        }
-        switch (name) {
-            case 'pagos_hr_extra':
-            case 'total_obra':
-                formContrato[name] = value.replace(/[,]/gi, '')
-                break;
-            case 'periodo':
-                if(empleado.contratos.length === 0){
-                    formContrato.fechaInicio = new Date(moment(empleado.fecha_inicio))
-                }else{
-                    let aux = []
-                    empleado.contratos.map((contrato) => {
-                        if (contrato.fecha_fin) {
-                            aux.push(contrato.fecha_fin)
-                        }
-                        return false
-                    })
-                    aux.sort(function(a,b){
-                        return new Date(b) - new Date(a);
-                    });
-                    formContrato.fechaInicio = new Date(moment(aux[0]))
-                }
-                break;
-            default:
-                break;
-        }
-        
-        this.setState({ 
-            ...this.state,
-            formContrato
-        })
-    }
-    onChangeRange = range => {
-        const { startDate, endDate } = range
-        const { formContrato } = this.state
-        formContrato.fechaInicio = startDate
-        formContrato.fechaFin = endDate
-        let dias = moment(endDate).diff(moment(startDate), 'days') + 1
-        formContrato.dias = dias
-        this.setState({
-            ...this.state,
-            formContrato
-        })
-    }
+    reloadData();
 
-    generar = async() => {
-        waitAlert()
-        const { empleado, formContrato, key, modal } = this.state
-        const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/generar?tipo_contrato=${key}`, formContrato, { headers: setSingleHeader(access_token)}).then(
-            (response) => {
-                const { contrato, empleado } = response.data
-                const { key } = this.state
-                if (key === 'administrativo') { this.getEmpleadosAxios() }
-                if (key === 'obra') { this.getEmpleadosObraAxios() }
-                modal.contrato = false
-                formContrato.tipos = []
+  } catch (error) {
+    console.error(error);
+    if (error.response) {
+      printResponseErrorAlert(error);
+    } else {
+      errorAlert('Ocurrió un error de red o sin respuesta del servidor.');
+    }
+  }
+};
 
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
-                if(contrato.contrato)
-                    window.open(contrato.contrato, '_blank');
-                if(contrato.carta)
-                    window.open(contrato.carta, '_blank');
-                this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
 
-    renovarContrato = async() => {
-        waitAlert()
-        const { empleado, formContrato, key, modal } = this.state
-        const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/renovar?tipo_contrato=${key}`, formContrato, { headers: setSingleHeader(access_token)}).then(
-            (response) => {
-                const { contrato, empleado } = response.data
-                const { key } = this.state
-                if (key === 'administrativo') { this.getEmpleadosAxios() }
-                if (key === 'obra') { this.getEmpleadosObraAxios() }
-                modal.contrato = false
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrado fue generado con éxito.')
-                if(contrato.contrato)
-                    window.open(contrato.contrato, '_blank');
-                if(contrato.carta)
-                    window.open(contrato.carta, '_blank');
-                    formContrato.tipos = []
 
-                this.setState({ ...this.state, empleado: empleado, formContrato: this.clearFormContrato(), modal })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
+const regeneratePdf = (empleado, contrato) => {
+  deleteAlert(
+    '¿ESTÁS SEGURO?',
+    'GENERARÁS UN NUEVO CONTRATO',
+    () => regeneratePdfAxios(empleado.id, contrato?.id),
+    'SI, REGENERAR'
+  );
+};
 
-    onChangeAdjuntos = valor => {
-        let tipo = valor.target.id
-        sendFileAlert( valor, (success) => { this.addAdjuntoAxios(success, tipo);})
-    }
 
-    async addAdjuntoAxios(valor, tipo) {
-        waitAlert()
-        const { name, file } = valor.target
-        const { access_token } = this.props.authUser
-        const { empleado } = this.state
-        let data = new FormData();
-        if(file){
-            data.append(`file`, file)
-            await axios.post(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${name}/adjuntar?tipo=${tipo}`, data, { headers: setFormHeader(access_token) }).then(
-                (response) => {
-                    const { empleado } = response.data
-                    const { key } = this.state
-                    if (key === 'administrativo') { this.getEmpleadosAxios() }
-                    if (key === 'obra') { this.getEmpleadosObraAxios() }
-                    this.setState({...this.state, empleado: empleado})
-                    doneAlert(response.data.message !== undefined ? response.data.message : 'El adjunto fue registrado con éxito.')
-                }, (error) => { printResponseErrorAlert(error) }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.error(error, 'error')
-            })
-        }else{ errorAlert('Adjunta solo un archivo') }
-        
-    }
-    cancelarContrato = element => {
-        deleteAlert('¿DESEAS TERMINAR EL CONTRATO?', '', () => this.cancelarContratoAxios(element.id), 'SI, TERMINAR')
-    }
-    regeneratePdf = element => {
-        deleteAlert('¿ESTÁS SEGURO?', 'GENERARÁS UN NUEVO CONTRATO', () => this.regeneratePdfAxios(element.id), 'SI, REGENERAR')
-    }
-    async cancelarContratoAxios(element) {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { empleado } = this.state
-        await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${element}/terminar`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { empleado } = response.data
-                const { key } = this.state
-                if (key === 'administrativo') { this.getEmpleadosAxios() }
-                if (key === 'obra') { this.getEmpleadosObraAxios() }
-                this.setState({...this.state, empleado: empleado})
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Contrato terminado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    regeneratePdfAxios = async(id) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { empleado } = this.state
-        await axios.get(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${id}/regenerar`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { empleado } = response.data
-                const { key } = this.state
-                if (key === 'administrativo') { this.getEmpleadosAxios() }
-                if (key === 'obra') { this.getEmpleadosObraAxios() }
-                this.setState({...this.state, empleado: empleado})
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Contrato terminado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
+const regeneratePdfAxios = async (empleadoId, contratoId) => {
+  waitAlert();
+  try {
+    const response = await axios.get(
+      `${URL_DEV}v2/rh/empleados/${empleadoId}/contratos/${contratoId}/regenerar`,
+      { headers: setSingleHeader(auth) }
+    );
 
-    deleteContratoAxios = async(contrato) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { empleado ,formContrato} = this.state
-        await axios.delete(`${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${contrato.id}`, { headers: setSingleHeader(access_token) }).then(
-            (response) => {
-                const { empleado } = response.data
-                const { key } = this.state
-                if (key === 'administrativo') { this.getEmpleadosAxios() }
-                if (key === 'obra') { this.getEmpleadosObraAxios() }
-                formContrato.tipos = []
+    const { empleado, contrato } = response.data;
+      Swal.close()
+    Swal.fire({
+        icon: 'success',
+        title: 'Contrato regenerado',
+        text: 'Contrato regenerado con éxito',
+        showConfirmButton: false,
+        timer: 1500
+    })
 
-                this.setState({...this.state, empleado: empleado})
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Contrato terminado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
-    // LICENCIAS Y EQUIPOS
-    openModalLicencias = colaborador => {
-        const { modal } = this.state
-        modal.licencias = true
-        this.setState({
-            ...this.state,
-            modal,
-            empleado: colaborador,
-            formeditado:1
-        })
-    }
-    handleCloseLicencias = () => {
-        const { modal } = this.state
-        modal.licencias = false
-        modal.vacaciones = false
-        modal.prestaciones = false
-        this.setState({
-            ...this.state,
-            modal
-        })
-    }
-    openModalHistorialVacaciones = colaborador => {
-        const { modal } = this.state
-        modal.vacaciones = true
-        this.setState({
-            ...this.state,
-            empleado: colaborador,
-            modal
-        })
-    }
-    openModalPrestaciones = colaborador => { 
-        const { modal } = this.state
-        modal.prestaciones = true
-        this.setState({
-            ...this.state,
-            empleado: colaborador,
-            modal
-        })
-    }
-// setActions = empleados => {
-//     return (
-//         <div className="w-100 d-flex justify-content-center">
-//             <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-//                 <Dropdown.Item className="text-hover-success dropdown-success" 
-//                     onClick={(e) => { e.preventDefault(); this.changePageEdit(empleados)}} >
-//                     {setNaviIcon('flaticon2-pen', 'editar')}
-//                 </Dropdown.Item>
-//                 <Dropdown.Item className="text-hover-danger dropdown-danger" 
-//                     onClick={(e) => { e.preventDefault(); deleteAlert(`ELIMINARÁS LA empleados CON IDENTIFICADOR: ${empleados.id}`, 
-//                         '¿DESEAS CONTINUAR?', () => this.openModalDelete(empleados.id)) }}>
-//                     {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
-//                 </Dropdown.Item>
-//                 <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalSee(empleados) }}>
-//                     {setNaviIcon('flaticon2-magnifier-tool', 'Mostrar')}
-//                 </Dropdown.Item>
-//                 <Dropdown.Item className="text-hover-info dropdown-info" onClick={(e) => { e.preventDefault(); this.openModalAdjuntos(empleados) }}>
-//                     {setNaviIcon('flaticon-attachment', 'Adjuntos')}
-//                 </Dropdown.Item>
-//                 <Dropdown.Item className="text-hover-warning dropdown-warning" onClick={(e) => { e.preventDefault(); this.openModalContrato(empleados) }}>
-//                     {setNaviIcon('flaticon2-file-1', 'Contrato')}
-//                 </Dropdown.Item>
-//                 <Dropdown.Item className="text-hover-warning dropdown-dark" onClick={(e) => { e.preventDefault(); this.openModalLicencias(empleados) }}>
-//                     {setNaviIcon('flaticon-imac', 'Licencias y equipos')}
-//                 </Dropdown.Item>
-//                 <Dropdown.Item className="text-hover-warning dropdown-success" onClick={(e) => { e.preventDefault(); this.openModalHistorialVacaciones(empleados) }}>
-//                     {setNaviIcon('la-umbrella-beach', 'Historial de vacaciones')}
-//                 </Dropdown.Item>
-//                 <Dropdown.Item className="text-hover-warning dropdown-primary" onClick={(e) => { e.preventDefault(); this.openModalHistorialVacaciones(empleados) }}>
-//                     {setNaviIcon('la-hand-holding-usd', 'Prestaciones')}
-//                 </Dropdown.Item>
-//             </DropdownButton>
-//         </div>
-//     )
-// }
+    // doneAlert(response.data.message ?? 'Contrato regenerado con éxito.');
 
-//     setEmpleados = empleados => {
-//         // let aux = []
-//         // empleados.map((empleado) => {
-//         // aux.push(
-//         //    {
-//         //     actions: this.setActions(empleado)
-//         //    }
-//         //         )    
-//         //      return false
-//         // })
-//         // return aux
-//     }
+    if (contrato?.contrato) window.open(contrato.contrato, '_blank');
+    if (contrato?.carta) window.open(contrato.carta, '_blank');
 
-    render() {
-        const { modal, form, key, adjuntos, data, empleado, formContrato, formeditado } = this.state
-        const { access_token, departamento } = this.props.authUser
+    reloadData(); // Refresca si hace falta
+  } catch (error) {
+      console.error(error);
+    if (error.response) {
+      printResponseErrorAlert(error);
+    } else {
+      errorAlert('Ocurrió un error de red o sin respuesta del servidor.');
+    }
+  }
+};
+
+const deleteContratoAxios = async (contrato, empleado) => {
+  waitAlert();
+  // console.log(contrato)
+  // console.log(empleado)
+  try {
+    const response = await axios.delete(
+      `${URL_DEV}v2/rh/empleados/${empleado.id}/contratos/${contrato.id}`,
+      { headers: setSingleHeader(auth) }
+    );
+
+      Swal.close()
+    Swal.fire({
+        icon: 'success',
+        title: 'Contrato eliminado',
+        text: 'Contrato eliminado con éxito.',
+        showConfirmButton: false,
+        timer: 1500
+    })
+    // doneAlert(response.data.message ?? 'Contrato eliminado con éxito.');
+
+    setFormContrato(prev => ({
+      ...prev,
+      tipos: []
+    }));
+
+    reloadData();
+
+    setModals(prev => ({
+      ...prev,
+      contratoColaborador: { show: false, data: null }
+    }));
+
+  } catch (error) {
+    console.error(error);
+    printResponseErrorAlert(error);
+  }
+};
+
+const deleteEmpleadoAxios = async () => {
+  try {
+    const { id } = modals.deleteColaborador.data;
+    const response = await axios.delete(`${URL_DEV}rh/empleado/${id}`, {
+      headers: setSingleHeader(auth)
+    });
+
+    Swal.close();
+    Swal.fire('Eliminado', 'El colaborador fue eliminado exitosamente.', 'success');
+    reloadData();
+    toggleModal('deleteColaborador');
+  } catch (error) {
+    printResponseErrorAlert(error);
+  }
+};
+
+const SemaforoDocumentosPorCodigo = ({ empleado, tiposAdjuntos }) => {
+  if (!empleado?.datos_generales) return null;
+
+  const documentosEmpleado = empleado.datos_generales;
+
+  // Obtener códigos únicos obligatorios
+  const codigosObligatorios = [...new Set(
+    tiposAdjuntos
+      .filter(tipo => tipo.obligatorio === 1)
+      .map(tipo => tipo.codigo)
+  )];
+
+  return (
+    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap' }}>
+      {codigosObligatorios.map(codigo => {
+        const tieneDocumento = documentosEmpleado.some(
+          doc => doc?.tipo_adjunto?.codigo === codigo
+        );
+
+        const color = tieneDocumento ? 'green' : 'red';
 
         return (
-            <Layout active={'rh'} {...this.props}>
-                <Tabs defaultActiveKey={localStorage.getItem('activeKeyTabColaboradores')} activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
-                    {
-                        // departamento.departamentos[0].nombre !== "COMPRAS" &&
-                        <Tab eventKey="administrativo" title="Administrativo">
-                    {/* <NewTable
-                    columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
-                            subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
-                            url = '/rh/colaboradores/add'
-                            mostrar_acciones = { true }
-                            exportar_boton = { true }
-                            onClickExport = { () => this.exportRHAxios() }
-                            actions = {  () => this.setEmpleados() }
-                            accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado }
-                            urlRender = { `${URL_DEV}v2/rh/empleados?type=admin` } idTable = 'empleados_admin_table'
-                            cardTable = 'cardTable_admin' cardTableHeader = 'cardTableHeader_admin'
-                            cardBody = 'cardBody_admin' isTab = { true } 
-                     /> */}
-                        <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores administrativos'
-                            subtitle = 'Listado de colaboradores' mostrar_boton = { true } abrir_modal = { false }
-                            url = '/rh/colaboradores/add' mostrar_acciones = { true } exportar_boton = { true }
-                            onClickExport = { () => this.exportRHAxios() }
-                            actions = {
-                                {
-                                    'edit': { function: this.changePageEdit },
-                                    'delete': { function: this.openModalDelete },
-                                    'adjuntos': { function: this.openModalAdjuntos },
-                                    'see': { function: this.openModalSee },
-                                    'contrato' : { function: this.openModalContrato },
-                                    'licencias' : { function: this.openModalLicencias },
-                                    'historial-vacaciones' : { function: this.openModalHistorialVacaciones },
-                                    'prestaciones' : { function: this.openModalPrestaciones }
-                                }
-                            }
-                            accessToken = { this.props.authUser.access_token } setter = { this.setEmpleado }
-                            urlRender = { `${URL_DEV}v2/rh/empleados?type=admin` } idTable = 'empleados_admin_table'
-                            cardTable = 'cardTable_admin' cardTableHeader = 'cardTableHeader_admin'
-                            cardBody = 'cardBody_admin' isTab = { true } />
-                    </Tab>
-                    }
-                    
-                    <Tab eventKey="obra" title="Obra">
-                        <NewTableServerRender columns = { EMPLEADOS_COLUMNS } title = 'Colaboradores de obra' subtitle = 'Listado de colaboradores' 
-                            mostrar_boton = { true } abrir_modal = { false } url = '/rh/colaboradores/add' mostrar_acciones = { true } exportar_boton = { true }
-                            onClickExport = { () => this.exportRHAxios() }
-                            actions={{
-                                'edit': { function: this.changePageEdit },
-                                'delete': { function: this.openModalDelete },
-                                'adjuntos': { function: this.openModalAdjuntos },
-                                'see': { function: this.openModalSee },
-                                'contrato' : { function: this.openModalContrato }
-                            }}
-                            accessToken = { this.props.authUser.access_token } setter = { this.setEmpleadoObra } cardTable = 'cardTable_obra'
-                            urlRender = { `${URL_DEV}v2/rh/empleados?type=obra` } idTable = 'empleados_obra_table'
-                            cardTableHeader = 'cardTableHeader_obra' cardBody = 'cardBody_obra' isTab = { true } />
-                    </Tab>
-                    <Tab eventKey="prestaciones" title="Prestaciones de ley"> <h4>Prestaciones de Ley</h4></Tab>
-                </Tabs>
-                <ModalDelete title={'¿Quieres eliminar el colaborador?'} show={modal.delete} handleClose={this.handleCloseModalDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEmpleadoAxios() }}>
-                </ModalDelete>
-                <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
-                    <AdjuntosForm form = { form } onChangeAdjunto = { this.onChangeAdjunto } clearFiles = { this.clearFiles }
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoEmpleadoAxios() }}
-                        adjuntos={['acta', 'curp', 'rfc','nss', 'identificacion', 'domicilio','estudios', 'bancaria','retencion', 'firma', 'foto', 'imss', 'bajaimss', 'responsiva', 'cv']} />
-                    <div className="separator separator-dashed separator-border-2 mb-6 mt-7"></div>
-                    <TableForModals columns = { ADJUNTOS_COLUMNS } data = { adjuntos } hideSelector = { true } mostrar_acciones = { true }
-                        actions = { { 'deleteAdjunto': { function: this.openModalDeleteAdjuntos } }} dataID = 'adjuntos'
-                        elements = { data.adjuntos }/>
-                </Modal>
-                <Modal size="lg" title="Colaborador" show={modal.see} handleClose={this.handleCloseSee} >
-                    <EmpleadosCard empleado={empleado} />
-                </Modal>
-                <Modal size="xl" title="Contrato" show={modal.contrato} handleClose={this.handleCloseContrato} >
-                    <FormularioContrato empleado={empleado} form={formContrato} onChangeRange={this.onChangeRange} onChangeContrato={this.onChangeContrato} 
-                        generarContrato={this.generar} clearFiles = { this.clearFiles } onChangeAdjuntos={this.onChangeAdjuntos} 
-                        cancelarContrato={this.cancelarContrato} renovarContrato = { this.renovarContrato } regeneratePdf = { this.regeneratePdf } formeditado={formeditado}
-                        user = { this.props.authUser.user } deleteContrato = { this.deleteContratoAxios } />
-                </Modal>
-                <Modal size="xl" title="Licencias y equipos" show={modal.licencias} handleClose={this.handleCloseLicencias} >
-                    {
-                        modal.licencias ?
-                            <LicenciasEquiposForm 
-                            at={access_token} 
-                            empleado = { empleado }
-                            esColaborador={true}
-                            adminView={false}
-                            />
-                        : <></>
-                    }
-                </Modal>
-                <Modal size="lg" title="Historial de solicitud de vacaciones" show={modal.vacaciones} handleClose={this.handleCloseLicencias} >
-                    <HistorialVacaciones at={access_token} empleado = { empleado }/>
-                </Modal>
-                <Modal title="Prestaciones del colaborador" show={modal.prestaciones} handleClose={this.handleCloseLicencias} >
-                    <PrestacionesRHList at={access_token} empleado = { empleado }/>
-                </Modal>
-            </Layout>
-        )
-    }
-}
+          <Tooltip
+            key={codigo}
+            title={codigo}
+          >
+            <Box
+              sx={{
+                width: 14,
+                height: 14,
+                borderRadius: '50%',
+                backgroundColor: color,
+                display: 'inline-block'
+              }}
+            />
+          </Tooltip>
+        );
+      })}
+    </Box>
+  );
+};
 
-const mapStateToProps = state => { return { authUser: state.authUser } }
-const mapDispatchToProps = dispatch => ({ })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Empleados);
+
+
+
+
+// const reloadEmpleado = async () => {
+//   console.log(empleadoMenu)
+//   try {
+//     const response = await axios.get(`${URL_DEV}v2/rh/empleados/${empleadoMenu.id}`, {
+//       headers: setSingleHeader(auth),
+//     });
+//     const empleadoActualizado = response.data.empleado;
+
+//     setEmpleadoMenu(empleadoActualizado); // o como se llame tu estado actual del empleado
+//   } catch (error) {
+//     console.error(error);
+//     if (error.response) {
+//       printResponseErrorAlert(error);
+//     } else {
+//       errorAlert('Ocurrió un error de red o sin respuesta del servidor.');
+//     }
+//     // printResponseErrorAlert(error);
+//   }
+// };
+
+
+
+
+
+
+
+
+
+
+
+// const handleNext = () => {
+//   if (activeStep < steps.length - 1) {
+//     setActiveStep((prev) => prev + 1);
+//   } else {
+//     addEmpleadoAxios(); // Reemplaza el viejo handleGuardar aquí
+//   }
+// };
+
+ 
+  
+
+  return (
+    <Layout authUser={authUser?.access_token} location={location} history={history} active="rh">
+      <Box sx={{ padding: '20px' }}>
+        <Box mb={2}>
+          <Breadcrumbs aria-label="breadcrumb">
+            <StyledBreadcrumb component="a" href="#" label="Home" icon={<HomeIcon fontSize="small" />} />
+            <StyledBreadcrumb component="a" href="#" label="RH" />
+            <StyledBreadcrumb component="a" href="/rh/colaboradores" label="Colaboradores" />
+          </Breadcrumbs>
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, overflowX: 'auto', overflowY: 'auto'}}>
+          <MaterialReactTable
+            columns={columns}
+            data={data}
+            state={{
+              isLoading,
+              pagination,
+              columnFilters,
+              globalFilter,            // ✅ pasa el valor del filtro
+
+            }}
+            manualPagination
+            onGlobalFilterChange={setGlobalFilter} // ✅ actualiza el valor
+            enableGlobalFilter={true} // Habilita el buscador global
+            manualFiltering={true} // 🔥 Importante para globalFilter en modo backend
+
+            rowCount={totalRows}
+            onPaginationChange={setPagination}
+            enableDensityToggle
+            enableColumnOrdering
+            enableColumnFilters={false}
+            enableFullScreenToggle={false}
+            enablePagination
+            enableRowVirtualization
+            muiTablePaginationProps={{
+              rowsPerPageOptions: [10, 25, 50, 100],
+              labelRowsPerPage: "Filas por página",
+              shape: "rounded",
+              variant: "outlined",
+            }}
+            paginationDisplayMode="pages"
+            initialState={{
+              pagination: { pageSize: 50, pageIndex: 0 },
+              density: 'compact',
+            }}
+            renderTopToolbarCustomActions={({ table }) => (
+              <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
+              <Button
+                sx={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#075633' } }}
+                variant="contained"
+                onClick={() => toggleModal('crearColaborador')}
+              >
+                Agregar Colaborador
+              </Button>
+              
+              </Box>
+            )}
+          />
+        </Box>
+      </Box>
+
+
+      <Modal size="xl" title="Crear Colaborador" show={modals.crearColaborador?.show} handleClose={() => toggleModal('crearColaborador')} >
+        <EmpleadosAgregar handleClose={() => toggleModal('crearColaborador')}  data={modals.crearColaborador?.data}   reloadData={reloadData} />        
+      </Modal>
+      <Modal size="xl" title="Editar Colaborador" show={modals.editarColaborador?.show} handleClose={() => toggleModal('editarColaborador')}>
+        <EmpleadosAgregar  handleClose={() => toggleModal('editarColaborador')} data={modals.editarColaborador?.data} modo="editar" reloadData={reloadData} />
+      </Modal>
+       <Modal size="lg" title="Historial Vacaciones" show={modals.vacacionesColaborador?.show} handleClose={() => toggleModal('vacacionesColaborador')}>
+        <HistorialVacaciones at={auth} empleado = { modals.vacacionesColaborador?.data }/>
+      </Modal>
+      <Modal size="xl" title="Contrato" show={modals.contratoColaborador?.show} handleClose={() => toggleModal('contratoColaborador')} >
+        <FormularioContrato
+           empleado={modals.contratoColaborador?.data}
+          form={formContrato}
+          onChangeRange={onChangeRange}
+          onChangeContrato={onChangeContrato}
+          generarContrato={generarContrato}
+          clearFiles={clearFiles}
+          onChangeAdjuntos={onChangeAdjuntos}
+          cancelarContrato={cancelarContrato}
+          renovarContrato={(empleado) => renovarContrato(empleado)} // ✅ se pasa como prop
+          regeneratePdf={regeneratePdf}
+          // reloadEmpleado={reloadEmpleado} // ✅ nueva prop
+
+          // formeditado={formeditado}
+          user={authUser?.user}
+          deleteContrato={deleteContratoAxios}
+        />
+      </Modal>
+      <ModalDelete
+          title={'¿Quieres eliminar el colaborador?'}
+          show={modals.deleteColaborador?.show}
+          handleClose={() => toggleModal('deleteColaborador')}
+          onClick={(e) => {
+            e.preventDefault();
+            waitAlert();
+            deleteEmpleadoAxios();
+          }}
+        />
+
+      <Modal
+        size="xl"
+        title="Licencias y Equipos"
+        show={modals.licenciasEquipos?.show}
+        handleClose={() => toggleModal('licenciasEquipos')}
+      >
+        {
+          modals.licenciasEquipos?.show &&
+          <LicenciasEquiposForm
+            at={authUser?.access_token} // o authUser?.access_token si usas eso
+            empleado={modals.licenciasEquipos.data}
+            esColaborador={true}
+            adminView={false}
+          />
+        }
+      </Modal>
+        
+        <Modal size="lg" title="Prestaciones del colaborador"  show={modals.prestacionesColaborador?.show}  handleClose={() => toggleModal('prestacionesColaborador')} >
+          {
+            modals.prestacionesColaborador?.show &&
+            <PrestacionesRHList
+              at={authUser?.access_token}
+              empleado={modals.prestacionesColaborador?.data}
+            />
+          }
+        </Modal>
+
+ 
+
+
+
+      <Menu
+        anchorEl={anchorElMenuAcciones}
+        open={Boolean(anchorElMenuAcciones)}
+        onClose={cerrarMenuAcciones}
+        reload={reloadData} 
+      >
+       
+
+       <MenuItem onClick={() => {
+          cerrarMenuAcciones();
+          setModals(prev => ({
+            ...prev,
+            editarColaborador: { show: true, data: empleadoMenu }
+          }));
+        }}>
+          <EditIcon fontSize="small" sx={{ mr: 1 }} />
+
+          Editar Colaborador
+        </MenuItem>
+         <MenuItem onClick={() => {
+          cerrarMenuAcciones();
+          setModals(prev => ({
+            ...prev,
+            deleteColaborador: { show: true, data: empleadoMenu }
+          }));
+        }}>
+          <DeleteIcon fontSize="small" sx={{ mr: 1, color: 'error.main' }} />
+          Eliminar Colaborador
+        </MenuItem>
+
+        <MenuItem onClick={() => {
+        const adjuntos = empleadoMenu?.datos_generales || [];
+
+          cerrarMenuAcciones();
+          abrirModalDinamico('adjuntos', {
+            ...empleadoMenu,
+            adjuntos,
+          });
+          }}>
+          <AttachFile fontSize="small" sx={{ mr: 1 }} />
+          Adjuntos
+        </MenuItem>
+
+       <MenuItem onClick={() => {
+        cerrarMenuAcciones();
+        setModals(prev => ({
+          ...prev,
+          vacacionesColaborador: { show: true, data: empleadoMenu }
+        }));
+      }}>
+        <KeyboardArrowRight fontSize="small" sx={{ mr: 1 }} />
+        Historial de Vacaciones
+      </MenuItem>
+
+      <MenuItem onClick={() => {
+        cerrarMenuAcciones();
+        setModals(prev => ({
+          ...prev,
+          contratoColaborador: { show: true, data: empleadoMenu }
+        }));
+      }}>
+        <KeyboardArrowRight fontSize="small" sx={{ mr: 1 }} />
+        Contrato
+      </MenuItem>
+
+      <MenuItem onClick={() => {
+        cerrarMenuAcciones();
+        setModals(prev => ({
+          ...prev,
+          licenciasEquipos: { show: true, data: empleadoMenu }
+        }));
+      }}>
+        <KeyboardArrowRight fontSize="small" sx={{ mr: 1 }} />
+        Licencias y Equipos
+      </MenuItem>
+
+      <MenuItem onClick={() => {
+        cerrarMenuAcciones();
+        setModals(prev => ({
+          ...prev,
+          prestacionesColaborador: { show: true, data: empleadoMenu }
+        }));
+      }}>
+        <KeyboardArrowRight fontSize="small" sx={{ mr: 1 }} />
+        Prestaciones
+      </MenuItem>
+
+
+
+
+        {/* {/* <MenuItem onClick={() => {
+          cerrarMenuAcciones();
+          abrirModalDinamico('prestaciones', empleadoMenu);
+        }}>
+          <KeyboardArrowRight fontSize="small" sx={{ mr: 1 }} />
+          Prestaciones
+        </MenuItem> */}
+      </Menu> 
+
+      <Modal
+        size="lg"
+        title={
+          modalDinamico.tipo === 'adjuntos'
+            ? ''
+            : modalDinamico.tipo === 'vacaciones'
+            ? 'Historial de Vacaciones'
+            : modalDinamico.tipo === 'prestaciones'
+            ? 'Prestaciones'
+            : ''
+        }
+        show={modalDinamico.show}
+        handleClose={cerrarModalDinamico}
+      >
+        {modalDinamico.tipo === 'adjuntos' && <ComponenteAdjuntos colaborador={modalDinamico.data} />}
+        {/* {modalDinamico.tipo === 'vacaciones' && <ComponenteVacaciones colaborador={modalDinamico.data} />}
+        {modalDinamico.tipo === 'prestaciones' && <ComponentePrestaciones colaborador={modalDinamico.data} />} */}
+      </Modal>
+
+
+
+    
+
+    </Layout>
+  );
+};
+
+export default Empleados;

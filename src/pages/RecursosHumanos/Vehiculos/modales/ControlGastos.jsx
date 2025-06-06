@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2'
 
@@ -194,7 +194,7 @@ export default function ControlGastos(props) {
         })
     }
 
-    console.log(vehiculo)
+    // console.log(vehiculo)
 
     return (
         <>

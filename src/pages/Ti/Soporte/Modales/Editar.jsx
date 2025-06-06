@@ -31,7 +31,7 @@ export default function Editar(props) {
         id_usuario: data.usuario? data.usuario.empleado_id : null,
     })
 
-    const [errores, setErrores] = useState({})
+    const [errores] = useState({})
 
     const [equipos, setEquipos] = useState([])
 

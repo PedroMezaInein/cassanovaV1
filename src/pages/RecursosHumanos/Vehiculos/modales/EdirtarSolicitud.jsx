@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { useSelector } from "react-redux";
-import { apiPostForm, apiGet, apiPutForm } from '../../../../functions/api';
+import {  apiPutForm } from '../../../../functions/api';
 import Swal from 'sweetalert2'
 import '../../../../styles/_salaJuntas.scss'
 
@@ -29,8 +29,6 @@ const useStyles = makeStyles((theme) => ({
 export default function EditarSolicitud(props) {
 
     const { closeModal, reload, solicitud } = props
-    console.log(solicitud)
-
     const userAuth = useSelector((state) => state.authUser);
 
     const [form, setForm] = useState({
@@ -71,7 +69,6 @@ export default function EditarSolicitud(props) {
             [tipo]: new Date(date)
         })
     };
-    console.log(form)
 
     const validateForm = () => {
         let validar = true

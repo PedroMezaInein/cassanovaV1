@@ -1,17 +1,16 @@
-import React, {useState, useEffect} from 'react'
-import { useSelector } from 'react-redux'
+import React, {useState} from 'react'
+// import { useSelector } from 'react-redux'
 
 import { AREAS_GASTOS_COLUMNS } from '../../../constants'
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import ModalAgregar from '../../../pages/Catalogos/Areas/ModalAgregar'
 import ModalEditarGastos from '../../../pages/Catalogos/Areas/ModalEditarGastos'
-import ModalEditarSubGasto from '../../../pages/Catalogos/Areas/ModalEditarSubPartida'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 
 export default function Gastos (key){
 
-    const userAuth = useSelector((state) => state.authUser);
+    // const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState()
     const [modal, setModal] = useState({
         crear: {

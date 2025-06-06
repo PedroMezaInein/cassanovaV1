@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from "react"
+import React, {useState } from "react"
 import { useSelector } from "react-redux";
-import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
+import { apiPostForm } from '../../../functions/api';
 import Swal from 'sweetalert2'
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -45,7 +45,7 @@ export default function SolicitarVehiculo(props) {
     const [errores, setErrores] = useState({})
 
     // MATERIAL UI
-    const classes = useStyles();
+    // const classes = useStyles();
 
     const handleChange = (e) => {
         setForm({

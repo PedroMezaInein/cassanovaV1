@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { apiGet, apiPostForm } from '../../../../functions/api'
 
-import DateFnsUtils from '@date-io/date-fns';
-import { es } from 'date-fns/locale'
-
-import Swal from 'sweetalert2'
-import { apiGet, apiPutForm, apiPostForm } from '../../../../functions/api'
-
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -17,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Style from './TicketsTi.module.css'
 
 export default function Funcionalidades(props) { 
-    const { data, reload, handleClose } = props
+    const { data } = props
     const authUser = useSelector(state => state.authUser)
     const [funcionalidad, setFuncionalidad] = useState({
         id: data.id,
@@ -31,13 +24,13 @@ export default function Funcionalidades(props) {
         getOptions()
     }, [])
 
-    function reformatDate(input) {
-        var datePart = input.match(/\d+/g),
-            year = datePart[0].substring(2), // get only two digits
-            month = datePart[1], day = datePart[2];
+    // function reformatDate(input) {
+    //     var datePart = input.match(/\d+/g),
+    //         year = datePart[0].substring(2), // get only two digits
+    //         month = datePart[1], day = datePart[2];
 
-        return month + '/' + day + '/' + year;
-    }
+    //     return month + '/' + day + '/' + year;
+    // }
 
     const getFuncionalidades = () => {
         apiGet(`ti/funcionalidad/${data.id}`, authUser.access_token)

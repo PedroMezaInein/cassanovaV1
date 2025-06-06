@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-
 import { Modal, ItemSlider } from './../../components/singles'
-
 import TablaGeneralPaginado from '../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
-import { setMoneyTable, setOptions } from '../../functions/setters'
+import { setMoneyTable } from '../../functions/setters'
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
@@ -14,34 +12,30 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 // import Filtrar from './Modales/Filtrar'
 // import FacturaExtranjera from './Modales/FacturaExtranjera'
 // import Facturas from './Modales/Facturas'
-
 import j2xParser from 'fast-xml-parser'
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
-
-import { setDateTable, setLabelTable,setOptionsWithLabel,setSelectOptions } from '../../functions/setters'
+import { setDateTable, setLabelTable} from '../../functions/setters'
 import { waitAlert, errorAlert, doneAlert,printResponseErrorAlert, createAlert } from '../../functions/alert'
-import { renderToString } from 'react-dom/server'
-
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import MenuItem from '@material-ui/core/MenuItem';
+// import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
+// import Select from '@material-ui/core/Select';
+// import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import Filtrar from './Filtrar'
 import  FacturacionCard  from './MostrarFactura'
-import { Tabs, Tab, Form, DropdownButton, Dropdown, Card } from 'react-bootstrap'
+import {Form } from 'react-bootstrap'
 import {  FileInput } from '../../components/form-components'
 import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
 
-import Favorite from '@material-ui/icons/Favorite';
-import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+// import Favorite from '@material-ui/icons/Favorite';
+// import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 // import { setMoneyTable } from '../../functions/setters'
 
-import StatusIndicatorGastos from './Egresos/Modales/StatusIndicatorGastos'
+// import StatusIndicatorGastos from './Egresos/Modales/StatusIndicatorGastos'
 
 import Swal from 'sweetalert2'
 

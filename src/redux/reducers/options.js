@@ -8,6 +8,9 @@ const initialState = {
     compras: [],
     proyectos: [],
     empresas: [],
+    empresa: [],
+    proveedores: [],
+    clientes: [],
 }
 
 //Actions Type
@@ -21,6 +24,10 @@ const SAVE_OPTIONS_INGRESOS = 'SAVE_OPTIONS_INGRESOS'
 const SAVE_OPTIONS_COMPRAS = 'SAVE_OPTIONS_COMPRAS'
 const SAVE_OPTIONS_PROYECTOS = 'SAVE_OPTIONS_PROYECTOS'
 const SAVE_OPTIONS_EMPRESAS = 'SAVE_OPTIONS_EMPRESAS'
+const SAVE_OPTIONS_EMPRESA = 'SAVE_OPTIONS_EMPRESA'
+const SAVE_OPTIONS_PROVEEDORES = 'SAVE_OPTIONS_PROVEEDORES'
+const SAVE_OPTIONS_CLIENTES = 'SAVE_OPTIONS_CLIENTES'
+
 
 
 export default function (state = initialState, action) {
@@ -71,6 +78,21 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 empresas: action.payload
+            }
+        case SAVE_OPTIONS_PROVEEDORES:
+            return {
+                ...state,
+                proveedores: action.payload
+            }
+        case SAVE_OPTIONS_EMPRESA:
+            return {
+                ...state,
+                empresa: action.payload
+            }
+        case SAVE_OPTIONS_CLIENTES:
+            return {
+                ...state,
+                clientes: action.payload
             }
         default:
             return state;

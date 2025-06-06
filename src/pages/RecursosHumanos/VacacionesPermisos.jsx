@@ -2,17 +2,13 @@ import {React, useState} from 'react'
 import { useSelector } from 'react-redux'
 
 import { Tabs, Tab } from 'react-bootstrap'
-import { useEffect } from 'react'
 import Swal from 'sweetalert2'
 import axios from 'axios'
 import $ from 'jquery'
 import { dayDMY } from '../../functions/setters'
-
-import { URL_DEV, SOLICITAR_VACACIONES_COLUMNS, SOLICITAR_PERMISOS_COLUMNS } from '../../constants'
-
+import { URL_DEV, SOLICITAR_VACACIONES_COLUMNS, SOLICITAR_PERMISOS_COLUMNS, AUTORIZAR_PERMISOS_COLUMNS } from '../../constants'
 import Layout from '../../components/layout/layout'
 import { NewTable } from '../../components/NewTables'
-import {setNaviIcon} from '../../functions/setters'
 
 import '../../../src/styles/_vacacionesPermisos.scss'
 
@@ -43,6 +39,10 @@ function VacacionesPermisos () {
         $(`#vacaciones_admin_table`).DataTable().ajax.reload()
     }
 
+    const reloadTableAutorizados = () => {
+        $(`#autorizados_admin_table`).DataTable().ajax.reload()
+    }
+
     const postPermisos = (body,id) => {
         axios.put(`${URL_DEV}permiso/solicitudes/autorizar/${id}`, body, { headers: { Authorization: `Bearer ${auth}` } })
         .then(response=>{
@@ -56,6 +56,8 @@ function VacacionesPermisos () {
             reloadTableVacaciones()
         })
     }
+
+
 
     const aceptarPermiso = (e, data)=>{
         e.preventDefault()
@@ -323,27 +325,55 @@ function VacacionesPermisos () {
     }
 
     function setDatosPermisos(datos) {
-        let aux = []
+        let aux = [];
         datos ? 
         datos.map((item) => { 
-            // console.log(item)
-         item.map((item2) => { 
-            aux.push({
-                actions: setActionsPermisos(item2),
-                empleado: `
-                    ${item2.empleado.nombre}
-                    ${item2.empleado.apellido_paterno}
-                    ${item2.empleado.apellido_materno}
-                `,
-                comentario: item2.comentarios,
-                fecha_inicio: moment(item2.fecha_inicio).format('YYYY-MM-DD') + ' / ' + item2.hora_entrada + ' - ' + item2.hora_salida  ,
-                fecha_fin: moment(item2.fecha_inicio).format('YYYY-MM-DD') + ' / ' + item2.hora_ir + ' - ' + item2.hora_regresar  ,
-                estado: item2.estatus
-            })
-          })
+            item.map((item2) => { 
+                aux.push({
+                    actions: setActionsPermisos(item2),
+                    empleado: `
+                        ${item2.empleado.nombre}
+                        ${item2.empleado.apellido_paterno}
+                        ${item2.empleado.apellido_materno}
+                    `,
+                    tipo_permiso: item2.tipo ? item2.tipo : '',
+                    comentario: item2.comentarios,
+                    fecha_inicio: item2.tipo === 'Todo dia' ||  item2.tipo === 'Llegar tarde' || item2.tipo === 'Salida anticipada'  ? 
+                        moment(item2.fecha_inicio).format('YYYY-MM-DD') + ' / ' + item2.hora_entrada + ' - ' + item2.hora_salida :
+                        moment(item2.fecha_fin).format('YYYY-MM-DD') + ' / ' + item2.hora_ir + ' - ' + item2.hora_regresar ,
+                   
+                    estado: item2.estatus
+                });
+            });
         })
-        : <></>
-        return aux
+        : <></>;
+        return aux;
+    }
+
+    function setDatosPermisosautorizados(datos) {
+        let aux = [];
+        datos ? 
+        datos.map((item) => { 
+            item.map((item2) => { 
+                aux.push({
+                    actions: setActionsPermisos(item2),
+                    empleado: `
+                        ${item2.empleado.nombre}
+                        ${item2.empleado.apellido_paterno}
+                        ${item2.empleado.apellido_materno}
+                    `,
+                    tipo_permiso: item2.tipo ? item2.tipo : '',
+                    comentario: item2.comentarios,
+                    fecha_inicio: item2.tipo === 'Todo dia' ||  item2.tipo === 'Llegar tarde' || item2.tipo === 'Salida anticipada'  ? 
+                        moment(item2.fecha_inicio).format('YYYY-MM-DD') + ' / ' + item2.hora_entrada + ' - ' + item2.hora_salida :
+                        moment(item2.fecha_fin).format('YYYY-MM-DD') + ' / ' + item2.hora_ir + ' - ' + item2.hora_regresar ,
+                   
+                    estado: item2.estatus
+                });
+            });
+        })
+        : <></>;
+        return aux;
         
     }
 
@@ -389,9 +419,28 @@ function VacacionesPermisos () {
                         setter={setDatosPermisos}
                     />
                 </Tab>
+                <Tab eventKey="autorizados" title="Permisos autorizados">
+                    <NewTable 
+                        columns={AUTORIZAR_PERMISOS_COLUMNS}
+                        title='Permisos autorizados'
+                        subtitle='Permisos autorizados'
+                      
+                        accessToken={auth}
+                        isTab={false}
+                        cardBody='cardBody_admin'
+                        cardTable='cardTable_admin'
+                        cardTableHeader='cardTableHeader_admin'
+                        tableName='autorizados_admin_table'
+                        urlRender={`${URL_DEV}permiso/solicitudes/autorizaciones`}
+                        setter={setDatosPermisosautorizados}
+                    />
+                </Tab>
+               
+
             </Tabs>
         </Layout>
     )
+    
 }
 
 export {VacacionesPermisos} ; 

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import SelectMUI from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-
 import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
@@ -10,7 +8,6 @@ import TextField from '@material-ui/core/TextField';
 import TrashIcon from '@material-ui/icons/DeleteOutline';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -171,7 +168,6 @@ function App(props) {
         const apiDepartments = response.data.presupuesto[0].rel;
         const apiData = response.data.presupuesto[0];
         const nomina = response.data;
-        console.log(apiData)
         const updatedDepartmentTotals = {};
         const { fecha_inicio, fecha_fin, nombre } = apiData;
         setIdPresu(apiData.id); // Assuming fecha_inicio is a valid date string
@@ -653,7 +649,7 @@ function App(props) {
   // console.log(tables)
   // console.log(departamentos)
   // console.log(departamentosData)
-console.log(selectedTable)
+// console.log(selectedTable)
 
   return (
     <div>

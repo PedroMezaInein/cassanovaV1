@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
-import { useState, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
 import Swal from 'sweetalert2';
-import { Card, Nav, Tab, Dropdown, Col, Row, OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 import Layout from '../../../components/layout/layout'
 import Tabla from './../../../components/NewTables/TablaGeneral/TablaGeneral'
@@ -65,7 +64,6 @@ export default function NominaPrestaciones() {
 
     const ProccessData = (data) => { 
         let aux = []
-        console.log(data);
         data.data.forEach((item) => {
             if (item.proyectos.length > 0) { 
                 aux.push({
@@ -75,7 +73,6 @@ export default function NominaPrestaciones() {
                 })
             }
         })
-        console.log(aux);
         return aux
     }
 

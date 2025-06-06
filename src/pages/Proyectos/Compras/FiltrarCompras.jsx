@@ -20,12 +20,15 @@ import Button from '@material-ui/core/Button';
 import Style from './../../Administracion/Egresos/Modales/estilos.module.css'
 
 export default function CrearEgreso(props) {
-    const {opcionesData, reload, handleClose, filtrarTabla,filtrada,setFiltrado, borrarTabla} = props
+    const { reload, handleClose, filtrarTabla,filtrada,setFiltrado, borrarTabla} = props
     const departamentos = useSelector(state => state.opciones.compras)
     const proyectos = useSelector(state => state.opciones.proyectos)
     const auth = useSelector((state) => state.authUser.access_token);
-
-    console.log(opcionesData)
+    const proveedores = useSelector((state) => state.opciones.proveedores || []);
+    const empresas = useSelector((state) => state.opciones.empresa || []);
+    const [loadingProveedores, setLoadingProveedores] = useState(true);
+    const [loadingEmpresas, setLoadingEmpresas] = useState(true);
+    // console.log(opcionesData)
 
     const [opciones, setOpciones] = useState({
         cuentas: [],
@@ -35,14 +38,27 @@ export default function CrearEgreso(props) {
         tiposImpuestos: [],
         tiposPagos: [],
     })
+    
+    useEffect(() => {
+        // Simula carga de proveedores
+        if (proveedores  && proveedores.length > 0) {
+            setLoadingProveedores(false);
+        }
+    }, [proveedores]);
 
     useEffect(() => {
-        if(opcionesData){
-            setOpciones(opcionesData)
+        if (empresas && empresas.length > 0) {
+            setLoadingEmpresas(false);
         }
-        filtrarTabla('')   
+    }, [empresas]);
 
-    }, [opcionesData])
+    // useEffect(() => {
+    //     if(opcionesData){
+    //         setOpciones(opcionesData)
+    //     }
+    //     filtrarTabla('')   
+
+    // }, [opcionesData])
  
     const [form, setForm] = useState({
         area: '',
@@ -126,7 +142,7 @@ export default function CrearEgreso(props) {
             setForm({
                 ...form,
                 [e.target.name]: e.target.value,
-                cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas
+                cuentas: empresas.find(empresa => empresa.id === e.target.value).cuentas
             });
         } else {
             setForm({
@@ -273,22 +289,37 @@ export default function CrearEgreso(props) {
 
             <div className="row">
                 <div className="col-md-4">
-                    {
-                        opciones.proveedores.length > 0 ?
-                        <div>
-                            <InputLabel>Proveedor</InputLabel>
-                            <Autocomplete
-                                name="proveedor"
-                                options={opciones.proveedores}
-                                getOptionLabel={(option) => option.name}
-                                style={{ width: 230, paddingRight: '1rem' }}
-                                onChange={(event, value) => handleChangeProveedor(event, value)}
-                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
-                            />
+                {
+                    loadingProveedores ? (
+                        <div style={{ textAlign: 'center', margin: '1rem 0', fontSize: '1.2rem', color: 'gray' }}>
+                            Cargando proveedores...
                         </div>
-                                
-                        : null
-                    } 
+                    ) : (
+                        proveedores.length > 0 ? (
+                            <div>
+                                <InputLabel>Proveedor</InputLabel>
+                                <Autocomplete
+                                    name="proveedor"
+                                    options={proveedores}
+                                    getOptionLabel={(option) => option.name}
+                                    style={{ width: 230, paddingRight: '1rem' }}
+                                    onChange={(event, value) => handleChangeProveedor(event, value)}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label={form.proveedor_nombre || 'Proveedor'}
+                                        />
+                                    )}
+                                />
+                            </div>
+                        ) : (
+                            <div style={{ textAlign: 'center', margin: '1rem 0', fontSize: '1.2rem', color: 'gray' }}>
+                                No se encontraron proveedores.
+                            </div>
+                        )
+                    )
+                }
                 </div>
                 <div className="col-md-4">
                     {
@@ -319,25 +350,36 @@ export default function CrearEgreso(props) {
                 <div className="col-md-2">
                 </div>
                 <div className="col-md-4">
-                    {
-                        opciones.empresas.length > 0 ?
-                            <div>
-                                <InputLabel>Empresa</InputLabel>
-                                <Select
-                                    name="empresa"
-                                    value={form.empresa}
-                                    onChange={handleChange}
-                                    style={{ width: 200, paddingRight: '1rem' }}
-                                >
-                                    {
-                                        opciones.empresas.map((item, index) => (
-                                            <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                        ))
-                                    }
-                                </Select>
+                {
+                        loadingEmpresas ? (
+                            <div style={{ textAlign: 'center', margin: '1rem 0', fontSize: '1.2rem', color: 'gray' }}>
+                                Cargando empresas...
                             </div>
-                        : null
+                        ) : (
+                            empresas.length > 0 ? (
+                                <div>
+                                    <InputLabel>Empresa</InputLabel>
+                                    <Select
+                                        name="empresa"
+                                        value={form.empresa}
+                                        onChange={handleChange}
+                                        style={{ width: 200, paddingRight: '1rem' }}
+                                    >
+                                        {
+                                            empresas.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </div>
+                            ) : (
+                                <div style={{ textAlign: 'center', margin: '1rem 0', fontSize: '1.2rem', color: 'gray' }}>
+                                    No se encontraron empresas.
+                                </div>
+                            )
+                        )
                     }
+
 
                 </div>
                 <div className="col-md-4">

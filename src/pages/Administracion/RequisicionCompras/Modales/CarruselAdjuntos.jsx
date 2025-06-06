@@ -10,7 +10,7 @@ import { autoPlay } from 'react-swipeable-views-utils';
 import Swal from 'sweetalert2'
 
 import { apiDelete } from '../../../../functions/api'
-import styles from './CarruselAdjuntos.module.css'
+// import style from './CarruselCompras.module.scss'
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 export default function CarruselAdjuntos(props) {
     const { data, id, getAdjuntos} = props;
     let adjuntos = data
@@ -39,6 +38,7 @@ export default function CarruselAdjuntos(props) {
     const auth = useSelector(state => state.authUser.access_token)
     const maxSteps = adjuntos.length;
 
+    
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -51,8 +51,8 @@ export default function CarruselAdjuntos(props) {
         setActiveStep(step);
     };
     const handleDelete = (index) => {
-        console.log('idadjunto', index)
-        console.log('idRequisicion', id)
+        // console.log('idadjunto', index)
+        // console.log('idRequisicion', id)
         Swal.fire({
             title: '¿Estas seguro de eliminar este adjunto?',
             text: "No podras revertir esta accion!",
@@ -73,6 +73,7 @@ export default function CarruselAdjuntos(props) {
                 })
                 apiDelete(`requisicion/${id}/adjuntos/${index}`, auth)
                     .then(res => {
+                        // console.log(res)
                         getAdjuntos()
                         Swal.close()
                         Swal.fire({
@@ -125,6 +126,7 @@ export default function CarruselAdjuntos(props) {
                 onChangeIndex={handleStepChange}
                 enableMouseEvents
                 autoplay={false}
+                sx={{ padding: 2, textAlign: 'center', }} 
                 
             >
                 {adjuntos.map((item, index) => (
@@ -136,8 +138,8 @@ export default function CarruselAdjuntos(props) {
                         </object>
                         <br />
                         <div className="text-center">
-                            <a href={item.url} target="_blank" ><button className="btn btn-success">Ver</button></a>
-                            <button className="btn btn-danger" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                            <Button variant="contained"style={{ backgroundColor: '#F96D49', color: '#fff', '&:hover': { backgroundColor: '#F96D49', }, }} onClick={() => handleDelete(item.id)}>Eliminar</Button>
+                            <a  style={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#0A3E27', },marginLeft:'2rem' }} href={item.url} target="_blank" ><Button style={{ backgroundColor: '#457FF4', color: '#fff', '&:hover': { backgroundColor: '#568eff', },}}  >Ver</Button></a>
                         </div>
                         
                     </div>

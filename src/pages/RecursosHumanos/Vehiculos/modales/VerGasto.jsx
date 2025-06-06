@@ -13,20 +13,12 @@ import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import Checkbox from '@material-ui/core/Checkbox';
-
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 export default function NuevoGasto(props) {
     const { reload, handleClose, vehiculo } = props
     const authUser = useSelector(state => state.authUser)
-    const opcionesAreas = useSelector(state => state.opciones.areas)
+    // const opcionesAreas = useSelector(state => state.opciones.areas)
     const [form, setForm] = useState({
         /* id_vehiculo: '', */
         fecha: new Date(),
@@ -39,7 +31,7 @@ export default function NuevoGasto(props) {
         autorizacion_1: vehiculo.autorizacion_1,
         estatus: 0,
     })
-    console.log(form)
+
     const [errores, setErrores] = useState({})
 
     const handleChange = (e) => {
@@ -94,7 +86,7 @@ export default function NuevoGasto(props) {
         setErrores(errores)
         return valid
     }
-    console.log(form)
+    // console.log(form)
 
     const handleSubmit = (e) => {
         e.preventDefault()

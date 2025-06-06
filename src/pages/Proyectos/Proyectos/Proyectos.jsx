@@ -20,6 +20,7 @@ import { ProyectoFilter } from '../../../components/filters';
 import { DropdownButton, Dropdown } from 'react-bootstrap'
 import {  setNaviIcon } from '../../../functions/setters'
 
+
 class Proyectos extends Component {
 
     state = {
@@ -31,11 +32,13 @@ class Proyectos extends Component {
             contacto: '',
             numeroContacto: '',
             nombre: '',
-            descripcion: ''
+            descripcion: '',
+
         },
         modal: { filtros: false },
         filtrado: {}
     }
+
 
     componentDidMount(){
         let queryString = this.props.history.location.search  
@@ -98,7 +101,8 @@ class Proyectos extends Component {
                         proyecto.tipo_proyecto.tipo
                     : 'Sin tipo de proyecto', this.doubleClick, proyecto, 'tipo_proyecto', 'text-center'),
                 cliente: setTagLabelProyectoReactDom(proyecto, proyecto.clientes, 'cliente', this.deleteElementAxios, 'empresa'),
-                direccion: renderToString(setDireccion(proyecto)),
+                direccion: renderToString(proyecto.sucursal ? proyecto.sucursal : setDireccion(proyecto)),
+                // direccion: renderToString(proyecto.sucursal),
                 contacto: setArrayTableReactDom([
                         { name: 'Nombre', text: proyecto.contacto },
                         { name: 'Teléfono', text: proyecto.numero_contacto, url: `tel:+${proyecto.numero_contacto}` }
@@ -139,21 +143,26 @@ class Proyectos extends Component {
     }
 
     setActions = (element) => {
-        return(
-            
-            <div className="w-100 d-flex justify-content-center">
-                 <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
-                    <Dropdown.Item className="text-hover-primary dropdown-primary" 
-                        onClick={(e) => { e.preventDefault(); this.changePageSee(element) }} >
-                        {setNaviIcon('far fa-eye', 'Ver proyecto')}
-                    </Dropdown.Item>
-                    <Dropdown.Item className="text-hover-danger dropdown-danger" 
-                        onClick = { (e) => {this.verificationAdmin(e, element)} }>
-                        {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
-                    </Dropdown.Item>
-                </DropdownButton>
-            </div>
-        )
+        // console.log(authUser)
+        const { authUser } = this.props
+            return(                
+                <div className="w-100 d-flex justify-content-center">
+                    <DropdownButton menualign="right" title={<i className="fas fa-chevron-circle-down icon-md p-0 "></i>} id='dropdown-button-newtable' >
+                        <Dropdown.Item className="text-hover-primary dropdown-primary" 
+                            onClick={(e) => { e.preventDefault(); this.changePageSee(element) }} >
+                            {setNaviIcon('far fa-eye', 'Ver proyecto')}
+                        </Dropdown.Item>
+                        {
+                            authUser.user.tipo.id == 1 && 
+                                <Dropdown.Item className="text-hover-danger dropdown-danger" 
+                                    onClick = { (e) => {this.verificationAdmin(e, element)} }>
+                                    {setNaviIcon('flaticon2-rubbish-bin', 'eliminar')}
+                                </Dropdown.Item>
+                        }                      
+
+                    </DropdownButton>
+                </div>
+            )
     }
 
     setFasesList = proyecto => {

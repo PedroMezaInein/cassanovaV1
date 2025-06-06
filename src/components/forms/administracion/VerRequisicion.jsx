@@ -5,7 +5,7 @@ import { apiGet } from './../../../functions/api'
 import style from './../../../pages/Administracion/RequisicionCompras/Modales/Ver.module.css'
 
 export default function VerRequisicion ({ data }) {
-
+    console.log(data)
     return (
         <>
             <div className={style.container}>
@@ -56,6 +56,12 @@ export default function VerRequisicion ({ data }) {
                 <div>
                     <span>
                         Monto solicitado:
+                    </span>
+                    <p>{`$ ${data.data ? data.data.cantidad : ''}`}</p>
+                </div>
+                <div>
+                    <span>
+                        Monto Pagado:
                     </span>
                     <p>{`$ ${data.data ? data.data.monto_pago : ''}`}</p>
                 </div>

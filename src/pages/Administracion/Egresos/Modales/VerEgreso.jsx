@@ -34,6 +34,9 @@ export default function VerEgreso(props) {
     const {opcionesData, reload, handleClose, data} = props
     const auth = useSelector((state) => state.authUser.access_token)
     const departamentos = useSelector(state => state.opciones.areas)
+    const proveedores = useSelector((state) => state.opciones.proveedores|| []);
+    const empresas = useSelector((state) => state.opciones.empresa|| []);
+
     const [opciones, setOpciones] = useState({
         cuentas: [],
         empresas: [],
@@ -42,6 +45,11 @@ export default function VerEgreso(props) {
         tiposImpuestos: [],
         tiposPagos: [],
     })
+
+    const initialState = {
+        proveedores: [], // Asegúrate de que este valor inicial sea un array
+        empresas: [],
+    };
 
 
     useEffect(() => {
@@ -52,13 +60,13 @@ export default function VerEgreso(props) {
     }, [opcionesData])
 
     useEffect(() => {
-        if(opciones.empresas.length > 0){
+        if(empresas && empresas.length > 0){
             setForm({
                 ...form,
-                cuentas: opciones.empresas.find(empresa => empresa.id === form.empresa).cuentas
+                cuentas: empresas.find(empresa => empresa.id === form.empresa).cuentas
             })
         }
-    }, [opciones.empresas])
+    }, [empresas])
 
     const [form, setForm] = useState({
         adjuntos: {
@@ -111,7 +119,7 @@ export default function VerEgreso(props) {
             setForm({
                 ...form,
                 [e.target.name]: e.target.value,
-                cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas
+                cuentas: empresas.find(empresa => empresa.id === e.target.value).cuentas
             });
         } else {
             setForm({
@@ -189,7 +197,7 @@ export default function VerEgreso(props) {
                     }
 
                     let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
-                    let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
+                    let proveedor = proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
                     let aux = []
                     files.forEach((file, index) => {
                         aux.push({
@@ -211,7 +219,7 @@ export default function VerEgreso(props) {
                         empresa_nombre: empresa ? empresa.nombre : null,
                         proveedor: proveedor ? proveedor.id : null,
                         proveedor_nombre: proveedor ? proveedor.name : null,
-                        cuentas: opciones.empresas.find((empresa) => empresa.id === empresa.id).cuentas,
+                        cuentas: empresas.find((empresa) => empresa.id === empresa.id).cuentas,
                         adjuntos: {
                             ...form.adjuntos,
                             xml: {
@@ -749,12 +757,12 @@ export default function VerEgreso(props) {
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
                             <div>
                                 {
-                                    opciones.proveedores.length > 0 ?
+                                    proveedores.length > 0 ?
                                     <div>
                                         <InputLabel>Proveedor</InputLabel>
                                         <Autocomplete
                                             name="proveedor"
-                                            options={opciones.proveedores}
+                                            options={proveedores}
                                             getOptionLabel={(option) => option.name}
                                             style={{ width: 270, paddingRight: '1rem' }}
                                             onChange={(event, value) => handleChangeProveedor(event, value)}
@@ -769,7 +777,7 @@ export default function VerEgreso(props) {
                             </div>   
                             <div>
                                 {
-                                    opciones.empresas.length > 0 ?
+                                    empresas.length > 0 ?
                                         <div>
                                             <InputLabel>Empresa</InputLabel>
                                             <Select
@@ -780,8 +788,8 @@ export default function VerEgreso(props) {
                                                 disabled
                                             >
                                                 {
-                                                    opciones.empresas.map((item, index) => (
-                                                        <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                                    empresas.map((item, index) => (
+                                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                                     ))
                                                 }
                                             </Select>

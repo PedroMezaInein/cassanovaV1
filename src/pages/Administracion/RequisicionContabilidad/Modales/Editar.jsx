@@ -143,9 +143,7 @@ export default function Editar(props) {
                             apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
                                 Swal.close()
                                 handleClose('editar')
-                                if (reload) {
-                                    reload.reload()
-                                }
+                                reload();
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Guardado',
@@ -205,9 +203,7 @@ export default function Editar(props) {
                     apiPutForm(`requisicion/${form.id}`, newForm, auth.access_token).then((response) => {
                         Swal.close()
                         handleClose('editar')
-                        if (reload) {
-                            reload.reload()
-                        }
+                        reload();
                         Swal.fire({
                             icon: 'success',
                             title: 'Guardado',
@@ -422,6 +418,7 @@ export default function Editar(props) {
                         value={form.monto_solicitado}
                         currencySymbol="$"
                         outputFormat="number"
+                        modifyValueOnWheel={false}
                         onChange={(event, value) => handleMoney(value)}
                         disabled
                     />
@@ -500,6 +497,7 @@ export default function Editar(props) {
                         value={form.monto}
                         currencySymbol="$"
                         outputFormat="number"
+                        modifyValueOnWheel={false}
                         onChange={(event, value) => handleMoney(value)}
                         error={errores.monto ? true : false}
                     />

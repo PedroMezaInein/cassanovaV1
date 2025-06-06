@@ -11,6 +11,9 @@ export const SAVE_OPTIONS_INGRESOS = 'SAVE_OPTIONS_INGRESOS'
 export const SAVE_OPTIONS_COMPRAS = 'SAVE_OPTIONS_COMPRAS'
 export const SAVE_OPTIONS_PROYECTOS = 'SAVE_OPTIONS_PROYECTOS'
 export const SAVE_OPTIONS_EMPRESAS = 'SAVE_OPTIONS_EMPRESAS'
+export const SAVE_OPTIONS_EMPRESA = 'SAVE_OPTIONS_EMPRESA'
+export const SAVE_OPTIONS_PROVEEDORES = 'SAVE_OPTIONS_PROVEEDORES'
+export const SAVE_OPTIONS_CLIENTES = 'SAVE_OPTIONS_CLIENTES'
 
 
 
@@ -105,6 +108,34 @@ export function Empresas(empresas) {
         return dispatch({
             type: SAVE_OPTIONS_EMPRESAS,
             payload: empresas
+        })
+    }
+}
+
+export function Empresa(empresa) {
+    return async function (dispatch) {
+        return dispatch({
+            type: SAVE_OPTIONS_EMPRESA,
+            payload: empresa
+        })
+    }
+}
+
+
+export function Proveedores(proveedores) {
+    return async function (dispatch) {
+        return dispatch({
+            type: SAVE_OPTIONS_PROVEEDORES,
+            payload: proveedores
+        })
+    }
+}
+
+export function Clientes(clientes) {
+    return async function (dispatch) {
+        return dispatch({
+            type: SAVE_OPTIONS_CLIENTES,
+            payload: clientes
         })
     }
 }

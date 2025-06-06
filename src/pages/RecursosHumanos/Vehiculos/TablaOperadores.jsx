@@ -6,7 +6,6 @@ import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { apiGet, apiDelete } from '../../../functions/api'
 import useOptionsArea from '../../../hooks/useOptionsArea'
-import Layout from '../../../components/layout/layout'
 import NuevoOperador from './modales/NuevoOperador'
 import EditarOperador from './modales/EditarOperador'
 import VerOperador from './modales/VerOperador'
@@ -93,10 +92,10 @@ export default function TablaOperadores(props) {
     const ProccessData = (data) => {
         let aux = []
         data.asigando.map((result) => {
-            if (id === result.id_vehiculo) {
+            if (id == result.id_vehiculo) {
                 aux.push(
                 {
-                    operador: result.user.name,
+                    operador:  result.user ? result.user.name : 'Sin Operador',
                     vehiculo: result.vehiculos ? result.vehiculos.marca : '',
                     licencia: result.licencia ?  result.licencia : '',
                     id:result.id,

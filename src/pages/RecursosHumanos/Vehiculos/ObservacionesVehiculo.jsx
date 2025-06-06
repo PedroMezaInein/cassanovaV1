@@ -1,13 +1,11 @@
-import React, {useState, useEffect} from "react"
-import { useSelector } from "react-redux";
-import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
+import React, {useState} from "react"
 import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import Modal from '../../../components/singles/Modal'
 import Evidencias from './utils/AdjuntosEvidencia'
 import AdjuntosObservaciones from './utils/AdjuntosObservacion'
 
 export default function ObservacionesVehiculo({ closeModal, rh, }) {
-    const userAuth = useSelector((state) => state.authUser);
+    // const userAuth = useSelector((state) => state.authUser);
 
     const [modal, setModal] = useState({
 

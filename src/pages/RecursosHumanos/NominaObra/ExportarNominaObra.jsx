@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { catchErrors, apiPostForm, apiPostFormResponseBlob } from '../../../functions/api'
+import { apiPostFormResponseBlob } from '../../../functions/api'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'

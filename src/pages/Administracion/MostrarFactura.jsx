@@ -1,46 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-
-import { apiOptions, apiPutForm, apiPostForm, apiGet } from '../../functions/api';
-
-import DateFnsUtils from '@date-io/date-fns';
-import Swal from 'sweetalert2'
-import { es } from 'date-fns/locale'
-import S3 from 'react-aws-s3'
+import React, { useState } from 'react';
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import NumberFormat from 'react-number-format'
 import { setLabelTable, dayDMY } from '../../functions/setters'
-
-import { Modal, ItemSlider, ItemDoubleSlider } from '../../components/singles'
-
-
-
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import InputLabel from '@material-ui/core/InputLabel';
-import Button from '@material-ui/core/Button';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-
-import j2xParser from 'fast-xml-parser'
-
-import Style from './Egresos/Modales/CrearEgreso.module.css'
+import { ItemSlider } from '../../components/singles'
 
 export default function MostrarFactura(props) {
-    const {opcionesData, reload, handleClose, data} = props
-    const auth = useSelector((state) => state.authUser.access_token)
-    const departamentos = useSelector(state => state.opciones.areas)
+    const { data} = props
+    // const auth = useSelector((state) => state.authUser.access_token)
+    // const departamentos = useSelector(state => state.opciones.areas)
     const [opciones, setOpciones] = useState({
         cuentas: [],
         empresas: [],

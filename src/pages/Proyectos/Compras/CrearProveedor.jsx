@@ -1,12 +1,13 @@
 import React, { useState, useSelector, useEffect} from 'react';
 
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
+// import TextField from '@material-ui/core/TextField';
+// import InputLabel from '@material-ui/core/InputLabel';
 import Swal from 'sweetalert2'
 
 import { apiPostForm, apiGet, apiPutForm} from './../../../functions/api';
-import Style from './../../Administracion/Egresos/Modales/CrearEgreso.module.css'
+// import Style from './../../Administracion/Egresos/Modales/CrearEgreso.module.css'
 import { fromJS } from 'immutable';
+import { Container, Grid, Paper, TextField, InputLabel, Button, Box } from '@material-ui/core';
 
 export default function  CrearProveedor(props) {
 
@@ -198,87 +199,63 @@ export default function  CrearProveedor(props) {
 
     return(
         <>
-            <div className={`${Style.CrearProveedor} col-xl-12`}>
-                <div className={`${Style.primerParte}`}>
-                    {/* <div style={{marginTop: '1rem'}}>
-                        <TextField
-                            name='nombre'
-                            label="nombre"
-                            type="text"
-                            defaultValue={form.nombre}
-                            onChange={handleChange}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            multiline
-                            style={{ width: '150px', height: 100 }}
-                            error={errores.nombre ? true : false}
-                        />
-                    </div> */}
+           <Container maxWidth="md">
+            <Paper elevation={3} style={{ padding: '1.5rem', marginTop: '1rem' }}>
+                <Grid container spacing={3}>
 
-                    <div style={{marginTop: '1rem'}}>
+                    {/* 🔹 Razón Social */}
+                    <Grid item xs={12} sm={6}>
+                        <InputLabel>Razón Social</InputLabel>
                         <TextField
+                            fullWidth
                             name='razonSocial'
-                            label="razonSocial"
-                            id="razonSocial"
-                            type="text"
-                            // defaultValue={data.facturaObject? data.facturaObject.nombre_emisor : form.razonSocial}
-                            value={nuevo.razonSocial }
+                            label="Razón Social"
+                            variant="outlined"
+                            value={nuevo.razonSocial}
                             onChange={(e) => handleNuevoProveedorChange('razonSocial', e.target.value)}
-                            // onChange={handleChange}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            multiline
-                            style={{ width: '150px', height: 100 }}
-                            error={errores.razonSocial ? true : false}
+                            error={!!errores.razonSocial}
                         />
-                    </div>
-                </div>
+                    </Grid>
 
-                <div className={`${Style.primerParte}`}>
-                    <div style={{marginTop: '-.9rem'}}>
-                        <InputLabel>rfc</InputLabel>
+                    {/* 🔹 RFC */}
+                    <Grid item xs={12} sm={6}>
+                        <InputLabel>RFC</InputLabel>
                         <TextField
+                            fullWidth
                             name='rfc'
-                            label="usar mayúsculas"
-                            type="text"
-                            value={nuevo.rfc }
-                            // defaultValue={data.facturaObject ?data.facturaObject.rfc_emisor  : form.rfc}
+                            label="Usar Mayúsculas"
+                            variant="outlined"
+                            value={nuevo.rfc}
                             onChange={(e) => handleNuevoProveedorChange('rfc', e.target.value)}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            multiline
-                            style={{ width: '150px', height: 100 }}
-                            error={errores.rfc ? true : false}
+                            error={!!errores.rfc}
                         />
-                    </div>
+                    </Grid>
 
-                    <div>
-                        <InputLabel error={errores.telefono ? true : false} style={{textAlign:'center'}} id="demo-simple-select-label">numero del contacto</InputLabel>
-                        <input
-                            type='text'
+                    {/* 🔹 Número de Contacto */}
+                    <Grid item xs={12} sm={6}>
+                        <InputLabel error={!!errores.telefono}>Número de Contacto</InputLabel>
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            placeholder="(__) ____ - ____"
                             value={telefono}
                             onKeyDown={handleKeyDown}
                             onBlur={handleBlur}
                             onChange={handleChangeNumber}
-                            placeholder='(__) ____ - ____'
-                            style={{ border: 'none', outline: 'none', textAlign: 'center', marginTop: '1.5rem', width:'150px'}} 
+                            error={!!errores.telefono}
                         />
-                        {/* {telefonoError && <div style={{ color: 'red' }}>{telefonoError}</div>} */}
-                    </div>
-                </div>
+                    </Grid>
 
-                <div style={{marginTop:'-1.5rem', marginLeft:'-1rem'}}>
-                    <div className="row justify-content-end">
-                        <div>
-                            <button className={Style.sendButton} onClick={enviar}>Crear</button>
-                        </div>
-                    </div>   
-                </div>
+                    {/* 🔹 Botón de Enviar */}
+                    <Grid item xs={12} sm={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <Button style={{backgroundColor: '#0A3E27',color: '#fff','&:hover': {backgroundColor: '#075633', },}} variant="contained" color="primary" onClick={enviar}>
+                            Crear
+                        </Button>
+                    </Grid>
 
-            </div>
+                </Grid>
+            </Paper>
+        </Container>
         </>
     )
 }

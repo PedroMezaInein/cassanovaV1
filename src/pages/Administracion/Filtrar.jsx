@@ -1,31 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-
-import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet }  from './../../functions/api';
 import DateFnsUtils from '@date-io/date-fns';
-import Swal from 'sweetalert2'
 import { es } from 'date-fns/locale'
-import S3 from 'react-aws-s3'
-
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputLabel from '@material-ui/core/InputLabel';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import Button from '@material-ui/core/Button';
 
-import Style from './Egresos/Modales/estilos.module.css'
-
 export default function CrearEgreso(props) {
-    const {opcionesData, reload, handleClose, filtrarTabla,filtrada,setFiltrado, borrarTabla} = props
-    const departamentos = useSelector(state => state.opciones.areas)
-    const auth = useSelector((state) => state.authUser.access_token);
+    const {opcionesData,  handleClose, filtrarTabla, borrarTabla} = props
+    // const departamentos = useSelector(state => state.opciones.areas)
+    // const auth = useSelector((state) => state.authUser.access_token);
 
     const [opciones, setOpciones] = useState({
         clientes: [],

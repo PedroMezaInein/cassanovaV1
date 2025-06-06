@@ -29,6 +29,7 @@ class RHLicenciasForm extends Component {
     getOptions = async () => {
         waitAlert()
         const { at } = this.props
+        // console.log(at)
         apiOptions(`v2/rh/empleados/licencias`, at).then(
             (response) => {
                 const { licencias } = response.data

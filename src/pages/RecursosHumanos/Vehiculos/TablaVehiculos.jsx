@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2'
 
 import { Modal } from '../../../components/singles'
 import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 import { apiDelete } from '../../../functions/api'
-import { setOptions } from '../../../functions/setters'
 import useOptionsArea from '../../../hooks/useOptionsArea'
 import Layout from '../../../components/layout/layout'
 

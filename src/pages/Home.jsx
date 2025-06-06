@@ -74,6 +74,7 @@ class Home extends Component{
             minuto_entrada: 0,
             minuto_salida: 0,
             lider: '',
+            tipoPermiso:'',
             adjuntos: {
                 adjuntos: {
                     files: [],
@@ -775,6 +776,8 @@ class Home extends Component{
         data.append('minuto_entrada', minutoEntradaA)
         let comentarioA = form.descripcion
         data.append('descripcion', comentarioA)
+        data.append('tipoPermiso', form.tipoPermiso)
+
         // let horaEntradaA = Math.floor((form.hora_entrada * 10000) + minutoEntradaA);
         
             await axios.post(URL_DEV + 'permiso', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(

@@ -177,8 +177,8 @@ export default function Factura(props) {
                     }else {
                         let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
                             let aux = []
-                            files.forEach((file, index) => {
-                                aux.push({
+                            const filesArray = Array.from(files);
+                            filesArray.forEach((file, index) => {                                aux.push({
                                     name: file.name,
                                     file: file,
                                     url: URL.createObjectURL(file),

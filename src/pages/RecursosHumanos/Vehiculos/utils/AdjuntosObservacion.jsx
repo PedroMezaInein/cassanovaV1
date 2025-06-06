@@ -124,20 +124,20 @@ export default function Adjuntos(props) {
         setActiveTab(e)
     }
 
-    const validate = () => {
-        if (activeTab && form.file.length > 0) {
-            return true
-        } else {
-            return false
-        }
-    }
+    // const validate = () => {
+    //     if (activeTab && form.file.length > 0) {
+    //         return true
+    //     } else {
+    //         return false
+    //     }
+    // }
 
-    const resetForm = () => {
-        setForm({
-            ...form,
-            file: []
-        })
-    }
+    // const resetForm = () => {
+    //     setForm({
+    //         ...form,
+    //         file: []
+    //     })
+    // }
 
     const viewAdjuntos = (tab) => {
         return (

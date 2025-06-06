@@ -33,6 +33,7 @@ export default function CrearCompras(props) {
         nombre: '',
         sucursal: '',       
         descripcion: '',
+        proyecto:'',
     })
 
     const [opciones, setOpciones] = useState({
@@ -62,7 +63,7 @@ export default function CrearCompras(props) {
     }, [options])
 
     const filtrar = () => { 
-        filtrarTabla(`&empresa=${form.empresa}&nombre=${form.nombre}&sucursal=${form.sucursal}&descripcion=${form.descripcion}&fase1=${check.fase1}&fase2=${check.fase2}&fase3=${check.fase3}`)
+        filtrarTabla(`&empresa=${form.empresa}&nombre=${form.nombre}&sucursal=${form.sucursal}&descripcion=${form.descripcion}&fase1=${check.fase1}&fase2=${check.fase2}&fase3=${check.fase3}&proyecto=${form.proyecto}`)
         // console.log('filtrar tabla')
         handleClose()
         // borrar(false)
@@ -136,9 +137,23 @@ export default function CrearCompras(props) {
                             <div className='col-xl-4'>
                                 <TextField
                                     name='nombre'
-                                    label="nombre"
+                                    label="nombre cliente"
                                     type="text"
                                     defaultValue={form.nombre}
+                                    onChange={handleChange}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    multiline
+                                    style={{ width: 160 }}
+                                />
+                            </div>
+                            <div className='col-xl-4'>
+                                <TextField
+                                    name='proyecto'
+                                    label="proyecto"
+                                    type="text"
+                                    defaultValue={form.proyecto}
                                     onChange={handleChange}
                                     InputLabelProps={{
                                         shrink: true,
@@ -162,7 +177,16 @@ export default function CrearCompras(props) {
                                     style={{ width: 150 }}
                                 />
                             </div>
-                            <div className='col-xl-4'>
+                            
+                            
+                        </div>
+
+                        <div className={Style.crear_segundaParte}>
+
+                        </div>
+
+                        <div className={Style.crear_cuartaParte}>
+                        <div className='col-xl-4'>
                                 <TextField
                                     name='descripcion'
                                     label="Descripción"
@@ -176,14 +200,6 @@ export default function CrearCompras(props) {
                                     style={{ width: '150px', height: 100 }}
                                 />
                             </div>
-                            
-                        </div>
-
-                        <div className={Style.crear_segundaParte}>
-
-                        </div>
-
-                        <div className={Style.crear_cuartaParte}>
                            
                                 <FormGroup row>
                                     <FormControlLabel

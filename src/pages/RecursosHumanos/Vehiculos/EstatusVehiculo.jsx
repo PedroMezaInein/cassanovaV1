@@ -1,9 +1,8 @@
 import React from "react"
-import { useSelector } from "react-redux";
 import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
 
 export default function EstatusVehiculos() {
-    const userAuth = useSelector((state) => state.authUser);
+    // const userAuth = useSelector((state) => state.authUser);
 
     const columnas = [
       { nombre: 'Solicitante', identificador: 'solicitante', sort: true, stringSearch: false},

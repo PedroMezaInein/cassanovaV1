@@ -15,15 +15,6 @@ import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import Checkbox from '@material-ui/core/Checkbox';
-
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
 export default function NuevoOperador(props) {
     const { reload, handleClose, vehiculos } = props
@@ -147,7 +138,7 @@ export default function NuevoOperador(props) {
                         apiPostForm('servicios/asignacion', form, authUser.access_token)
                             .then(res => {
                                 Swal.close()
-                                console.log(res)
+                                // console.log(res)
                                 Swal.fire({
                                     title: 'Nuevo Operador creado',
                                     text: "El nuevo operador ha sido creado correctamente",
@@ -187,7 +178,7 @@ export default function NuevoOperador(props) {
             })
         }
     }
-    console.log(form)
+    // console.log(form)
 
     return (
         <>

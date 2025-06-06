@@ -16,7 +16,7 @@ import style from './CarruselCompras.module.scss'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
-   
+
     return (
         <div
             role="tabpanel"
@@ -55,11 +55,11 @@ const useStyles = makeStyles((theme) => ({
     },
     tabs: {
         borderRight: `1px solid ${theme.palette.divider}`,
-        
+
     },
 }));
 
-export default function AdjuntosCompras (props) {
+export default function AdjuntosCompras(props) {
     const { data, Gastos } = props
 
     const authUser = useSelector(state => state.authUser.access_token)
@@ -69,7 +69,7 @@ export default function AdjuntosCompras (props) {
         facturas_pdf: '',
         pago: '',
         Presupuestos: '',
-        tipo:''
+        tipo: ''
     })
     const [activeTab, setActiveTab] = useState('facturas_pdf')
     const [adjuntos, setAdjuntos] = useState(false)
@@ -108,32 +108,32 @@ export default function AdjuntosCompras (props) {
                         switch (element.pivot.tipo) {
                             case 'facturas_pdf':
                                 aux.facturas_pdf.push(element)
-                                break;                        
+                                break;
                             default:
                                 break;
                         }
                     });
                     adjunPagos.forEach((element) => {
-                        switch (element.pivot.tipo) { 
+                        switch (element.pivot.tipo) {
                             case 'pago':
                                 aux.pago.push(element)
-                                break;                      
+                                break;
                             default:
                                 break;
                         }
                     });
                     adjunPresupuesto.forEach((element) => {
-                        switch (element.pivot.tipo) { 
+                        switch (element.pivot.tipo) {
                             case 'presupuesto':
                                 aux.Presupuestos.push(element)
-                                break;                       
+                                break;
                             default:
                                 break;
                         }
                     });
                     setAdjuntos(aux)
                 })
-            
+
         } catch (error) {
             Swal.close()
             Swal.fire({
@@ -243,39 +243,38 @@ export default function AdjuntosCompras (props) {
                 showConfirmButton: false,
                 timer: 1500
             })
-        } 
+        }
     }
 
-    const getButtonOptions = (tipo) => { 
-        
+    const getButtonOptions = (tipo) => {
+
         return (
             <>
                 <div className={style.adjuntos_send}>
                     <div className={style.file}>
+                        <div className="row align-items-center">
+                            <div className="col-lg-12 col-md-8 mb-3">
+                                <div className="d-flex flex-column">
+                                    <label htmlFor="file">Selecciona la factura</label>
+                                    <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
+                                    <div>
+                                        {form.tipo ? <div className='file-name'> {form.tipo.name} </div> : <p>No hay archivo seleccionado</p>}
+                                    </div>
 
-                        {/* <label htmlFor="file">Seleccionar archivo(s)</label>
-                        <input type="file" id='file' name="file" onChange={handleFile} />
-                            <div>
-                                {state.solicitud.name ? <div className='file-name'>{state.solicitud.name}</div> : null}
-                            </div> */}
-
-                        <label htmlFor="file">Selecciona la factura</label>
-                        <input type="file" id="file" name="file" onChange={handleFile} arial-label="Seleccionar Comunicado" />
-                        <div>
-                            {form.tipo ? <div className='file-name'> {form.tipo.name} </div>: <p>No hay archivo seleccionado</p>}
+                                </div>
+                                <div>
+                                    <button style={{ marginLeft: '1rem' }} className='sendButton' onClick={handleSubmit}>Subir</button>
+                                </div>
+                            </div>
                         </div>
-
-                    </div>
-                    <div>
-                        <button style={{ marginLeft: '1rem' }} className='sendButton' onClick={handleSubmit}>Subir</button>
                     </div>
                 </div>
             </>
         )
     }
 
-    const getAdjuntosCarrusel = (tab) => { 
-       
+    const getAdjuntosCarrusel = (tab) => {
+
         return (
             <>
                 {
@@ -293,25 +292,32 @@ export default function AdjuntosCompras (props) {
     return (
         <>
             <div className={classes.root}>
-                <Tabs
-                    orientation="vertical"
-                    variant="fullWidth"
+                <div className='row' >
+                    <div className='col-lg-12 col-md-3 mb-3' >
+                        <div className="d-flex flex-column flex-md-row">
+                            <Tabs
+                                orientation="vertical"
+                                variant="fullWidth"
 
-                    value={value}
-                    onChange={handleChange}
-                    aria-label="Vertical tabs example"
-                    className={classes.tabs}
-                >
-                    <Tab label="Factura Extranjera" {...a11yProps(0)} name="facturas_pdf" onClick={() => handleTab('facturas_pdf')} />
-                    {Gastos ? null : <Tab label="Presupuesto" {...a11yProps(1)} name="presupuestos" onClick={() => handleTab('Presupuestos')} />}
-                    {Gastos ? null : <Tab label="pago" {...a11yProps(2)} name="pago" onClick={() => handleTab('pago')} />}
-                    
-                </Tabs>
+                                value={value}
+                                onChange={handleChange}
+                                aria-label="Vertical tabs example"
+                                className={classes.tabs}
+                            >
+                                <Tab label="Factura Extranjera" {...a11yProps(0)} name="facturas_pdf" onClick={() => handleTab('facturas_pdf')} />
+                                {Gastos ? null : <Tab label="Presupuesto" {...a11yProps(1)} name="presupuestos" onClick={() => handleTab('Presupuestos')} />}
+                                {Gastos ? null : <Tab label="pago" {...a11yProps(2)} name="pago" onClick={() => handleTab('pago')} />}
+
+                            </Tabs>
+                        </div>
+                    </div>
+                </div>
+
 
                 <TabPanel value={value} index={0}>
                     <div>
                         {getButtonOptions('facturas_pdf')}
-                        {getAdjuntosCarrusel('facturas_pdf') }
+                        {getAdjuntosCarrusel('facturas_pdf')}
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={1}>

@@ -3,7 +3,7 @@ import { Form } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { openWizard1, openWizard2, openWizard3 } from '../../functions/wizard'
 import { InputGray, ReactSelectSearchGray, Button} from '../../components/form-components'
-import { validateAlert ,waitAlert, doneAlert, printResponseErrorAlert, errorAlert} from '../../functions/alert'
+import { validateAlert ,waitAlert, doneAlert, printResponseErrorAlert} from '../../functions/alert'
 import { apiPostForm, catchErrors } from '../../functions/api'
 import Swal from 'sweetalert2'
 

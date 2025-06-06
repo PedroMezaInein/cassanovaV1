@@ -1,17 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { useSelector } from "react-redux";
-
-import NewTableServerRender from '../../../../components/tables/NewTableServerRender'
 import CreateSalaJuntas from "../SalaJuntas/CreateSalaJuntas"
 import{waitAlert} from '../../../../functions/alert';
-
 import AplicantesCurso from './../Cursos/AplicantesCurso'
-
 import { apiGet, apiDelete } from '../../../../functions/api'
-
 import Modal from 'react-bootstrap/Modal'
 import Swal from 'sweetalert2';
-
 import '../../../../styles/_salaJuntas.scss'
 
 export default function SalaJuntas() {
@@ -113,7 +107,7 @@ export default function SalaJuntas() {
         data.map((reserva) => {
             let date1 = new Date(reserva.fecha)
             let date2 = new Date(fechaHoy)
-            console.log(date1, date2)
+            // console.log(date1, date2)
             if ((date1.getTime() < date2.getTime()) && (date1.getTime() !== date2.getTime())) {
                 reservasOld.push(reserva)
             } else {

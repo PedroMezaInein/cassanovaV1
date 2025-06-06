@@ -1,13 +1,8 @@
 import React, {useState}  from 'react';
-
-
 import Layout from '../../../../components/layout/layout'
 import CreateCurso from "./CreateCurso"
 import AplicantesCurso from "./AplicantesCurso"
-
-
 import Modal from 'react-bootstrap/Modal'
-
 import './../../../../styles/_cursos.scss'
 
 export default function Cursos() {

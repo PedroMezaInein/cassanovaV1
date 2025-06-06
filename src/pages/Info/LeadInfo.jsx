@@ -49,6 +49,7 @@ class LeadInfo extends Component {
             proyecto: '',
             fecha: '',
             estado: '',
+            
         },
         formSendMail:{
             correos: [],
@@ -68,6 +69,9 @@ class LeadInfo extends Component {
             desglose: [],
             MontoIngenerias: [],
             MontoEsquemas: [],
+            concepto1:'60',
+            concepto2: '30',
+            concepto3: '10',
             conceptos: [
                 {
                     value: '',

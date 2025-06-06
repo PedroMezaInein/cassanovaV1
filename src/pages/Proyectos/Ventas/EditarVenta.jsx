@@ -38,40 +38,40 @@ export default function CrearCompras(props) {
     // let valorArea = areaCompras.find((element) => parseInt(element.id_area) === data.area.id)
     // let valorPartida = valorArea.partidas.find((element) => parseInt(element.id) === data.partida_id)
     // let valorSubPartida = valorPartida.subpartidas.find((element) => parseInt(element.id) === data.subarea.id)
-  
+
     useEffect(() => {
-        
-        if(opcionesData){
+
+        if (opcionesData) {
             setOpciones(opcionesData)
         }
     }, [opcionesData])
 
     const [form, setForm] = useState({
         adjuntos: {
-            pago: {files:[], value: ''},
+            pago: { files: [], value: '' },
             pdf: { files: [], value: '' },
             presupuesto: { files: [], value: '' },
             xml: { files: [], value: '' },
         },
-        area : data.area ?  data.area.id : '',
+        area: data.area ? data.area.id : '',
         banco: 0,
         // cuenta: '',
         cuenta: data.cuenta ? data.cuenta.id : '',
         cuentas: [],
         descripcion: data.descripcion ? data.descripcion : '',
         empresa: data.empresa.id,
-        proveedor:data.cliente ? data.cliente.id : '',
-        proveedor_nombre:data.cliente ? data.cliente.empresa : '',
+        proveedor: data.cliente ? data.cliente.id : '',
+        proveedor_nombre: data.cliente ? data.cliente.empresa : '',
         // empresa: data.empresa.id ? data.empresa.id : '',
         estatusCompra: 2,
-        factura: false, 
+        factura: false,
         facturaItem: '',
         facturaObject: {},
         fecha: data.created_at,
         partida: data.partida ? data.partida.id : '',
         numCuenta: "",
         proyecto: data.proyecto ? data.proyecto.id : '',
-        proyecto_nombre:data.proyecto ? data.proyecto.nombre: '',
+        proyecto_nombre: data.proyecto ? data.proyecto.nombre : '',
         subarea: data.subarea ? data.subarea.id : '',
         tipo: 0,
         tipoImpuesto: 1,
@@ -92,8 +92,8 @@ export default function CrearCompras(props) {
     })
 
     useEffect(() => {
-        
-        if(opcionesData){
+
+        if (opcionesData) {
             setOpciones(opcionesData)
         }
     }, [opcionesData])
@@ -106,7 +106,7 @@ export default function CrearCompras(props) {
     };
 
     const handleChange = (e) => {
-        if(e.target.name === 'empresa'){
+        if (e.target.name === 'empresa') {
             setForm({
                 ...form,
                 [e.target.name]: e.target.value,
@@ -119,9 +119,9 @@ export default function CrearCompras(props) {
                 [e.target.name]: e.target.value
             });
         }
-        
+
     };
-    
+
     const handleChangeTicket = (e, value) => {
         if (value && value.name) {
             setForm({
@@ -139,10 +139,10 @@ export default function CrearCompras(props) {
         }
     }
 
-    const handleChangeAreas=(e)=>{
+    const handleChangeAreas = (e) => {
         setForm({
             ...form,
-            [e.target.name]:e.target.value,
+            [e.target.name]: e.target.value,
             partida: '',
             subarea: ''
         })
@@ -205,7 +205,7 @@ export default function CrearCompras(props) {
         })
     }
 
-    const addFacturaS3 =  (values, egreso) => {
+    const addFacturaS3 = (values, egreso) => {
         apiGet(`v1/constant/admin-proyectos`, auth).then(
             (response) => {
                 const { alma } = response.data
@@ -230,10 +230,10 @@ export default function CrearCompras(props) {
                             })
                     })
                 })
-                
+
                 Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, egreso) }).catch(err => console.error(err))
             }, (error) => { }
-        ).catch((error) => { 
+        ).catch((error) => {
             Swal.close()
             Swal.fire({
                 icon: 'error',
@@ -246,7 +246,7 @@ export default function CrearCompras(props) {
         })
     }
 
-    const attachFilesS3 =  (files, egreso) => {
+    const attachFilesS3 = (files, egreso) => {
         apiPutForm(`v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, auth).then(
             (response) => {
                 Swal.close()
@@ -257,13 +257,13 @@ export default function CrearCompras(props) {
                     showConfirmButton: false,
                     timer: 1500
                 })
-                if(reload){
+                if (reload) {
                     reload.reload()
                 }
                 handleClose()
 
             }, (error) => { }
-        ).catch((error) => {  
+        ).catch((error) => {
             Swal.close()
             Swal.fire({
                 icon: 'error',
@@ -275,7 +275,7 @@ export default function CrearCompras(props) {
         })
     }
 
-    const  attachFiles = (venta) => {
+    const attachFiles = (venta) => {
         apiGet(`v1/constant/admin-proyectos`, auth).then(
             (response) => {
                 const { alma } = response.data
@@ -312,11 +312,11 @@ export default function CrearCompras(props) {
                             })
                     })
                 })
-                Promise.all(auxPromises).then(values => { 
-                    attachFilesS3(values, venta) 
+                Promise.all(auxPromises).then(values => {
+                    attachFilesS3(values, venta)
                 }).catch(err => console.error(err))
             }, (error) => { }
-        ).catch((error) => { 
+        ).catch((error) => {
             Swal.close()
             Swal.fire({
                 icon: 'error',
@@ -350,7 +350,7 @@ export default function CrearCompras(props) {
                         timer: 1500
                     })
                 }
-            }, (error) => { 
+            }, (error) => {
                 Swal.close()
                 Swal.fire({
                     icon: 'error',
@@ -360,7 +360,7 @@ export default function CrearCompras(props) {
                     timer: 1500
                 })
             }
-        ).catch((error) => { 
+        ).catch((error) => {
             Swal.close()
             Swal.fire({
                 icon: 'error',
@@ -369,7 +369,7 @@ export default function CrearCompras(props) {
                 showConfirmButton: false,
                 timer: 1500
             })
-         })
+        })
     }
 
     const handleChangeProyecto = (e, value) => {
@@ -392,11 +392,11 @@ export default function CrearCompras(props) {
     const validateForm = () => {
         let validar = true
         let error = {}
-        if(form.proveedor === '' || form.proveedor === null){
+        if (form.proveedor === '' || form.proveedor === null) {
             error.proveedor = "Seleccione un proveedor"
             validar = false
         }
-        if(form.proyecto === '' || form.proyecto === null){
+        if (form.proyecto === '' || form.proyecto === null) {
             error.proyecto = "Seleccione un proyecto"
             validar = false
         }
@@ -408,11 +408,11 @@ export default function CrearCompras(props) {
             error.fecha = "Seleccione una fecha"
             validar = false
         }
-        if(form.area === ''){
+        if (form.area === '') {
             error.area = "Seleccione un departamento"
             validar = false
         }
-        if(form.partida === ''){
+        if (form.partida === '') {
             error.partida = "Seleccione el tipo de gasto"
             validar = false
         }
@@ -424,7 +424,7 @@ export default function CrearCompras(props) {
             error.cuenta = "Seleccione una cuenta"
             validar = false
         }
-        if(form.descripcion === ''){
+        if (form.descripcion === '') {
             error.descripcion = "Escriba una descripcion"
             validar = false
         }
@@ -432,16 +432,16 @@ export default function CrearCompras(props) {
             error.total = "indique el monto total"
             validar = false
         }
-       
+
         setErrores(error)
         return validar
     }
 
     const handleSend = () => {
-        if(validateForm()){
+        if (validateForm()) {
 
             Swal.fire({
-                title: '¿Estás seguro?',    
+                title: '¿Estás seguro?',
                 text: 'Se editará la compra',
                 icon: 'warning',
                 showCancelButton: true,
@@ -450,7 +450,7 @@ export default function CrearCompras(props) {
                 cancelButtonColor: '#d33',
                 reverseButtons: true
             }).then((result) => {
-                
+
                 if (result.value) {
                     Swal.close()
                     Swal.fire({
@@ -469,93 +469,93 @@ export default function CrearCompras(props) {
 
                     try {
                         apiPutForm(`v2/proyectos/ventas/area/${data.id}`, form, auth)
-                        .then((response) => {
-                            const {venta} = response.data
-                            Swal.close()
-                            Swal.fire({
-                                title: 'venta editada con éxito',
-                                text: 'Subiendo adjuntos...',
-                                allowOutsideClick: false,
-                                onBeforeOpen: () => {
-                                    Swal.showLoading()
-                                },
-                            })
-                            
-                            setForm({
-                                ...form,
-                                venta
-                            })
-                            if (venta.factura) {
-                                // Adjunto un XML
-                                if (Object.keys(form.facturaObject).length > 0) {
-                                    if (form.facturaItem) {
-                                        //Tiene una factura guardada
-                                        attachFactura(venta, venta.factura)
-                                    } else {
-                                        //No hay factura generada
-                                        addFacturaS3(venta.id , venta)
-                                    }
-                                } else {
-                                    //No adjunto XML
-                                    if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
-                                        //El compra tiene adjuntos
-                                        attachFiles(venta)
-                                    } else {
-                                        //compra generado con éxito 
-                                        
-                                    }
-                                }
+                            .then((response) => {
+                                const { venta } = response.data
                                 Swal.close()
                                 Swal.fire({
-                                    icon: 'success',
-                                    title: 'Adjuntos subidos con éxito',
-                                    text: 'Se subieron los adjuntos con éxito',
-                                    showConfirmButton: false,
-                                    timer: 1500
+                                    title: 'venta editada con éxito',
+                                    text: 'Subiendo adjuntos...',
+                                    allowOutsideClick: false,
+                                    onBeforeOpen: () => {
+                                        Swal.showLoading()
+                                    },
                                 })
-                                if(reload){
-                                    reload.reload()
-                                }
-                                handleClose()
-                            } else {
-                                // La compra no es con factura
-                                if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
-                                    //La compra tiene adjuntos
-                                    attachFiles(venta)
 
-                                } else {
-                                    //compra generado con éxito 
+                                setForm({
+                                    ...form,
+                                    venta
+                                })
+                                if (venta.factura) {
+                                    // Adjunto un XML
+                                    if (Object.keys(form.facturaObject).length > 0) {
+                                        if (form.facturaItem) {
+                                            //Tiene una factura guardada
+                                            attachFactura(venta, venta.factura)
+                                        } else {
+                                            //No hay factura generada
+                                            addFacturaS3(venta.id, venta)
+                                        }
+                                    } else {
+                                        //No adjunto XML
+                                        if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
+                                            //El compra tiene adjuntos
+                                            attachFiles(venta)
+                                        } else {
+                                            //compra generado con éxito 
+
+                                        }
+                                    }
                                     Swal.close()
                                     Swal.fire({
                                         icon: 'success',
-                                        title: 'venta editada con éxito',
-                                        text: 'Se editó la venta con éxito',
+                                        title: 'Adjuntos subidos con éxito',
+                                        text: 'Se subieron los adjuntos con éxito',
                                         showConfirmButton: false,
                                         timer: 1500
                                     })
-                                    if(reload){
+                                    if (reload) {
                                         reload.reload()
                                     }
                                     handleClose()
-                                }
-                            }
-                        })
-                        .catch((error) => {
-                            console.log(error)
+                                } else {
+                                    // La compra no es con factura
+                                    if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
+                                        //La compra tiene adjuntos
+                                        attachFiles(venta)
 
-                            Swal.fire({
-                                title: 'Error',
-                                text: 'No se pudo editar la venta',
-                                icon: 'error',
-                                confirmButtonText: 'Cerrar',
+                                    } else {
+                                        //compra generado con éxito 
+                                        Swal.close()
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'venta editada con éxito',
+                                            text: 'Se editó la venta con éxito',
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        })
+                                        if (reload) {
+                                            reload.reload()
+                                        }
+                                        handleClose()
+                                    }
+                                }
                             })
-                        })
+                            .catch((error) => {
+                                console.log(error)
+
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'No se pudo editar la venta',
+                                    icon: 'error',
+                                    confirmButtonText: 'Cerrar',
+                                })
+                            })
                     } catch (error) {
                         console.log(error)
                     }
                 }
-            }) 
-        }else{
+            })
+        } else {
             Swal.fire({
                 title: 'Faltan campos',
                 text: 'Favor de llenar todos los campos',
@@ -567,419 +567,385 @@ export default function CrearCompras(props) {
 
     }
 
-    return(
+    return (
         <>
-            <Accordion defaultExpanded className='proyect-accordion'>
-
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                >
-                    <Typography className='proyect-Subtitulo'>DATOS DE LA FACTURA</Typography>
+            <Accordion defaultExpanded className="proyect-accordion">
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography className="proyect-Subtitulo">DATOS DE LA FACTURA</Typography>
                 </AccordionSummary>
 
-                <AccordionDetails> 
-                    <div style={{ width: '100%' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-evenly', marginRight: '10px', flexDirection: 'column' }}>
-                            <div>
+                <AccordionDetails>
+                    <div className="container-fluid">
+                        {/* Sección de factura */}
+                        <div className="row mb-3">
+                            <div className="col-12">
                                 <InputLabel>¿Lleva factura?</InputLabel>
                                 <FormGroup row>
                                     <FormControlLabel
-                                        control={<Checkbox checked={!form.factura} onChange={handleChangeCheck} color='secondary' name='factura' />}
+                                        control={<Checkbox checked={!form.factura} onChange={handleChangeCheck} color="secondary" name="factura" />}
                                         label="No"
-
                                     />
                                     <FormControlLabel
-                                        control={<Checkbox checked={form.factura} onChange={handleChangeCheck} color='primary' name='factura' />}
-                                        label="Si"
-
+                                        control={<Checkbox checked={form.factura} onChange={handleChangeCheck} color="primary" name="factura" />}
+                                        label="Sí"
                                     />
                                 </FormGroup>
-                            </div>  
-                            
-                            {
-                                form.factura ?
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <div>
-                                        <InputLabel>RFC</InputLabel>
-                                            <TextField
-                                                variant="outlined"
-                                                name="rfc"
-                                                value={form.rfc ? form.rfc : ''}
-                                                onChange={handleChange}
-                                            />
-
-                                        </div>
-                                    </div>
-                                    : null
-                                
-                            }
+                            </div>
                         </div>
 
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
-                            <div>
-                                {
-                                    opciones.clientes.length > 0 ?
-                                        <div>    
-                                            <InputLabel error={errores.clientes ? true : false}>Cliente</InputLabel>
-                                            <Autocomplete
-                                                name="cliente"
-                                                options={opciones.clientes}
-                                                getOptionLabel={(option) => option.name}
-                                                style={{ width: 250, paddingRight: '1rem' }}
-                                                onChange={(event, value) => handleChangeProveedor(event, value)}
-                                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'cliente'} />}
-                                                error={errores.clientes ? true : false}
-                                            />
-                                        </div>    
-                                    : <></>
-                                }
-                            </div>  
+                        {form.factura && (
+                            <div className="row mb-3">
+                                <div className="col-md-6">
+                                    <InputLabel>RFC</InputLabel>
+                                    <TextField
+                                        variant="outlined"
+                                        name="rfc"
+                                        value={form.rfc || ''}
+                                        onChange={handleChange}
+                                        fullWidth
+                                    />
+                                </div>
+                            </div>
+                        )}
 
-                            <div>
-                                {
-                                    proyectos.length > 0 ?
-                                    <div> 
-                                        <InputLabel error={errores.proyecto ? true : false}>proyecto</InputLabel>
+                        {/* Fila con Cliente, Proyecto y Empresa */}
+                        <div className="row mb-3">
+                            <div className="col-md-4">
+                                {opciones.clientes.length > 0 && (
+                                    <>
+                                        <InputLabel error={!!errores.clientes}>Cliente</InputLabel>
+                                        <Autocomplete
+                                            name="cliente"
+                                            options={opciones.clientes}
+                                            getOptionLabel={(option) => option.name}
+                                            onChange={(event, value) => handleChangeProveedor(event, value)}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    variant="outlined"
+                                                    label={form.proveedor_nombre || 'Cliente'}
+                                                    error={!!errores.clientes}
+                                                />
+                                            )}
+                                            fullWidth
+                                        />
+                                    </>
+                                )}
+                            </div>
+                            <div className="col-md-4">
+                                {proyectos.length > 0 && (
+                                    <>
+                                        <InputLabel error={!!errores.proyecto}>Proyecto</InputLabel>
                                         <Autocomplete
                                             name="proyecto"
                                             options={proyectos}
                                             getOptionLabel={(option) => option.nombre}
-                                            style={{ width: 230, paddingRight: '1rem' }}
                                             onChange={(event, value) => handleChangeProyecto(event, value)}
-                                            renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proyecto_nombre ? form.proyecto_nombre : 'proyecto'} />}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    variant="outlined"
+                                                    label={form.proyecto_nombre || 'Proyecto'}
+                                                    error={!!errores.proyecto}
+                                                />
+                                            )}
+                                            fullWidth
                                         />
-                                    </div>    
-                                        : <></>
-                                }
-                            </div>  
+                                    </>
+                                )}
+                            </div>
+                            <div className="col-md-4">
+                                {opciones.empresas.length > 0 && (
+                                    <>
+                                        <InputLabel>Empresa</InputLabel>
+                                        <Select
+                                            name="empresa"
+                                            value={form.empresa}
+                                            onChange={handleChange}
+                                            fullWidth
+                                        >
+                                            {opciones.empresas.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>
+                                                    {item.name}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </>
+                                )}
+                            </div>
+                        </div>
 
-                            <div>
-                                {
-                                    opciones.empresas.length > 0 ?
-                                        <div>
-                                            <InputLabel>Empresa</InputLabel>
-                                            <Select
-                                                name="empresa"
-                                                value={form.empresa}
-                                                onChange={handleChange}
-                                                style={{ width: 200, paddingRight: '1rem' }}
-                                            >
-                                                {
-                                                    opciones.empresas.map((item, index) => (
-                                                        <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </div>
-                                    : null
-                                }
-                            </div>  
-                        </div> 
-                        <div>
-                                {
-                                    opciones.tickets.length > 0 ?
-                                        <div>    
-                                            <InputLabel error={errores.tickets ? true : false}>tickets</InputLabel>
-                                            <Autocomplete
-                                                name="tickets"
-                                                options={opciones.tickets}
-                                                getOptionLabel={(option) => option.name}
-                                                style={{ width: 250, paddingRight: '1rem' }}
-                                                onChange={(event, value) => handleChangeTicket(event, value)}
-                                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.tickets_nombre ? form.tickets_nombre : 'tickets'} />}
-                                                error={errores.tickets ? true : false}
-                                            />
-                                        </div>    
-                                    : <></>
-                                }                               
-                            </div>  
-
+                        {/* Sección de Tickets */}
+                        <div className="row">
+                            <div className="col-12">
+                                {opciones.tickets.length > 0 && (
+                                    <>
+                                        <InputLabel error={!!errores.tickets}>Tickets</InputLabel>
+                                        <Autocomplete
+                                            name="tickets"
+                                            options={opciones.tickets}
+                                            getOptionLabel={(option) => option.name}
+                                            onChange={(event, value) => handleChangeTicket(event, value)}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    variant="outlined"
+                                                    label={form.tickets_nombre || 'Tickets'}
+                                                    error={!!errores.tickets}
+                                                />
+                                            )}
+                                            fullWidth
+                                        />
+                                    </>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </AccordionDetails>
             </Accordion>
 
-            <Accordion defaultExpanded className='proyect-accordion'>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                >
-                    <Typography className='proyect-Subtitulo'>ÁREA Y FECHA</Typography>
+            <Accordion defaultExpanded className="proyect-accordion">
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography className="proyect-Subtitulo">ÁREA Y FECHA</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <div>
-
-                        <div>
-                            <div>
-                                <InputLabel >Fecha de la venta</InputLabel>
-                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                                    <Grid container >
-                                        <KeyboardDatePicker
-
-                                            format="dd/MM/yyyy"
-                                            name="fecha"
-                                            value={form.fecha !== '' ? form.fecha : null}
-                                            placeholder="dd/mm/yyyy"
-                                            onChange={e => handleChangeFecha(e, 'fecha')} 
-                                            KeyboardButtonProps={{
-                                                'aria-label': 'change date',
-                                            }}
-                                            error={errores.fecha ? true : false}
-                                        />
-                                    </Grid>
-                                </MuiPickersUtilsProvider>
-                            </div>    
+                    <div className="container-fluid">
+                        <div className="mb-3">
+                            <InputLabel>Fecha de la venta</InputLabel>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                                <Grid container>
+                                    <KeyboardDatePicker
+                                        format="dd/MM/yyyy"
+                                        name="fecha"
+                                        value={form.fecha !== "" ? form.fecha : null}
+                                        placeholder="dd/mm/yyyy"
+                                        onChange={(e) => handleChangeFecha(e, "fecha")}
+                                        KeyboardButtonProps={{
+                                            "aria-label": "change date",
+                                        }}
+                                        error={errores.fecha ? true : false}
+                                        className="form-control"
+                                    />
+                                </Grid>
+                            </MuiPickersUtilsProvider>
                         </div>
 
-                        <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <div>
-                                {departamentos.length > 0 ?
+                        <div className="row mt-3">
+                            <div className="col-md-4">
+                                {departamentos.length > 0 && (
                                     <>
                                         <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
                                         <Select
                                             value={form.area}
                                             name="area"
                                             onChange={handleChangeAreas}
-                                            style={{ width: 230, marginRight: '1rem' }}
+                                            className="form-control"
                                             error={errores.area ? true : false}
                                         >
                                             {departamentos.map((item, index) => (
-                                                <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
+                                                <MenuItem key={index} value={item.id_area}>
+                                                    {item.nombreArea}
+                                                </MenuItem>
                                             ))}
-
                                         </Select>
                                     </>
-                                    : null
-                                }
-
+                                )}
                             </div>
 
-                            <div>
-                                {departamentos.length > 0 && form.area !== '' ?
+                            <div className="col-md-4">
+                                {departamentos.length > 0 && form.area !== "" && (
                                     <>
                                         <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
                                         <Select
                                             value={form.partida}
                                             name="partida"
                                             onChange={handleChange}
-                                            style={{ width: 230, marginRight: '1rem' }}
+                                            className="form-control"
                                             error={errores.partida ? true : false}
                                         >
-                                            {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
-                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                            ))}
-
+                                            {departamentos
+                                                .find((item) => item.id_area == form.area)
+                                                ?.partidas.map((item, index) => (
+                                                    <MenuItem key={index} value={item.id}>
+                                                        {item.nombre}
+                                                    </MenuItem>
+                                                ))}
                                         </Select>
                                     </>
-                                    : null
-                                }
-                            </div> 
+                                )}
+                            </div>
 
-                            <div>
-                                { form.area && form.partida !== '' ?
+                            <div className="col-md-4">
+                                {form.area && form.partida !== "" && (
                                     <>
                                         <InputLabel id="demo-simple-select-label">Tipo de Subgasto</InputLabel>
                                         <Select
                                             value={form.subarea}
                                             name="subarea"
-                                            onChange={handleChange}  
-                                            style={{ width: 230, marginRight: '1rem' }}
+                                            onChange={handleChange}
+                                            className="form-control"
                                             error={errores.subarea ? true : false}
                                         >
-                                            {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id == form.partida).subpartidas.map((item, index) => (
-                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                            ))}
-
+                                            {departamentos
+                                                .find((item) => item.id_area == form.area)
+                                                ?.partidas.find((item) => item.id == form.partida)
+                                                ?.subpartidas.map((item, index) => (
+                                                    <MenuItem key={index} value={item.id}>
+                                                        {item.nombre}
+                                                    </MenuItem>
+                                                ))}
                                         </Select>
                                     </>
-                                    : null
-                                }
-                            </div>  
-                            
-                        </div>
-
-                        <div>
-
-                            <div style={{marginTop: '1rem'}}>
-                                <TextField
-                                    name='descripcion'
-                                    label="Descripción"
-                                    type="text"
-                                    defaultValue={form.descripcion}
-                                    onChange={handleChange}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    multiline
-                                    style={{ width: '70vh', height: 100 }}
-                                    error={errores.descripcion ? true : false}
-                                />
+                                )}
                             </div>
-
                         </div>
 
+                        <div className="mt-3">
+                            <TextField
+                                name="descripcion"
+                                label="Descripción"
+                                type="text"
+                                defaultValue={form.descripcion}
+                                onChange={handleChange}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                multiline
+                                className="form-control"
+                                style={{ minHeight: "100px" }}
+                                error={errores.descripcion ? true : false}
+                            />
+                        </div>
                     </div>
                 </AccordionDetails>
             </Accordion>
 
+
             <Accordion defaultExpanded className='proyect-accordion'>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography className='proyect-Subtitulo'>PAGO</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <div style={{ width: '100%' }}>
-                        
-                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <div>
-                                {/* {
-                                    form.empresa ? 
-                                        form.cuentas.length > 0 ? */}
-                                        
-                                            <div>
-                                                <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
-                                                <Select
-                                                    value={form.cuenta}
-                                                    name="cuenta"
-                                                    onChange={handleChange}
-                                                    style={{ width: 230, marginRight: '1rem' }}
-                                                    error={errores.cuenta ? true : false}
-                                                >
-                                                    {
-                                                        opciones.empresas.map((item, index) => (
-                                                            form.empresa == item.id ?
-                                                                item.cuentas.map((cuenta, index2) => (
-                                                                form.cuenta == cuenta.id ?
-                                                                <MenuItem key={index2} value={cuenta.id}>{cuenta.nombre}</MenuItem>
-                                                                : 
-                                                                <MenuItem key={index2} value={cuenta.id}>{cuenta.nombre}</MenuItem>
+                    <div className="container">
+                        <div className="row mb-3">
+                            <div className="col-12 col-md-4">
+                                <div>
+                                    <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
+                                    <Select
+                                        value={form.cuenta}
+                                        name="cuenta"
+                                        onChange={handleChange}
+                                        className="w-100 mb-3"
+                                        error={errores.cuenta ? true : false}
+                                    >
+                                        {opciones.empresas.map((item, index) => (
+                                            form.empresa === item.id ?
+                                                item.cuentas.map((cuenta, index2) => (
+                                                    <MenuItem key={index2} value={cuenta.id}>{cuenta.nombre}</MenuItem>
+                                                ))
+                                                : null
+                                        ))}
+                                    </Select>
+                                </div>
+                            </div>
 
-                                                                ))
-                                                            : <></>
-                                                        ))
-
-                                                        // presupuestos.map((item, index) => ( 
-                                                        //     item.rel.map((item2, index2) => (
-                                                        //         item2.id_area == state.departamento ? 
-                                                        //         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                                        //         : <></>
-                                                        //     ))
-                                                            
-                                                        // ))
-                                                    }
-                                                </Select>
-                                            </div>
-                                        
-                                {/*         : null
-                                     : null
-                                 } */}
-                                  <div>
-                                {
-                                    opciones.clientes.length > 0 ?
-                                        <div>
-                                            <InputLabel id="demo-simple-select-label">Contrato</InputLabel>
-                                            <Select
-                                                value={form.contrato}
-                                                name="contrato"
-                                                onChange={handleChange}
-                                                style={{ width: 150, marginRight: '1rem' }}
-                                                error={errores.contrato ? true : false}
-                                            >
-                                                  { opciones.clientes.find(item => item.id == form.cliente)  && 
-                                                opciones.clientes.find(item => item.id == form.cliente).contratos.map((item, index) => (
+                            <div className="col-12 col-md-4">
+                                {opciones.clientes.length > 0 && (
+                                    <div>
+                                        <InputLabel id="demo-simple-select-label">Contrato</InputLabel>
+                                        <Select
+                                            value={form.contrato}
+                                            name="contrato"
+                                            onChange={handleChange}
+                                            className="w-100 mb-3"
+                                            error={errores.contrato ? true : false}
+                                        >
+                                            {opciones.clientes.find(item => item.id === form.cliente)?.contratos.map((item, index) => (
                                                 <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                             ))}
-                                            </Select>
-                                        </div>
-                                        : null
-                                }
+                                        </Select>
+                                    </div>
+                                )}
+                            </div>
 
-                            </div> 
-
-                            </div> 
-                            <div>
-                                {
-                                    opciones.tiposPagos.length > 0 ?
-            
-                                        <div>
-                                            <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
-
-                                            <Select
-                                                value={form.tipoPago}
-                                                name="tipoPago"
-                                                onChange={handleChange}
-                                                style={{ width: 230, marginRight: '1rem' }}
-                                            >
-                                                {opciones.tiposPagos.map((item, index) => (
-                                                    <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        </div>
-                                    : null
-                                }
-
-                            </div> 
-                            <div>
-                            
-                            </div> 
+                            <div className="col-12 col-md-4">
+                                {opciones.tiposPagos.length > 0 && (
+                                    <div>
+                                        <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
+                                        <Select
+                                            value={form.tipoPago}
+                                            name="tipoPago"
+                                            onChange={handleChange}
+                                            className="w-100 mb-3"
+                                        >
+                                            {opciones.tiposPagos.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        
-                        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '2rem'}}>
-                            <div>
-                                {
-                                    opciones.tiposImpuestos.length > 0 ?
-                                        <div>
-                                            <InputLabel id="demo-simple-select-label">Tipo de Impuesto</InputLabel>
-                                            <Select
-                                                value={form.tipoImpuesto}
-                                                name="tipoImpuesto"
-                                                onChange={handleChange}
-                                                style={{ width: 230, marginRight: '1rem' }}
-                                            >
-                                                {opciones.tiposImpuestos.map((item, index) => (
-                                                    <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                                ))}
-                                            </Select>
-                                        </div>
-                                        : null
-                                }
 
-                            </div> 
-                            <div>
+                        <div className="row mb-3">
+                            <div className="col-12 col-md-4">
+                                {opciones.tiposImpuestos.length > 0 && (
+                                    <div>
+                                        <InputLabel id="demo-simple-select-label">Tipo de Impuesto</InputLabel>
+                                        <Select
+                                            value={form.tipoImpuesto}
+                                            name="tipoImpuesto"
+                                            onChange={handleChange}
+                                            className="w-100 mb-3"
+                                        >
+                                            {opciones.tiposImpuestos.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="col-12 col-md-4">
                                 <CurrencyTextField
-                                    label="total"
+                                    label="Total"
                                     variant="standard"
-                                    value={form.total} 
+                                    value={form.total}
                                     currencySymbol="$"
                                     outputFormat="number"
-                                    onChange={(event, value) => handleMoney(value)} 
+                                    modifyValueOnWheel={false}
+                                    onChange={(event, value) => handleMoney(value)}
                                     error={errores.total ? true : false}
+                                    className="w-100 mb-3"
                                 />
                             </div>
-                            <div>
+
+                            <div className="col-12 col-md-4">
                                 <CurrencyTextField
-                                    label="comision"
+                                    label="Comisión"
                                     variant="standard"
-                                    value={form.comision} 
+                                    value={form.comision}
                                     currencySymbol="$"
+                                    modifyValueOnWheel={false}
                                     outputFormat="number"
-                                    onChange={(event, value) => handleMoneyComision(value)} 
-                                    
+                                    onChange={(event, value) => handleMoneyComision(value)}
+                                    className="w-100 mb-3"
                                 />
                             </div>
                         </div>
-
                     </div>
                 </AccordionDetails>
             </Accordion>
+
 
             <div>
                 <div className="row justify-content-end">
                     <div className="col-md-4">
                         <button className={Style.sendButton} onClick={e => handleSend(form)}>editar</button>
                     </div>
-                </div>   
+                </div>
             </div>
-            
+
         </>
     )
 }

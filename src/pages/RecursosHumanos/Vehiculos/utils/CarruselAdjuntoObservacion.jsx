@@ -1,5 +1,4 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import Button from '@material-ui/core/Button';
@@ -28,12 +27,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CarruselAdjuntos(props) {
-    const { data, id, getAdjuntos } = props;
+    const { data } = props;
     let adjuntos = data
     const classes = useStyles();
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
-    const auth = useSelector(state => state.authUser.access_token)
+    // const auth = useSelector(state => state.authUser.access_token)
     const maxSteps = adjuntos.length;
 
     const handleNext = () => {

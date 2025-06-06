@@ -95,7 +95,7 @@ export default function Adjuntos(props) {
 
     const getAdjuntos = () => {
         try {
-            apiGet(`requisicion/adjuntos/${props.data.id}`, authUser)
+            apiGet(`requisicion/adjuntos/${props.data}`, authUser)
                 .then(res => {
                     let adjunAux = res.data.data.adjuntos
                     Swal.close()
@@ -204,7 +204,7 @@ export default function Adjuntos(props) {
             
 
             try {
-                apiPostForm(`requisicion/${props.data.id}/archivos/s3`, data, authUser)
+                apiPostForm(`requisicion/${props.data}/archivos/s3`, data, authUser)
                     .then(res => {
                         Swal.close()
                         Swal.fire({

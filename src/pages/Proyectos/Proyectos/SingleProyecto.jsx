@@ -25,6 +25,7 @@ class SingleProyecto extends Component {
             // { eventKey: 'facturacion', icon: 'las la-file-invoice-dollar', name: 'Facturación' },
         ],
         activeKeyNav: 'informacion',
+        modulo: null,  // Inicializamos el estado de modulo
         options:{
             empresas: [],
             clientes: [],
@@ -45,10 +46,14 @@ class SingleProyecto extends Component {
             const { modulo: { url } } = element
             return pathname === `${url}/single/${id}`
         })
-        if (!modulo){ history.push('/') }
-        if (id){ this.getOneProyecto(id) }
+        if (!modulo) {
+            history.push('/');
+        } else {
+            this.setState({ modulo });  // Guardamos modulo en el estado
+        }        if (id){ this.getOneProyecto(id) }
         this.getOptionsAxios()
         let queryString = this.props.history.location.search
+        
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let paramPres = params.get('presupuesto')
@@ -145,9 +150,11 @@ class SingleProyecto extends Component {
     }
 
     render() {
-        const { proyecto, navs, activeKeyNav, options } = this.state
+        const { proyecto, navs, activeKeyNav, options, modulo } = this.state
         const { access_token } = this.props.authUser
         const { user } = this.props.authUser
+
+
         return (
             <Layout active = 'proyectos' {...this.props} >
                 {
@@ -197,7 +204,7 @@ class SingleProyecto extends Component {
                                     </div>
                                     <Tab.Content>
                                         <Tab.Pane eventKey="informacion">
-                                            <EditProyectoForm proyecto = { proyecto } options = { options } at = { access_token } 
+                                            <EditProyectoForm proyecto = { proyecto } options = { options } modulo = {modulo} at = { access_token } 
                                                 refresh = { this.getOneProyecto } isActive = { activeKeyNav === 'informacion' ? true : false } />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="comentarios">

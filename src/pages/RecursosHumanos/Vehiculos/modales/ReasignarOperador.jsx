@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2'
-
-import { apiGet, apiPostForm, apiPutForm } from '../../../../functions/api'
-
+import { apiPutForm } from '../../../../functions/api'
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-
 import Style from './NuevoVehiculo.module.css'
 
 export default function ReasignarOperador(props) {
-    const { vehiculos, data, reload, handleClose } = props
+    const {  data, reload, handleClose } = props
     const authUser = useSelector(state => state.authUser)
     const usuarios = useSelector(state => state.opciones.vehiculos.asignacion)
     const [form, setForm] = useState({

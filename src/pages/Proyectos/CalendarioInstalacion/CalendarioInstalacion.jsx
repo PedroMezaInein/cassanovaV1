@@ -25,13 +25,13 @@ import SelectSearchGray from '../../../components/form-components/Gray/SelectSea
 class CalendarioInstalacion extends Component {
     state = {
         events: [],
-        title:'',
-        modal: { details:false, form:false, filtros: false },
+        title: '',
+        modal: { details: false, form: false, filtros: false },
         form: {
-            proyecto:'',
-            equipo:'',
-            duracion:'',
-            periodo:'',
+            proyecto: '',
+            equipo: '',
+            duracion: '',
+            periodo: '',
             fecha: new Date(),
             cantidad: '',
             costo: 0.0,
@@ -45,9 +45,9 @@ class CalendarioInstalacion extends Component {
             tipo: '',
             estatus: '',
         },
-        options:{  proyectos:[], equipos:[], estatus: [] },
+        options: { proyectos: [], equipos: [], estatus: [] },
         instalaciones: [],
-        instalacion:[],
+        instalacion: [],
         activeKey: 'calendario',
         data: { mantenimientos: [], estatus: [] },
         mantenimientos: [],
@@ -71,16 +71,16 @@ class CalendarioInstalacion extends Component {
         let { extendedProps } = eventInfo.event._def
         return (
             <OverlayTrigger rootClose overlay={<Tooltip><span className='font-weight-bolder'>{eventInfo.event.title}</span> - {eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</Tooltip>}>
-                <div className="text-hover container p-1 tarea" style={{backgroundColor:eventInfo.backgroundColor, borderColor:eventInfo.borderColor}} onClick={(e) => { e.preventDefault(); this.getInstalacion(extendedProps) }}>
-                        <div className="row mx-0 row-paddingless">
-                            <div className="col-md-auto mr-1 text-truncate">
-                                <i className={`${eventInfo.event._def.extendedProps.iconClass} font-size-17px px-1 text-white`}></i>
-                            </div>
-                            <div className="col align-self-center text-truncate">
-                                <span className="text-white font-weight-bold font-size-12px">{eventInfo.event.title} - {eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</span>
-                            </div>
+                <div className="text-hover container p-1 tarea" style={{ backgroundColor: eventInfo.backgroundColor, borderColor: eventInfo.borderColor }} onClick={(e) => { e.preventDefault(); this.getInstalacion(extendedProps) }}>
+                    <div className="row mx-0 row-paddingless">
+                        <div className="col-md-auto mr-1 text-truncate">
+                            <i className={`${eventInfo.event._def.extendedProps.iconClass} font-size-17px px-1 text-white`}></i>
+                        </div>
+                        <div className="col align-self-center text-truncate">
+                            <span className="text-white font-weight-bold font-size-12px">{eventInfo.event.title} - {eventInfo.event._def.extendedProps.instalacion.proyecto.nombre}</span>
                         </div>
                     </div>
+                </div>
             </OverlayTrigger>
         )
     }
@@ -92,10 +92,10 @@ class CalendarioInstalacion extends Component {
             modal,
             title: 'Agregar nueva instalación',
             form: this.clearForm(),
-            formeditado:0
+            formeditado: 0
         })
     }
-    
+
     handleClose = () => {
         const { modal } = this.state
         modal.form = false
@@ -109,13 +109,13 @@ class CalendarioInstalacion extends Component {
     openModalFiltros = () => {
         const { modal } = this.state
         modal.filtros = true
-        this.setState({...this.state, modal})
+        this.setState({ ...this.state, modal })
     }
 
     handleCloseFiltros = () => {
         const { modal } = this.state
         modal.filtros = false
-        this.setState({...this.state, modal})
+        this.setState({ ...this.state, modal })
     }
 
     getInstalacion = (instalacion) => {
@@ -124,11 +124,11 @@ class CalendarioInstalacion extends Component {
         this.setState({
             modal,
             title: `${instalacion.tipo} de ${instalacion.instalacion.equipo.equipo}`,
-            instalacion:instalacion
+            instalacion: instalacion
         })
     }
-    
-    handleCloseModalInstalacion= () => {
+
+    handleCloseModalInstalacion = () => {
         const { modal } = this.state
         modal.details = false
         this.setState({ ...this.state, modal, instalacion: '' })
@@ -168,13 +168,13 @@ class CalendarioInstalacion extends Component {
         const { name, value } = e.target
         const { filters } = this.state
         filters[name] = value
-        this.setState({...this.state, filters})
+        this.setState({ ...this.state, filters })
     }
 
-    getOptionsAxios = async() => {
+    getOptionsAxios = async () => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.options(`${URL_DEV}v1/proyectos/instalacion-equipos`, { headers: setSingleHeader(access_token)}).then(
+        await axios.options(`${URL_DEV}v1/proyectos/instalacion-equipos`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { proyectos, equipos, estatus } = response.data
@@ -183,7 +183,7 @@ class CalendarioInstalacion extends Component {
                 options.equipos = setOptions(equipos, 'texto', 'id')
                 options.estatus = setOptions(estatus, 'estatus', 'id')
                 data.estatus = estatus
-                this.setState({...this.state, options, data})
+                this.setState({ ...this.state, options, data })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -199,7 +199,7 @@ class CalendarioInstalacion extends Component {
                 let aux = []
                 instalaciones.forEach((instalacion) => {
 
-                    aux.push( { 
+                    aux.push({
                         title: instalacion.equipo.equipo,
                         start: instalacion.fecha,
                         end: instalacion.fecha,
@@ -207,22 +207,22 @@ class CalendarioInstalacion extends Component {
                         backgroundColor: "#17a2b8",
                         borderColor: "#17a2b8",
                         iconClass: 'la la-toolbox',
-                        tipo:'Instalación'
+                        tipo: 'Instalación'
                     })
                     instalacion.mantenimientos.forEach((mantenimiento) => {
                         aux.push({
                             title: instalacion.equipo.equipo,
-                            start:mantenimiento.fecha,
-                            end:mantenimiento.fecha,
+                            start: mantenimiento.fecha,
+                            end: mantenimiento.fecha,
                             instalacion: instalacion,
                             backgroundColor: `${mantenimiento.tipo === 'correctivo' ? '#2756C3' : '#eea71a'}`,
                             borderColor: `${mantenimiento.tipo === 'correctivo' ? '#2756C3' : '#eea71a'}`,
                             iconClass: 'la la-tools',
-                            tipo:`Mantenimiento ${mantenimiento.tipo}`
+                            tipo: `Mantenimiento ${mantenimiento.tipo}`
                         })
                     })
                 })
-                this.setState({  ...this.state,  events: aux, instalaciones: instalaciones })
+                this.setState({ ...this.state, events: aux, instalaciones: instalaciones })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -230,7 +230,7 @@ class CalendarioInstalacion extends Component {
         })
     }
 
-    onSubmitInstalacion = async() => {
+    onSubmitInstalacion = async () => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
@@ -261,10 +261,10 @@ class CalendarioInstalacion extends Component {
         })
     }
 
-    deleteInstalacionAxios = async(instalacion) => {
+    deleteInstalacionAxios = async (instalacion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/${instalacion.id}`, { headers: setSingleHeader(access_token)  }).then(
+        await axios.delete(`${URL_DEV}v1/proyectos/instalacion-equipos/${instalacion.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert('Instalación de equipo eliminado con éxito.')
                 this.getCalendarioInstalaciones()
@@ -280,8 +280,8 @@ class CalendarioInstalacion extends Component {
         e.preventDefault()
         const { filters, modal } = this.state
         modal.filtros = false
-        this.setState({...this.state, modal})
-        $('#mantenimientos').DataTable().search( JSON.stringify(filters) ).draw();
+        this.setState({ ...this.state, modal })
+        $('#mantenimientos').DataTable().search(JSON.stringify(filters)).draw();
     }
 
     clearFiltros = (e) => {
@@ -294,7 +294,7 @@ class CalendarioInstalacion extends Component {
         filters.tipo = ''
         filters.estatus = ''
         modal.filtros = false
-        this.setState({...this.state, modal, filters})
+        this.setState({ ...this.state, modal, filters })
         $('#mantenimientos').DataTable().search({}).draw();
     }
 
@@ -311,7 +311,7 @@ class CalendarioInstalacion extends Component {
         })
     }
 
-    changeStatusAxios =  async(status, mante) => {
+    changeStatusAxios = async (status, mante) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos/${mante}/status/${status}`, { headers: setSingleHeader(access_token) }).then(
@@ -324,15 +324,15 @@ class CalendarioInstalacion extends Component {
             console.error(error, 'error')
         })
     }
-    
+
     openModalDeleteMantenimiento = mantenimiento => {
         deleteAlert('¿DESEAS ELIMINAR EL MANTENIMIENTO?', '', () => this.deleteMantenimientoAxios(mantenimiento.id))
     }
 
-    changeActive = value => { 
-        if(value === 'tabla')
+    changeActive = value => {
+        if (value === 'tabla')
             $('#mantenimientos').DataTable().search({}).draw();
-        this.setState({...this.state, activeKey: value}) 
+        this.setState({ ...this.state, activeKey: value })
     }
 
     setMantenimientos = mantenimientos => {
@@ -342,16 +342,18 @@ class CalendarioInstalacion extends Component {
             aux.push({
                 actions: this.setActionsMantenimientos(mante),
                 proyecto: setTextTable(mante.instalacion.proyecto.nombre),
-                tipo: <div className = 'd-flex align-items-center justify-content-center'>
-                    <i style = { { color: `${mante.tipo === 'correctivo' ? '#2756c3' : '#eea71a'}` } } 
-                        className = { `${mante.tipo === 'correctivo' ? 'la la-tools' : 'flaticon-security'} mr-2`} /> {setTextTable(mante.tipo)}
+                tipo: <div className='d-flex align-items-center justify-content-center'>
+                    <i style={{ color: `${mante.tipo === 'correctivo' ? '#2756c3' : '#eea71a'}` }}
+                        className={`${mante.tipo === 'correctivo' ? 'la la-tools' : 'flaticon-security'} mr-2`} /> {setTextTable(mante.tipo)}
                 </div>,
                 equipo: setTextTable(mante.instalacion.equipo.equipo),
-                estatus: <Dropdown className = 'text-center'>
-                    <Dropdown.Toggle 
-                        style = { { backgroundColor: mante.status.fondo, color: mante.status.letra, border: 'transparent', padding: '0.3rem 0.6rem',
-                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '8.5px',
-                                fontWeight: 600 }}>
+                estatus: <Dropdown className='text-center'>
+                    <Dropdown.Toggle
+                        style={{
+                            backgroundColor: mante.status.fondo, color: mante.status.letra, border: 'transparent', padding: '0.3rem 0.6rem',
+                            width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '8.5px',
+                            fontWeight: 600
+                        }}>
                         {mante.status.estatus.toUpperCase()}
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="p-0" >
@@ -360,13 +362,15 @@ class CalendarioInstalacion extends Component {
                         </Dropdown.Header>
                         {
                             data.estatus.map((status, index) => {
-                                return(
-                                    <Dropdown.Item className = 'p-0' key = { index } 
-                                        onClick = { () => { questionAlert(`CAMBIARÁS EL ESTATUS A ${status.estatus.toUpperCase()}`, 
-                                            `¿DESEAS CONTINUAR?`, () => { this.changeStatusAxios(status.id, mante.id) } ) }} >
+                                return (
+                                    <Dropdown.Item className='p-0' key={index}
+                                        onClick={() => {
+                                            questionAlert(`CAMBIARÁS EL ESTATUS A ${status.estatus.toUpperCase()}`,
+                                                `¿DESEAS CONTINUAR?`, () => { this.changeStatusAxios(status.id, mante.id) })
+                                        }} >
                                         <span className="navi-link w-100">
                                             <span className="navi-text">
-                                                <span style = { { backgroundColor: status.fondo, color: status.letra } }
+                                                <span style={{ backgroundColor: status.fondo, color: status.letra }}
                                                     className="label label-xl label-inline rounded-0 w-100">
                                                     {status.estatus}
                                                 </span>
@@ -379,9 +383,9 @@ class CalendarioInstalacion extends Component {
                     </Dropdown.Menu>
                 </Dropdown>,
                 costo: setMoneyTable(mante.costo),
-                presupuesto: mante.cotizacion ? <div className = 'text-center'>
-                    <a href = { mante.cotizacion } target = '_blank' rel="noreferrer" className="btn btn-icon btn-light btn-hover-primary btn-sm">
-                        <i className="la la-file-invoice-dollar text-primary icon-xl"/>
+                presupuesto: mante.cotizacion ? <div className='text-center'>
+                    <a href={mante.cotizacion} target='_blank' rel="noreferrer" className="btn btn-icon btn-light btn-hover-primary btn-sm">
+                        <i className="la la-file-invoice-dollar text-primary icon-xl" />
                     </a>
                 </div> : '',
                 fecha: setDateTable(mante.fecha)
@@ -391,12 +395,12 @@ class CalendarioInstalacion extends Component {
     }
 
     setActionsMantenimientos = (element) => {
-        return(
+        return (
             <div className="w-100 d-flex justify-content-center">
-                <OverlayTrigger rootClose overlay = { <Tooltip>Eliminar</Tooltip> }  >
-                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger`} 
-                        onClick = { (e) => { e.preventDefault(); this.openModalDeleteMantenimiento(element) } }>
-                        <i className = 'flaticon2-rubbish-bin' />
+                <OverlayTrigger rootClose overlay={<Tooltip>Eliminar</Tooltip>}  >
+                    <button className={`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-danger btn-hover-danger`}
+                        onClick={(e) => { e.preventDefault(); this.openModalDeleteMantenimiento(element) }}>
+                        <i className='flaticon2-rubbish-bin' />
                     </button>
                 </OverlayTrigger>
             </div>
@@ -405,7 +409,7 @@ class CalendarioInstalacion extends Component {
 
     getActiveClass = () => {
         const { instalacion } = this.state
-        switch(instalacion.tipo){
+        switch (instalacion.tipo) {
             case 'Instalación':
                 return 'color-instalacion'
             case 'Mantenimiento preventivo':
@@ -419,7 +423,7 @@ class CalendarioInstalacion extends Component {
         const { events, title, modal, form, options, instalacion, activeKey, filters } = this.state
         const { access_token } = this.props.authUser
         return (
-            <Layout active = 'proyectos' {...this.props}>
+            <Layout active='proyectos' {...this.props}>
                 <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4">
                     {
                         activeKey === 'calendario' ?
@@ -430,7 +434,7 @@ class CalendarioInstalacion extends Component {
                                     </span>
                                 </li>
                             </OverlayTrigger>
-                        : 
+                            :
                             <OverlayTrigger rootClose overlay={<Tooltip><span className="text-dark-50 font-weight-bold">MOSTRAR CALENDARIO</span></Tooltip>}>
                                 <li className="nav-item mb-2" onClick={(e) => { e.preventDefault(); this.changeActive('calendario') }}>
                                     <span className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info" >
@@ -438,7 +442,7 @@ class CalendarioInstalacion extends Component {
                                     </span>
                                 </li>
                             </OverlayTrigger>
-                    }            
+                    }
                 </ul>
                 {
                     activeKey === 'calendario' ?
@@ -454,59 +458,59 @@ class CalendarioInstalacion extends Component {
                                 </div>
                             </Card.Header>
                             <Card.Body>
-                                <FullCalendar locale = { esLocale } plugins = { [dayGridPlugin, interactionPlugin, bootstrapPlugin] }
-                                    initialView = "dayGridMonth" weekends = { true } events = { events } eventContent = { this.renderEventContent }
-                                    firstDay = { 1 } themeSystem = 'bootstrap' height = '1290.37px' />
+                                <FullCalendar locale={esLocale} plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
+                                    initialView="dayGridMonth" weekends={true} events={events} eventContent={this.renderEventContent}
+                                    firstDay={1} themeSystem='bootstrap' height='1290.37px' />
                             </Card.Body>
                         </Card>
-                    : 
-                        <NewTable tableName = 'mantenimientos' subtitle = 'Listado de Mantenimientos' title = 'Mantenimientos' abrirModal = { true } 
-                            onClick = { this.openModal } columns = { MANTENIMIENTOS } accessToken = { access_token } setter = { this.setMantenimientos } 
-                            urlRender = {`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos`} filterClick = { this.openModalFiltros } />
+                        :
+                        <NewTable tableName='mantenimientos' subtitle='Listado de Mantenimientos' title='Mantenimientos' abrirModal={true}
+                            onClick={this.openModal} columns={MANTENIMIENTOS} accessToken={access_token} setter={this.setMantenimientos}
+                            urlRender={`${URL_DEV}v1/proyectos/instalacion-equipos/mantenimientos`} filterClick={this.openModalFiltros} />
                 }
                 <Modal size="lg" title={title} show={modal.form} handleClose={this.handleClose} >
-                    <FormCalendarioIEquipos form = { form } options = { options } onChange = { this.onChange } onSubmit = { this.onSubmitInstalacion } />
+                    <FormCalendarioIEquipos form={form} options={options} onChange={this.onChange} onSubmit={this.onSubmitInstalacion} />
                 </Modal>
-                <Modal size="lg" title={<span><i className={`${instalacion.iconClass} icon-lg mr-2 ${this.getActiveClass()}`}></i>{title}</span>} 
+                <Modal size="lg" title={<span><i className={`${instalacion.iconClass} icon-lg mr-2 ${this.getActiveClass()}`}></i>{title}</span>}
                     show={modal.details} handleClose={this.handleCloseModalInstalacion} classBody="bg-light">
-                    <DetailsInstalacion instalacion={instalacion} deleteInstalacion={this.deleteInstalacionAxios}/>
+                    <DetailsInstalacion instalacion={instalacion} deleteInstalacion={this.deleteInstalacionAxios} />
                 </Modal>
-                <Modal size = 'lg' title = 'Filtros' show = { modal.filtros } handleClose = { this.handleCloseFiltros } customcontent = { true } 
-                    contentcss = "modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
-                    <form onSubmit = { this.onSubmitFilters } >
+                <Modal size='lg' title='Filtros' show={modal.filtros} handleClose={this.handleCloseFiltros} customcontent={true}
+                    contentcss="modal modal-sticky modal-sticky-bottom-right d-block modal-sticky-lg modal-dialog modal-dialog-scrollable">
+                    <form onSubmit={this.onSubmitFilters} >
                         <div className="row justify-content-center mx-0">
                             <div className="col-md-6">
-                                <InputGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
-                                    withformgroup = { 0 } name = 'proyecto' placeholder = 'PROYECTO' value = { filters.proyecto } 
-                                    onChange = { this.onChangeFilter } />
+                                <InputGray withtaglabel={1} withtextlabel={0} withplaceholder={1} withicon={0} requirevalidation={0}
+                                    withformgroup={0} name='proyecto' placeholder='PROYECTO' value={filters.proyecto}
+                                    onChange={this.onChangeFilter} />
                             </div>
                             <div className="col-md-6">
-                                <InputGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
-                                    withformgroup = { 0 } name = 'equipo' placeholder = 'EQUIPO'  value = { filters.equipo } 
-                                    onChange = { this.onChangeFilter }/>
+                                <InputGray withtaglabel={1} withtextlabel={0} withplaceholder={1} withicon={0} requirevalidation={0}
+                                    withformgroup={0} name='equipo' placeholder='EQUIPO' value={filters.equipo}
+                                    onChange={this.onChangeFilter} />
                             </div>
                             <div className="col-md-6">
-                                <InputMoneyGray withtaglabel = { 1 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
-                                    withformgroup = { 0 } name = 'costo' placeholder = 'COSTO' value = { filters.costo } onChange = { this.onChangeFilter } />
+                                <InputMoneyGray withtaglabel={1} withtextlabel={0} withplaceholder={1} withicon={0} requirevalidation={0}
+                                    withformgroup={0} name='costo' placeholder='COSTO' value={filters.costo} onChange={this.onChangeFilter} />
                             </div>
                             <div className="col-md-6">
-                                <SelectSearchGray options = { options.estatus } placeholder = 'ESTATUS' value = { filters.estatus } 
-                                    withtaglabel = { 1 } withtextlabel = { 0 } withicon={0} customdiv = 'mb-0' 
-                                    onChange = { (value) => { this.onChangeFilter({target:{name:'estatus',value:value}}) } } />
+                                <SelectSearchGray options={options.estatus} placeholder='ESTATUS' value={filters.estatus}
+                                    withtaglabel={1} withtextlabel={0} withicon={0} customdiv='mb-0'
+                                    onChange={(value) => { this.onChangeFilter({ target: { name: 'estatus', value: value } }) }} />
                             </div>
                             <div className="col-md-12 text-center mt-6">
-                                <RadioGroupGray placeholder = "¿Qué tipo de mantenimiento es?" name = 'tipo' onChange = { this.onChangeFilter } 
-                                    options = { [ { label: 'Preventivo', value: 'preventivo' }, { label: 'Correctivo', value: 'correctivo' } ] } 
-                                    customdiv = 'mb-0' value = { filters.tipo }/>
+                                <RadioGroupGray placeholder="¿Qué tipo de mantenimiento es?" name='tipo' onChange={this.onChangeFilter}
+                                    options={[{ label: 'Preventivo', value: 'preventivo' }, { label: 'Correctivo', value: 'correctivo' }]}
+                                    customdiv='mb-0' value={filters.tipo} />
                             </div>
                             <div className="col-md-9 my-6 text-center">
-                                <RangeCalendar start = { filters.fecha.start } end = { filters.fecha.end } 
-                                    onChange = { (value) => { this.onChangeFilter({target:{name:'fecha',value:{start: value.startDate, end: value.endDate}}}) } } />
+                                <RangeCalendar start={filters.fecha.start} end={filters.fecha.end}
+                                    onChange={(value) => { this.onChangeFilter({ target: { name: 'fecha', value: { start: value.startDate, end: value.endDate } } }) }} />
                             </div>
                         </div>
                         <div className="mx-0 row justify-content-between border-top pt-4">
-                            <Button only_icon='las la-redo-alt icon-lg' className="btn btn-light-danger btn-sm font-weight-bold" type = 'button' text="LIMPIAR" onClick = { this.clearFiltros } />
-                            <Button only_icon='las la-filter icon-xl' className="btn btn-light-info btn-sm font-weight-bold" type = 'submit' text="FILTRAR"  />
+                            <Button only_icon='las la-redo-alt icon-lg' className="btn btn-light-danger btn-sm font-weight-bold" type='button' text="LIMPIAR" onClick={this.clearFiltros} />
+                            <Button only_icon='las la-filter icon-xl' className="btn btn-light-info btn-sm font-weight-bold" type='submit' text="FILTRAR" />
                         </div>
                     </form>
                 </Modal>

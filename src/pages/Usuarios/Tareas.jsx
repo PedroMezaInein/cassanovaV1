@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 import moment from 'moment'
 import { URL_DEV, COLORS, PUSHER_OBJECT } from '../../constants'
 import { connect } from 'react-redux'
-import { Tags, ListPanel, Task, AddTaskForm, TagColorForm} from '../../components/forms'
+import { Tags, ListPanel, Task, AddTaskForm, TagColorForm } from '../../components/forms'
 import { Modal } from '../../components/singles'
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import { setFormHeader, setSingleHeader } from '../../functions/routers'
@@ -23,7 +23,7 @@ class Tareas extends Component {
             tags: [],
             comentario: '',
             tipo: '',
-            tipoTarget: {taget: '', value: ''},
+            tipoTarget: { taget: '', value: '' },
             filtrarTarea: 'own',
             filtrarTareaNombre: '',
             color: '',
@@ -35,7 +35,7 @@ class Tareas extends Component {
                     files: []
                 },
             },
-            nuevo_tag:''
+            nuevo_tag: ''
         },
         options: {
             responsables: [],
@@ -47,8 +47,8 @@ class Tareas extends Component {
             ],
         },
         showTask: false,
-        showListPanel : true,
-        pagination:{
+        showListPanel: true,
+        pagination: {
             page: 0,
             limit: 10,
             numTotal: 0,
@@ -78,32 +78,34 @@ class Tareas extends Component {
             history.push('/')
         this.getOptionsAxios()
         this.getTasks(pagination)
-        if(process.env.NODE_ENV === 'production' || true ){
-            const pusher = new Echo( PUSHER_OBJECT );
+        if (process.env.NODE_ENV === 'production' || true) {
+            const pusher = new Echo(PUSHER_OBJECT);
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
                 const { form, pagination, tarea, tareas, showTask } = this.state
                 const { user } = this.props.authUser
-                if(data.type ==='delete' || data.type === 'terminar' || data.type === 'reactivar'){ this.getTasks(pagination) }
-                else{
-                    if(form.filtrarTarea === 'own'){
+                if (data.type === 'delete' || data.type === 'terminar' || data.type === 'reactivar') { this.getTasks(pagination) }
+                else {
+                    if (form.filtrarTarea === 'own') {
                         let found = tareas.find((elemento) => { return elemento.id === data.tarea })
-                        if(found){ this.getTasks(pagination) 
-                        }else{
+                        if (found) {
+                            this.getTasks(pagination)
+                        } else {
                             found = data.responsables.find((elemento) => { return elemento === user.id })
-                            if(found){ this.getTasks(pagination) }
+                            if (found) { this.getTasks(pagination) }
                         }
-                    }else{ this.getTasks(pagination) }
-                    if(tarea.id === data.tarea && showTask){ this.mostrarTarea({id: data.tarea}) }
+                    } else { this.getTasks(pagination) }
+                    if (tarea.id === data.tarea && showTask) { this.mostrarTarea({ id: data.tarea }) }
                 }
-                
+
             })
         }
+
     }
 
     mostrarListPanel() {
         this.setState({
             ...this.state,
-            showListPanel : true ,
+            showListPanel: true,
             showTask: false,
             tarea: ''
         })
@@ -111,32 +113,32 @@ class Tareas extends Component {
 
     nextPage = () => {
         const { pagination } = this.state
-        pagination.page = pagination.page+1;
-        this.setState({...this.state, pagination})
+        pagination.page = pagination.page + 1;
+        this.setState({ ...this.state, pagination })
         this.getTasks(pagination)
     }
 
     prevPage = () => {
         const { pagination } = this.state
-        pagination.page = pagination.page-1;
-        this.setState({...this.state, pagination})
+        pagination.page = pagination.page - 1;
+        this.setState({ ...this.state, pagination })
         this.getTasks(pagination)
     }
 
     setProyectoName = nombre => {
         let arreglo = nombre.split(' ')
         let texto = '#'
-        arreglo.forEach( (elemento) => {
-            if(elemento !== '' && elemento !== '-')
+        arreglo.forEach((elemento) => {
+            if (elemento !== '' && elemento !== '-')
                 texto = texto + elemento.charAt(0).toUpperCase() + elemento.slice(1).toLowerCase()
         })
         return texto
     }
 
-    completarTareaAxios = async(tarea) => {
+    completarTareaAxios = async (tarea) => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/completar`, { headers: setSingleHeader(access_token)}).then(
+        await axios.get(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/completar`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 this.setState({ ...this.state, showTask: false, showListPanel: true, tarea: '' })
@@ -150,10 +152,10 @@ class Tareas extends Component {
         })
     }
 
-    mostrarTarea = async(tarea) => {
+    mostrarTarea = async (tarea) => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(`${URL_DEV}v3/usuarios/tareas/${tarea.id}`, { headers: setSingleHeader(access_token)}).then(
+        await axios.get(`${URL_DEV}v3/usuarios/tareas/${tarea.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { tarea } = response.data
@@ -163,7 +165,7 @@ class Tareas extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
-        
+
     }
 
     onSubmit = e => {
@@ -176,11 +178,11 @@ class Tareas extends Component {
             this.addTask()
     }
 
-    addTask = async(e) =>  {
+    addTask = async (e) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
-        await axios.post(`${URL_DEV}v3/usuarios/tareas`, form, { headers: setSingleHeader(access_token)}).then(
+        await axios.post(`${URL_DEV}v3/usuarios/tareas`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 this.setState({
                     ...this.state,
@@ -196,9 +198,9 @@ class Tareas extends Component {
             console.error(error, 'error')
         })
     }
-    editTask = async(e) =>  {
+    editTask = async (e) => {
         const { access_token } = this.props.authUser
-        const { tarea, form} = this.state
+        const { tarea, form } = this.state
         waitAlert()
         await axios.put(`${URL_DEV}v3/usuarios/tareas/${tarea.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -214,20 +216,20 @@ class Tareas extends Component {
             console.error(error, 'error')
         })
     }
-    getTasks = async(pagination) => {
+    getTasks = async (pagination) => {
         const { access_token } = this.props.authUser
         const { form, etiquetas } = this.state
         waitAlert()
         let aux = ''
         etiquetas.forEach((element, index) => {
-            aux = aux + '&etiquetas[]='+element.id
+            aux = aux + '&etiquetas[]=' + element.id
         })
-        await axios.get(`${URL_DEV}v3/usuarios/tareas?nombre=${form.filtrarTareaNombre}&page=${pagination.page}&limit=${pagination.limit}${aux}&type=${form.filtrarTarea}`, { headers: setSingleHeader(access_token)}).then(
+        await axios.get(`${URL_DEV}v3/usuarios/tareas?nombre=${form.filtrarTareaNombre}&page=${pagination.page}&limit=${pagination.limit}${aux}&type=${form.filtrarTarea}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
                 const { tareas, num } = response.data
                 pagination.numTotal = num
-                if(pagination.page > parseInt(num/pagination.limit))
+                if (pagination.page > parseInt(num / pagination.limit))
                     pagination.page = 0
                 this.setState({ ...this.state, tareas, pagination })
             }, (error) => { printResponseErrorAlert(error) }
@@ -237,15 +239,15 @@ class Tareas extends Component {
         })
     }
 
-    updateFavAxios = async(tarea) => {
+    updateFavAxios = async (tarea) => {
         const { access_token } = this.props.authUser
         waitAlert()
         let tipo = tarea.prioritario === 0 ? 'si' : 'no'
-        await axios.put(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/importancia`, {prioritario: tipo}, { headers: setSingleHeader(access_token)}).then(
+        await axios.put(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/importancia`, { prioritario: tipo }, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { tarea } = response.data
                 Swal.close()
-                this.setState({...this.state, tarea: tarea})
+                this.setState({ ...this.state, tarea: tarea })
                 const { pagination } = this.state
                 this.getTasks(pagination)
             }, (error) => { printResponseErrorAlert(error) }
@@ -255,7 +257,7 @@ class Tareas extends Component {
         })
     }
 
-    getOptionsAxios = async() => {
+    getOptionsAxios = async () => {
         const { access_token } = this.props.authUser
         waitAlert()
         await axios.options(`${URL_DEV}v3/usuarios/tareas`, { headers: setSingleHeader(access_token) }).then(
@@ -266,8 +268,8 @@ class Tareas extends Component {
                 options.responsables = []
                 mentions.users = []
                 mentions.proyectos = []
-                options.tags = [ { label: ' + Nueva etiqueta', value: 'nueva_etiqueta', name: 'Nueva etiqueta'} ]
-                usuarios.forEach( ( element ) => {
+                options.tags = [{ label: ' + Nueva etiqueta', value: 'nueva_etiqueta', name: 'Nueva etiqueta' }]
+                usuarios.forEach((element) => {
                     options.responsables.push({
                         name: element.name,
                         value: element.id.toString(),
@@ -275,17 +277,17 @@ class Tareas extends Component {
                     })
                     mentions.users.push({ id: element.id, display: element.name })
                 });
-                etiquetas.forEach( (element) => {
+                etiquetas.forEach((element) => {
                     options.tags.push({
                         name: element.titulo,
                         value: element.id.toString(),
                         label: element.titulo,
-                        color:element.color
+                        color: element.color
                     })
                     data.tags.push(element)
                 })
                 proyectos.forEach((element) => { mentions.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre), name: element.nombre }) })
-                this.setState({...this.state, options, mentions, data})
+                this.setState({ ...this.state, options, mentions, data })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -293,7 +295,7 @@ class Tareas extends Component {
         })
     }
 
-    sendTagAxios = async(e) => {
+    sendTagAxios = async (e) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
@@ -302,21 +304,21 @@ class Tareas extends Component {
                 Swal.close()
                 const { etiquetas, etiqueta } = response.data
                 const { options, form, data } = this.state
-                options.tags = [ { label: ' + Nueva etiqueta', value: 'nueva_etiqueta', name: 'Nueva etiqueta'} ]
-                etiquetas.forEach( (element) => {
+                options.tags = [{ label: ' + Nueva etiqueta', value: 'nueva_etiqueta', name: 'Nueva etiqueta' }]
+                etiquetas.forEach((element) => {
                     options.tags.push({
                         name: element.titulo,
                         value: element.id.toString(),
                         label: element.titulo,
-                        color:element.color
+                        color: element.color
                     })
                     data.tags.push(element)
                 })
                 form.nuevo_tag = ''
                 form.color = ''
-                if(etiqueta)
-                    form.tags.push({value: etiqueta.id.toString(), name: etiqueta.titulo, label: etiqueta.titulo})
-                this.setState({...this.state, data, options, form, modal_addTag: false})
+                if (etiqueta)
+                    form.tags.push({ value: etiqueta.id.toString(), name: etiqueta.titulo, label: etiqueta.titulo })
+                this.setState({ ...this.state, data, options, form, modal_addTag: false })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -324,21 +326,21 @@ class Tareas extends Component {
         })
     }
 
-    sendComentario = async() => {
+    sendComentario = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, tarea } = this.state
         const data = new FormData();
         data.append(`comentario`, form.comentario)
-        if(form.adjuntos.adjunto_comentario.value)
+        if (form.adjuntos.adjunto_comentario.value)
             form.adjuntos.adjunto_comentario.files.forEach((file) => {
                 data.append(`files[]`, file.file)
             })
-        
+
         await axios.post(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/comentario`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 const { tarea } = response.data
-                this.setState({...this.state, tarea: tarea, form: this.clearForm()})
+                this.setState({ ...this.state, tarea: tarea, form: this.clearForm() })
                 doneAlert('Comentario agregao con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -347,15 +349,15 @@ class Tareas extends Component {
         })
     }
 
-    updateTagInTask = async(tag, tarea, type) => {
+    updateTagInTask = async (tag, tarea, type) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/tags?type=${type}`, { tag: tag.value }, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { showTask } = this.state
                 const { tarea } = response.data
-                if(showTask){
-                    this.setState({...this.state, tarea: tarea})
+                if (showTask) {
+                    this.setState({ ...this.state, tarea: tarea })
                 }
                 Swal.close();
                 doneAlert('Comentario agregao con éxito')
@@ -366,33 +368,33 @@ class Tareas extends Component {
         })
     }
 
-    addLabel = async(etiqueta) => {
+    addLabel = async (etiqueta) => {
         const { etiquetas, pagination } = this.state
         let flag = true
         etiquetas.forEach((elemento) => {
-            if(elemento.id === etiqueta.id)
+            if (elemento.id === etiqueta.id)
                 flag = false
         })
-        if(flag){
+        if (flag) {
             etiquetas.push(etiqueta)
-            this.setState({...this.state, etiquetas})
+            this.setState({ ...this.state, etiquetas })
             this.getTasks(pagination)
         }
     }
 
-    removeTag = async(etiqueta) => {
+    removeTag = async (etiqueta) => {
         let { etiquetas, pagination } = this.state
         let aux = []
         etiquetas.forEach((element) => {
-            if(element.id !== etiqueta.id)
+            if (element.id !== etiqueta.id)
                 aux.push(element)
         })
         etiquetas = aux
-        this.setState({...this.state, etiquetas})
+        this.setState({ ...this.state, etiquetas })
         waitAlert()
         setTimeout(
             () => {
-                this.getTasks(pagination)        
+                this.getTasks(pagination)
             }, 100
         )
     }
@@ -420,7 +422,7 @@ class Tareas extends Component {
                     form[element] = false;
                     break;
                 case 'rolTarget':
-                    form[element] = { target: '', value: ''}
+                    form[element] = { target: '', value: '' }
                     break;
                 case 'responsables':
                 case 'tags':
@@ -450,23 +452,23 @@ class Tareas extends Component {
     }
     onChange = e => {
         const { name, value } = e.target
-        const { form,pagination } = this.state
+        const { form, pagination } = this.state
         form[name] = value
-        if(name === 'filtrarTarea')
+        if (name === 'filtrarTarea')
             pagination.page = 0
         this.setState({ ...this.state, form, pagination })
-        if(name === 'filtrarTarea')
+        if (name === 'filtrarTarea')
             this.getTasks(pagination)
     }
     handleChangeCreate = newValue => {
         const { form } = this.state
-        if(newValue == null){
-            newValue = { "label":"","value":"" }
+        if (newValue == null) {
+            newValue = { "label": "", "value": "" }
         }
         let nuevoValue = {
-            "label":newValue.label,
-            "value":newValue.value,
-            "color":""
+            "label": newValue.label,
+            "value": newValue.value,
+            "color": ""
         }
         form.tipo = newValue.value
         form.tipoTarget = nuevoValue
@@ -571,21 +573,21 @@ class Tareas extends Component {
         const { data } = this.state
         if (name === 'Nueva etiqueta') {
             this.openModalAddTag()
-        }else{
-            let etiqueta = data.tags.find( function(elemento){
+        } else {
+            let etiqueta = data.tags.find(function (elemento) {
                 return elemento.id.toString() === tag.value
             })
             this.addLabel(etiqueta)
         }
     }
 
-    deleteTask = async(tarea) => {
+    deleteTask = async (tarea) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.delete(`${URL_DEV}v3/usuarios/tareas/${tarea.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 doneAlert('Tarea eliminada con éxito.')
-                this.setState({...this.state, showTask: false, showListPanel: true, tarea: ''})
+                this.setState({ ...this.state, showTask: false, showListPanel: true, tarea: '' })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -601,39 +603,41 @@ class Tareas extends Component {
                 <div className="d-flex flex-row">
                     <div className="flex-row-fluid ">
                         <div className="d-flex flex-column flex-grow-1 ">
-                            <Tags etiquetas = { etiquetas } removeTag = { this.removeTag } options = { options } tagShow={this.tagShow}/>
+                            <Tags etiquetas={etiquetas} removeTag={this.removeTag} options={options} tagShow={this.tagShow} />
                             <div className="row">
-                                <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
-                                    mostrarTarea = { this.mostrarTarea } showListPanel = { showListPanel } tareas = { tareas } 
-                                    user = { user } updateFav = { this.updateFavAxios } pagination = { pagination } prev = { this.prevPage }
-                                    next = { this.nextPage } addLabel = { this.addLabel } filterByName = { (e) => { this.getTasks(pagination)}} 
-                                    updateTagInTask={this.updateTagInTask}/>
+                                <ListPanel openModal={this.openModal} options={options} onChange={this.onChange} form={form}
+                                    mostrarTarea={this.mostrarTarea} showListPanel={showListPanel} tareas={tareas}
+                                    user={user} updateFav={this.updateFavAxios} pagination={pagination} prev={this.prevPage}
+                                    next={this.nextPage} addLabel={this.addLabel} filterByName={(e) => { this.getTasks(pagination) }}
+                                    updateTagInTask={this.updateTagInTask} />
                                 {
-                                    tarea  && 
-                                        <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } } options = { options } 
-                                            completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form } user = { user }
-                                            onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } onSubmit = { this.sendComentario }
-                                            openModalEdit = { this.openModalEdit} updateTagInTask={this.updateTagInTask} 
-                                            deleteTask = { () => { deleteAlert( '¿ESTÁS SEGURO?', `Eliminarás la tarea ${tarea.titulo}`, 
-                                            (e) => { this.deleteTask(tarea)} ) } } reactivarTask = { this.completarTareaAxios }/>
+                                    tarea &&
+                                    <Task showTask={showTask} tarea={tarea} mostrarListPanel={() => { this.mostrarListPanel() }} options={options}
+                                        completarTarea={this.completarTareaAxios} updateFav={this.updateFavAxios} form={form} user={user}
+                                        onChange={this.onChange} clearFiles={this.clearFiles} mentions={mentions} onSubmit={this.sendComentario}
+                                        openModalEdit={this.openModalEdit} updateTagInTask={this.updateTagInTask}
+                                        deleteTask={() => {
+                                            deleteAlert('¿ESTÁS SEGURO?', `Eliminarás la tarea ${tarea.titulo}`,
+                                                (e) => { this.deleteTask(tarea) })
+                                        }} reactivarTask={this.completarTareaAxios} />
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
                 <Modal size="xl" title={title} show={modal_tarea} handleClose={this.handleCloseModal}>
-                    <AddTaskForm onSubmit = { this.onSubmit } form = { form } options = { options } onChange = { this.onChange } formeditado = { formeditado }
-                        handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } sendTag = { this.sendTagAxios } />
+                    <AddTaskForm onSubmit={this.onSubmit} form={form} options={options} onChange={this.onChange} formeditado={formeditado}
+                        handleChangeCreate={this.handleChangeCreate} handleCreateOption={this.handleCreateOption} sendTag={this.sendTagAxios} />
                 </Modal>
                 <Modal title={title} show={modal_addTag} handleClose={this.handleCloseModalAddTag}>
                     <TagColorForm
-                        form = { form }
-                        onChange ={ this.onChange }
-                        formeditado = { formeditado }
-                        sendTag = { this.sendTagAxios }
-                        colors={ COLORS }
+                        form={form}
+                        onChange={this.onChange}
+                        formeditado={formeditado}
+                        sendTag={this.sendTagAxios}
+                        colors={COLORS}
                         customclass='bg-gray-100'
-                        btnCloseCard = {false}
+                        btnCloseCard={false}
                     />
                 </Modal>
             </Layout>

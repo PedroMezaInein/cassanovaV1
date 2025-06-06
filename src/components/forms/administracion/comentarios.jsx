@@ -19,7 +19,7 @@ export default function Comentarios(props) {
 
   useEffect(() => {
     // Fetch comments data
-    apiGet(`requisicion/comentario/${data.id}`, user.access_token)
+    apiGet(`requisicion/comentario/${data}`, user.access_token)
       .then((res) => {
         if (Array.isArray(res.data.data)) {
           setComments(res.data.data);
@@ -34,7 +34,7 @@ export default function Comentarios(props) {
 
   const handleAddComment = () => {
     // Add new comment to the API and update the comments state
-    apiPostForm('requisicion/comentario', { requisitionId: data.id, comment: newComment }, user.access_token)
+    apiPostForm('requisicion/comentario', { requisitionId: data, comment: newComment }, user.access_token)
       .then((res) => {
         // console.log(res.data.data)
         setComments([...comments, res.data.data]); // Update comments state with the new comment

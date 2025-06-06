@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { es } from 'date-fns/locale'
-
-import Swal from 'sweetalert2'
-import { apiGet, apiPostForm } from '../../../../functions/api'
+import { apiGet } from '../../../../functions/api'
 
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
@@ -17,7 +15,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Style from './TicketsTi.module.css'
 
 export default function Ver(props) {
-    const { data, reload, handleClose } = props
+    const { data } = props
     const authUser = useSelector(state => state.authUser)
     const usuarios = useSelector(state => state.opciones.vehiculos.colaboradores.sort((a, b) => a.nombre > b.nombre ? 1 : -1))
     const [form, setForm] = useState({
@@ -30,7 +28,7 @@ export default function Ver(props) {
         id_usuario: data.id_usuario,
     })
 
-    const [errores, setErrores] = useState({})
+    const [errores] = useState({})
 
     const [equipos, setEquipos] = useState([])
 
@@ -52,25 +50,25 @@ export default function Ver(props) {
         })
     }
 
-    const handleSubmit = e => {
-        e.preventDefault()
-        try {
-            apiPostForm('computo', form, authUser.access_token)
-                .then(response => {
-                    Swal.fire({
-                        title: '¡Éxito!',
-                        text: 'Se ha creado el ticket',
-                        icon: 'success',
-                        confirmButtonText: 'Aceptar'
-                    })
-                    reload()
-                    handleClose()
-                })
+    // const handleSubmit = e => {
+    //     e.preventDefault()
+    //     try {
+    //         apiPostForm('computo', form, authUser.access_token)
+    //             .then(response => {
+    //                 Swal.fire({
+    //                     title: '¡Éxito!',
+    //                     text: 'Se ha creado el ticket',
+    //                     icon: 'success',
+    //                     confirmButtonText: 'Aceptar'
+    //                 })
+    //                 reload()
+    //                 handleClose()
+    //             })
 
-        } catch (error) {
+    //     } catch (error) {
 
-        }
-    }
+    //     }
+    // }
 
     const getEquipos = () => {
         try {

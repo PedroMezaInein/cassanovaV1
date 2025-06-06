@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-
-// import { Modal } from './../../../components/singles'
-
 import TablaGeneralPaginado from '../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 import { setMoneyTable, setLabelTable } from '../../functions/setters'
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 

@@ -31,13 +31,13 @@ export default function Factura(props) {
 
     const [form, setForm] = useState({
         adjuntos: {
-                xml: {
-                    files: [], value: ''
-                },
-                pdf: {
-                    files: [], value: ''
-                }
-            },            
+            xml: {
+                files: [], value: ''
+            },
+            pdf: {
+                files: [], value: ''
+            }
+        },
         options: {
             clientes: [],
             empresas: [],
@@ -50,7 +50,7 @@ export default function Factura(props) {
         factura: true,
         response: {},
         facturas: [],
-        url_factura:''
+        url_factura: ''
     })
 
     const [modal, setModal] = useState({
@@ -61,7 +61,7 @@ export default function Factura(props) {
     })
 
     useEffect(() => {
-        if(opcionesData){
+        if (opcionesData) {
             setOpciones(opcionesData)
         }
         if (reloadTable) {
@@ -133,23 +133,23 @@ export default function Factura(props) {
                     obj.moneda = jsonObj['Moneda']
                     if (keys.includes('cfdi:Complemento')) {
                         if (jsonObj['cfdi:Complemento']['tfd:TimbreFiscalDigital']) {
-                            if(jsonObj['cfdi:Complemento']['pago20:Pagos']){
-                            comp.MontoTotalPagos = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Totales']['MontoTotalPagos']
-                            comp.FechaPago = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['FechaPago']
-                            comp.FormaDePagoP = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['FormaDePagoP']
-                            comp.MonedaP = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['MonedaP']
-                            comp.Monto = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['Monto']
-                            comp.TipoCambioP = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['TipoCambioP']
-                            comp.IdDocumento = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['IdDocumento']
-                            comp.MonedaDR = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['MonedaDR']
-                            comp.ObjetoImpDR = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ObjetoImpDR']
-                            comp.EquivalenciaDR = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['EquivalenciaDR']
-                            comp.ImpPagado = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ImpPagado']
-                            comp.NumParcialidad = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['NumParcialidad']
-                            comp.ImpSaldoAnt = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ImpSaldoAnt']
-                            comp.ImpSaldoInsoluto = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ImpSaldoInsoluto']
+                            if (jsonObj['cfdi:Complemento']['pago20:Pagos']) {
+                                comp.MontoTotalPagos = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Totales']['MontoTotalPagos']
+                                comp.FechaPago = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['FechaPago']
+                                comp.FormaDePagoP = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['FormaDePagoP']
+                                comp.MonedaP = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['MonedaP']
+                                comp.Monto = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['Monto']
+                                comp.TipoCambioP = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['TipoCambioP']
+                                comp.IdDocumento = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['IdDocumento']
+                                comp.MonedaDR = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['MonedaDR']
+                                comp.ObjetoImpDR = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ObjetoImpDR']
+                                comp.EquivalenciaDR = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['EquivalenciaDR']
+                                comp.ImpPagado = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ImpPagado']
+                                comp.NumParcialidad = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['NumParcialidad']
+                                comp.ImpSaldoAnt = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ImpSaldoAnt']
+                                comp.ImpSaldoInsoluto = jsonObj['cfdi:Complemento']['pago20:Pagos']['pago20:Pago']['pago20:DoctoRelacionado']['ImpSaldoInsoluto']
 
-                            obj.complemento = comp
+                                obj.complemento = comp
                             }
 
                             obj.numero_certificado = jsonObj['cfdi:Complemento']['tfd:TimbreFiscalDigital']['UUID']
@@ -161,7 +161,7 @@ export default function Factura(props) {
                             if (Array.isArray(jsonObj['cfdi:Conceptos']['cfdi:Concepto'])) {
                                 jsonObj['cfdi:Conceptos']['cfdi:Concepto'].forEach((element, index) => {
                                     if (index) {
-                                        obj.descripcion += ' - ' 
+                                        obj.descripcion += ' - '
                                     }
                                     obj.descripcion += element['Descripcion']
                                 })
@@ -183,7 +183,7 @@ export default function Factura(props) {
                         }
                     }
                     let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_emisor)
-                    if(!empresa ){
+                    if (!empresa) {
 
                         Swal.fire({
                             icon: 'error',
@@ -192,41 +192,41 @@ export default function Factura(props) {
                             showConfirmButton: false,
                             timer: 2000
                         })
-                    }else {
+                    } else {
                         let clientes = opcionesData.clientes.find((cliente) => cliente.rfc === obj.rfc_receptor)
-                            let aux = []
-                            files.forEach((file, index) => {
-                                aux.push({
-                                    name: file.name,
-                                    file: file,
-                                    url: URL.createObjectURL(file),
-                                    key: index
-                                })
+                        let aux = []
+                        files.forEach((file, index) => {
+                            aux.push({
+                                name: file.name,
+                                file: file,
+                                url: URL.createObjectURL(file),
+                                key: index
                             })
-                            let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
-                        
-                            setForm({
-                                ...form,
-                                fecha: obj.fecha,
-                                rfc: obj.rfc_emisor,
-                                total: obj.total,
-                                descripcion: obj.descripcion,
-                                empresa: empresa ? empresa.id : null,
-                                empresa_nombre: empresa ? empresa.nombre : null,
-                                proveedor: clientes ? clientes.id : null,
-                                proveedor_nombre: clientes ? clientes.name : null,
-                                cuentas: empresa ? opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas : null,
-                                adjuntos: {
-                                    ...form.adjuntos,
-                                    xml: {
-                                        files: aux, 
-                                        value: path
-                                    }
-                                },
-                                facturaObject: obj
-                            })
+                        })
+                        let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
 
-                    } 
+                        setForm({
+                            ...form,
+                            fecha: obj.fecha,
+                            rfc: obj.rfc_emisor,
+                            total: obj.total,
+                            descripcion: obj.descripcion,
+                            empresa: empresa ? empresa.id : null,
+                            empresa_nombre: empresa ? empresa.nombre : null,
+                            proveedor: clientes ? clientes.id : null,
+                            proveedor_nombre: clientes ? clientes.name : null,
+                            cuentas: empresa ? opciones.empresas.find((empresaData) => empresaData.id === empresa.id).cuentas : null,
+                            adjuntos: {
+                                ...form.adjuntos,
+                                xml: {
+                                    files: aux,
+                                    value: path
+                                }
+                            },
+                            facturaObject: obj
+                        })
+
+                    }
 
                 } else {
                     Swal.fire({
@@ -261,7 +261,7 @@ export default function Factura(props) {
             ...form,
             adjuntos: {
                 ...form.adjuntos,
-                [tipo]: {files: [...files], value: ''}
+                [tipo]: { files: [...files], value: '' }
             }
         })
     }
@@ -279,19 +279,19 @@ export default function Factura(props) {
             })
         })
 
-        let path = 'C:/fakepath/'+ aux[0].name
+        let path = 'C:/fakepath/' + aux[0].name
 
         setForm({
             ...form,
             adjuntos: {
                 ...form.adjuntos,
-                [tipo]: {files: aux, value: path}
+                [tipo]: { files: aux, value: path }
             }
         })
     }
 
     // *************** AGREGAR ARCHIVOS ***************
-    const addFacturaS3 =  ( ) => { //attachFiles
+    const addFacturaS3 = () => { //attachFiles
 
         apiGet(`v1/constant/admin-proyectos`, auth).then(
             (response) => {
@@ -312,18 +312,18 @@ export default function Factura(props) {
                                 if (status === 204) resolve({ name: file.name, url: location })
                                 else reject(data)
                             })
-                            
+
                             .catch((error) => {
                                 reject(error)
                             })
-                            if(reload){
-                                reload.reload()
-                            }
+                        if (reload) {
+                            reload.reload()
+                        }
                     })
                 })
                 Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, venta) }).catch(err => console.error(err))
             }, (error) => { }
-        ).catch((error) => { 
+        ).catch((error) => {
             Swal.close()
             Swal.fire({
                 icon: 'error',
@@ -349,7 +349,7 @@ export default function Factura(props) {
                     facturaItem: factura,
                     archivos: files
                 })
-                if(reload){
+                if (reload) {
                     reload.reload()
                 }
                 attachFactura(venta, factura)
@@ -369,7 +369,7 @@ export default function Factura(props) {
 
         apiPutForm(`v2/administracion/facturas/attach`, objeto, auth).then(
             (response) => {
-                
+
                 Swal.close()
                 Swal.fire({
                     icon: 'success',
@@ -381,8 +381,8 @@ export default function Factura(props) {
                 if (reloadTable) {
                     reloadTable.reload()
                 }
-                
-            }, (error) => { 
+
+            }, (error) => {
                 Swal.close()
                 Swal.fire({
                     icon: 'error',
@@ -392,7 +392,7 @@ export default function Factura(props) {
                     timer: 1500
                 })
             }
-        ).catch((error) => { 
+        ).catch((error) => {
             Swal.close()
             Swal.fire({
                 icon: 'error',
@@ -419,7 +419,7 @@ export default function Factura(props) {
         // { nombre: 'monto acumulado', identificador: 'monto_acumulado', stringSearch: false },
         // { nombre: 'monto restante', identificador: 'monto_restante', stringSearch: false },
         { nombre: 'adjuntos', identificador: 'adjuntos', stringSearch: false },
-    ] 
+    ]
 
     const formatNumber = (num) => {
         return `${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
@@ -441,28 +441,28 @@ export default function Factura(props) {
         //         adjuntos: 'n/a'
         //     });
         // } else { // dentro de facturas están las propiedades de XML y PDF, cada uno es un objeto
-            datos.venta.facturas.forEach((factura) => {
-                let adjuntos = []; // creo un nuevo array para almacenar los valores de los adjuntos 
-                if (factura.xml.name) {
-                    adjuntos.push(
-                        <div style={{width:'100px', marginRight:'2.5rem'}}>
-                            <a style={{width:'90%'}} href={factura.xml.url} target="_blank" rel="noopener noreferrer">
-                                XML: {factura.xml.name}
-                            </a> 
-                        </div>   
-                    );
-                }
-                if (factura.pdf.name) {
-                    adjuntos.push(
-                        <div style={{width:'100px'}}>
-                            <a style={{width:'90%'}} href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
-                                PDF: {factura.pdf.name}
-                            </a>
-                        </div>
-                    );
-                }
-    
-                aux.push({
+        datos.venta.facturas.forEach((factura) => {
+            let adjuntos = []; // creo un nuevo array para almacenar los valores de los adjuntos 
+            if (factura.xml.name) {
+                adjuntos.push(
+                    <div style={{ width: '100px', marginRight: '2.5rem' }}>
+                        <a style={{ width: '90%' }} href={factura.xml.url} target="_blank" rel="noopener noreferrer">
+                            XML: {factura.xml.name}
+                        </a>
+                    </div>
+                );
+            }
+            if (factura.pdf.name) {
+                adjuntos.push(
+                    <div style={{ width: '100px' }}>
+                        <a style={{ width: '90%' }} href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
+                            PDF: {factura.pdf.name}
+                        </a>
+                    </div>
+                );
+            }
+
+            aux.push({
                 folio: factura.folio ? factura.folio : 'n/a',
                 // estatus: factura.status ? factura.status : 'n/a',
                 estatus: 'FACTURADO',
@@ -470,15 +470,15 @@ export default function Factura(props) {
                 serie: factura.serie ? factura.serie : 'n/a',
                 emisor: factura.nombre_emisor ? factura.nombre_emisor : 'n/a',
                 receptor: factura.nombre_receptor ? factura.nombre_receptor : 'n/a',
-                subtotal: factura.subtotal ? '$ '+ formatNumber (factura.subtotal) : 'n/a',
-                total: factura.total ? '$ '+ formatNumber (factura.total) : 'n/a',
+                subtotal: factura.subtotal ? '$ ' + formatNumber(factura.subtotal) : 'n/a',
+                total: factura.total ? '$ ' + formatNumber(factura.total) : 'n/a',
                 adjuntos: adjuntos.length > 0 ? adjuntos : 'n/a',
                 id: factura.id,
                 data: factura,
-                });
             });
+        });
         // }
-    
+
         return aux;
     };
 
@@ -495,7 +495,7 @@ export default function Factura(props) {
                 }
             }, (error) => { }
         ).catch((error) => { catchErrors(error) })
-    }  
+    }
 
     let acciones = () => {
         let aux = [
@@ -517,11 +517,11 @@ export default function Factura(props) {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             deleteEgresoAxios(item.id)
-                            
+
                         }
                     })
                 }
-            }, 
+            },
         ]
         return aux
     }
@@ -547,86 +547,85 @@ export default function Factura(props) {
                     </div>
             } */}
 
-            <div className='row' style={{marginTop:'1rem', marginBottom:'2rem'}}>
-                <div className='col-6'>
+            <div className='row' style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                <div className='col-12 col-md-6 mb-3'>
                     <InputLabel>XML de la factura</InputLabel>
-                    <div >
-
+                    <div className='ml-30' >
                         <div>
                             <input
                                 accept="application/xml"
                                 style={{ display: 'none' }}
                                 id="xml"
-                                
+
                                 type="file"
                                 onChange={onChangeFactura}
                             />
                             <label htmlFor="xml" >
-                                <Button style={{ marginTop:'-3rem', marginLeft:'150px'}} variant="contained" color="primary" component="span">
+                                <Button style={{ marginTop: '-3rem', marginLeft: '150px' }} variant="contained" color="primary" component="span">
                                     Agregar
                                 </Button>
                             </label>
                         </div>
 
                         <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <div className="d-flex justify-content-between">
                                 {
                                     form.adjuntos.xml.files.map((item, index) => (
-                                        <div key={index}  style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', width: '160px'}}>
+                                        <div key={index} style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', width: '160px' }}>
                                             <div>
-                                                <p style={{ textAlign:'center', color: '#3f51b5', fontWeight:'bold', marginTop:'.6rem'}}>{item.name.length > 15 ? item.name.slice(0, 10) + '...' : item.name}<span onClick={() => handleDeleteFile('xml', index)} style={{ color: 'red', cursor: 'pointer', marginLeft:'.3rem' }}>X</span></p>
+                                                <p style={{ textAlign: 'center', color: '#3f51b5', fontWeight: 'bold', marginTop: '.6rem' }}>{item.name.length > 15 ? item.name.slice(0, 10) + '...' : item.name}<span onClick={() => handleDeleteFile('xml', index)} style={{ color: 'red', cursor: 'pointer', marginLeft: '.3rem' }}>X</span></p>
                                             </div>
                                         </div>
                                     ))
                                 }
-                            </div>    
-                        </div> 
+                            </div>
+                        </div>
 
-                    </div>   
+                    </div>
                 </div>
 
-                <div className='col-6'>
+                <div className='col-12 col-md-6 mb-3'>
                     <InputLabel>PDF de la factura</InputLabel>
-                    <div>
+                    <div className='ml-30' >
                         <input
                             accept="application/pdf"
                             style={{ display: 'none' }}
                             id="pdf"
-                            
+
                             type="file"
-                            onChange={(e) => handleAddFile(e, 'pdf')} 
+                            onChange={(e) => handleAddFile(e, 'pdf')}
                         />
                         <label htmlFor="pdf" >
-                            <Button style={{ marginTop:'-3rem', marginLeft:'150px'}}  variant="contained" color="primary" component="span">
+                            <Button style={{ marginTop: '-3rem', marginLeft: '150px' }} variant="contained" color="primary" component="span">
                                 Agregar
                             </Button>
                         </label>
                     </div>
 
                     <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div className="d-flex justify-content-between">
                             {
                                 form.adjuntos.pdf.files.map((item, index) => (
                                     <div key={index} style={{ backgroundColor: 'rgba(58, 137, 201, 0.25)', borderRadius: '5px', width: '160px' }}>
                                         <div style={{ maxWidth: '140px', display: 'flex', justifyContent: 'center' }}>
-                                               <p style={{ textAlign:'center', color: '#3f51b5', fontWeight:'bold', marginTop:'.6rem'}}>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}
-                                            <span onClick={() => handleDeleteFile('pdf', index)} style={{ color: 'red', cursor: 'pointer', marginLeft:'.3rem'  }}>X</span>
-                                            </p> 
-                                            
+                                            <p style={{ textAlign: 'center', color: '#3f51b5', fontWeight: 'bold', marginTop: '.6rem' }}>{item.name.length > 10 ? item.name.slice(0, 10) + '...' : item.name}
+                                                <span onClick={() => handleDeleteFile('pdf', index)} style={{ color: 'red', cursor: 'pointer', marginLeft: '.3rem' }}>X</span>
+                                            </p>
+
                                         </div>
                                     </div>
                                 ))
                             }
-                        </div>    
-                    </div> 
+                        </div>
+                    </div>
                 </div>
 
-                <div style={{marginLeft:'85%', marginTop:'-2rem'}}>
-                    <button className={Style.sendButton}  onClick={addFacturaS3}>Enviar</button>
+                <div className="d-flex justify-content-center mt-3">
+                    <button className={Style.sendButton} onClick={addFacturaS3}>Enviar</button>
                 </div>
-                    
-                </div>
-            
+
+            </div>
+
             <div>
                 <TablaGeneral
                     subtitulo="información general"
@@ -636,7 +635,7 @@ export default function Factura(props) {
                     ProccessData={proccessData}
                     // opciones={opciones}
                     acciones={acciones()}
-                    reload={setReloadTable} 
+                    reload={setReloadTable}
                 />
             </div>
         </div>

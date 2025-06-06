@@ -106,12 +106,6 @@ export default function Presupuesto() {
     const ProccessData = (e) => {
         let aux = []
         e.presupuesto.map(item => {
-
-            // console.log(item.empresa[0] && item.empresa[0].name  ) 
-
-            // console.log( Object.keys(item.empresa[0])&& item.empresa[0].name  ) 
-
-            // console.log(item.empresa[0] )
             aux.push({
                 id: item.id,
                 id_area: item.id_area,
@@ -120,7 +114,7 @@ export default function Presupuesto() {
                 fecha: formatDateString(item.fecha),
                 monto: item.presupuesto,
                 monto_show: formatNumberCurrency(item.presupuesto),
-                departamento: item.area.nombre,
+                departamento: item.area ? item.area.nombre :'',
                 usuario: item.usuario ? item.usuario.name : '',
                 autorizacion: tagAprobado(item.estatus),
                 estatus: item.estatus === "1" ? true : false,
@@ -380,7 +374,6 @@ export default function Presupuesto() {
         let aux = []
         // console.log(e.presupuesto)
         e.presupuesto.map(item => {
-            // console.log(item)
             aux.push({
                 data: item,
                 id: item.id,
@@ -389,7 +382,7 @@ export default function Presupuesto() {
                 fecha: formatDateString(item.fecha),
                 monto: item.presupuesto,
                 monto_show: formatNumberCurrency(item.presupuesto),
-                departamento: item.area.nombre,
+                departamento:item.area ?  item.area.nombre : 'Obra',
                 usuario: item.usuario ? item.usuario.name : '',
                 autorizacion: tagAprobado(item.estatus),
                 estatus: item.estatus === "1" ? true : false,
@@ -420,6 +413,7 @@ export default function Presupuesto() {
             color: 'greenButton',
             icono: 'fas fa-eye',
             funcion: (item) => {
+                console.log(item)
                 setModalObra({
                     ...modalObra,
                     ver: {
@@ -566,6 +560,22 @@ export default function Presupuesto() {
                 })
             }
         },
+        {
+            nombre: 'Ver',
+            color: 'greenButton',
+            icono: 'fas fa-eye',
+            funcion: (item) => {
+                console.log(item)
+                setModalObra({
+                    ...modalObra,
+                    ver: {
+                        show: true,
+                        data: item
+                    }
+                })
+            }
+        },
+        
     ]
 
     const handleCloseObra = (data) => () => {
@@ -599,7 +609,7 @@ export default function Presupuesto() {
                     </Tab>
                     <Tab eventKey="obra" title="Presupuestos Obra">
                         <Tabla
-                            titulo='Presupuestos'
+                            titulo='Obra'
                             columnas={columnasObras}
                             url='presupuestosdep/obra'
                             ProccessData={ProccessDataObras}
@@ -649,12 +659,12 @@ export default function Presupuesto() {
                 </Modal>
             }
 
-            {/* {
+            {
                 modalObra.ver.data &&
                 <Modal size="xl" title={"Ver presupuesto"} show={modalObra.ver.show} handleClose={handleCloseObra('ver')}>
                     <VerObra data={modalObra.ver.data} reload={reloadTableObra} handleClose={handleCloseObra('ver')} />
                 </Modal>
-            } */}
+            }
 
         </>
     );

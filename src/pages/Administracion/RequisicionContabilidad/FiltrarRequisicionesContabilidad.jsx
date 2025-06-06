@@ -1,254 +1,256 @@
-import React, {useState, useEffect} from "react"
-import { useSelector } from "react-redux";
-import Swal from 'sweetalert2'
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import { apiPostForm } from '../../../functions/api'
+// import { apiOptions, catchErrors, apiPutForm, apiPostForm, apiGet } from './../../../../functions/api';
 
-import { MuiPickersUtilsProvider, KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import Swal from 'sweetalert2'
 import { es } from 'date-fns/locale'
-import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
+import S3 from 'react-aws-s3'
+
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import InputLabel from '@material-ui/core/InputLabel';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
-import Style from './../../../components/forms/administracion/NuevaRequisicion.module.css'
+import Style from './estilos.module.css'
 
-export default function FiltrarRequisicionesContabilidad(props) {
-    const { handleClose, reload, opciones, estatusCompras, filtrarTabla, borrarTabla } = props
-    const user = useSelector(state => state.authUser)
-    const departamento = useSelector(state => state.authUser.departamento)
+export default function CrearEgreso(props) {
+    const {opcionesData, reload, handleClose, filtrarTabla, borrarTabla} = props
     const departamentos = useSelector(state => state.opciones.areas)
+    const auth = useSelector((state) => state.authUser.access_token);
     const presupuestos = useSelector(state => state.opciones.presupuestos)
-    const [state, setState] = useState({
-        orden_compra: '',
-        solicitante: '',
-        fecha:'',
-        departamento: departamento.departamentos[0].id,
-        tipoGasto: '', //partida
-        tipoPago: '',
-        monto: '',
-        estatus: '',
-    });
-    
-    const [errores, setErrores] = useState({})
 
-    const handleChange = (event) => {
-        // name son los diferentes tipos de atributos (departamento, fecha...)
-        let name = event.target.name;
-        setState({
-            ...state,
-            [name]: event.target.value,
-        });
+    const [opciones, setOpciones] = useState({
+        cuentas: [],
+        empresas: [],
+        estatusCompras: [],
+        proveedores: [],
+        tiposImpuestos: [],
+        tiposPagos: [],
+    })
+
+    useEffect(() => {
+       
+        if(opcionesData){
+            setOpciones(opcionesData)
+        }
+        filtrarTabla('')   
+
+    }, [opcionesData])
+ 
+    const [form, setForm] = useState({
+        area: '',
+        cuenta: '',
+        descripcion: '',
+        orden_compra: '',
+        monto: '',
+        fecha_fin: '',
+        fecha_inicio: '',
+        id_partidas: "",
+        subarea: '',
+        presupuestos: '',
+        monto_pagado: '',
+
+    })
+
+
+    const handleChange = (e) => {
+        console.log(e.target.name)
+        if(e.target.name === 'empresa'){
+            setForm({
+                ...form,
+                [e.target.name]: e.target.value,
+                cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas
+            });
+        } else {
+            setForm({
+                ...form,
+                [e.target.name]: e.target.value
+            });
+        }
+        
     };
 
+
     const handleChangeFecha = (date, tipo) => {
-        setState({
-            ...state,
+        setForm({
+            ...form,
             [tipo]: new Date(date)
         })
     };
-
-    function formatDate(date) {
-        var year = date.getFullYear();
-      
-        var month = (1 + date.getMonth()).toString();
-        month = month.length > 1 ? month : '0' + month;
-      
-        var day = date.getDate().toString();
-        day = day.length > 1 ? day : '0' + day;
-        
-        return year + '/' + month + '/' + day;
-      }
-
-    const enviar = () =>{
-        // if(validateForm()){
-        // if(true){
-
-            Swal.fire({
-                title: 'Cargando...',
-                allowOutsideClick: false,
-                onBeforeOpen: () => {
-                    Swal.showLoading()
-                }
-            }) 
-            try {
-                let dataForm = new FormData()
-
-                let newForm = {
-                    id_solicitante: state.solicitante,
-                    id_departamento: state.departamento,
-                    id_gasto: state.tipo_gasto,
-                    descripcion: state.descripcion,
-                    fecha: formatDate(state.fecha),
-                    solicitud: state.solicitud,
-                    presupuesto: state.presupuesto
-                }
-
-                let aux = Object.keys(newForm)
-
-                aux.forEach((element) => {
-                    switch (element) {
-                        case 'adjuntos':
-                            break;
-                        default:
-                            dataForm.append(element, newForm[element])
-                            break
-                    }
-                })
-
-                dataForm.append(`files_name_requisicion[]`, 'requisicion01')
-                dataForm.append(`files_requisicion[]`, state.solicitud)
-                dataForm.append('adjuntos[]', "requisicion")
-
-
-                apiPostForm('requisicion', dataForm, user.access_token)
-                    .then((data) => {
-                        Swal.fire({
-                            title: 'Requisicion enviada',
-                            text: 'La requisicion se ha enviado correctamente',
-                            icon: 'success',
-                            showConfirmButton: true,
-                            timer: 2000,
-                        }).then(() => {
-                            if (reload) {
-                                reload.reload()
-                            }
-                            handleClose()
-                        })
-
-                        /* if (data.isConfirmed) {
-                            let form = {
-                                solicitante: user.user.id,
-                                fecha: '',
-                                departamento: '',
-                                tipo_gasto: '',
-                                descripcion: '',
-                                solicitud: ''
-                            }
-                            console.log('form')
-                            console.log(form)
-                        } */
-
-                        /* else if (data.isDenied) {
-                            Swal.fire('Faltan campos', '', 'info')
-                        } */
-                    })
-                    .catch((error) => {
-                        Swal.close()
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Ha ocurrido un error 1',
-                        })
-                        console.log(error)
-                    })
-            } catch (error) { 
-                Swal.close()
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Ha ocurrido un error 2',
-                })
-                console.log(error)
-            }
-        // } else{
-        //     Swal.fire({
-        //         title: 'Faltan campos',
-        //         text: 'Favor de llenar todos los campos',
-        //         icon: 'info',
-        //         showConfirmButton: false,
-        //         timer: 2000,
-        //     })
-        // }
-    }
-
-    const handleChangeDepartamento = (e) => {
-        setState({
-            ...state,
-            [e.target.name]: e.target.value,
-            tipo_gasto: null,
-        })
-    }
-
+    
     const handleMoney = (e) => {
-        setState({
-            ...state,
+        setForm({
+            ...form,
             monto: e
         })
     }
 
-    const borrar = () => {
-        filtrarTabla('')   
-        borrarTabla(false)
-        handleClose()
+    const handleMoney2 = (e) => {
+        setForm({
+            ...form,
+            monto_pagado: e
+        })
     }
+
+
+    const changeDateFormat = (date) => {
+        if(date === null || date === ''){
+            return ''
+        } else {
+            let fecha = new Date(date)
+            let dia = fecha.getDate()
+            let mes = fecha.getMonth() + 1
+            let anio = fecha.getFullYear()
+            return `${anio}/${mes}/${dia}`
+        }
+    }
+
+    const filtrar = () => {
+        
+            filtrarTabla(`&orden_compra=${form.orden_compra}&fecha_inicio=${changeDateFormat(form.fecha_inicio)}&fecha_fin=${changeDateFormat(form.fecha_fin)}&area=${form.area}&partida=${form.id_partidas}&subarea=${form.subarea}&monto=${form.monto}&descripcion=${form.descripcion}&presupuestos=${form.presupuestos}&monto_pagado=${form.monto_pagado}`)
+            handleClose()
+            // borrar(false)
+
+        }
+
+    const borrar = () => {
+        
+            // console.log('filtrar tabla')
+            filtrarTabla('')   
+            borrarTabla(false)
+            handleClose()
+
+        }
 
     return (
         <>
-            <div className={Style.container}>
-                <div style={{marginLeft:'2rem'}}>
-
+            <div style={{padding: '1rem'}}>
+                
+                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '1rem', marginBottom: '1rem'}}>
                     <div>
+                        <InputLabel>Orden de compra</InputLabel>
                         <TextField
-                            label="N. Orden de compra"
-                            name='orden_compra'
-                            style={{width:'125px'}}
-                            defaultValue={state.orden_compra}
-                            // className={classes.textField}
+                            type="text"
+                            name="orden_compra"
+                            value={form.orden_compra}
+                            onChange={handleChange}
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            onChange={handleChange}
-                        />
+                            style={{width: '100px'}}
+                            
+                        />    
                     </div>
-
                     <div>
-                        <TextField 
-                            style={{width:'125px'}}
-                            label="Solicitante"
-                            type="text"
-                            defaultValue={user.user.name}
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                        />
-                    </div>
-
-                    <div className={Style.nuevaRequisicion}>
-                        <InputLabel>Fecha</InputLabel>
+                        <InputLabel >RANGO INICIAL</InputLabel>
                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                            <Grid>
+                            <Grid container >
                                 <KeyboardDatePicker
-                                    style={{width:'125px'}}
-                                    // className={Style.select}
+
                                     format="dd/MM/yyyy"
-                                    name='fecha'
-                                    value={state.fecha !=='' ? state.fecha : null}
-                                    onChange={e=>handleChangeFecha(e,'fecha')}
-                                    // defaultValue={state.fecha}
+                                    name="fecha_inicio"
+                                    value={form.fecha_inicio !== '' ? form.fecha_inicio : null}
                                     placeholder="dd/mm/yyyy"
+                                    onChange={e => handleChangeFecha(e, 'fecha_inicio')} 
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
                                 />
                             </Grid>
                         </MuiPickersUtilsProvider>
-                    </div>
-                    
-                    <div >
+                    </div> 
+
+                    <div>
+                        <InputLabel >RANGO FINAL</InputLabel>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                            <Grid container >
+                                <KeyboardDatePicker
+
+                                    format="dd/MM/yyyy"
+                                    name="fecha_fin"
+                                    value={form.fecha_fin !== '' ? form.fecha_fin : null}
+                                    placeholder="dd/mm/yyyy"
+                                    onChange={e => handleChangeFecha(e, 'fecha_fin')} 
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
+                    </div>     
+                </div>
+                
+                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '4rem', marginBottom: '4rem'}}>
+                        <div>
+                            <CurrencyTextField
+                                label="monto"
+                                name="monto"
+                                value={form.monto}
+                                currencySymbol="$"
+                                outputFormat="number"
+                                onChange={(event, value) => handleMoney(value)}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                style={{width: '150px'}}
+                                />
+                        
+                        </div>
+                        <div>
+                            <CurrencyTextField
+                                label="monto pagado"
+                                name="monto_pagado"
+                                value={form.monto_pagado}
+                                currencySymbol="$"
+                                outputFormat="number"
+                                onChange={(event, value) => handleMoney2(value)}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                style={{width: '150px'}}
+                                />                        
+                        </div>
+                        <div>
+                                {presupuestos.length > 0 ?
+                                    <>
+                                        <InputLabel id="demo-simple-select-label">Presupuesto</InputLabel>
+                                        <Select
+                                            value={form.presupuestos}
+                                            name="presupuestos"
+                                            onChange={handleChange}
+                                            style={{ width: 230, marginRight: '1rem' }}
+                                        >
+                                            {presupuestos.map((item, index) => (
+                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                            ))}
+
+                                        </Select>
+                                    </>
+                                    : null
+                                }
+
+                            </div>
+                </div>
+
+                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '1.5rem', marginBottom: '5rem'}}>
+                    <div>
                         {departamentos.length > 0 ?
                             <>
-                                <InputLabel>Departamento</InputLabel>
+                                <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
                                 <Select
-                                    style={{width:'125px'}}
-                                    // className={Style.select}
-                                    value={state.departamento}
-                                    name="departamento"
-                                    onChange={handleChangeDepartamento}
-                                    // disabled={user.user.tipo.id ==1 ? false : true}
+                                    value={form.area}
+                                    name="area"
+                                    onChange={handleChange}
+                                    style={{ width: 230, marginRight: '1rem' }}
                                 >
                                     {departamentos.map((item, index) => (
                                         <MenuItem key={index} value={item.id_area}>{item.nombreArea}</MenuItem>
@@ -258,24 +260,20 @@ export default function FiltrarRequisicionesContabilidad(props) {
                             </>
                             : null
                         }
+
                     </div>
 
-                </div>
-
-                <div className={Style.nuevaRequisicion_segundoBloque}>
-                    
                     <div>
-                        {departamentos.length > 0 && state.departamento !== '' ?
+                        {departamentos.length > 0 && form.area !== '' ?
                             <>
                                 <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
                                 <Select
-                                    style={{width:'125px'}}
-                                    value={state.tipoGasto}
-                                    name="tipoGasto"
+                                    value={form.id_partidas}
+                                    name="id_partidas"
                                     onChange={handleChange}
-                                    // className={classes.textField}
+                                    style={{ width: 230, marginRight: '1rem' }}
                                 >
-                                    {departamentos.find(item => item.id_area == state.departamento).partidas.map((item, index) => (
+                                    {departamentos.find(item => item.id_area == form.area) && departamentos.find(item => item.id_area == form.area).partidas.map((item, index) => (
                                         <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                     ))}
 
@@ -286,84 +284,50 @@ export default function FiltrarRequisicionesContabilidad(props) {
                     </div>
 
                     <div>
-                        {
-                            opciones ?
-                                <>
-                                    <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
-                                    <Select
-                                        style={{width:'125px'}}
-                                        name="tipoPago"
-                                        value={state.tipoPago}
-                                        onChange={handleChange}
-                                        // className={classes.textField}
-                                    >
-                                        {opciones.tiposPagos.map((item, index) => (
-                                            <MenuItem key={index} value={item.value}>{item.name}</MenuItem>
-                                        ))}
+                        {departamentos.length && form.id_partidas !== '' ?
+                            <>
+                                <InputLabel id="demo-simple-select-label">Tipo de Subgasto</InputLabel>
+                                <Select
+                                    name="subarea"
+                                    onChange={handleChange}
+                                    value={form.subarea}
+                                    style={{ width: 230, marginRight: '1rem' }}
+                                >
+                                    {departamentos.find(item => item.id_area == form.area).partidas.find(item => item.id == form.id_partidas).subpartidas.map((item, index) => (
+                                        <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
+                                    ))}
 
-                                    </Select>
-                                </>
+                                </Select>
+                            </>
                             : null
                         }
+                    </div>  
+                    
+                </div>
 
-                    </div>
-
-                    <div>
-                    <CurrencyTextField
-                        style={{width:'125px'}}
-                        label="monto pagado"
-                        variant="standard"
-                        value={state.monto}
-                        currencySymbol="$"
-                        outputFormat="number"
-                        onChange={(event, value) => handleMoney(value)}
+                <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '1.5rem', marginBottom: '1rem'}}>
+                    <TextField
+                        name='descripcion'
+                        label="Descripción"
+                        type="text"
+                        defaultValue={form.descripcion}
+                        onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        multiline
+                        style={{ width: '70vh', height: 100 }}
                     />
-                    </div>
-
-                    <div>
-                        {
-                            estatusCompras ?
-                                <>
-                                    <InputLabel id="demo-simple-select-label">Estatus de entrega</InputLabel>
-                                    <Select
-                                        style={{width:'125px'}}
-                                        name="estatus"
-                                        value={state.estatus}
-                                        onChange={handleChange}
-                                        // className={classes.textField}
-                                    >
-                                        {estatusCompras.map((item, index) => {
-                                            if (item.nivel === 1) {
-                                                return <MenuItem key={index} value={item.id}>{item.estatus}</MenuItem>
-                                            }
-                                        })}
-                                    </Select>
-                                </>
-                            : null
-                        }
-
-                    </div>
-                        
                 </div>
-
+                  
+            </div>
+            <div>
+                <button className={Style.borrarButton}  onClick={borrar}>Borrar</button>
+            </div>
+            <div>
+                <button className={Style.sendButton}  onClick={filtrar}>Filtrar</button>
             </div>
 
-            <div style={{marginTop:'3rem'}}>
-                <div className="row justify-content-end mt-n18" >
-                    <div className="col-md-4">
-                        <button className={Style.borrarButton}  onClick={borrar}>Borrar</button>
-                    </div>
-
-                    <div className="col-md-3"></div>
-
-                    <div className="col-md-3">
-                        <button className={Style.sendButton} onClick={enviar}>enviar</button>
-                    </div>
-                </div>
-                
-            </div>
         </>
-        
-
-    );  
+    ) 
 }

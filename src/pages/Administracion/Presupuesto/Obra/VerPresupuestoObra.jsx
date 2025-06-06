@@ -1,248 +1,172 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
-import Swal from 'sweetalert2'
+import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
 
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
+import { apiOptions, apiPostForm, apiGet } from '../../../../functions/api'
 
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-import InputLabel from '@material-ui/core/InputLabel';
-
-import { apiOptions } from '../../../../functions/api'
-
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-import { es } from 'date-fns/locale'
-import Grid from '@material-ui/core/Grid';
-
-import { waitAlert2 } from '../../../../functions/alert'
-
-const setDateFormate = (date) => {
-    let fecha = date.split('-')
-    fecha = new Date(`${fecha[0]}`, `${fecha[1] - 1}`, `${fecha[2]}`)
-    return fecha
-}
-
-export default function VerPresupuestoObra(props) {
-    const { reload, handleClose, data } = props
-    const areas = useSelector(state => state.opciones.areas)
-    const auth = useSelector(state => state.authUser.access_token)
-    const proyectos = useSelector(state => state.opciones.proyectos)
-    const [form, setForm] = useState([])
-    const [general, setGeneral] = useState({
-        departamento: data.data.area.nombre,
-        departamento_id: data.data.id_area,
-        gerente: data.data.usuario.name,
-        gerente_id: data.data.usuario.id,
-        colaboradores: data.data.colaboradores,
-        colaboradores_id: '',
-        id_proyecto: data.data.id_proyecto,
-        granTotal: '',
-        nomina: 0,
-        fecha_inicio: setDateFormate(data.data.fecha_inicio),
-        fecha_fin: setDateFormate(data.data.fecha_fin),
-        nombre: data.data.nombre,
-        id: data.data.id,
-        total: data.data.presupuesto,
-    })
-
-    useEffect(() => {
-        getNominas()
-    }, [])
-
-    useEffect(() => {
-        if (areas.length >= 13) {
-            createData()
-        }
+const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: theme.spacing(1),
+  },
+  customWidth: {
+    maxWidth: 300,
+  },
+  noMaxWidth: {
+    maxWidth: 'none',
+  },
+}));
 
 
-    }, [areas])
 
-    const createData = () => {
-        let aux = []
-        let id = 0
-        areas.map((area, index) => {
-            aux.push([])
-        })
-        setForm(aux)
-    }
+const LightTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}))(Tooltip);
 
 
-    const handleMoney = (value) => {
-        setGeneral({
-            ...general,
-            total: value
-        })
-    }
+const TuComponente = (props) => {
+  const { reload, handleClose, data, acceso } = props
+  const userDepartment = useSelector((form) => form.authUser.departamento);
+  const userAuth = useSelector((state) => state.authUser);
 
-    const createCurrencyInput = () => {
-        return (
-            <>
-                <InputLabel >presupuesto total</InputLabel>
-                <CurrencyTextField
+  const [presupuestos, setPresupuestos] = useState([]);
+  const auth = useSelector(state => state.authUser.access_token)
+  const classes = useStyles();
 
-                    variant="standard"
-                    value={general.total}
-                    currencySymbol="$"
-                    outputFormat="number"
-                    onChange={(e, value) => handleMoney(value)}
-                    disabled
-                />
-            </>
-        )
-    }
+  const defaultMeses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
 
-    const getNominas = () => {
-        waitAlert2()
-        try {
-            apiOptions(`presupuestosdep?departamento_id=${general.departamento_id}`, auth)
-                .then(res => {
-                    let suma = 0
-                    /* setNominas([...res.data.empleados]) */
-                    for (let i = 0; i < res.data.empleados.length; i++) {
-                        suma += res.data.empleados[i].nomina_imss + res.data.empleados[i].nomina_extras
-                    }
-                    suma = suma * 2
-                    setGeneral({
-                        ...general,
-                        nomina: suma,
-                        colaboradores: res.data.empleados.length
-                    })
-                    Swal.close()
-                })
 
-        } catch (error) {
-            Swal.close()
-            console.log(error)
-        }
-    }
+  useEffect(() => {
+    // Llamar a la API para obtener los datos
+    const fetchData = async () => {
+      try {
+        // const response = await axios.get('URL_DE_TU_API');
+        const response = apiGet(`presupuestosdep/verObra/${data.id}`, auth).then(res => {
+          // apiGet(`presupuestosdep/edit/${data.id}`, auth)
+          let respuesta = res.data.presupuesto; // Asegúrate de que la respuesta tenga esta estructura       
+          console.log(res.data)
+          if (Array.isArray(respuesta)) {
+            setPresupuestos(respuesta);
+          } else {
+            console.error('La respuesta de la API no es un array:', respuesta);
+            // Manejar el caso en el que la respuesta no sea un array
+          }
+        });
 
-    return (
-        <>
-            <div style={{ backgroundColor: 'white', padding: '2rem' }}>
-                <div style={{ marginBottom: '2rem' }}>
-                    <h1 style={{ textAlign: 'center' }}>Infraestructura e Interiores, S.A. de C.V.</h1>
-                    <h2 style={{ textAlign: 'center' }}>Presupuesto de Obra</h2>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
-                    <div>
-                        <InputLabel >Departamento</InputLabel>
-                        <TextField
-                            type="text"
-                            defaultValue={general.departamento}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            disabled
-                        />
-                    </div>
-                    <div>
-                        <InputLabel >Colaboradores</InputLabel>
-                        <TextField
-                            type="text"
-                            defaultValue={general.colaboradores}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            disabled
-                        />
-                    </div>
-                    <div>
-                        <InputLabel >Gerente</InputLabel>
-                        <TextField
-                            type="text"
-                            defaultValue={general.gerente}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            disabled
-                        />
-                    </div>
-                    <div>
-                        <InputLabel >presupuesto total</InputLabel>
-                        <CurrencyTextField
+        // setPresupuestos(response.data.presupuestos);
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    };
 
-                            variant="standard"
-                            value={general.total}
-                            currencySymbol="$"
-                            outputFormat="number"
-                            onChange={(e, value) => handleMoney(value)}
-                            disabled
-                        />
-                    </div>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: '5rem' }}>
-                    <div>
-                        <InputLabel >Fecha</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                            <Grid container >
-                                <KeyboardDatePicker
+    fetchData();
+  }, []);
 
-                                    format="dd/MM/yyyy"
-                                    name="fecha_pago"
-                                    value={general.fecha_inicio !== '' ? general.fecha_inicio : null}
-                                    placeholder="dd/mm/yyyy"
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                    disabled
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-                    </div>
+  let acumulados = {};
 
-                    <div>
-                        <InputLabel >Fecha Fin</InputLabel>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                            <Grid container >
-                                <KeyboardDatePicker
+  console.log(presupuestos)
+  
+  return (
+    <div className="table-responsive rounded">
+      <div className="table-container">
+        <h1> {presupuestos[0] ? presupuestos[0].nombre : 'Presupuesto'}
+        <LightTooltip title={
+          <React.Fragment>
+            <Typography color="inherit">Significados de letras</Typography>            
+              <u>{"A = Autorizado "}</u><br />
+              <u>{"G = Gastado "}</u> <br />
+              <u>{"R = Restante "}</u> <br />
+              <u>{"A = Acomulado "}</u> 
 
-                                    format="dd/MM/yyyy"
-                                    name="fecha_pago"
-                                    value={general.fecha_fin !== '' ? general.fecha_fin : null}
-                                    placeholder="dd/mm/yyyy"
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                    disabled
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-                    </div>
 
-                    <div>
-                        <InputLabel >Nombre del presupuesto</InputLabel>
-                        <TextField
-                            type="text"
-                            defaultValue={general.nombre}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            disabled
-                        />
-                    </div>
 
-                    {
-                        proyectos.length > 0 &&
-                        <div>
-                            <InputLabel >Proyecto</InputLabel>
-                            <Select value={general.id_proyecto} disabled>
-                                <MenuItem value="" hidden>Selecciona proyecto</MenuItem>
-                                {
-                                    proyectos.map((proyecto, index) => (
-                                        <MenuItem key={index} value={proyecto.id}>{proyecto.nombre}</MenuItem>
-                                    ))
-                                }
+          </React.Fragment>
+        } classes={{ tooltip: classes.customWidth }}>
+          <Button style={{ color: 'red' }} className={classes.button}>? </Button>
+        </LightTooltip>
+        </h1>
+       
+        <table className="table table-borderless table-vertical-center rounded table-hover">
+          <thead>            
+            <tr>
+              <th >Proyecto</th>
+              <th >Área</th>
+              <th >Partida</th>
+              {
+                presupuestos.length > 0 && presupuestos[0].mes[0] ? (
+                defaultMeses.map((mes, index) => (
+                  presupuestos[0].mes[0][mes.toLowerCase()] === 1 ? <th key={index}>{mes}</th> : null
+                ))
+              ) : (
+                defaultMeses.map((mes, index) => <th key={index}>{mes}</th>)
+              )}
+            </tr>
+          </thead>
+          <tbody>
+              <>
+              {presupuestos.map((presupuesto, index) => (
+                Object.keys(presupuesto.montos_por_mes_por_area).map((proyecto) => (
+                  Object.keys(presupuesto.montos_por_mes_por_area[proyecto]).map((area) => (
+                  (userAuth.user.tipo.id === 1 || acceso.read == 1 ) && (
+                  Object.keys(presupuesto.montos_por_mes_por_area[proyecto][area]).map((partida) => {
+                    return (
+                      <tr key={`${proyecto}_${area}_${partida}`}>
+                        <td>{proyecto}</td>
+                        <td>{area}</td>
+                        <td>{partida}</td>
+                        {/* Renderizar los valores de cada mes */}
+                        {presupuesto.montos_por_mes_por_area?.[proyecto]?.[area]?.[partida] && 
+                        Object.keys(presupuesto.montos_por_mes_por_area[proyecto][area][partida]).map((mes, index) => {
+                          const mesAutorizado = presupuesto.mes[0]?.[mes] === 1;
 
-                            </Select>
-                        </div>
-                    }
+                          if (mesAutorizado) {
+                          const valorMontos = presupuesto.montos_por_mes_por_area[proyecto][area][partida][mes] || 0;
+                          const valorRequisiciones = presupuesto.requisiciones_info[area]?.[partida]?.[mes] || 0;
+                          const resultado = valorMontos - valorRequisiciones;
+                          const  valorMostrado = resultado
+                          const acumuladoAnterior = acumulados[area]?.[partida] || 0;
+                          const acumulado = acumuladoAnterior + valorMostrado;
+                          acumulados[area] = { ...acumulados[area], [partida]: acumulado };
+                          return (
+                            <td key={index} style={{ width: 'auto', whiteSpace: 'nowrap' }}>
+                                <span style={{ color: 'red' }}>A:</span>{valorMontos.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 })}<br />
+                                <span style={{ color: 'blue' }}>G:</span> {valorRequisiciones.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 })}<br />
+                                <span style={{ color: 'green' }}>R:</span>  {valorMostrado.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 })}<br />
+                                <span style={{ color: 'orange' }}>A:</span> {acumulado.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 })}<br />
+                            </td>
+                          );
+                        }
+                        return null;
+                        })}
+                        
+                      </tr>
+                    );
+                  })
+                  ))
+                ))
+                )
+              ))
+              }
+              
+              
 
-                </div>
+          </>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
 
-            </div>
-        </>
-    )
-}
+export default TuComponente;

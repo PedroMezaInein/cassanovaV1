@@ -27,6 +27,10 @@ export default function CrearEgreso(props) {
     const departamentos = useSelector(state => state.opciones.areas)
     const auth = useSelector((state) => state.authUser.access_token);
     const presupuestos = useSelector(state => state.opciones.presupuestos)
+    const proveedores = useSelector((state) => state.opciones.proveedores|| []);
+    const empresas = useSelector((state) => state.opciones.empresa|| []);
+    const [loadingProveedores, setLoadingProveedores] = useState(true);
+    const [loadingEmpresas, setLoadingEmpresas] = useState(true);
 
     const [opciones, setOpciones] = useState({
         cuentas: [],
@@ -36,6 +40,25 @@ export default function CrearEgreso(props) {
         tiposImpuestos: [],
         tiposPagos: [],
     })
+
+    const initialState = {
+        proveedores: [], // Asegúrate de que este valor inicial sea un array
+        empresas: [],
+    };
+    
+
+    useEffect(() => {
+        // Simula carga de proveedores
+        if ( proveedores && proveedores.length > 0) {
+            setLoadingProveedores(false);
+        }
+    }, [proveedores]);
+
+    useEffect(() => {
+        if (empresas && empresas.length > 0) {
+            setLoadingEmpresas(false);
+        }
+    }, [empresas]);
 
     useEffect(() => {
        
@@ -97,7 +120,7 @@ export default function CrearEgreso(props) {
             setForm({
                 ...form,
                 [e.target.name]: e.target.value,
-                cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas
+                cuentas: empresas.find(empresa => empresa.id === e.target.value).cuentas
             });
         } else {
             setForm({
@@ -228,22 +251,38 @@ export default function CrearEgreso(props) {
                 </div>
                 
                 <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '4rem', marginBottom: '4rem'}}>
-                    {
-                        opciones.proveedores.length > 0 ?
-                        <div>
-                            <InputLabel>Proveedor</InputLabel>
-                            <Autocomplete
-                                name="proveedor"
-                                options={opciones.proveedores}
-                                getOptionLabel={(option) => option.name}
-                                style={{ width: 350, paddingRight: '1rem' }}
-                                onChange={(event, value) => handleChangeProveedor(event, value)}
-                                renderInput={(params) => <TextField {...params}  variant="outlined"  label={form.proveedor_nombre ? form.proveedor_nombre : 'proveedor'} />}
-                            />
-                        </div>
-                                
-                        : null
-                    } 
+                {
+                        loadingProveedores ? (
+                            <div style={{ textAlign: 'center', margin: '1rem 0', fontSize: '1.2rem', color: 'gray' }}>
+                                Cargando proveedores...
+                            </div>
+                        ) : (
+                            proveedores.length > 0 ? (
+                                <div>
+                                    <InputLabel>Proveedor</InputLabel>
+                                    <Autocomplete
+                                        name="proveedor"
+                                        options={proveedores}
+                                        getOptionLabel={(option) => option.name}
+                                        style={{ width: 350, paddingRight: '1rem' }}
+                                        onChange={(event, value) => handleChangeProveedor(event, value)}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                variant="outlined"
+                                                label={form.proveedor_nombre || 'Proveedor'}
+                                            />
+                                        )}
+                                    />
+                                </div>
+                            ) : (
+                                <div style={{ textAlign: 'center', margin: '1rem 0', fontSize: '1.2rem', color: 'gray' }}>
+                                    No se encontraron proveedores.
+                                </div>
+                            )
+                        )
+                    }
+
 
                         <div>
                             <CurrencyTextField
@@ -264,8 +303,13 @@ export default function CrearEgreso(props) {
 
                 <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%',marginTop: '4rem', marginBottom: '4rem'}}>
 
-                    {
-                        opciones.empresas.length > 0 ?
+                {
+                    loadingEmpresas ? (
+                        <div style={{ textAlign: 'center', margin: '1rem 0', fontSize: '1.2rem', color: 'gray' }}>
+                            Cargando empresas...
+                        </div>
+                    ) : (
+                        empresas.length > 0 ? (
                             <div>
                                 <InputLabel>Empresa</InputLabel>
                                 <Select
@@ -275,14 +319,20 @@ export default function CrearEgreso(props) {
                                     style={{ width: 200, paddingRight: '1rem' }}
                                 >
                                     {
-                                        opciones.empresas.map((item, index) => (
-                                            <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                                        empresas.map((item, index) => (
+                                            <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
                                         ))
                                     }
                                 </Select>
                             </div>
-                        : null
-                    }
+                        ) : (
+                            <div style={{ textAlign: 'center', margin: '1rem 0', fontSize: '1.2rem', color: 'gray' }}>
+                                No se encontraron empresas.
+                            </div>
+                        )
+                    )
+                }
+
                      <div>
                                 {presupuestos.length > 0 ?
                                     <>

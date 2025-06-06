@@ -5,7 +5,7 @@ import Layout from '../../../components/layout/layout'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
 import { SelectSearchGray } from '../../../components/form-components'
-import { getMeses, getAños, getFases } from '../../../functions/setters'
+import { getFases } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
@@ -13,16 +13,8 @@ import InformacionProyecto from '../../../components/cards/Proyectos/Informacion
 import Swal from 'sweetalert2'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { setSingleHeader } from '../../../functions/routers'
-import DateFnsUtils from '@date-io/date-fns';
-import Carousel from 'react-bootstrap/Carousel';
-import Toast from 'react-bootstrap/Toast';
 
 import ProgressBar from 'react-bootstrap/ProgressBar';
-
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import Image from 'react-bootstrap/Image';
-import Row from 'react-bootstrap/Row';
 
 import style from './estilos.module.css'
 

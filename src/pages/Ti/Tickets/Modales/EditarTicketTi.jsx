@@ -127,12 +127,12 @@ export default function EditarTicketTi(props) {
         })
     };
 
-    const handleDelete = (index) => { 
-        setForm({
-            ...form,
-            funcionalidades: form.funcionalidades.filter((item, i) => i !== index)
-        })
-    }
+    // const handleDelete = (index) => { 
+    //     setForm({
+    //         ...form,
+    //         funcionalidades: form.funcionalidades.filter((item, i) => i !== index)
+    //     })
+    // }
 
     const validateForm = () => {
         let errores = {}
@@ -159,17 +159,17 @@ export default function EditarTicketTi(props) {
         return formOk
     }
 
-    function formatDate(date) {
-        var year = date.getFullYear();
+    // function formatDate(date) {
+    //     var year = date.getFullYear();
 
-        var month = (1 + date.getMonth()).toString();
-        month = month.length > 1 ? month : '0' + month;
+    //     var month = (1 + date.getMonth()).toString();
+    //     month = month.length > 1 ? month : '0' + month;
 
-        var day = date.getDate().toString();
-        day = day.length > 1 ? day : '0' + day;
+    //     var day = date.getDate().toString();
+    //     day = day.length > 1 ? day : '0' + day;
 
-        return year + '/' + month + '/' + day;
-    }
+    //     return year + '/' + month + '/' + day;
+    // }
 
     const enviar = () => {
         if (validateForm()) {

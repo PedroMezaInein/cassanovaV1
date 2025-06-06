@@ -34,7 +34,6 @@ class CuentaForm extends Component {
             descripcion: '',
             usuarios: [],
             clabe: '',
-            empresas: [],
             impuesto: '',
             factura: '',
 

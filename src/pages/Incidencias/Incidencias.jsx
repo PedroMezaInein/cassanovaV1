@@ -878,6 +878,7 @@ class Incidencias extends Component {
                         fecha_inicio: dayDMY(permiso.fecha_inicio),
                         fecha_fin: dayDMY(permiso.fecha_fin),
                         estatus : permiso.estatus,
+                        permiso:permiso,
 
                     })
                     return false
@@ -1430,51 +1431,47 @@ class Incidencias extends Component {
     setPermisos = (datos) => {
         const { data, options } = this.state
         let aux = []
-
-        this.setState({
-            data
-        })
-
         datos.map((permiso) => {
+            // console.log(permiso)
             aux.push(
                 {
                     actions: this.setActionsPermisoIncapacidad(permiso),
                     identificador: setTextTableCenter(permiso.id),
                     horas: setArrayTable(
                         [
+                            { name: 'Fecha inicio', text: permiso.fecha_inicio ?  dayDMY(permiso.fecha_inicio) : '' },
+                            { name: 'Fecha Fin', text: permiso.fecha_fin ?  dayDMY(permiso.fecha_fin) : '' },
+
                             { name: 'Hora entrada', text: permiso.hora_entrada ? permiso.hora_entrada : '' },
                             { name: 'Hora salida', text: permiso.hora_salida ? permiso.hora_salida : '' },
                         ], '250px'
                     ),
                     ir: setArrayTable(
                         [
+                            { name: 'Fecha inicio', text: permiso.fecha_inicio ?  dayDMY(permiso.fecha_inicio) : '' },
+                            { name: 'Fecha Fin', text: permiso.fecha_fin ?  dayDMY(permiso.fecha_fin) : '' },
                             { name: 'Hora ir', text: permiso.hora_ir ? permiso.hora_ir : '' },
                             { name: 'Hora regresar', text: permiso.hora_regresar ? permiso.hora_regresar : '' },
                         ], '250px'
                     ),
-                    fechas: setArrayTable(
+                    // fechas: setArrayTable(
+                    //     [
+                    //         { name: 'Fecha inicio', text: permiso.fecha_inicio ? dayDMY(permiso.fecha_inicio) : '' },
+                    //         { name: 'Fecha fin', text: permiso.fecha_fin ? dayDMY(permiso.fecha_fin) : '' },
+                    //     ], '250px'
+                    // ),
+                    // lider: setTextTable(permiso.lider ? permiso.lider.nombre+ ' '+ permiso.lider.apellido_paterno +' '+ permiso.lider.apellido_materno: ''),
+                    nombre: 
+                    setArrayTable(
                         [
-                            { name: 'Fecha inicio', text: permiso.fecha_inicio ? dayDMY(permiso.fecha_inicio) : '' },
-                            { name: 'Fecha fin', text: permiso.fecha_fin ? dayDMY(permiso.fecha_fin) : '' },
+                            { name:'colaborador',  text:permiso.empleado ? permiso.empleado.nombre + ' '+ permiso.empleado.apellido_paterno +' '+ permiso.empleado.apellido_materno : ''},
+                            { name:'lider',  text:permiso.lider ? permiso.lider.nombre+ ' '+ permiso.lider.apellido_paterno +' '+ permiso.lider.apellido_materno: ''},
                         ], '250px'
                     ),
-                    lider: setTextTable(permiso.lider_id ?
-                        options.lider.map((empleado) => {
-                            if (permiso.lider_id.toString() === empleado.value) {
-                                return (empleado.name)
-                            }
-                            return false
-                        })
-                        : ''),
-                    nombre: setTextTable(permiso.empleado_id ?
-                        options.empleados.map((empleado) => {
-                            if (permiso.empleado_id.toString() === empleado.value) {
-                                return (empleado.name)
-                            }
-                            return false
-                        })
-                        : ''),
+                    
+                    tipo: setTextTable(permiso.tipo ? permiso.tipo : ''),
                     estatus: setTextTable(permiso.estatus ? permiso.estatus : ''),
+                    
                     descripcion: setTextTable(permiso.comentarios ? permiso.comentarios : ''),
                     rechazo: setTextTable(permiso.motivo_rechazo ? permiso.motivo_rechazo : ''),
                     // adjuntos: setArrayTable(_aux),
@@ -1541,7 +1538,6 @@ class Incidencias extends Component {
         const { modal_motivo_rechazo_I,modal_motivo_rechazo_I1, modal_motivo_rechazo_P,modal_motivo_rechazo_P1, id_rechazo, modal_adjuntos_permisos, modal_mostrar_incapacidades, incapacidadesM, events, espera, modal, key, permisosM, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, modal_permisos, disabledDates, modal_incapacidad, modal_cajones, modal_date, activeKey, date, eventos, modal_mostrar_permisos, adjuntoArray } = this.state
         const { authUser: { access_token } } = this.props
         // const { user } = this.props
-
         return (
             <Layout active='rh'  {...this.props}>
                 <Tabs mountOnEnter={true} unmountOnExit={true} defaultActiveKey="vacaciones" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -1714,23 +1710,26 @@ class Incidencias extends Component {
                             } 
                   
                 </Modal>
-                <Modal size="lg" title="Solicitudes de permiso" show={modal_mostrar_permisos} handleClose={this.handleCloseEstatusPermisos} >
+                <Modal size="xl" title="Solicitudes de permiso" show={modal_mostrar_permisos} handleClose={this.handleCloseEstatusPermisos} >
                     <div className="table-responsive mt-6">
                         <table className="table table-head-custom table-head-bg table-vertical-center">
                             <thead>
                                 <tr className="text-left">
-                                    <th style={{ minWidth: "120px" }} className="pl-7">
+                                    <th style={{ minWidth: "140px" }} className="pl-7">
                                         <span className="text-dark-75 font-size-13px">Fecha</span>
                                     </th>
-                                    <th style={{ minWidth: "120px" }} className="pl-7">
+                                    <th style={{ minWidth: "80px" }} className="pl-7">
+                                        <span className="text-dark-75 font-size-13px">Tipo</span>
+                                    </th>
+                                    <th style={{ minWidth: "80px" }} className="pl-7">
                                         <span className="text-dark-75 font-size-13px">Estatus</span>
                                     </th>
                                     <th style={{ minWidth: "120px" }} className="pl-7">
-                                        <span className="text-dark-75 font-size-13px">Empleado</span>
+                                        <span className="text-dark-75 font-size-13px">Colaborador</span>
                                     </th>
-                                    <th style={{ minWidth: "200px" }} className="text-center">
+                                    {/* <th style={{ minWidth: "200px" }} className="text-center">
                                         <span className="text-dark-75 font-size-13px">Nombre de quien autoriza</span>
-                                    </th>
+                                    </th> */}
                                     <th className="text-center">
                                         <span className="text-dark-75 font-size-13px">Comentario</span>
                                     </th>
@@ -1748,8 +1747,18 @@ class Incidencias extends Component {
                                                     <td className="py-8">
                                                         <div className="d-flex align-items-center">
                                                             <div>
-                                                                <div className="mb-1">{empleado.fecha_inicio}</div>
-                                                                <div className="mb-1">{empleado.fecha_fin}</div>
+                                                                <div className="mb-1"><strong> fecha: </strong>{empleado.fecha_inicio} / {empleado.fecha_fin} </div>
+                                                                <div className="mb-1"> <strong>Hora entrada:</strong> {empleado.permiso ? empleado.permiso.hora_entrada :''} <strong>hora salida :</strong> {empleado.permiso ? empleado.permiso.hora_salida :''}</div>
+                                                                <div className="mb-1"> <strong>Hora ir:</strong> {empleado.permiso ? empleado.permiso.hora_ir :''} <strong>hora regresar  :</strong> {empleado.permiso ? empleado.permiso.hora_regresar :''}</div>
+
+                                                                {/* <div className="mb-1"></div> */}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="py-8">
+                                                        <div className="d-flex align-items-center">
+                                                            <div>
+                                                                <div className="mb-1">{empleado.permiso.tipo}</div>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -1763,13 +1772,14 @@ class Incidencias extends Component {
                                                     <td className="py-8">
                                                         <div className="d-flex align-items-center">
                                                             <div>
-                                                                <div className="mb-1">{empleado.name}</div>
+                                                                <div className="mb-1"> <strong>Colaborador:</strong> {empleado.name}</div>
+                                                                <span> <strong>lider:</strong> {(empleado.nombre_autoriza)}</span>
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="text-center">
+                                                    {/* <td className="text-center">
                                                         <span>{(empleado.nombre_autoriza)}</span>
-                                                    </td>
+                                                    </td> */}
                                                     <td className="text-center">
                                                         <span>{(empleado.comentario)}</span>
                                                     </td>

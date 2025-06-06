@@ -3,13 +3,12 @@ import { useSelector } from "react-redux";
 import { useState, useEffect } from 'react';
 import Layout from "../../components/layout/layout";
 
-import { apiGet, apiPostForm } from "../../functions/api";
+import { apiPostForm } from "../../functions/api";
 import '../../styles/_reporteSatisfaccion.scss';
 
 import AnyChart from "anychart-react";
 import anychart from "anychart";
 //import dataTemp from "./dataTemp";
-import Calendar from '../../components/Lottie/Calendar'
 
 import Swal from 'sweetalert2';
 

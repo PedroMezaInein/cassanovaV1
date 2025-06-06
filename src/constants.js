@@ -30,24 +30,25 @@ export const LEADS_FRONT = process.env.NODE_ENV === 'production' ? 'https://admi
 export const COLORS = ["#E53935", "#CB4335", "#AB47BC", "#7D3C98", "#C15994", "#2471A3", "#2E86C1", "#42A5F5", "#4DD0E1", "#17A589", "#229954", "#28B463", "#9CCC65", "#FFC42C", "#D4AC0D", "#FF7043", "#D68910", "#CA6F1E", "#9F6A57", "#707B7C", "black",
  '#78909C','#eb7b59','#ff0092', '#db93d7','#cf7aca','#ffddff','#930041','#683970','#00ad89','#e7803b','#3f6e00','#9966a0','#6a54fc','#578edb','#c18c96','#ff897b','#1a67a0','#b22946' ];
 
+
 //Expresiones Regulares
 
-    export const RFC = '[A-Z,Ñ,&]{3,4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?'
-    // eslint-disable-next-line
-    export const DATE ='(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)'
-    export const TEL = '^[0-9]{10}$'
-    // eslint-disable-next-line
-    export const EMAIL = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$'
-    // eslint-disable-next-line
-    export const NSS = '^(\d{2})(\d{2})(\d{2})\d{5}$'
-    // eslint-disable-next-line
-    export const CURP = '/^[a-z]{4}\d{6}[HM][a-z]{5}\d{2}$/i'
+export const RFC = '[A-Z,Ñ,&]{3,4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?'
+// eslint-disable-next-line
+export const DATE = '(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)'
+export const TEL = '^[0-9]{10}$'
+// eslint-disable-next-line
+export const EMAIL = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$'
+// eslint-disable-next-line
+export const NSS = '^(\d{2})(\d{2})(\d{2})\d{5}$'
+// eslint-disable-next-line
+export const CURP = '/^[a-z]{4}\d{6}[HM][a-z]{5}\d{2}$/i'
 //Form
 
 // Table
 export const TABLE_SIZE = 20
 
-export const LEADS_COLUMNS = [                
+export const LEADS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Convertido', accessor: 'convertido' },
     { Header: 'Empresa', accessor: 'empresa' },
@@ -67,7 +68,7 @@ export const REPORTE_MERCA_COLUMNS = [
     { Header: 'REPORTE', accessor: 'reporte' }
 ]
 
-export const PROSPECTOS_COLUMNS = [                
+export const PROSPECTOS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Estatus', accessor: 'estatusProspecto' },
     { Header: 'Empresa', accessor: 'empresa' },
@@ -75,7 +76,7 @@ export const PROSPECTOS_COLUMNS = [
     { Header: 'Vendedor', accessor: 'vendedor' },
     { Header: 'Lead', accessor: 'lead' },
     { Header: 'Descripción del Prospecto', accessor: 'descripcion' },
-    { Header: 'Preferencia de contacto', accessor: 'preferencia' },    
+    { Header: 'Preferencia de contacto', accessor: 'preferencia' },
     { Header: 'Motivo contratación o cancelación', accessor: 'motivo' },
     { Header: 'Fecha de conversión', accessor: 'fechaConversion' }
 ]
@@ -109,7 +110,7 @@ export const CUENTAS_COLUMNS = [
     { Header: 'Balance Global', accessor: 'global' },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
     { Header: 'Tipo', accessor: 'tipo' },
-    { Header: 'Fecha', accessor: 'fecha', customRender: true },    
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
     { Header: 'Balance', accessor: 'balance' },
 
@@ -174,14 +175,14 @@ export const EGRESOS_COLUMNS = [
     { Header: 'Comisión', accessor: 'comision', customRender: true },
     { Header: 'Total', accessor: 'total', customRender: true },
     { Header: 'Cuenta', accessor: 'cuenta', customRender: true },
-    { Header: 'Pago', accessor: 'tipoPago', customRender: true },    
+    { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
     // { Header: 'Estatus', accessor: 'estatusCompra', customRender: true }, 
     { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const FACTURAS_COLUMNS = [
-    { Header: 'Opciones',accessor: 'actions', customRender: true },
+    { Header: 'Opciones', accessor: 'actions', customRender: true },
     { Header: 'Folio', accessor: 'folio' },
     { Header: 'Estatus', accessor: 'estatus' },
     { Header: 'Fecha', accessor: 'fecha' },
@@ -192,7 +193,7 @@ export const FACTURAS_COLUMNS = [
     { Header: 'Total', accessor: 'total' },
     { Header: 'Número de certificado', accessor: 'noCertificado' },
     { Header: 'Metodo de pago', accessor: 'metodoPago' },
-    { Header: 'Descripción', accessor: 'descripcion' },   
+    { Header: 'Descripción', accessor: 'descripcion' },
 
     { Header: 'Monto acumulado', accessor: 'acumulado' },
     { Header: 'Monto restante', accessor: 'restante' },
@@ -201,7 +202,7 @@ export const FACTURAS_COLUMNS = [
 ]
 
 export const FACTURAS_COLUMNS_2 = [
-    { Header: 'Opciones',accessor: 'actions', customRender: true },
+    { Header: 'Opciones', accessor: 'actions', customRender: true },
     { Header: 'Folio', accessor: 'folio' },
     { Header: 'Estatus', accessor: 'estatus' },
     { Header: 'Fecha', accessor: 'fecha' },
@@ -213,7 +214,7 @@ export const FACTURAS_COLUMNS_2 = [
     { Header: 'Monto acumulado', accessor: 'acumulado' },
     { Header: 'Monto restante', accessor: 'restante' },
     { Header: 'Adjuntos', accessor: 'adjuntos' },
-    { Header: 'Descripción', accessor: 'descripcion' },   
+    { Header: 'Descripción', accessor: 'descripcion' },
     // { Header: 'Número de certificado', accessor: 'noCertificado' },
     // { Header: 'Uso CFDI', accessor: 'usoCFDI' }
 ]
@@ -244,7 +245,7 @@ export const AREAS_COLUMNS = [
 ]
 
 export const AREAS_GASTOS_COLUMNS = [
-    { nombre: 'Acciones', identificador: 'acciones', sort: false, stringSearch: false},
+    { nombre: 'Acciones', identificador: 'acciones', sort: false, stringSearch: false },
     { nombre: 'Área', identificador: 'nombreArea', sort: true, stringSearch: true },
     { nombre: 'Partidas', identificador: 'partidas', sort: true, stringSearch: true },
     { nombre: 'Sub partidas', identificador: 'subpartidas', sort: true, stringSearch: false },
@@ -258,17 +259,19 @@ export const AREAS_COMPRAS_COLUMNS = [
 ]
 export const PERMISOS_COLUMNS = [
     // { Header: 'Empleado', accessor: 'empleado' , customRender: false },
-    { Header: 'OPCIONES', accessor: 'actions', customRender: true,searchable: false  },
-    { Header: 'Nombre', accessor: 'nombre', customRender: true },    
-    { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true, searchable: false },
+    { Header: 'Nombre', accessor: 'nombre', customRender: true },
+    // { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
+    { Header: 'Tipo', accessor: 'tipo', customRender: true },
     { Header: 'Descripción del permiso', accessor: 'descripcion', customRender: true },
-    { Header: 'Horas', accessor: 'horas', customRender: true },
-    { Header: 'Fechas', accessor: 'fechas', customRender: true },
-    { Header: 'Motivo rechazo', accessor: 'rechazo', customRender: true },
+    { Header: 'Hora entrada', accessor: 'horas', customRender: true },
+    { Header: 'Hora ir', accessor: 'ir', customRender: true },
+    // { Header: 'Fecha', accessor: 'fechas', customRender: true },
+    { Header: 'Comentario', accessor: 'rechazo', customRender: true },
 ]
 export const INCAPACIDAD_COLUMNS = [
-    { Header: 'OPCIONES', accessor: 'actions', customRender: true,searchable: false  },
+    { Header: 'OPCIONES', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },
     { Header: 'Líder inmediato', accessor: 'lider', customRender: true },
     { Header: 'Fechas', accessor: 'fechas', customRender: true },
@@ -288,8 +291,8 @@ export const MINUTAS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions', customRender: true },
     { Header: 'Colaboradores', accessor: 'fecha', customRender: true },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
-    { Header: 'descripción', accessor: 'fecha', customRender: true  },
-    { Header: 'adjunto', accessor: 'fecha', customRender: true  }
+    { Header: 'descripción', accessor: 'fecha', customRender: true },
+    { Header: 'adjunto', accessor: 'fecha', customRender: true }
 
 ]
 
@@ -323,7 +326,7 @@ export const ETIQUETAS_COLUMNS = [
 ]
 export const ORIGENES_COLUMNS = [
     { Header: 'Opciones', accessor: 'actions' },
-    { Header: 'Origen', accessor: 'origen',  customRender: true }
+    { Header: 'Origen', accessor: 'origen', customRender: true }
 ]
 
 export const RED_SOCIAL_COLUMNS = [
@@ -333,13 +336,13 @@ export const RED_SOCIAL_COLUMNS = [
 
 export const BANCOS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
-    { Header: 'Banco', accessor: 'banco',  customRender: true }
+    { Header: 'Banco', accessor: 'banco', customRender: true }
 ]
 
 export const CONCEPTOS_FACTURACION_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
-    { Header: 'Clave', accessor: 'clave',  customRender: true },
-    { Header: 'Descripción', accessor: 'descripcion',  customRender: true }
+    { Header: 'Clave', accessor: 'clave', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const TIPOS_COLUMNS = [
@@ -384,13 +387,13 @@ export const VENTAS_COLUMNS = [
     { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Estatus', accessor: 'estatusCompra', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
-    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false}
+    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false }
 ]
 
 export const COMPRAS_COLUMNS = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'ID', accessor: 'identificador', customRender: true },
-    { Header: 'Fecha', accessor: 'fecha', customRender: true },    
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
     { Header: 'Proveedor', accessor: 'proveedor', customRender: true },
     { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
     { Header: 'Factura', accessor: 'factura', customRender: true },
@@ -402,16 +405,16 @@ export const COMPRAS_COLUMNS = [
     { Header: 'Total', accessor: 'total', customRender: true },
     { Header: 'Cuenta', accessor: 'cuenta', customRender: true },
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
-    { Header: 'Pago', accessor: 'tipoPago', customRender: true },    
+    { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Estatus', accessor: 'estatusCompra', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
-    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false}
+    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false }
 ]
 
 export const DEVOLUCIONES_COLUMNS = [
     { Header: 'Opciones', accessor: 'actions' },
     { Header: 'ID', accessor: 'identificador' },
-    { Header: 'Fecha', accessor: 'fecha', customRender: true },    
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
     { Header: 'Proveedor', accessor: 'proveedor' },
     { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
     { Header: 'Factura', accessor: 'factura' },
@@ -422,7 +425,7 @@ export const DEVOLUCIONES_COLUMNS = [
     { Header: 'Total', accessor: 'total' },
     { Header: 'Cuenta', accessor: 'cuenta' },
     { Header: 'Impuesto', accessor: 'impuesto', customRender: true },
-    { Header: 'Pago', accessor: 'tipoPago', customRender: true },    
+    { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Estatus', accessor: 'estatusCompra', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
@@ -434,13 +437,13 @@ export const SOLICITUD_COMPRA_COLUMNS = [
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
     { Header: 'Monto', accessor: 'monto', customRender: true },
     { Header: 'Factura', accessor: 'factura', customRender: true },
-    { Header: 'Pago',  accessor: 'tipoPago', customRender: true },
+    { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true },
     { Header: 'Notas', accessor: 'notas', customRender: true },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
     { Header: 'Área', accessor: 'area', customRender: true },
     { Header: 'Sub-Área', accessor: 'subarea', customRender: true },
-    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false}
+    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false }
 ]
 export const SOLICITUD_EGRESO_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
@@ -448,40 +451,40 @@ export const SOLICITUD_EGRESO_COLUMNS = [
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
     { Header: 'Monto', accessor: 'monto', customRender: true },
     { Header: 'Factura', accessor: 'factura', customRender: true },
-    { Header: 'Pago', accessor: 'tipoPago', customRender: true },   
+    { Header: 'Pago', accessor: 'tipoPago', customRender: true },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
     { Header: 'Sub-Área', accessor: 'subarea', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 
 export const PAGOS_COLUMNS = [
-    { Header: 'Opciones', accessor: 'actions'},
-    { Header: 'ID', accessor: 'identificador'},
-    { Header: 'Fecha', accessor: 'fecha'},
-    { Header: 'Proveedor', accessor: 'proveedor'},
-    { Header: 'Factura', accessor: 'factura'},
-    { Header: 'Subárea', accessor: 'subarea'},
-    { Header: 'Monto', accessor: 'monto'},
-    { Header: 'Comisión', accessor: 'comision'},
-    { Header: 'Total', accessor: 'total'},
-    { Header: 'Cuenta', accessor: 'cuenta'},
-    { Header: 'Pago', accessor: 'pago'},
-    { Header: 'Impuesto', accessor: 'impuesto'},
-    { Header: 'Estatus', accessor: 'estatus'}
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'ID', accessor: 'identificador' },
+    { Header: 'Fecha', accessor: 'fecha' },
+    { Header: 'Proveedor', accessor: 'proveedor' },
+    { Header: 'Factura', accessor: 'factura' },
+    { Header: 'Subárea', accessor: 'subarea' },
+    { Header: 'Monto', accessor: 'monto' },
+    { Header: 'Comisión', accessor: 'comision' },
+    { Header: 'Total', accessor: 'total' },
+    { Header: 'Cuenta', accessor: 'cuenta' },
+    { Header: 'Pago', accessor: 'pago' },
+    { Header: 'Impuesto', accessor: 'impuesto' },
+    { Header: 'Estatus', accessor: 'estatus' }
 ]
 
 export const SOLICITUD_VENTA_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
-    { Header: 'Proyecto', accessor: 'proyecto',customRender: true },
-    { Header: 'Empresa', accessor: 'empresa',customRender: true },
-    { Header: 'Monto', accessor: 'monto',customRender: true },
+    { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
+    { Header: 'Empresa', accessor: 'empresa', customRender: true },
+    { Header: 'Monto', accessor: 'monto', customRender: true },
     { Header: 'Factura', accessor: 'factura', customRender: true },
-    { Header: 'Pago', accessor: 'tipoPago',customRender: true },
-    { Header: 'Área', accessor: 'area',customRender: true },
-    { Header: 'Sub-Área', accessor: 'subarea',customRender: true },
-    { Header: 'Fecha', accessor: 'fecha',customRender: true },
-    { Header: 'Descripción', accessor: 'descripcion',customRender: true },
-    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false}
+    { Header: 'Pago', accessor: 'tipoPago', customRender: true },
+    { Header: 'Área', accessor: 'area', customRender: true },
+    { Header: 'Sub-Área', accessor: 'subarea', customRender: true },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion', customRender: true },
+    { Header: 'Tipo', accessor: 'tipo', customRender: true, searchable: false, orderable: false }
 ]
 
 export const CONCEPTOS_COLUMNS = [
@@ -523,14 +526,14 @@ export const DOCUMENTOS_COLUMNS = [
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
-    { Header: 'Documento', accessor:'documento' }
+    { Header: 'Documento', accessor: 'documento' }
 ]
 
 export const IMSS_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
     { Header: 'Fecha', accessor: 'fecha', customRender: true },
-    { Header: 'Adjunto', accessor:'adjunto' }
+    { Header: 'Adjunto', accessor: 'adjunto' }
 ]
 
 export const PRESTAMOS_COLUMNS = [
@@ -734,7 +737,7 @@ export const EMPLEADOS_COLUMNS_OBRA = [
 ]
 
 export const PRESUPUESTO_COLUMNS = [
-    { Header: 'Opciones', accessor: 'actions',  customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Estatus', accessor: 'estatus' },
     { Header: 'Tipo', accessor: 'tipo_presupuesto', orderable: false },
     { Header: 'Empresa', accessor: 'empresa' },
@@ -742,7 +745,7 @@ export const PRESUPUESTO_COLUMNS = [
     { Header: 'Área', accessor: 'area' },
     { Header: 'Fecha del presupuesto', accessor: 'fecha' },
     { Header: 'Tiempo de ejecución', accessor: 'tiempo_ejecucion' }
-    
+
 ]
 
 export const PRESUPUESTO_UTILIDAD_COLUMNS = [
@@ -753,17 +756,17 @@ export const PRESUPUESTO_UTILIDAD_COLUMNS = [
     { Header: 'Proyecto', accessor: 'proyecto' },
     { Header: 'Área', accessor: 'area' },
     { Header: 'Fecha del presupuesto', accessor: 'fecha' },
-    { Header: 'Tiempo de ejecución', accessor: 'tiempo_ejecucion' }   
+    { Header: 'Tiempo de ejecución', accessor: 'tiempo_ejecucion' }
 ]
 
-export const USUARIOS = [                
+export const USUARIOS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Nombre', accessor: 'name', customRender: true },
     { Header: 'Correo', accessor: 'email', customRender: true },
     { Header: 'Departamento', accessor: 'departamento', customRender: true }
 ]
 
-export const CLIENTES = [                
+export const CLIENTES = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Nombre', accessor: 'name', customRender: true },
     { Header: 'Correo', accessor: 'email', customRender: true },
@@ -804,12 +807,12 @@ export const CARTAS_GARANTIAS_TICKETS = [
 ]
 
 export const PROYECTOS_TICKETS = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Identificador', accessor: 'identificador', customRender: true },
     { Header: 'Proyecto', accessor: 'proyectos', customRender: true },
     { Header: 'Descripción', accessor: 'descripcion' },
     { Header: 'Fechas', accessor: 'fechas', customRender: true },
-    { Header: 'PRECIO CON IVA', accessor: 'costo_presupuesto', customRender: true  },
+    { Header: 'PRECIO CON IVA', accessor: 'costo_presupuesto', customRender: true },
     { Header: 'Estatus', accessor: 'estatus' }
 
 ]
@@ -833,14 +836,14 @@ export const SERVICIOS_COLUMNS = [
 export const CONTRATOS_RRHH_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Empleado', accessor: 'empleado' },
-    { Header: 'Periodo',  accessor: 'periodo' },
+    { Header: 'Periodo', accessor: 'periodo' },
     { Header: 'Fecha Inicio', accessor: 'fecha_inicio' },
     { Header: 'Fecha Fin', accessor: 'fecha_fin' },
     { Header: 'Estatus', accessor: 'estatus' }
 ]
 
 export const EQUIPOS_COLUMNS = [
-    { Header: 'OPCIONES', accessor: 'actions'},
+    { Header: 'OPCIONES', accessor: 'actions' },
     { Header: 'Equipo', accessor: 'equipo', customRender: true },
     { Header: 'Marca', accessor: 'marca', customRender: true },
     { Header: 'Modelo', accessor: 'modelo', customRender: true },
@@ -870,10 +873,10 @@ export const SOLICITUD_FACTURA_COLUMNS = [
     { Header: 'Forma de pago', accessor: 'formaPago', customRender: true },
     { Header: 'Método de pago', accessor: 'metodoPago', customRender: true },
     { Header: 'Estatus', accessor: 'estatusFactura', customRender: true },
-    { Header: 'Origen', accessor: 'origen', customRender: true , orderable: false },
+    { Header: 'Origen', accessor: 'origen', customRender: true, orderable: false },
 ]
 export const LICENCIAS = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Tipo', accessor: 'tipo', customRender: true },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },
     { Header: 'Duración', accessor: 'duracion', customRender: true },
@@ -890,7 +893,7 @@ export const EQUIPOS_ADMINISTRACION = [
     { Header: 'Descripción', accessor: 'descripcion', customRender: true }
 ]
 export const PRESTACIONES_RH_COLUMNS = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Nombre', accessor: 'nombre', customRender: true },
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
     { Header: 'Pago por empleado', accessor: 'pago_por_empleado', customRender: true },
@@ -925,13 +928,13 @@ export const PAGO_IMPUESTOS_SINGLE_COLUMNS = [
     { Header: 'Empleado', accessor: 'empleado' },
     { Header: 'Imss', accessor: 'imss', total: 'totalImss' },
     { Header: 'Rcv', accessor: 'rcv', total: 'totalRsv' },
-    { Header: 'Infonavit', accessor: 'infonavit', total: 'totalInfonavit'},
+    { Header: 'Infonavit', accessor: 'infonavit', total: 'totalInfonavit' },
     { Header: 'Isn', accessor: 'isn', total: 'totalIsn' },
     { Header: 'Total', accessor: 'total', total: 'granTotal' }
 ]
 
 export const REPSE = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
     { Header: 'Numero Repse', accessor: 'repse', customRender: true },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
@@ -939,7 +942,7 @@ export const REPSE = [
 ]
 
 export const PATRONAL = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
     { Header: 'Registro Patronal', accessor: 'patronal', customRender: true },
     { Header: 'Folio', accessor: 'folio', customRender: true },
@@ -949,7 +952,7 @@ export const PATRONAL = [
 ]
 
 export const SIROC = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
     { Header: 'Repse', accessor: 'repse', customRender: true },
     { Header: 'No, de Registro Patronal', accessor: 'patronal', customRender: true },
@@ -961,7 +964,7 @@ export const SIROC = [
 ]
 
 export const COLABORADOR = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
     // { Header: 'Repse', accessor: 'repse', customRender: true },
     { Header: 'Siroc', accessor: 'siroc', customRender: true },
@@ -973,21 +976,21 @@ export const COLABORADOR = [
 ]
 
 export const RECIBOS = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
 ]
 
 export const SUGERENCIA_COLUMN = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true },
+    { Header: 'Opciones', accessor: 'actions', customRender: true },
     { Header: 'Empleado', accessor: 'empleado', customRender: true },
     { Header: 'Departamento', accessor: 'departamento', customRender: true },
     { Header: 'Estatus', accessor: 'estatus', customRender: true },
 ]
 
 export const SIPARE = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Empresa', accessor: 'empresa', customRender: true },
     { Header: 'Periodo', accessor: 'periodo', customRender: true },
     { Header: 'Linea de Captura', accessor: 'captura', customRender: true },
@@ -997,7 +1000,7 @@ export const SIPARE = [
 ]
 
 export const CLAVES = [
-    { Header: 'Opciones', accessor: 'actions',customRender: true, searchable: false },
+    { Header: 'Opciones', accessor: 'actions', customRender: true, searchable: false },
     { Header: 'Plataforma', accessor: 'plataforma', customRender: true },
     { Header: 'Liga', accessor: 'liga', customRender: true },
     { Header: 'Usuario', accessor: 'usuario', customRender: true },
@@ -1010,16 +1013,19 @@ export const ADJ_TRASPASO_COLUMNS = [
 ]
 
 export const REQUISICIONES = [
-    { nombre: 'Acciones', identificador: 'acciones', sort: false, stringSearch: false},
-    { nombre: 'orden de compra', identificador: 'orden_compra', sort: false, stringSearch: false},
-    { nombre: 'Solicitante', identificador: 'solicitante', sort: true, stringSearch: false},
-    { nombre: 'Departamento', identificador: 'departamento', sort: true, stringSearch: false},
-    { nombre: 'Gasto', identificador: 'tipo_gasto', sort: true, stringSearch: false},
-    { nombre: 'Fecha', identificador: 'fecha_view', sort: true, stringSearch: false},
-    // { nombre: 'Descripcion', identificador: 'descripcion', sort: true, stringSearch: false},
-    { nombre: 'Tiempo estimado', identificador: 'tiempo_estimado', sort: true, stringSearch: false },
-    { nombre: 'Estatus', identificador: 'semaforo', sort: false, stringSearch: false},
-    
+    { nombre: 'Acciones', identificador: 'acciones', sort: false, stringSearch: false },
+    { nombre: 'Terminar', identificador: 'terminar', sort: false, stringSearch: false },
+    { nombre: 'orden de compra', identificador: 'orden_compra', sort: false, stringSearch: false },
+    { nombre: 'Presupuesto', identificador: 'presupuesto', sort: false, },
+    { nombre: 'Solicitante', identificador: 'solicita', sort: false, stringSearch: false },
+    { nombre: 'Departamento', identificador: 'departamento', sort: false, stringSearch: false },
+    { nombre: 'Gasto', identificador: 'tipo_gasto', sort: false, stringSearch: false },
+    { nombre: 'Descripcion', identificador: 'descripcion', sort: false, stringSearch: false },
+    { nombre: 'Fecha', identificador: 'fecha_view', sort: false, stringSearch: false },
+    { nombre: 'Tiempo estimado', identificador: 'tiempo_estimado', sort: false, stringSearch: false },
+    { nombre: 'Estatus', identificador: 'semaforo', sort: false, stringSearch: false },
+
+
 ]
 
 export const DIRECTORIO_COLUMN = [
@@ -1043,8 +1049,19 @@ export const SOLICITAR_VACACIONES_COLUMNS = [
 export const SOLICITAR_PERMISOS_COLUMNS = [
     { Header: 'opciones', accessor: 'actions', customRender: true },
     { Header: 'nombre', accessor: 'empleado', customRender: true },
-    { Header: 'fecha inicio', accessor: 'fecha_inicio', customRender: true },
-    { Header: 'fecha fin', accessor: 'fecha_fin', customRender: true },
+    { Header : 'Tipo', accessor: 'tipo_permiso', customRender: true},
+    { Header: 'Horario', accessor: 'fecha_inicio', customRender: true },
+    // { Header: 'Ir / Regresar', accessor: 'fecha_fin', customRender: true },
     { Header: 'estado', accessor: 'estado', customRender: true },
-    { Header : 'comentario', accessor: 'comentario', customRender: true}
+    { Header: 'comentario', accessor: 'comentario', customRender: true }
+]
+
+export const AUTORIZAR_PERMISOS_COLUMNS = [
+    // { Header: 'opciones', accessor: 'actions', customRender: true },
+    { Header: 'nombre', accessor: 'empleado', customRender: true },
+    { Header : 'Tipo', accessor: 'tipo_permiso', customRender: true},
+    { Header: 'Horario', accessor: 'fecha_inicio', customRender: true },
+    // { Header: 'Ir / Regresar', accessor: 'fecha_fin', customRender: true },
+    { Header: 'estado', accessor: 'estado', customRender: true },
+    { Header: 'comentario', accessor: 'comentario', customRender: true }
 ]

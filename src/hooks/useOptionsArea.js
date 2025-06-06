@@ -1,335 +1,147 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { apiGet } from '../functions/api'
-import { SaveOptionsAreas, SaveOptionsPresupuestos, Departamentos, Ventas, Ingresos, Compras, Proyectos, Empresas } from '../redux/actions/actions'
+import { apiGet } from '../functions/api';
+import {
+    SaveOptionsAreas,
+    SaveOptionsPresupuestos,
+    Departamentos,
+    Ventas,
+    Ingresos,
+    Compras,
+    Proyectos,
+    Empresas,
+    Empresa,
+    Proveedores,
+    Clientes,
+} from '../redux/actions/actions';
 
 const useOptionsArea = () => {
-    const [opciones, setOpciones] = useState(false)
-    const dispatch = useDispatch()
-    const [data, setData] = useState()
-    const user = useSelector(state => state.authUser)
-    const opcionesState = useSelector(state => state.opciones);
+    const [opciones, setOpciones] = useState(false);
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.authUser);
+
     useEffect(() => {
-        apiGet('areas', user.access_token)
-            .then((response) => {
-                
-                setOpciones(response.data)
-            })
-            .catch((error) => {
-            }) 
-        
-    }, [])
+        fetchOptions();
+    }, []);
 
     useEffect(() => {
         if (opciones) {
-            proccessData()
-            proccessDataVentas()
-            proccessDataIngresos()
-            proccessDataCompras()
-            dispatch(Departamentos(opciones.departamentos))
-            proccessDataProyectos()
-            proccessDataEmpresas()
-        } 
-    }, [opciones])
+            processData(opciones.area, SaveOptionsAreas);
+            dispatch(SaveOptionsPresupuestos(opciones.presupuesto));
+            dispatch(Departamentos(opciones.departamentos));
+            processData(opciones.ventas, Ventas);
+            processData(opciones.ingresos, Ingresos);
+            processData(opciones.compras, Compras);
+            processSimpleData(opciones.proyectos, Proyectos, 'nombre', 'simpleName');
+            processSimpleData(opciones.empresas, Empresas, 'name');
+            processSimpleData(opciones.empresa, Empresa, 'name', null, 'cuentas');
+            processProveedores(opciones.proveedores, Proveedores, 'nombre');
+            processClientes(opciones.clientes, Clientes, 'nombre');
+            // empre(opciones.empresa, Empresa, 'name', null, 'nombre');
+            
+        }
+    }, [opciones]);
 
-    const proccessData = () => {
-        let e = opciones
-        let aux = []
-        for(let key in e.area){
-            for(let area in e.area[key]){
-                let auxPartidas = []
-                    for(let idpartida in e.area[key][area]){
-                        for(let partida in e.area[key][area][idpartida]){
-                            // Imprime el nombre de cada partida
-                            let auxSubpartida = []
-                            e.area[key][area][idpartida][partida].forEach(elemento =>{
-                                auxSubpartida.push({
+    const fetchOptions = async () => {
+        try {
+            const response = await apiGet('areas', user.access_token);
+            setOpciones(response.data);
+        } catch (error) {
+            console.error('Error fetching options:', error);
+        }
+    };
+
+    // Procesa datos complejos (como áreas, ingresos, ventas, compras)
+    const processData = (data, action) => {
+        const aux = Object.keys(data).reduce((result, key) => {
+            const areas = Object.keys(data[key]).map((area) => {
+                const partidas = Object.keys(data[key][area]).map((idPartida) => {
+                    const partidasArray = Object.entries(data[key][area][idPartida]).map(
+                        ([nombre, elementos]) => ({
+                            id: idPartida,
+                            nombre,
+                            subpartidas: elementos
+                                .map((elemento) => ({
                                     id: elemento.id,
-                                    nombre: elemento.nombre,
-                                })
-                            })
-
-                            auxSubpartida.sort((a, b) => {
-                                if (a.nombre < b.nombre) {
-                                    return -1;
-                                }
-                                if (a.nombre > b.nombre) {
-                                    return 1;
-                                }
-                                return 0;
-                            })
-                            auxPartidas.push({
-                                id:idpartida,
-                                nombre:partida,
-                                subpartidas:auxSubpartida
-                            })
-                            auxPartidas.sort((a, b) => {
-                                if (a.nombre < b.nombre) {
-                                    return -1;
-                                }
-                                if (a.nombre > b.nombre) {
-                                    return 1;
-                                }
-                                return 0;
-                            })
-                        }
-                    }
-                let areas = {
+                                    nombre: elemento.nombre
+                                }))
+                                .sort(sortByName)
+                        })
+                    );
+                    return partidasArray.sort(sortByName);
+                });
+                return {
                     nombreArea: area,
                     id_area: key,
-                    partidas:auxPartidas,
-                }
-                aux.push(areas)
-            }
-            aux.sort((a, b) => {
-                if (a.nombreArea < b.nombreArea) {
-                    return -1;
-                }
-                if (a.nombreArea > b.nombreArea) {
-                    return 1;
-                }
-                return 0;
-            })
-        }
-        dispatch(SaveOptionsAreas(aux))
-        dispatch(SaveOptionsPresupuestos(e.presupuesto))
-    }
+                    partidas: partidas.flat()
+                };
+            });
+            return [...result, ...areas];
+        }, []);
 
-    const proccessDataVentas = () => {
-        let e = opciones
-        let aux = []
-        for(let key in e.ventas){
-            for(let area in e.ventas[key]){
-                let auxPartidas = []
-                    for(let idpartida in e.ventas[key][area]){
-                        for(let partida in e.ventas[key][area][idpartida]){
-                            // Imprime el nombre de cada partida
-                            let auxSubpartida = []
-                            e.ventas[key][area][idpartida][partida].forEach(elemento =>{
-                                auxSubpartida.push({
-                                    id: elemento.id,
-                                    nombre: elemento.nombre,
-                                })
-                            })
+        aux.sort(sortByName);
+        dispatch(action(aux));
+    };
 
-                            auxSubpartida.sort((a, b) => {
-                                if (a.nombre < b.nombre) {
-                                    return -1;
-                                }
-                                if (a.nombre > b.nombre) {
-                                    return 1;
-                                }
-                                return 0;
-                            })
-                            auxPartidas.push({
-                                id:idpartida,
-                                nombre:partida,
-                                subpartidas:auxSubpartida
-                            })
-                            auxPartidas.sort((a, b) => {
-                                if (a.nombre < b.nombre) {
-                                    return -1;
-                                }
-                                if (a.nombre > b.nombre) {
-                                    return 1;
-                                }
-                                return 0;
-                            })
-                        }
-                    }
-                let areas = {
-                    nombreArea: area,
-                    id_area: key,
-                    partidas:auxPartidas,
-                }
-                aux.push(areas)
-            }
-            aux.sort((a, b) => {
-                if (a.nombreArea < b.nombreArea) {
-                    return -1;
-                }
-                if (a.nombreArea > b.nombreArea) {
-                    return 1;
-                }
-                return 0;
-            })
-        }
-        dispatch(Ventas(aux))
-    }
+    // Procesa datos simples como proyectos o empresas
+    // Procesa datos simples como proyectos o empresas
+    const processSimpleData = (data, action, sortKey, additionalKey = null, additionalArrayKey = null) => {
+        const aux = data
+            .map((item) => ({
+                id: item.id,
+                rfc: item.rfc,
+                nombre: item[sortKey],
+                ...(additionalKey && { [additionalKey]: item[additionalKey] }),
+                ...(additionalArrayKey && { cuentas: item[additionalArrayKey] || [] }) // Agregar array de cuentas
+            }))
+            .sort(sortByName);
 
-    const proccessDataIngresos = () => {
-        let e = opciones
-        let aux = []
-        for(let key in e.ingresos){
-            for(let area in e.ingresos[key]){
-                let auxPartidas = []
-                    for(let idpartida in e.ingresos[key][area]){
-                        for(let partida in e.ingresos[key][area][idpartida]){
-                            // Imprime el nombre de cada partida
-                            let auxSubpartida = []
-                            e.ingresos[key][area][idpartida][partida].forEach(elemento =>{
-                                auxSubpartida.push({
-                                    id: elemento.id,
-                                    nombre: elemento.nombre,
-                                })
-                            })
+        dispatch(action(aux));
+    };
 
-                            auxSubpartida.sort((a, b) => {
-                                if (a.nombre < b.nombre) {
-                                    return -1;
-                                }
-                                if (a.nombre > b.nombre) {
-                                    return 1;
-                                }
-                                return 0;
-                            })
-                            auxPartidas.push({
-                                id:idpartida,
-                                nombre:partida,
-                                subpartidas:auxSubpartida
-                            })
-                            auxPartidas.sort((a, b) => {
-                                if (a.nombre < b.nombre) {
-                                    return -1;
-                                }
-                                if (a.nombre > b.nombre) {
-                                    return 1;
-                                }
-                                return 0;
-                            })
-                        }
-                    }
-                let areas = {
-                    nombreArea: area,
-                    id_area: key,
-                    partidas:auxPartidas,
-                }
-                aux.push(areas)
-            }
-            aux.sort((a, b) => {
-                if (a.nombreArea < b.nombreArea) {
-                    return -1;
-                }
-                if (a.nombreArea > b.nombreArea) {
-                    return 1;
-                }
-                return 0;
-            })
-        }
-        dispatch(Ingresos(aux))
-    }
 
-    const proccessDataCompras = () => {
-        let e = opciones
-        let aux = []
-        for(let key in e.compras){
-            for(let area in e.compras[key]){
-                let auxPartidas = []
-                    for(let idpartida in e.compras[key][area]){
-                        for(let partida in e.compras[key][area][idpartida]){
-                            // Imprime el nombre de cada partida
-                            let auxSubpartida = []
-                            e.compras[key][area][idpartida][partida].forEach(elemento =>{
-                                auxSubpartida.push({
-                                    id: elemento.id,
-                                    nombre: elemento.nombre,
-                                })
-                            })
+      // Procesa proveedores con validación específica
+      const processProveedores = (data, action) => {
+        const aux = data
+            .filter((proveedor) => proveedor.razon_social !== null) // Validación
+            .map((proveedor) => ({
+                id: proveedor.id,
+                name: proveedor.razon_social,
+                rfc: proveedor.rfc,
+            }))
+            .sort(sortByName);
+        dispatch(action(aux));
+    };
 
-                            auxSubpartida.sort((a, b) => {
-                                if (a.nombre < b.nombre) {
-                                    return -1;
-                                }
-                                if (a.nombre > b.nombre) {
-                                    return 1;
-                                }
-                                return 0;
-                            })
-                            auxPartidas.push({
-                                id:idpartida,
-                                nombre:partida,
-                                subpartidas:auxSubpartida
-                            })
-                            auxPartidas.sort((a, b) => {
-                                if (a.nombre < b.nombre) {
-                                    return -1;
-                                }
-                                if (a.nombre > b.nombre) {
-                                    return 1;
-                                }
-                                return 0;
-                            })
-                        }
-                    }
-                let areas = {
-                    nombreArea: area,
-                    id_area: key,
-                    partidas:auxPartidas,
-                }
-                aux.push(areas)
-            }
-            aux.sort((a, b) => {
-                if (a.nombreArea < b.nombreArea) {
-                    return -1;
-                }
-                if (a.nombreArea > b.nombreArea) {
-                    return 1;
-                }
-                return 0;
-            })
-        }
-        dispatch(Compras(aux))
-    }
+    const processClientes = (data, action) => {
+        const aux = data
+            .filter((clientes) => clientes.nombre !== null) // Validación
+            .map((clientes) => ({
+                id: clientes.id,
+                name: clientes.nombre,
+                rfc: clientes.rfc,
+            }))
+            .sort(sortByName);
+        dispatch(action(aux));
+    };
 
-    const proccessDataProyectos = () => {
-        let aux = []
-        let e = opciones
-        opciones.proyectos.forEach(element => {
-            aux.push({
-                id: element.id,
-                nombre: element.nombre,
-                simpleName: element.simpleName,
-            })
-        }
-        )
-        aux.sort((a, b) => {
-            if (a.nombre < b.nombre) {
-                return -1;
-            }
-            if (a.nombre > b.nombre) {
-                return 1;
-            }
-            return 0;
-        }
-        )
-        dispatch(Proyectos(aux))
+    const empre = (data, action) => {
+        const aux = data
+            .filter((empresa) => empresa.name !== null) // Validación
+            .map((empresa) => ({
+                id: empresa.id,
+                nombre: empresa.name,
+                rfc: empresa.rfc,
+            }))
+            .sort(sortByName);
+        dispatch(action(aux));
+    };
 
-    }
-
-    const proccessDataEmpresas = () => {
-        let aux = []
-        let e = opciones
-        opciones.empresas.forEach(element => {
-            aux.push({
-                id: element.id,
-                nombre: element.name,
-            })
-        }
-        )
-        aux.sort((a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        }
-        )
-        dispatch(Empresas(aux))
-
-    }
-    
-}
+    const sortByName = (a, b) => {
+        if (a.nombre < b.nombre) return -1;
+        if (a.nombre > b.nombre) return 1;
+        return 0;
+    };
+};
 
 export default useOptionsArea;

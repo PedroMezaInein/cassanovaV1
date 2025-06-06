@@ -14,7 +14,10 @@ import '../../../styles/_TablaGeneral.scss'
 import { printResponseErrorAlert, errorAlert, waitAlert, validateAlert, doneAlert } from '../../../functions/alert'
 
 export default function TablaGeneralPaginado(props) {
-    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, filtros, customFilter,resetFilters,setResetFilters } = props;
+    const { titulo, subtitulo, columnas, url, numItemsPagina, acciones, ProccessData, opciones, reload, filtros, customFilter, resetFilters, setResetFilters } = props;
+
+    console.log('columnas', columnas)
+    console.log('opciones', opciones)
     //para implementar la tabla puedes utilizar los siguientes props
 
     //titulo: titulo de la tabla
@@ -71,7 +74,6 @@ export default function TablaGeneralPaginado(props) {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(5);
 
-     
     useEffect(() => {
         getData();
         setFilter(() => {
@@ -102,8 +104,8 @@ export default function TablaGeneralPaginado(props) {
         try {
             axios(`${URL_DEV}${url}?page=${num ? num : currentPage}&page_size=${numItemsPagina}${filtros}`, { headers: { Authorization: `Bearer ${auth.access_token}` } })
                 .then(res => {
-
-                    setTotalPages(res.data.data.last_page? res.data.data.last_page : 1)
+                    console.log(res, 'res')
+                    setTotalPages(res.data.data.last_page ? res.data.data.last_page : 1)
 
                     if (ProccessData !== undefined) {
 
@@ -129,7 +131,7 @@ export default function TablaGeneralPaginado(props) {
                         //         }
                         //         handleClose()
                         //     })
-                            
+
                         // } else {
                         //     setData(ProccessData(res.data))
                         //     setFilterData(ProccessData(res.data))
@@ -232,7 +234,7 @@ export default function TablaGeneralPaginado(props) {
         if (setResetFilters) {
             setResetFilters(true)
         }
-        
+
     }
 
     const resetFilter = () => {
@@ -254,7 +256,7 @@ export default function TablaGeneralPaginado(props) {
     const getPageNumbersToShow = () => {
 
         // if (totalPages <= 1) {
-           
+
         //     const firstPageToShow = Math.max(1, currentPage - 1)
         //     const lastPageToShow = Math.min(totalPages, currentPage + 1)
         //     let pageNumbersToShow = [];
@@ -264,26 +266,26 @@ export default function TablaGeneralPaginado(props) {
         //     return pageNumbersToShow
         // } else {
 
-            const firstPageToShow = Math.max(1, currentPage - 1)
-            const lastPageToShow = Math.min(totalPages, currentPage + 1)
+        const firstPageToShow = Math.max(1, currentPage - 1)
+        const lastPageToShow = Math.min(totalPages, currentPage + 1)
 
-            let pageNumbersToShow = [];
+        let pageNumbersToShow = [];
 
-            if (firstPageToShow > 1) {
-                pageNumbersToShow.push(1)
-                pageNumbersToShow.push('...')
-            }
+        if (firstPageToShow > 1) {
+            pageNumbersToShow.push(1)
+            pageNumbersToShow.push('...')
+        }
 
-            for (let i = firstPageToShow; i <= lastPageToShow; i++) {
-                pageNumbersToShow.push(i)
-            }
+        for (let i = firstPageToShow; i <= lastPageToShow; i++) {
+            pageNumbersToShow.push(i)
+        }
 
-            if (lastPageToShow < totalPages) {
-                pageNumbersToShow.push('...')
-                pageNumbersToShow.push(totalPages)
-            }
+        if (lastPageToShow < totalPages) {
+            pageNumbersToShow.push('...')
+            pageNumbersToShow.push(totalPages)
+        }
 
-                return pageNumbersToShow
+        return pageNumbersToShow
         // }
     }
 
@@ -299,6 +301,7 @@ export default function TablaGeneralPaginado(props) {
     //     <button onClick={() => changeCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}> Siguiente &#62;</button>
     // </div>
 
+    console.log(data, 'data');
 
     return (
         <div className='containerTable'>
@@ -309,7 +312,7 @@ export default function TablaGeneralPaginado(props) {
                             <h3 className="TitleTable">
                                 <span>
                                     {titulo}
-                                    <button type="button" className="btn btn-tool " onClick={reloadTable}>
+                                    <button type="button" className="btn btn-tool" onClick={reloadTable}>
                                         <i className="fas fa-sync-alt reloadTable"></i>
                                     </button>
                                 </span>
@@ -324,59 +327,32 @@ export default function TablaGeneralPaginado(props) {
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu>
-                                            {opciones.map((item, index) => {
-                                                return (
-                                                    <Dropdown.Item key={index} onClick={item.funcion}>
-                                                        {item.nombre}
-                                                    </Dropdown.Item>
-                                                )
-                                            })}
+                                            {opciones.map((item, index) => (
+                                                <Dropdown.Item key={index} onClick={item.funcion}>
+                                                    {item.nombre}
+                                                </Dropdown.Item>
+                                            ))}
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 }
                             </div>
-
                         </div>
 
-                        <div className="card-body table-responsive mt-n6 p-n4">
-                            <table className="table">
-                                <thead className="containerTitleColumn ">
-                                    <tr >
-                                        {columnas.map((columna, index) => {
-                                            return (
-                                                <th key={index} className= {columna.nombre + ' mt-20'} >
+                        <div className="card-body">
+                            {/* Hacemos que la tabla sea responsive */}
+                            <div className="table-responsive">
+                                <table className="table">
+                                    <thead className="containerTitleColumn">
+                                        <tr>
+                                            {columnas.map((columna, index) => (
+                                                <th key={index} className={columna.nombre + ' mt-20'}>
                                                     <div className="TitleColumn">
-
-                                                        {
-                                                            columna.stringSearch ? "" :
-                                                                <>
-                                                                    <div>
-                                                                        {columna.nombre}
-                                                                    </div>
-
-                                                                    {columna.sort ?
-                                                                        <div className="">
-                                                                            <button type="button" className="dropdown-toggle SortButton" data-toggle="dropdown" aria-expanded="false">
-                                                                                <SortIcon />
-                                                                            </button>
-                                                                            <div className="dropdown-menu" role="menu">
-                                                                                <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
-                                                                                <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
-                                                                            </div>
-                                                                        </div>
-                                                                        : null
-                                                                    }
-                                                                </>
-
-                                                        }
-
-                                                    </div>
-                                                    <div className="TitleColumn">
-                                                        {columna.stringSearch ?
+                                                        {columna.stringSearch ? "" :
                                                             <>
-                                                                <TextField size='small' className="InputSearch" id="outlined-basic" label={` ${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />
-                                                                {columna.sort ?
-                                                                    <div className="">
+                                                                <div>{columna.nombre}</div>
+
+                                                                {columna.sort &&
+                                                                    <div>
                                                                         <button type="button" className="dropdown-toggle SortButton" data-toggle="dropdown" aria-expanded="false">
                                                                             <SortIcon />
                                                                         </button>
@@ -385,96 +361,80 @@ export default function TablaGeneralPaginado(props) {
                                                                             <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
                                                                         </div>
                                                                     </div>
-                                                                    : null
                                                                 }
                                                             </>
-                                                            : null
                                                         }
-
                                                     </div>
 
-                                                </th>
-                                            )
-                                        })}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    { filterData[0] ?
-                                        filterData.map((item, index) => {
-                                            return (
-                                                <tr key={index}>
-
-                                                    {columnas.map((columna, index) => {
-                                                        if (acciones && columna.identificador === 'acciones') {
-                                                            return (
-                                                                <td key={index} className='CellContent CellActions' >
-
-                                                                    <div className="">
-                                                                        <button type="button" className="SettingButton" data-toggle="dropdown" aria-expanded="false">
-                                                                            <SettingsSharpIcon />
+                                                    <div className="TitleColumn">
+                                                        {columna.stringSearch &&
+                                                            <>
+                                                                <TextField size='small' className="InputSearch" id="outlined-basic" label={` ${columna.nombre}`} variant="outlined" onChange={(e) => filterString(columna.identificador, e.target.value)} />
+                                                                {columna.sort &&
+                                                                    <div>
+                                                                        <button type="button" className="dropdown-toggle SortButton" data-toggle="dropdown" aria-expanded="false">
+                                                                            <SortIcon />
                                                                         </button>
                                                                         <div className="dropdown-menu" role="menu">
-
-                                                                            {acciones.map((accion, index) => {
-                                                                                return (
-                                                                                    <div className={`${accion.color} Button-action`} onClick={() => accion.funcion(item)} key={index} >
-                                                                                        <i className={` ${accion.icono} generalButtonColor`}>
-                                                                                            <span className="ml-2 ">{accion.nombre}</span>
-                                                                                        </i>
-                                                                                    </div>
-
-                                                                                )
-                                                                            })}
+                                                                            <a className="dropdown-item" href="#" onClick={() => sortData(columna.identificador)}>Ascendente</a>
+                                                                            <a className="dropdown-item" href="#" onClick={() => sortDataDesc(columna.identificador)}>Descendente</a>
                                                                         </div>
                                                                     </div>
-                                                                </td>
-                                                            )
-
-                                                        } else {
-                                                            return (
-                                                                <td key={index} className={columna.identificador+ ' CellContent'}>
-                                                                    <div className='contenido'>{item[columna.identificador]}
-                                                                    
-                                                                    { columna.identificador === "compra" && <div className='hijo'> </div>}
-                                                                    </div></td>
-                                                            )
+                                                                }
+                                                            </>
                                                         }
-                                                    })}
+                                                    </div>
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filterData[0] ? filterData.map((item, index) => (
+                                            <tr key={index}>
+                                                {columnas.map((columna, index) => {
+                                                    if (acciones && columna.identificador === 'acciones') {
+                                                        return (
+                                                            <td key={index} className='CellContent CellActions'>
+                                                                <div>
+                                                                    <button type="button" className="SettingButton" data-toggle="dropdown" aria-expanded="false">
+                                                                        <SettingsSharpIcon />
+                                                                    </button>
+                                                                    <div className="dropdown-menu" role="menu">
+                                                                        {acciones.map((accion, index) => (
+                                                                            <div className={`${accion.color} Button-action`} onClick={() => accion.funcion(item)} key={index}>
+                                                                                <i className={`${accion.icono} generalButtonColor`}>
+                                                                                    <span className="ml-2 ">{accion.nombre}</span>
+                                                                                </i>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <td key={index} className={columna.identificador + ' CellContent'}>
+                                                                <div className='contenido'>{item[columna.identificador]}
+                                                                    {columna.identificador === "compra" && <div className='hijo'></div>}
+                                                                </div>
+                                                            </td>
+                                                        );
+                                                    }
+                                                })}
+                                            </tr>
+                                        )) : null}
+                                    </tbody>
+                                </table>
+                            </div>
 
-                                                </tr>
-                                            )
-                                        })
-                                        : null
-                                    }
-                                </tbody>
-                            </table>
-                            {/* <div className="pb-10">
-                                <ul className="pagination pagination-sm m-0 float-right">
-                                    <li className="page-item"><a className="page-link" href="#" onClick={() => handlePrevPagina()}>&laquo;</a></li>
-                                    {paginas ?
-                                        paginas.map((item, index) => {
-                                            return (
-                                                <li className={`page-item ${paginaActual == index ? 'active' : ''}`} key={index}><a className="page-link" href="#" onClick={() => handleSetPagina(index)}>{index + 1}</a></li>
-                                            )
-                                        })
-                                        : null
-                                    }
-                                    <li className="page-item"><a className="page-link" href="#" onClick={() => handleNextPagina()}>&raquo;</a></li>
-                                </ul>
-                            </div> */}
-                            
+                            {/* Paginado */}
                             <div className='tabla_paginado'>
                                 <button className='tabla_paginado_flecha' onClick={() => handlePrevPagina()} disabled={currentPage === 1}>&#60; Anterior</button>
-                                { 
-                                getPageNumbersToShow ?
-                                    getPageNumbersToShow().map((number, index) => (
-                                        <button className='tabla_paginado_num' key={index} onClick={() => {
-                                            if (number !== '...') {
-                                                changeCurrentPage(number)
-                                            }
-                                        }} disabled={number === currentPage}>{number}</button>
-                                    ))
-                                    : null
+                                {
+                                    getPageNumbersToShow ?
+                                        getPageNumbersToShow().map((number, index) => (
+                                            <button className='tabla_paginado_num' key={index} onClick={() => { if (number !== '...') { changeCurrentPage(number) } }} disabled={number === currentPage}>{number}</button>
+                                        )) : null
                                 }
                                 <button className='tabla_paginado_flecha' onClick={() => changeCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}> Siguiente &#62;</button>
                             </div>
@@ -484,5 +444,6 @@ export default function TablaGeneralPaginado(props) {
                 </div>
             </div>
         </div>
+
     );
 }

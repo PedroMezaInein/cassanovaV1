@@ -1,15 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import { useSelector } from 'react-redux';
-
 import Swal from 'sweetalert2';
-
-import { apiPostForm, apiGet, apiPutForm } from '../../../../functions/api'
+import { apiGet, apiPutForm } from '../../../../functions/api'
 import '../../../../styles/_salaJuntas.scss'
 
 export default function AplicantesCurso(props) {
     const userAuth = useSelector((state) => state.authUser);
-    const { closeModal, rh, data, getEnrollUsers, aplicantes } = props;
-    console.log(data)
+    const { rh, data, getEnrollUsers, aplicantes } = props;
     const [curso, setCurso] = useState()
 
     useEffect(() => {
@@ -80,7 +77,7 @@ export default function AplicantesCurso(props) {
             }
         })
     }
-
+console.log(data)
     return (
         <div>
             <table className='table table-striped'>
@@ -98,7 +95,7 @@ export default function AplicantesCurso(props) {
                             item1.map((aplicante, index) => { 
                             return (
                                 <tr className='table-reservas' key={index}>
-                                    <td>{aplicante.user.name}</td>
+                                    <td>{aplicante.user ? aplicante.user.name : ''}</td>
                                     <td>{curso && curso.map((item) => {
                                         if (item.id === aplicante.id_salas) {
                                             return item.nombre

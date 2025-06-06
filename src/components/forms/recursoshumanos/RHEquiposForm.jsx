@@ -118,7 +118,7 @@ class RHLicenciasForm extends Component {
         const { at, empleado, authUser, adminView } = this.props
         const { form } = this.state
         let id = this.state.form.equipos[0].empleado_id
-        console.log(form)
+        // console.log(form)
         adminView === "admin"? 
         apiPostForm(`v2/rh/empleados/equipos/${id}`, form, aut).then(
             (response) => {
@@ -172,7 +172,7 @@ class RHLicenciasForm extends Component {
         const { form } = this.state
         form.equipos[key][name] = value
         this.setState({ ...this.state, form })
-        console.log(form)
+        // console.log(form)
     }
     
     onChange = e => {
@@ -253,9 +253,13 @@ class RHLicenciasForm extends Component {
     
     getUsers = () => {
         let aut = this.props.authUser
-        apiGet('user/users/options', aut)
+        const { at, empleado } = this.props
+
+        // console.log(at)
+
+        apiGet('user/users/options', at)
         .then(response => {
-            console.log(response.data.empleados)
+            // console.log(response.data.empleados)
             this.setState({
                 ...this.state,
                  options: {

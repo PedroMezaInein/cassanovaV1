@@ -1,14 +1,13 @@
-import React, {useState, useEffect} from "react"
-import { useSelector } from "react-redux";
-import Swal from 'sweetalert2'
+import React, {useState} from "react"
+// import { useSelector } from "react-redux";
+// import Swal from 'sweetalert2'
 import Tabla from '../../../components/NewTables/TablaGeneral/TablaGeneral'
-import { apiPutForm } from './../../../functions/api'
 import ControlViaje from './../../RecursosHumanos/Vehiculos/ControlViaje'
 import { Modal } from './../../../components/singles'
 
 export default function SeguimientoViajes(props) {
-    const { reload, startTravel, endTravel } = props
-    const userAuth = useSelector((state) => state.authUser);
+    // const { reload, startTravel, endTravel } = props
+    // const userAuth = useSelector((state) => state.authUser);
     const [reloadTable, setReloadTable] = useState()
 
     const [modal, setModal] = useState({

@@ -656,9 +656,9 @@ class PaginaWeb extends Component {
                                                                 <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDate(lead.created_at)}</span><br />
                                                             </div>
                                                         </td>
-                                                        <td className="text-center">
-                                                            <div className="w-max-content mx-auto">
-                                                                <ul className="list-unstyled mb-0">
+                                                        <td className="text-center pl-0 py-10">
+                                                             <div className="d-flex align-items-center ">
+                                                                <ul className="list-unstyled mb-0 ">
                                                                     {
                                                                         lead.servicios.length > 0 ?
                                                                             lead.servicios.map((servicio, key) => {

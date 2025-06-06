@@ -11,9 +11,7 @@ import Swal from 'sweetalert2'
 import axios from 'axios'
 
 import { URL_DEV } from './../../../../constants'
-import { setSingleHeader, setFormHeader } from './../../../../functions/routers'
-
-import { apiDelete } from '../../../../functions/api'
+import { setSingleHeader } from './../../../../functions/routers'
 import './../../../../styles/_adjuntosVehiculos.scss'
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
@@ -43,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CarruselAdjuntos(props) {
-    const { data, id, getAdjuntos } = props;
+    const { data, getAdjuntos } = props;
     let adjuntos = data
     const classes = useStyles();
     const theme = useTheme();

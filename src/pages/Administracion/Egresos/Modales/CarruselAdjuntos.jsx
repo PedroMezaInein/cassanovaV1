@@ -126,7 +126,7 @@ export default function CarruselAdjuntos(props) {
                 autoplay={false}
                 
             >
-                {adjuntos.map((item, index) => (
+                 {adjuntos.map((item, index) => (
                     <div key={index} >
                         <object
                             data={item.url}
@@ -135,8 +135,8 @@ export default function CarruselAdjuntos(props) {
                         </object>
                         <br />
                         <div className="text-center">
-                            <a href={item.url} target="_blank" ><button className="btn btn-success">Ver</button></a>
-                            <button className="btn btn-danger" onClick={() => handleDelete(item.id)}>Eliminar</button>
+                            <Button variant="contained"style={{ backgroundColor: '#F96D49', color: '#fff', '&:hover': { backgroundColor: '#F96D49', }, }} onClick={() => handleDelete(item.id)}>Eliminar</Button>
+                            <a  style={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#0A3E27', },marginLeft:'2rem' }} href={item.url} target="_blank" ><Button style={{ backgroundColor: '#457FF4', color: '#fff', '&:hover': { backgroundColor: '#568eff', },}}  >Ver</Button></a>
                         </div>
                         
                     </div>

@@ -17,7 +17,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Style from './TicketsTi.module.css'
 
 export default function Nuevo(props) {
-    const { data, reload, handleClose } = props
+    const { reload, handleClose } = props
     const authUser = useSelector(state => state.authUser)
     const usuarios = useSelector(state => state.opciones.vehiculos.colaboradores.sort((a, b) => a.nombre > b.nombre ? 1 : -1))
     const [form, setForm] = useState({
@@ -30,7 +30,7 @@ export default function Nuevo(props) {
         id_usuario: '',
     })
 
-    const [errores, setErrores] = useState({})
+    const [errores] = useState({})
 
     const [equipos, setEquipos] = useState([])
 

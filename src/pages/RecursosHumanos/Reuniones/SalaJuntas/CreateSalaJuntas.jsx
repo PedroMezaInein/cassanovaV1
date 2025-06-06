@@ -668,8 +668,8 @@ export default function CreateSalaJuntas({ admin, getInfo, closeModal, reservaEd
                         <select name="sala" value={form.sala} onChange={(e) => handleChange(e)}>
                             <option hidden>Seleccione una sala</option>
                             <option value="Sala 1">Sala 1</option>
-                            <option value="Sala 2">Sala 2</option>
-                            <option value="Sala 3">Sala 3</option>
+                            {/* <option value="Sala 2">Sala 2</option>
+                            <option value="Sala 3">Sala 3</option> */}
                         </select>
                         {/* {form.sala === "Sala 1" ? <span>Grupos de 4 o mas</span> : null}
                         {form.sala === "Sala 2" ? <span>Grupos de 2 o mas</span> : null}

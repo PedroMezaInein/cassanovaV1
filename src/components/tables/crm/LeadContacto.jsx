@@ -400,9 +400,9 @@ class LeadContacto extends Component {
                                                 </td>
                                                 <td className="font-size-lg text-left font-weight-bolder">
                                                     <div className="w-max-content mx-auto">
-                                                        <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDate(lead.created_at)}</span><br />
+                                                        <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{lead.created_at ? setDate(lead.created_at) : ''}</span><br />
                                                         <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
-                                                            {setDate(lead.prospecto.contactos[0].created_at)}
+                                                            {lead.prospecto.contactos.lengh > 0 ? setDate(lead.prospecto.contactos[0].created_at) : ''}
                                                         </span>
                                                     </div>
                                                 </td>
