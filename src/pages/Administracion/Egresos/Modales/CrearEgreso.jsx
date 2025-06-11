@@ -132,6 +132,12 @@ export default function CrearEgreso(props) {
 
     })
 
+    const [modals, setModals] = useState({
+        crearProveedor: { show: false, data: null },
+        // otros modales...
+    });
+  
+
     const handleChangeCheck = () => {
         setForm({
             ...form,
@@ -248,7 +254,7 @@ export default function CrearEgreso(props) {
                         })
                     }
 
-                    let proveedor = proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
+                   let proveedor = proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor);
 
                     if (!proveedor) {
                         Swal.fire({
@@ -265,6 +271,10 @@ export default function CrearEgreso(props) {
                         form.contrato = ''
                         // options.contratos = setOptions(proveedor.contratos, 'nombre', 'id')
                     }
+
+
+                    console.log(form)
+                                        console.log(proveedores)
 
                     let aux = []
                     files.forEach((file, index) => {
@@ -380,14 +390,26 @@ export default function CrearEgreso(props) {
         setNuevoProveedor(true)
     }
 
-    const handleCloseProveedor = () => {
-        setNuevoProveedor(false)
-        setForm({
-            ...form,
-            proveedor: nuevoProveedor.id, // Establecer el proveedor recién creado
-            proveedor_nombre: nuevoProveedor.name,
-        });
-    }
+    // const handleCloseProveedor = () => {
+    //     setNuevoProveedor(false)
+    //     setForm({
+    //         ...form,
+    //         proveedor: nuevoProveedor.id, // Establecer el proveedor recién creado
+    //         proveedor_nombre: nuevoProveedor.name,
+    //     });
+    // }
+
+    const handleCloseProveedor = (nuevoProveedorData) => {
+        if (nuevoProveedorData && nuevoProveedorData.id) {
+            setForm((prev) => ({
+                ...prev,
+                proveedor: nuevoProveedorData.id,
+                proveedor_nombre: nuevoProveedorData.name,
+            }));
+        }
+        setNuevoProveedor(false);
+    };
+
 
     const attachFilesS3 = (files, egreso) => {
         apiPutForm(`v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, auth).then(
@@ -1352,7 +1374,7 @@ export default function CrearEgreso(props) {
                             isOptionEqualToValue={(option, value) => option.id === value?.id} // Comparar por ID
                             value={proveedores.find((item) => item.id === form.proveedor) || null} // Ajustar el valor actual
                             onChange={(event, value) => handleChangeProveedor(event, value)} // Manejar cambios
-                            renderInput={(params) => (
+                            renderInput={(params) => ( 
                                 <TextField
                                     {...params}
                                     variant="outlined"
@@ -1796,6 +1818,28 @@ export default function CrearEgreso(props) {
         </DialogActions>
 
         </Container>
+
+           <Modal size="md" title={"agregar proveedor"} handleClose={handleCloseProveedor} show={nuevoProveedor}>
+            <CrearProveedor handleClose={handleCloseProveedor} getProveedores={getProveedores}
+                data={form} reload={reload} handleCloseRecarga={setNuevoProveedor} auth={auth} setProveedorSelect={setProveedorSelect} />
+        </Modal>
+
+        {/* <Modal
+            size="md"
+            title="Crear nuevo proveedor"
+            show={modals.crearProveedor?.show}
+            handleClose={() => toggleModal('crearProveedor')}
+            >
+           <CrearProveedor
+                handleCloseRecarga={() => toggleModal('crearProveedor')}
+                auth={auth}
+                getProveedores={getProveedores}
+                data={modals.crearProveedor?.data || { facturaObject: {} }}
+                setProveedorSelect={setProveedorSelect}
+                />
+            </Modal> */}
+
+
         </Box>
 
         </>
