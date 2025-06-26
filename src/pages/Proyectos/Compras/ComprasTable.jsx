@@ -28,6 +28,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 
 
 export default function ComprasTable(props) {
@@ -87,6 +88,7 @@ const handleCloseMenu = () => {
   const columns = [
     { accessorKey: 'id', header: 'ID', size: 80 },
     { accessorKey: 'fecha', header: 'Fecha', size: 120 },
+    { accessorKey: 'empresa', header: 'Empresa', size: 120 },
     { accessorKey: 'proyecto', header: 'Proyecto', size: 200,
       // enableClickToCopy: true,
       //   muiCopyButtonProps: {
@@ -180,8 +182,8 @@ const handleCloseMenu = () => {
                   {
                       dato.data?.factura ?
                       dato.data?.facturas.length > 0 || dato.data?.facturas_pdf.length ?
-                       <span   style={{ color: 'green' }}><DoneAllIcon/></span>
-                          : <span   style={{ color: 'red' }}><DoneAllIcon/></span>
+                       <span   style={{ color: 'green' }}><RequestQuoteIcon/></span>
+                          : <span   style={{ color: 'red' }}><RequestQuoteIcon/></span>
                       : <span><DescriptionOutlinedIcon/></span>
                   }
               </div>
@@ -229,10 +231,10 @@ const handleCloseMenu = () => {
   }, [pagination.pageIndex, pagination.pageSize,globalFilter,columnFilters]);
 
   useEffect(() => {
-    if (!modals.crearCompra.show && !modals.editarCompra.show) {
+    if (!modals.crearCompra.show && !modals.editarCompra.show && !modals.adjuntos.show ) {
         reloadData();
     }
-}, [modals.crearCompra.show, modals.editarCompra.show]);
+}, [modals.crearCompra.show, modals.editarCompra.show, modals.adjuntos.show]);
 
   // Procesar los datos
   const processData = (datos) => {
@@ -245,6 +247,7 @@ const handleCloseMenu = () => {
         minimumFractionDigits: 2,
       }).format(monto);
     };
+    console.log(datos)
       return datos.map((dato) => ({
       id: dato.id || 's/i',
       fecha: dato.created_at ? format(new Date(dato.created_at), 'yyyy/MM/dd') : 's/i',
@@ -262,6 +265,7 @@ const handleCloseMenu = () => {
       requisicion: dato.id_requisiciones || 'N/A',
       factura: dato.factura ? 'Con factura' : 'Sin factura',
       tipo: dato.tipo === 'nacional' ? 'FN' : dato.tipo === 'extranjera' ? 'CE' : '',
+      empresa: dato?.empresa?.name || 's/i',
       data:dato,
 
     }));

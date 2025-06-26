@@ -23,7 +23,7 @@ import Swal from 'sweetalert2'
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 // import Tooltip from '@material-ui/core/Tooltip';
 // import Button from '@material-ui/core/Button';
-
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 
 import { Box, Button, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -198,6 +198,7 @@ export default function EgresosTable(props) {
             auth
         );
         const { data: tableData, total } = response.data.data;
+        // console.log(tableData)
         setData(processData(tableData)); // Actualiza la tabla con nuevos datos
         setTotalRows(total); // Actualiza el total de registros
         } catch (error) {
@@ -266,6 +267,8 @@ export default function EgresosTable(props) {
             cuenta: dato.cuenta?.nombre || 's/i',
             descripcion: dato.descripcion || 'N/A',
             requisicion: dato.id_requisiciones || 'N/A',
+            empresa:dato?.empresa?.name || 's/i',
+
             data: dato,
             }));
         };
@@ -274,6 +277,8 @@ export default function EgresosTable(props) {
         const columns = [
           { accessorKey: 'id', header: 'ID', size: 80 },
           { accessorKey: 'fecha', header: 'Fecha', size: 120 },
+          { accessorKey: 'empresa', header: 'Empresa', size: 120 },
+
           {  accessorKey: 'proveedor', header: 'Proveedor', size: 200,
             enableClickToCopy: true,
             muiCopyButtonProps: { fullWidth: true, startIcon: <ContentCopy />, sx: { justifyContent: 'flex-start' },},
@@ -395,10 +400,19 @@ export default function EgresosTable(props) {
                     cuentas: [],
                     empresas: [],
                     estatusCompras: [],
-                    // proveedores: [],
+                    proveedores: [],
                     tiposImpuestos: [],
                     tiposPagos: [],
                 };
+                  data.proveedores.forEach((proveedor) => {
+                  if (proveedor.razon_social !== null) {
+                    aux.proveedores.push({
+                      id: proveedor.id,
+                      name: proveedor.razon_social,
+                      rfc: proveedor.rfc,
+                    });
+                  }
+                });
     
                 // Asegurar que cada propiedad es un array antes de usar `.map()`
                 if (Array.isArray(data.empresas)) {
@@ -802,21 +816,38 @@ export default function EgresosTable(props) {
 
   
 
-    const label = (dato) => {  
-      // console.log(dato)
-        return(
-          
-            <div   title={`${ dato.data?.factura == 1 ? 'Con factura': 'Sin factura'}`}  >
-                {
-                    dato.data?.factura ?
-                    dato.data?.facturas.length > 0 || dato.data?.factura.length > 0 || dato.data?.facturas_pdf.length ?
-                     <span   style={{ color: 'green' }}><DoneAllIcon/></span>
-                        : <span   style={{ color: 'red' }}><DoneAllIcon/></span>
-                    : <span><DescriptionOutlinedIcon/></span>
-                }
-            </div>
-        )
-    }
+  const label = (dato) => {
+      const data = dato?.data || {};
+      const tieneFactura = data.egreso_factura === 1;
+      // Verifica si hay alguna factura asociada
+      const hayFacturas = 
+        Array.isArray(data.facturas) && data.facturas.length > 0 ||
+        Array.isArray(data.factura) && data.factura.length > 0 ||
+        Array.isArray(data.facturas_pdf) && data.facturas_pdf.length > 0;
+
+      return (
+        <div title={tieneFactura ? 'Con factura' : 'Sin factura'}>
+          {
+            tieneFactura ? (
+              hayFacturas ? (
+                <span style={{ color: 'green' }}>
+                  <RequestQuoteIcon />
+                </span>
+              ) : (
+                <span style={{ color: 'red' }}>
+                  <RequestQuoteIcon />
+                </span>
+              )
+            ) : (
+              <span>
+                <DescriptionOutlinedIcon />
+              </span>
+            )
+          }
+        </div>
+      );
+    };
+
 
 
 
@@ -937,9 +968,7 @@ export default function EgresosTable(props) {
               show={modals.crearGasto?.show}
               handleClose={() => toggleModal('crearGasto', false)} // ⛔️ Ya no solo togglear
             >
-              <Crear
-                handleClose={(wasSaved) => {
-                  toggleModal('crearGasto', false) // 👈 siempre cierra
+              <Crear handleClose={(wasSaved) => { toggleModal('crearGasto', false) // 👈 siempre cierra
                   if (wasSaved) reloadData()       // 👈 recarga si fue guardado
                 }}
                 getProveedores={getProveedores}

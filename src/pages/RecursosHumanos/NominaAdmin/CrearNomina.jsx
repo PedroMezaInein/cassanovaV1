@@ -34,133 +34,6 @@ import { apiPutForm, apiPostForm, apiGet } from './../../../functions/api';
 import { format } from 'date-fns';
 
 
-// Componente para manejar la carga de archivos
-const FileUpload = ({ onFileChange, onClear, files, label }) => {
-  const { getRootProps, getInputProps } = useDropzone({
-    multiple: false,
-    accept: "image/*,application/pdf",
-    onDrop: (acceptedFiles) => {
-      if (acceptedFiles.length > 0) {
-        onFileChange(acceptedFiles[0]);
-      }
-    },
-  });
-
-  return (
-    <Paper sx={{ padding: 2 }} elevation={0}>
-      <InputLabel sx={{ fontWeight: "bold", fontSize: "16px", mb: 2 }}>
-        {label}
-      </InputLabel>
-
-      <Box
-        {...getRootProps()}
-        sx={{
-          border: "2px dashed #28A745",
-          padding: "20px",
-          textAlign: "center",
-          cursor: "pointer",
-          borderRadius: "8px",
-          transition: "all 0.3s",
-          "&:hover": {
-            backgroundColor: "#E3F3E1",
-          },
-        }}
-      >
-        <input {...getInputProps()} />
-        <CloudUploadIcon sx={{ fontSize: 40, color: "#28A745", mb: 1 }} />
-        <Typography variant="body2" sx={{ color: "#555" }}>
-          Arrastra y suelta el archivo aquí o haz clic para seleccionar
-        </Typography>
-      </Box>
-
-      {files.length > 0 && (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginTop: 2,
-            padding: "10px",
-            backgroundColor: "#f9f9f9",
-            borderRadius: "8px",
-            borderLeft: "4px solid #28A745",
-            gap: 2
-          }}
-        >
-          <Typography
-            variant="body2"
-            sx={{ flex: 1, color: "#333" }}
-            title={files[0].name}
-          >
-            <strong>📄</strong> {files[0].name}
-          </Typography>
-
-          {files[0].type.includes("image") ? (
-            <img
-              src={URL.createObjectURL(files[0])}
-              alt="Vista previa"
-              width="50"
-              style={{ borderRadius: "4px", objectFit: "cover" }}
-            />
-          ) : (
-            <IconButton
-              color="primary"
-              href={URL.createObjectURL(files[0])}
-              target="_blank"
-            >
-              <VisibilityIcon />
-            </IconButton>
-          )}
-
-          <IconButton color="error" onClick={onClear}>
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-      )}
-    </Paper>
-  );
-};
-
-// Componente para los selectores de fecha
-const DatePickerField = ({ value, onChange, label, error }) => (
-  <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-    <KeyboardDatePicker
-      disableToolbar
-      label={label}
-      format="dd/MM/yyyy"
-      margin="normal"
-      value={value}
-      placeholder="dd/mm/yyyy"
-      onChange={onChange}
-      className="w-100"
-      KeyboardButtonProps={{
-        'aria-label': 'change date',
-      }}
-      error={error}
-    />
-  </MuiPickersUtilsProvider>
-);
-
-// Componente para los campos de entrada monetarios
-const MoneyInput = ({ value, onChange, label, name }) => (
-  <FormControl variant="standard" sx={{ minWidth: 160 }}>
-    <Input
-      value={value}
-      onChange={onChange}
-      name={name}
-      startAdornment={<InputAdornment position="start">$</InputAdornment>}
-      inputProps={{
-        className: 'form-control-sm text-center',
-        inputMode: 'decimal',
-        pattern: '[0-9.]*',
-      }}
-      type="text"
-    />
-    <FormHelperText>{label}</FormHelperText>
-  </FormControl>
-);
-
-// Componente principal
 export default function CrearNomina(props) {
   const { handleClose, reload, getProveedores } = props;
   const [options, setOptionsState] = useState({ usuarios: [], empresas: [], cuentas: [] });
@@ -171,11 +44,14 @@ export default function CrearNomina(props) {
     fechaFin: new Date(),
     fecha: new Date(),
     cuentanominaimss: '',
+    cuentaextraimss: '',
     cuentaefectivo: '',
+    cuentaextraefectivo: '',
     cuentaisr: '',
     cuentainfonavit: '',
     cuentaimss: '',
-    cuentarcv: '',
+    cuentacomision: '',
+    // cuentarcv: '',
     cuentaisn: '',
     presupuesto: '',
     nombre:'',
@@ -184,6 +60,8 @@ export default function CrearNomina(props) {
       nominImss: '',
       nomina: '',
       efectivo: '',
+      extraEfectivo:'',
+      comision:'',
       isr: '',
       infonavit: '',
       imss: '',
@@ -200,11 +78,15 @@ export default function CrearNomina(props) {
   const [errores, setErrores] = useState({});
   const authUser = useSelector(state => state.authUser);
   const [periodicidadSeleccionada, setPeriodicidadSeleccionada] = useState('');
+  const [empleadosPorEmpresa, setEmpleadosPorEmpresa] = useState([]);
 
 
   const [cuentasActivas, setCuentasActivas] = useState({
     nomina: true,
+    extraImss: true,
     efectivo: true,
+    extraEfectivo: true,
+    comision: true,
     isr: true,
     infonavit: true,
     imss: true,
@@ -229,6 +111,8 @@ export default function CrearNomina(props) {
       
       const { usuarios, empresas, cuentas, empleadosConPeriodos } = response.data;
       // console.log(response.data)
+      setEmpleadosPorEmpresa(empleadosConPeriodos);
+
       const usuariosFormateados = empleadosConPeriodos.map(usuario => ({
         ...usuario,
         nombre: `${usuario.nombre} ${usuario.apellido_paterno ?? ''} ${usuario.apellido_materno ?? ''}`.trim()
@@ -240,36 +124,42 @@ export default function CrearNomina(props) {
         usuarios: setOptions(usuariosFormateados, 'nombre', 'id')
       });
 
-      const nominasAdmin = empleadosConPeriodos.map(element => ({
-        usuario: element.id.toString(),
-        nominImss: element.nomina_imss || 0.0,
-        nomina: element.nomina_imss || 0.0,
-        efectivo: element.nomina_extras || 0.0,
-        isr: element.isr || 0.0,
-        isn: element.isn || 0.0,
-        infonavit: element.infonavit || 0.0,
-        imss: element.imss || 0.0,
-        rcv: element.rcv || 0.0,
-        extraImss: 0.0,
-        restanteNomina: element.nomina_extras || 0.0,
-        extras: 0.0,
-        // Periodicidades individuales
-        periodicidad_nomina: element.nomina_imss_periodicidad || 'quincenal',
-        periodicidad_efectivo: element.nomina_extras_periodicidad || 'quincenal',
-        periodicidad_isr: element.isr_periodicidad || 'quincenal',
-        periodicidad_infonavit: element.infonavit_periodicidad || 'quincenal',
-        periodicidad_imss: element.imss_periodicidad || 'quincenal',
-        periodicidad_rcv: element.rcv_periodicidad || 'quincenal',
-        periodicidad_isn: element.isn_periodicidad || 'quincenal',
+      // const nominasAdmin = empleadosConPeriodos.map(element => ({
+      //   usuario: element.id.toString(),
+      //   nominImss: element.nomina_imss || 0.0,
+      //   nomina: element.nomina_imss || 0.0,
+      //   efectivo: element.efectivo || 0.0,
+      //   extraEfectivo: 0.0,
+      //   comision: 0.0,
+      //   isr: element.isr || 0.0,
+      //   isn: element.isn || 0.0,
+      //   infonavit: element.infonavit || 0.0,
+      //   imss: element.imss || 0.0,
+      //   rcv: element.rcv || 0.0,
+      //   extraImss: 0.0,
+      //   restanteNomina: element.efectivo || 0.0,
+      //   extras: 0.0,
+      //   // Periodicidades individuales
+      //   periodicidad_nomina: element.nomina_imss_periodicidad || 'quincenal',
+      //   periodicidad_extraImss: element.extraImss_periodicidad || 'quincenal',        
+      //   periodicidad_efectivo: element.nomina_extras_periodicidad || 'quincenal',
+      //   periodicidad_extraEfectivo: element.extraEfectivo_periodicidad || 'quincenal',
+      //   periodicidad_comision: element.comision_periodicidad || 'quincenal',
+      //   periodicidad_isr: element.isr_periodicidad || 'quincenal',
+      //   periodicidad_infonavit: element.infonavit_periodicidad || 'quincenal',
+      //   periodicidad_imss: element.imss_periodicidad || 'quincenal',
+      //   periodicidad_rcv: element.rcv_periodicidad || 'quincenal',
+      //   periodicidad_isn: element.isn_periodicidad || 'quincenal',
 
-      }));
 
-      setForm(prev => ({
-        ...prev,
-        nominasAdmin,
-        backupNominasAdmin: JSON.parse(JSON.stringify(nominasAdmin)) // Deep copy
+      // }));
 
-      }));
+      // setForm(prev => ({
+      //   ...prev,
+      //   nominasAdmin,
+      //   backupNominasAdmin: JSON.parse(JSON.stringify(nominasAdmin)) // Deep copy
+
+      // }));
 
     } catch (error) {
       Swal.close();
@@ -293,32 +183,34 @@ export default function CrearNomina(props) {
     });
   };
 
-  const onChangeAdjunto = (file, tipo) => {
-    if (!file || !(file instanceof File)) return;
-  
-    const nuevoAdjunto = {
-      files: [file],
-      value: file.name,
-      placeholder: 'Archivo seleccionado'
-    };
-  
-    setForm(prevForm => ({
-      ...prevForm,
-      adjuntos: {
-        ...prevForm.adjuntos,
-        [tipo]: nuevoAdjunto
-      }
-    }));
-  
+  const onChangeAdjunto = (files, tipo) => {
+    if (!Array.isArray(files)) return;
+
+    setForm(prevForm => {
+      const nuevosArchivos = [...(prevForm.adjuntos[tipo]?.files || []), ...files];
+
+      return {
+        ...prevForm,
+        adjuntos: {
+          ...prevForm.adjuntos,
+          [tipo]: {
+            files: nuevosArchivos,
+            value: nuevosArchivos.map(f => f.name).join(', '),
+            placeholder: 'Archivos seleccionados',
+          }
+        }
+      };
+    });
+
     Swal.fire({
       icon: 'success',
-      title: 'Archivo agregado',
-      text: `Se agregó correctamente el archivo "${file.name}"`,
+      title: 'Archivos agregados',
+      text: `Se agregaron ${files.length} archivo(s) correctamente.`,
       confirmButtonColor: '#3085d6',
       confirmButtonText: 'OK'
     });
-
   };
+
   
 
   const clearFiles = (tipo) => {
@@ -332,24 +224,75 @@ export default function CrearNomina(props) {
   };
 
   // Funciones para actualizar valores
-  const updateEmpresa = (value) => {
-    const empresaSeleccionada = options.empresas.find(empresa => empresa.value === value);
-    
-    if (empresaSeleccionada) {
-      const presupuestos = empresaSeleccionada.data.presu || [];
-      const valores = presupuestos.map(item => ({
-        label: item.nombre,
-        value: item.id,
-        name: item.nombre,
+    const updateEmpresa = (value) => {
+      const empresaSeleccionada = options.empresas.find(empresa => empresa.value === value);
+
+      if (empresaSeleccionada) {
+        const presupuestos = empresaSeleccionada.data.presu || [];
+        const valores = presupuestos.map(item => ({
+          label: item.nombre,
+          value: item.id,
+          name: item.nombre,
+        }));
+
+        setValoresPresuEmpresaSeleccionada(valores);
+        handleChange({ target: { value: '', name: 'presupuesto' } });
+      } else {
+        setValoresPresuEmpresaSeleccionada([]);
+      }
+
+      handleChange({ target: { value, name: 'empresa' } });
+
+
+      // ✅ Filtrar empleados por empresa
+     const empleadosFiltrados = empleadosPorEmpresa
+      .filter(emp => String(emp.empresa_id) === String(value)) // <-- conviertes ambos a string
+      .map(emp => ({
+        ...emp,
+        nombre: `${emp.nombre} ${emp.apellido_paterno ?? ''} ${emp.apellido_materno ?? ''}`.trim()
+      }));
+      // ✅ Actualizar opciones de usuarios filtrados
+      setOptionsState(prev => ({
+        ...prev,
+        usuarios: setOptions(empleadosFiltrados, 'nombre', 'id')
       }));
 
-      setValoresPresuEmpresaSeleccionada(valores);
-      handleChange({ target: { value: '', name: 'presupuesto' } });
-    } else {
-      setValoresPresuEmpresaSeleccionada([]);
-    }
-    handleChange({ target: { value, name: 'empresa' } });
-  };
+
+      // ✅ Inicializar nominasAdmin con los empleados filtrados
+      const nominasAdmin = empleadosFiltrados.map(emp => ({
+        usuario: emp.id.toString(),
+        nominImss: emp.nomina_imss || 0.0,
+        nomina: emp.nomina_imss || 0.0,
+        efectivo: emp.efectivo || 0.0,
+        extraEfectivo: 0.0,
+        comision: 0.0,
+        isr: emp.isr || 0.0,
+        isn: emp.isn || 0.0,
+        infonavit: emp.infonavit || 0.0,
+        imss: emp.imss || 0.0,
+        rcv: emp.rcv || 0.0,
+        extraImss: 0.0,
+        restanteNomina: emp.efectivo || 0.0,
+        extras: 0.0,
+        periodicidad_nomina: emp.nomina_imss_periodicidad || 'quincenal',
+        periodicidad_extraImss: emp.extraImss_periodicidad || 'quincenal',
+        periodicidad_efectivo: emp.nomina_extras_periodicidad || 'quincenal',
+        periodicidad_extraEfectivo: emp.extraEfectivo_periodicidad || 'quincenal',
+        periodicidad_comision: emp.comision_periodicidad || 'quincenal',
+        periodicidad_isr: emp.isr_periodicidad || 'quincenal',
+        periodicidad_infonavit: emp.infonavit_periodicidad || 'quincenal',
+        periodicidad_imss: emp.imss_periodicidad || 'quincenal',
+        periodicidad_rcv: emp.rcv_periodicidad || 'quincenal',
+        periodicidad_isn: emp.isn_periodicidad || 'quincenal'
+      }));
+
+      setForm(prev => ({
+        ...prev,
+        nominasAdmin,
+        backupNominasAdmin: JSON.parse(JSON.stringify(nominasAdmin))
+      }));
+    };
+
 
   const updateUsuario = (value, key) => {
     const usuarioSeleccionado = options.usuarios.find(u => u.value.toString() === value.toString());
@@ -359,7 +302,10 @@ export default function CrearNomina(props) {
     const updatedNomina = {
       usuario: value,
       nomina: data?.nomina_imss || 0,
-      efectivo: data?.nomina_extras || 0,
+      extraImss: data?.extraImss || 0,
+      efectivo: data?.efectivo || 0,
+      extraEfectivo: data?.extraEfectivo || 0,
+      comision: data?.comision || 0,
       isr: data?.isn || 0,
       infonavit: data?.infonavit || 0,
       imss: data?.imss || 0,
@@ -383,11 +329,13 @@ export default function CrearNomina(props) {
       nominasAdmin: [...prev.nominasAdmin, {
         usuario: '',
         nominImss: '',
-        extraImss: '',
+        extraImss:'',
+        efectivo: '',
+        extraEfectivo: '',
+        comision:'',
         restanteNomina: '',
         extras: '',
         nomina: '',
-        efectivo: '',
         isr: '',
         infonavit: '',
         imss: '',
@@ -407,9 +355,10 @@ export default function CrearNomina(props) {
   // Funciones para cálculos
   const getTotal = (key) => {
     const n = form.nominasAdmin[key];
-    return ['nominImss', 'extraImss', 'restanteNomina', 'extras']
+    return ['nomina', 'extraImss','efectivo','extraefectivo','comision','isr','infonavit' ,'imss', 'isn']
       .reduce((acc, k) => acc + parseFloat(n[k] || 0), 0);
   };
+
 
   const getTotalByKey = (key, periodicidadKey) =>
     form.nominasAdmin
@@ -417,9 +366,23 @@ export default function CrearNomina(props) {
       .reduce((sum, el) => sum + parseFloat(el[key] || 0), 0);
   
   
-  const getTotales = () => ['nominImss', 'extraImss', 'restanteNomina', 'extras']
-    .map(getTotalByKey)
-    .reduce((a, b) => a + b, 0);
+    const getTotales = () => {
+    const keys = [
+      { campo: 'nomina', periodicidad: 'periodicidad_nomina' },
+      { campo: 'extraImss', periodicidad: 'periodicidad_extraImss' },
+      { campo: 'efectivo', periodicidad: 'periodicidad_efectivo' },
+      { campo: 'extraEfectivo', periodicidad: 'periodicidad_extraEfectivo' },
+      { campo: 'comision', periodicidad: 'periodicidad_comision' },
+      { campo: 'isr', periodicidad: 'periodicidad_isr' },
+      { campo: 'infonavit', periodicidad: 'periodicidad_infonavit' },
+      { campo: 'imss', periodicidad: 'periodicidad_imss' },
+      { campo: 'isn', periodicidad: 'periodicidad_isn' },
+    ];
+
+    return keys.reduce((acc, k) => {
+      return acc + getTotalByKey(k.campo, k.periodicidad);
+    }, 0);
+  };
 
   // Funciones para opciones
   const getUsuariosDisponibles = (keyActual = null) => {
@@ -444,12 +407,11 @@ export default function CrearNomina(props) {
   };
 
     const { getRootProps, getInputProps } = useDropzone({
-        multiple: false,
+        multiple: true,
         accept: "image/*,application/pdf",
         onDrop: (acceptedFiles) => {
             if (acceptedFiles.length > 0) {
-            const file = acceptedFiles[0];
-            onChangeAdjunto(file, "adjunto");
+            onChangeAdjunto(acceptedFiles, "adjunto");
           }
         },
         });
@@ -469,6 +431,33 @@ export default function CrearNomina(props) {
     }
 
     const getTotalextraImss= (key) => {
+        var suma = 0
+        // console.log(key)
+        form.nominasAdmin.forEach(element => {
+            let aux = element[key] === undefined ? 0 : element[key]
+            suma = suma + parseFloat(aux)
+        })
+        return suma
+    }
+      const getTotalefectivo= (key) => {
+        var suma = 0
+        // console.log(key)
+        form.nominasAdmin.forEach(element => {
+            let aux = element[key] === undefined ? 0 : element[key]
+            suma = suma + parseFloat(aux)
+        })
+        return suma
+    }
+      const getTotalextraEfectivo= (key) => {
+        var suma = 0
+        // console.log(key)
+        form.nominasAdmin.forEach(element => {
+            let aux = element[key] === undefined ? 0 : element[key]
+            suma = suma + parseFloat(aux)
+        })
+        return suma
+    }
+      const getTotalcomision= (key) => {
         var suma = 0
         // console.log(key)
         form.nominasAdmin.forEach(element => {
@@ -501,14 +490,15 @@ export default function CrearNomina(props) {
         const nuevaNomina = prev.backupNominasAdmin.map(n => ({
           ...n,
           nomina: convertirMonto(n.nomina, n.periodicidad_nomina, nuevaPeriodicidad),
+          extraImss: convertirMonto(n.extraImss, n.periodicidad_extraImss, nuevaPeriodicidad),
           efectivo: convertirMonto(n.efectivo, n.periodicidad_efectivo, nuevaPeriodicidad),
+          extraEfectivo: convertirMonto(n.extraEfectivo, n.periodicidad_extraEfectivo, nuevaPeriodicidad),
+          comision: convertirMonto(n.comision, n.periodicidad_comision, nuevaPeriodicidad),
           isr: convertirMonto(n.isr, n.periodicidad_isr, nuevaPeriodicidad),
           infonavit: convertirMonto(n.infonavit, n.periodicidad_infonavit, nuevaPeriodicidad),
           imss: convertirMonto(n.imss, n.periodicidad_imss, nuevaPeriodicidad),
           rcv: convertirMonto(n.rcv, n.periodicidad_rcv, nuevaPeriodicidad),
           isn: convertirMonto(n.isn, n.periodicidad_isn, nuevaPeriodicidad),
-
-          extraImss: 0,
           restanteNomina: 0,
           extras: 0,
         }));
@@ -677,7 +667,7 @@ export default function CrearNomina(props) {
         // console.log(data.fechaFin)
         // console.log(data.fecha)
 
-
+        
           apiPostForm(`v2/rh/nomina-administrativa`, data, access_token).then(
               (response) => {
                   const { factura } = response.data
@@ -731,6 +721,7 @@ export default function CrearNomina(props) {
   
     if (!form.empresa) errores.empresa = 'Seleccione una empresa';
     if (!form.periodo) errores.periodo = 'Seleccione un periodo';
+    if (!form.nombre) errores.nombre = 'Ingrese un nombre a la nomina';
     // if (!form.año) errores.año = 'Seleccione un año';
     if (!form.fecha) errores.fecha = 'Ingrese una fecha válida';
     if (tipo == 'enviar') {
@@ -756,9 +747,9 @@ export default function CrearNomina(props) {
         errores.cuentaimss = 'Ingrese una cuenta IMSS válida';
       }
     
-      if (getTotalExtra('rcv') !== 0 && !form.cuentarcv) {
-        errores.cuentarcv = 'Ingrese una cuenta RCV válida';
-      }
+      // if (getTotalExtra('rcv') !== 0 && !form.cuentarcv) {
+      //   errores.cuentarcv = 'Ingrese una cuenta RCV válida';
+      // }
     
       if (getTotalExtra('isn') !== 0 && !form.cuentaisn) {
         errores.cuentaisn = 'Ingrese una cuenta ISN válida';
@@ -781,7 +772,6 @@ export default function CrearNomina(props) {
   
 
 
-// console.log(cuentasActivas)
 // console.log(form)
 
   return (
@@ -964,85 +954,124 @@ export default function CrearNomina(props) {
                 </Paper>
             </Grid>
 
-            <Grid item xs={12} sm={8} md={3}>
-                <Paper sx={{ padding: 2 }} elevation={0}>
-                    <InputLabel sx={{ fontWeight: "bold", fontSize: "16px", mb: 2 }}>
-                    Subir Archivo (Adjunto)
-                    </InputLabel>                   
+            <Grid item xs={12} sm={8} md={4}>
+              <Paper
+                elevation={3}
+                sx={{
+                  padding: 3,
+                  borderRadius: 3,
+                  border: '1px solid #e0e0e0',
+                  backgroundColor: '#ffffff',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
+                }}
+              >
+                <InputLabel sx={{ fontWeight: 600, fontSize: 18, mb: 2 }}>
+                  Subir Archivos (Adjuntos)
+                </InputLabel>
 
-                    <Box
-                    {...getRootProps()}
-                    sx={{
-                        border: "2px dashed #28A745",
-                        padding: "20px",
-                        textAlign: "center",
-                        cursor: "pointer",
-                        borderRadius: "8px",
-                        transition: "all 0.3s",
-                        "&:hover": {
-                        backgroundColor: "#E3F3E1",
-                        },
-                    }}
-                    >
-                    <input {...getInputProps()} />
-                    <CloudUploadIcon sx={{ fontSize: 40, color: "#28A745", mb: 1 }} />
-                    <Typography variant="body2" sx={{ color: "#555" }}>
-                        Arrastra y suelta el archivo aquí o haz clic para seleccionar
-                    </Typography>
-                    </Box>
+                <Box
+                  {...getRootProps()}
+                  sx={{
+                    border: '2px dashed #4caf50',
+                    borderRadius: 2,
+                    padding: '24px',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    backgroundColor: '#f9fffb',
+                    transition: '0.3s ease',
+                    '&:hover': {
+                      backgroundColor: '#ecfdf3',
+                      borderColor: '#388e3c'
+                    }
+                  }}
+                >
+                  <input {...getInputProps()} />
+                  <CloudUploadIcon sx={{ fontSize: 50, color: '#4caf50', mb: 1 }} />
+                  <Typography variant="body1" sx={{ color: '#4caf50', fontWeight: 500 }}>
+                    Arrastra archivos o haz clic para seleccionar
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Puedes subir PDF o imágenes. Tamaño máximo: 10MB.
+                  </Typography>
+                </Box>
+                 </Paper>
+            </Grid>
+            <Grid item xs={12} sm={8} md={6}>
 
-                    {form.adjuntos?.adjunto?.files?.length > 0 && (
-                    (() => {
-                        const file = form.adjuntos.adjunto.files[0];
-                        if (!file) return null;
+                {form.adjuntos?.adjunto?.files?.length > 0 && (
+                  <Box mt={3}>
+                    {form.adjuntos.adjunto.files.map((file, idx) => {
+                      const fileURL = URL.createObjectURL(file);
+                      const isImage = file.type?.includes('image');
 
-                        const isImage = file.type?.includes("image");
-                        const fileURL = URL.createObjectURL(file);
-
-                        return (
-                        <Box
-                            sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            marginTop: 2,
-                            padding: "10px",
-                            backgroundColor: "#f9f9f9",
-                            borderRadius: "8px",
-                            borderLeft: "4px solid #28A745",
-                            gap: 2,
-                            }}
+                      return (
+                        <Paper
+                          key={idx}
+                          variant="outlined"
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            mb: 1.5,
+                            px: 2,
+                            py: 1,
+                            borderLeft: '4px solid #4caf50',
+                            backgroundColor: '#f5f5f5',
+                            borderRadius: 2
+                          }}
                         >
-                            <Typography
-                            variant="body2"
-                            sx={{ flex: 1, color: "#333" }}
-                            title={file.name}
-                            >
-                            <strong>📄</strong> {file.name}
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+                            <Typography variant="body2" sx={{ wordBreak: 'break-word' }}>
+                              📄 {file.name}
                             </Typography>
+                          </Box>
 
-                            {isImage ? (
+                          {isImage ? (
                             <img
-                                src={fileURL}
-                                alt="Vista previa"
-                                width="50"
-                                style={{ borderRadius: "4px", objectFit: "cover" }}
+                              src={fileURL}
+                              alt="Vista previa"
+                              style={{
+                                width: 45,
+                                height: 45,
+                                borderRadius: 4,
+                                objectFit: 'cover',
+                                marginRight: 8
+                              }}
                             />
-                            ) : (
-                            <IconButton color="primary" href={fileURL} target="_blank">
-                                <VisibilityIcon />
+                          ) : (
+                            <IconButton href={fileURL} target="_blank" rel="noopener noreferrer">
+                              <VisibilityIcon />
                             </IconButton>
-                            )}
+                          )}
 
-                            <IconButton color="error" onClick={() => clearFiles("adjunto")}>
+                          <IconButton
+                            color="error"
+                            onClick={() => {
+                              setForm(prevForm => {
+                                const nuevos = prevForm.adjuntos.adjunto.files.filter((_, i) => i !== idx);
+                                return {
+                                  ...prevForm,
+                                  adjuntos: {
+                                    ...prevForm.adjuntos,
+                                    adjunto: {
+                                      ...prevForm.adjuntos.adjunto,
+                                      files: nuevos,
+                                      value: nuevos.map(f => f.name).join(', ')
+                                    }
+                                  }
+                                };
+                              });
+                            }}
+                          >
                             <DeleteIcon />
-                            </IconButton>
-                        </Box>
-                        );
-                    })()
-                    )}
-                </Paper>
-                </Grid>
+                          </IconButton>
+                        </Paper>
+                      );
+                    })}
+                  </Box>
+                )}
+            </Grid>
+
 
 
 
@@ -1056,11 +1085,13 @@ export default function CrearNomina(props) {
                         <TableCell sx={{ width: '.5%' }} >  </TableCell>
                         <TableCell  >  </TableCell>
                         <TableCell  >Nómina IMSS</TableCell>
+                        <TableCell  >Extra IMSS</TableCell>
                         <TableCell align="right">Efectivo QNAL</TableCell>
+                        <TableCell align="right">Extra Efectivo</TableCell>
+                        <TableCell align="right">Comision</TableCell>
                         <TableCell align="right">ISR</TableCell>
-                        <TableCell align="right">Infonavit</TableCell>
+                        <TableCell align="right">Infonavit / Rcv</TableCell>
                         <TableCell align="right">Imss</TableCell>
-                        <TableCell align="right">Prestaciones RCV</TableCell>
                         <TableCell align="right">ISN</TableCell>
                         <TableCell align="right">Total</TableCell>
 
@@ -1116,6 +1147,50 @@ export default function CrearNomina(props) {
                             </Box>
                           </TableCell>
 
+                          <TableCell >
+                            <Box  alignItems="center" >
+                              <Autocomplete
+                                
+                                id="cuenta-nomina-autocomplete"
+                                options={options.cuentas}
+                                getOptionLabel={(option) => option.name || option.label || ''}
+                                isOptionEqualToValue={(option, value) => option.value === value}
+                                value={options.cuentas.find((item) => item.value === form.cuentaextraimss) || null}
+                                onChange={(_, newValue) => {
+                                  updateCuenta(newValue ? newValue.value : '', 'cuentaextraimss');
+                                }}
+                                disabled={columnaEnCero('extraImss') } // ✅ aquí va la lógica
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="SELECCIONA"
+                                    variant="outlined"
+                                    error={!!errores.cuentaextraimss}
+                                    helperText={errores.cuentaextraimss || ''}
+                                    InputProps={{
+                                      ...params.InputProps,
+                                    }}
+                                  />
+                                )}
+                                fullWidth
+                              />
+
+                              {cuentasActivas.extraImss ? (
+                                <Tooltip title="Eliminar montos">
+                                  <IconButton onClick={() => limpiarCuenta('extraImss')} color="error">
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              ) : (
+                                <Tooltip title="Restaurar montos">
+                                  <IconButton onClick={() => restaurarCuenta('extraImss')} color="primary">
+                                    <AddCircleOutlineIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              )}
+                            </Box>
+                          </TableCell>
+
 
                      {/* ---------- Cuenta EFECTIVO ---------- */}
                 <TableCell >
@@ -1154,6 +1229,91 @@ export default function CrearNomina(props) {
                     ) : (
                       <Tooltip title="Restaurar montos">
                         <IconButton onClick={() => restaurarCuenta('efectivo')} color="primary">
+                          <AddCircleOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </Box>
+                </TableCell>
+
+                 <TableCell >
+                  <Box  alignItems="center" gap={1}>
+                    <Autocomplete
+                      id="cuenta-efectivo-autocomplete"
+                      options={options.cuentas}
+                      getOptionLabel={(option) => option.name || option.label || ''}
+                      isOptionEqualToValue={(option, value) => option.value === value}
+                      value={options.cuentas.find((item) => item.value === form.cuentaextraefectivo) || null}
+                      onChange={(_, newValue) => {
+                        updateCuenta(newValue ? newValue.value : '', 'cuentaextraefectivo');
+                      }}
+                      disabled={columnaEnCero('extraEfectivo') }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="SELECCIONA"
+                          variant="outlined"
+                          error={!!errores.cuentaextraefectivo}
+                          helperText={errores.cuentaextraefectivo || ''}
+                          
+                          InputProps={{
+                            ...params.InputProps,
+                          }}
+                        />
+                      )}
+                      fullWidth
+                    />
+                    {cuentasActivas.extraEfectivo ? (
+                      <Tooltip title="Eliminar montos">
+                        <IconButton onClick={() => limpiarCuenta('extraEfectivo')} color="error">
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title="Restaurar montos">
+                        <IconButton onClick={() => restaurarCuenta('extraEfectivo')} color="primary">
+                          <AddCircleOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </Box>
+                </TableCell>
+                <TableCell >
+                  <Box  alignItems="center" gap={1}>
+                    <Autocomplete
+                      id="cuenta-efectivo-autocomplete"
+                      options={options.cuentas}
+                      getOptionLabel={(option) => option.name || option.label || ''}
+                      isOptionEqualToValue={(option, value) => option.value === value}
+                      value={options.cuentas.find((item) => item.value === form.cuentacomision) || null}
+                      onChange={(_, newValue) => {
+                        updateCuenta(newValue ? newValue.value : '', 'cuentacomision');
+                      }}
+                      disabled={columnaEnCero('comision') }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="SELECCIONA"
+                          variant="outlined"
+                          error={!!errores.cuentaextraefectivo}
+                          helperText={errores.cuentaextraefectivo || ''}
+                          
+                          InputProps={{
+                            ...params.InputProps,
+                          }}
+                        />
+                      )}
+                      fullWidth
+                    />
+                    {cuentasActivas.comision ? (
+                      <Tooltip title="Eliminar montos">
+                        <IconButton onClick={() => limpiarCuenta('comision')} color="error">
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title="Restaurar montos">
+                        <IconButton onClick={() => restaurarCuenta('comision')} color="primary">
                           <AddCircleOutlineIcon />
                         </IconButton>
                       </Tooltip>
@@ -1291,7 +1451,7 @@ export default function CrearNomina(props) {
                 </TableCell>
 
                 {/* ---------- Cuenta RCV ---------- */}
-                <TableCell >
+                {/* <TableCell >
                   <Box  alignItems="center" gap={1}>
                     <Autocomplete
                       id="cuenta-rcv-autocomplete"
@@ -1330,8 +1490,8 @@ export default function CrearNomina(props) {
                         </IconButton>
                       </Tooltip>
                     )}
-                  </Box>
-                </TableCell>
+                  </Box> */}
+                {/* </TableCell> */}
                  {/* ---------- Cuenta ISN ---------- */}
                 <TableCell >
                   <Box  alignItems="center" gap={1}>
@@ -1385,9 +1545,24 @@ export default function CrearNomina(props) {
                             {setMoneyTableForNominas(getTotalNominaImss("nomina"))} 
                             </div>
                         </TableCell>
+                          <TableCell align="right">
+                            <div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center"> 
+                            {setMoneyTableForNominas(getTotalextraImss("extraImss"))} 
+                            </div>
+                        </TableCell>
                         <TableCell align="right">
                           <div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center"> 
-                            {setMoneyTableForNominas(getTotalextraImss("efectivo"))}
+                            {setMoneyTableForNominas(getTotalefectivo("efectivo"))}
+                          </div>
+                        </TableCell>
+                        <TableCell align="right">
+                          <div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center"> 
+                            {setMoneyTableForNominas(getTotalextraEfectivo("extraEfectivo"))}
+                          </div>
+                        </TableCell>
+                        <TableCell align="right">
+                          <div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center"> 
+                            {setMoneyTableForNominas(getTotalcomision("comision"))}
                           </div>
                         </TableCell>
                         <TableCell align="right">
@@ -1408,12 +1583,12 @@ export default function CrearNomina(props) {
                             </div>
 
                         </TableCell>
-                        <TableCell align="right">
+                        {/* <TableCell align="right">
                             <div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center"> 
                                 {setMoneyTableForNominas(getTotalExtra("rcv"))}
                             </div>
 
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell align="right">
                             <div className="p-1 my-0 text-primary bg-primary-o-40 font-weight-bolder text-center"> 
                                 {setMoneyTableForNominas(getTotalExtra("isn"))}
@@ -1488,6 +1663,26 @@ export default function CrearNomina(props) {
                                     </FormHelperText>
                                 </FormControl>
                             </TableCell>
+                             <TableCell align="right">
+                                <FormControl variant="standard" sx={{ minWidth: 200 }}>
+                                    <Input id={`nomina-${key}`} value={nominaAdmin.extraImss} 
+                                    onChange={(e) => {
+                                        onChangeNominasAdmin(key, e, 'extraImss');
+                                        setErrores(prev => ({...prev, [`nomina-${key}-extraImss`]: undefined}));
+                                      }}
+                                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                                    inputProps={{
+                                        className: 'form-control-sm text-center',
+                                        inputMode: 'decimal', // sugiere teclado numérico en móvil
+                                        pattern: '[0-9]*',     // opcional para validación
+                                    }}
+                                    type="text"
+                                    />
+                                    <FormHelperText>
+                                        {errores[`nomina-${key}-extraImss`] || 'Extra IMSS'}
+                                    </FormHelperText>
+                                </FormControl>
+                            </TableCell>
                             <TableCell align="right">
                                 <FormControl variant="standard" sx={{ minWidth: 160 }}>
                                 <Input id={`efectivo-${key}`} value={nominaAdmin.efectivo} onChange={(e) => onChangeNominasAdmin(key, e, 'efectivo')}
@@ -1500,6 +1695,34 @@ export default function CrearNomina(props) {
                                     type="text"
                                 />
                                 <FormHelperText>Efectivo QNAL</FormHelperText>
+                                </FormControl>
+                            </TableCell>
+                             <TableCell align="right">
+                                <FormControl variant="standard" sx={{ minWidth: 160 }}>
+                                <Input id={`extraEfectivo-${key}`} value={nominaAdmin.extraEfectivo} onChange={(e) => onChangeNominasAdmin(key, e, 'extraEfectivo')}
+                                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                                    inputProps={{
+                                    className: 'form-control-sm text-center',
+                                    inputMode: 'decimal',
+                                    pattern: '[0-9.]*',
+                                    }}
+                                    type="text"
+                                />
+                                <FormHelperText>Extra Efectivo</FormHelperText>
+                                </FormControl>
+                            </TableCell>
+                              <TableCell align="right">
+                                <FormControl variant="standard" sx={{ minWidth: 160 }}>
+                                  <Input id={`comision-${key}`} value={nominaAdmin.comision} onChange={(e) => onChangeNominasAdmin(key, e, 'comision')}
+                                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                                    inputProps={{
+                                    className: 'form-control-sm text-center',
+                                    inputMode: 'decimal',
+                                    pattern: '[0-9.]*',
+                                    }}
+                                    type="text"
+                                />
+                                <FormHelperText>comision</FormHelperText>
                                 </FormControl>
                             </TableCell>
                             <TableCell align="right">
@@ -1553,7 +1776,7 @@ export default function CrearNomina(props) {
                                 </FormControl>
 
                             </TableCell>
-                            <TableCell align="right">
+                            {/* <TableCell align="right">
                                 <FormControl variant="standard" sx={{ minWidth: 160 }}>
                                 <Input
                                     id={`rcv-${key}`}
@@ -1569,7 +1792,7 @@ export default function CrearNomina(props) {
                                 />
                                 <FormHelperText>RCV</FormHelperText>
                                 </FormControl>
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell align="right">
                                 <FormControl variant="standard" sx={{ minWidth: 160 }}>
                                 <Input
@@ -1624,22 +1847,22 @@ export default function CrearNomina(props) {
             variant="contained" 
             onClick={(e) => handleSubmit(e, "guardar", false)}
             sx={{ mr: 2 }}
-            disabled={!form.periodo || !form.empresa}
+            disabled={!form.periodo || !form.empresa || !form.nombre || !form.fechaInicio || !form.fechaFin}
         >
             Guardar
         </Button>
 
         <Button 
             style={{ 
-            backgroundColor: form.periodo && form.empresa ? '#0A3E27' : '#cccccc', 
+            backgroundColor: form.periodo && form.empresa && form.nombre && form.fechaInicio && form.fechaFin ? '#0A3E27' : '#cccccc', 
             color: '#fff',
             '&:hover': { 
-                backgroundColor: form.periodo && form.empresa ? '#0A3E27' : '#cccccc' 
+                backgroundColor: form.periodo && form.empresa && form.nombre && form.fechaInicio  && form.fechaFin ? '#0A3E27' : '#cccccc' 
             } 
             }} 
             variant="contained" 
             onClick={(e) => handleSubmit(e, "enviar", true)}
-            disabled={!form.periodo || !form.empresa}
+            disabled={!form.periodo || !form.empresa || !form.nombre || !form.fechaInicio || !form.fechaFin}
         >
             Enviar
         </Button>

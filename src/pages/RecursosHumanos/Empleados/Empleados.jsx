@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react'
+import React, {useState, useEffect, useCallback ,useMemo} from 'react'
 import { useLocation, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
@@ -52,6 +52,10 @@ import IconButton from '@mui/material/IconButton';
 import ComponenteAdjuntos  from './ComponenteAdjuntos'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ModalImportarExcel from './ModalImportarExcel';
+import Stack from '@mui/material/Stack';
+import AddIcon from '@mui/icons-material/PersonAdd';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 
 
@@ -65,7 +69,7 @@ const Empleados = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 50 });
   const [totalRows, setTotalRows] = useState(0);
   const [empleados, setEmpleados] = useState([]);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(new Array(10).fill({ field: '', values: [] }));
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
 
@@ -80,7 +84,7 @@ const Empleados = () => {
         licenciasEquipos: { show: false, data: null }, // ✅ NUEVO
         prestacionesColaborador: { show: false, data: null }, // ✅ NUEVO
         deleteColaborador: { show: false, data: null }, // ✅ NUEVO
-
+        importarExcel: { show: false },
     });
 
     const [formContrato, setFormContrato] = useState({
@@ -188,13 +192,20 @@ useEffect(() => {
       { group: 'Datos Empresa', label: 'Fecha baja imss', field: 'fecha_baja_imss' },
       { group: 'Datos Empresa', label: 'Fechas de Incremento', field: 'incrementos_fechas' },
       { group: 'Datos Empresa', label: 'Montos de Incremento', field: 'incrementos_montos' },
-      { group: 'Datos Nomina', label: 'SDIMSS', field: 'salario_diario' },
-      { group: 'Datos Nomina', label: 'SCM', field: 'total' },
-      { group: 'Datos Nomina', label: 'SCQ', field: 'salario_bruto' },
-      { group: 'Datos Nomina', label: 'ISR', field: 'isr' },
-      { group: 'Datos Nomina', label: 'Infonavit', field: 'infonavit' },
-      { group: 'Datos Nomina', label: 'RCV', field: 'rcv' },
+      // { group: 'Datos Nomina', label: 'salario diario imss', field: 'salario_diario' },
+      { group: 'Datos Nomina', label: 'Sueldo bruto mensual', field: 'salario_bruto' },
+      { group: 'Datos Nomina', label: 'Sueldo Completo', field: 'total' },
+      { group: 'Datos Nomina', label: 'Nomina Imss Quincenal', field: 'nomina_imss' },
+      { group: 'Datos Nomina', label: 'Nomina Extra Imss', field: 'extraImss' },
+
+      { group: 'Datos Nomina', label: 'Efectivo Quincenal', field: 'efectivo' },
+      { group: 'Datos Nomina', label: 'Efectivo Quincenal', field: 'extraEfectivo' },
+
+      { group: 'Datos Nomina', label: 'Comicion Efectiva', field: 'comision' },
       { group: 'Datos Nomina', label: 'ISN', field: 'isn' },
+      { group: 'Datos Nomina', label: 'ISR', field: 'isr' },
+      { group: 'Datos Nomina', label: 'Infonavit /rcv', field: 'infonavit' },
+      { group: 'Datos Nomina', label: 'IMSS', field: 'imss' },
 
 
       // { group: 'Datos Empresa', label: 'Checador', field: 'checador' },
@@ -297,8 +308,7 @@ useEffect(() => {
   
 
 
-  const columns = [
-   
+  const columns = useMemo(() => [  
 
     {
       accessorKey: 'field',
@@ -322,7 +332,7 @@ useEffect(() => {
     },
     ...empleados.map((emp, index) => ({
     accessorKey: `${index}`,
-    header: `Colaborador ${emp.id}`,
+    header: ` ${emp.nombre} ${emp.apellido_materno}`,
     size: 200,
     Cell: ({ row }) => {
       const value = row.original.values[index];
@@ -393,7 +403,7 @@ useEffect(() => {
     },
     
     })),    
-    ];
+  ], [empleados, tiposAdjuntos]);
     
 
   
@@ -471,7 +481,7 @@ useEffect(() => {
   
   useEffect(() => {
     reloadData();
-  }, [reloadData, columnFilters]);
+  }, [reloadData, columnFilters, globalFilter]); // ← AÑADIDO
 
   const onChangeRange = (range) => {
   const { startDate, endDate } = range;
@@ -499,8 +509,9 @@ const onChangeContrato = (e) => {
     }
 
     if (name === 'pagos_hr_extra' || name === 'total_obra') {
-      updated[name] = value.replace(/[,]/gi, '');
+      updated[name] = (value ?? '').toString().replace(/[,]/gi, '');
     }
+
 
     if (name === 'periodo') {
       const contratos = empleadoMenu?.contratos ?? [];
@@ -932,8 +943,23 @@ const SemaforoDocumentosPorCodigo = ({ empleado, tiposAdjuntos }) => {
           </Breadcrumbs>
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, overflowX: 'auto', overflowY: 'auto'}}>
-          <MaterialReactTable
+        <Box
+          sx={{
+            width: '100%',
+            overflowX: 'auto',
+            overflowY: 'auto',
+            scrollbarWidth: 'thin', // Firefox
+            '&::-webkit-scrollbar': { height: '8px' }, // Chrome
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#ccc',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: '#f1f1f1',
+            },
+          }}
+        >         
+        <MaterialReactTable
             columns={columns}
             data={data}
             state={{
@@ -947,7 +973,7 @@ const SemaforoDocumentosPorCodigo = ({ empleado, tiposAdjuntos }) => {
             onGlobalFilterChange={setGlobalFilter} // ✅ actualiza el valor
             enableGlobalFilter={true} // Habilita el buscador global
             manualFiltering={true} // 🔥 Importante para globalFilter en modo backend
-
+            enableColumnVirtualization
             rowCount={totalRows}
             onPaginationChange={setPagination}
             enableDensityToggle
@@ -961,27 +987,47 @@ const SemaforoDocumentosPorCodigo = ({ empleado, tiposAdjuntos }) => {
               labelRowsPerPage: "Filas por página",
               shape: "rounded",
               variant: "outlined",
+               sx: {
+                minWidth: '1500px', // o más si necesitas más columnas visibles
+              },
             }}
             paginationDisplayMode="pages"
             initialState={{
-              pagination: { pageSize: 50, pageIndex: 0 },
+              pagination: { pageSize: 15, pageIndex: 0 },
               density: 'compact',
             }}
             renderTopToolbarCustomActions={({ table }) => (
-              <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
-              <Button
-                sx={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#075633' } }}
-                variant="contained"
-                onClick={() => toggleModal('crearColaborador')}
-              >
-                Agregar Colaborador
-              </Button>
-              
-              </Box>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Button
+                  startIcon={<AddIcon />}
+                  sx={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#075633' } }}
+                  variant="contained"
+                  onClick={() => toggleModal('crearColaborador')}
+                >
+                  Agregar Colaborador
+                </Button>
+                <Button
+                  startIcon={<FileUploadIcon />}
+                  sx={{ backgroundColor: '#1976d2', color: '#fff', '&:hover': { backgroundColor: '#115293' } }}
+                  variant="contained"
+                  onClick={() => toggleModal('importarExcel')}
+                >
+                  Importar Excel Nómina
+                </Button>
+              </Stack>
             )}
           />
         </Box>
       </Box>
+
+      <Modal
+          size="xl"
+          title="Importar Nómina desde Excel"
+          show={modals.importarExcel?.show}
+          handleClose={() => toggleModal('importarExcel')}
+        >
+          <ModalImportarExcel handleClose={() => toggleModal('importarExcel')} at={auth} reloadData={reloadData} />
+        </Modal>
 
 
       <Modal size="xl" title="Crear Colaborador" show={modals.crearColaborador?.show} handleClose={() => toggleModal('crearColaborador')} >
