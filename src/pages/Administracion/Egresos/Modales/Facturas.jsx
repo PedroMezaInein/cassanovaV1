@@ -33,13 +33,13 @@ export default function Factura(props) {
     })
 
     const [form, setForm] = useState({
-        adjuntos: {
-            xml: {
-                files: [], value: ''
-            },
-            pdf: {
-                files: [], value: ''
-            }
+         adjuntos: {
+            xml: { files: [], value: '' },
+            pdf: { files: [], value: '' },
+            imagenes: { files: [], value: '' },
+            excel: { files: [], value: '' },
+            zip: { files: [], value: '' } // ✅ Agregado ZIP
+
         },
         options: {
             clientes: [],
@@ -306,161 +306,181 @@ export default function Factura(props) {
         })
     }
 
-    const handleAddFile = (e, tipo) => {
-        let aux = []
+    const handleAddFile = (e) => {
+        const archivos = Array.from(e.target.files);
+        const nuevosAdjuntos = { ...form.adjuntos };
 
-        Array.from(e.target.files).forEach((file, index) => {
+        archivos.forEach((file, index) => {
+            const nombre = file.name.toLowerCase();
+            const tipoMime = file.type;
 
-            aux.push({
-                name: file.name,
-                file: file,
-                url: URL.createObjectURL(file),
-                key: index
-            })
-        })
+            const fileObj = {
+            name: file.name,
+            file: file,
+            url: URL.createObjectURL(file),
+            key: Date.now() + index,
+            };
 
-        let path = 'C:/fakepath/' + aux[0].name
+            // Clasificación por tipo de archivo
+            if (tipoMime.includes("pdf") || nombre.endsWith(".pdf")) {
+            if (!nuevosAdjuntos.pdf) nuevosAdjuntos.pdf = { files: [], value: '' };
+            nuevosAdjuntos.pdf.files.push(fileObj);
+            nuevosAdjuntos.pdf.value = 'C:/fakepath/' + file.name;
+            } else if (tipoMime.includes("image") || nombre.match(/\.(jpg|jpeg|png)$/)) {
+            if (!nuevosAdjuntos.imagenes) nuevosAdjuntos.imagenes = { files: [], value: '' };
+            nuevosAdjuntos.imagenes.files.push(fileObj);
+            nuevosAdjuntos.imagenes.value = 'C:/fakepath/' + file.name;
+            } else if (
+            tipoMime.includes("sheet") ||
+            nombre.endsWith(".xls") ||
+            nombre.endsWith(".xlsx")
+            ) {
+            if (!nuevosAdjuntos.excel) nuevosAdjuntos.excel = { files: [], value: '' };
+            nuevosAdjuntos.excel.files.push(fileObj);
+            nuevosAdjuntos.excel.value = 'C:/fakepath/' + file.name;
+            } else if (tipoMime.includes("zip") || nombre.endsWith(".zip")) {
+            if (!nuevosAdjuntos.zip) nuevosAdjuntos.zip = { files: [], value: '' };
+            nuevosAdjuntos.zip.files.push(fileObj);
+            nuevosAdjuntos.zip.value = 'C:/fakepath/' + file.name;
+            }
+        });
 
         setForm({
             ...form,
-            adjuntos: {
-                ...form.adjuntos,
-                [tipo]: { files: aux, value: path }
-            }
-        })
-    }
+            adjuntos: nuevosAdjuntos,
+        });
+    };
+
 
     // *************** AGREGAR ARCHIVOS ***************
     const addFacturaS3 = async () => {
-        if (!form.adjuntos.xml.files.length && !form.adjuntos.pdf.files.length) {
+        const { xml, pdf, imagenes, excel, zip } = form.adjuntos;
+
+        if (
+            xml.files.length === 0 &&
+            pdf.files.length === 0 &&
+            imagenes.files.length === 0 &&
+            excel.files.length === 0 &&
+            zip.files.length === 0 // ✅ Añadir verificación ZIP
+        ) {
             Swal.fire({ icon: 'error', title: 'Debe agregar al menos un archivo' });
             return;
         }
-    
-        // Fusionar archivos PDF y XML en un solo array
-        const allFiles = [...form.adjuntos.xml.files, ...form.adjuntos.pdf.files];
-    
-        // 🚨 SI SOLO HAY UN ARCHIVO, HAGO EL FLUJO "SENCILLO"
-        if (allFiles.length === 1) {
-            // console.log(form)
 
+        const allFiles = [...xml.files, ...pdf.files, ...imagenes.files, ...excel.files, ...zip.files]; // ✅ Incluir ZIP
+
+        // 🔹 Flujo para un solo archivo
+        if (allFiles.length === 1) {
             const file = allFiles[0];
             const fileName = file.name.toLowerCase();
             const mimeType = file.file.type;
-    
-            let activeTab = ''; 
-            
-            if (mimeType === 'application/pdf' || fileName.endsWith('.pdf')) {
-                activeTab = 'pdf';
-            } else if (mimeType === 'application/zip' || fileName.endsWith('.zip')) {
-                activeTab = 'zip';
-            } else {
-                Swal.fire({ icon: 'error', title: 'Tipo de archivo no soportado' });
-                return;
-            }     
 
             const data = new FormData();
             data.append(`files_name_facturas[]`, file.name);
             data.append(`files_facturas[]`, file.file);
-            data.append('adjuntos[]', 'facturas');
-            data.append('tipo', 'facturas');
+
+            let tipo = 'facturas';
+            if (fileName.endsWith('.pdf')) tipo = 'facturas_pdf';
+            else if (fileName.match(/\.(jpg|jpeg|png)$/)) tipo = 'factura-imagen';
+            else if (fileName.match(/\.(xls|xlsx)$/)) tipo = 'factura-excel';
+            else if (fileName.endsWith('.xml')) tipo = 'factura-xml';
+            else if (fileName.endsWith('.zip')) tipo = 'factura-zip'; // ✅ Agregado ZIP
+
+            data.append('adjuntos[]', tipo);
+            data.append('tipo', tipo);
 
             Swal.fire({ title: 'Subiendo archivo...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-            // console.log(egreso)
-            // console.log(data)
-            try {
-                await apiPostForm(`v2/administracion/egresos/${egreso}/archivos/s3`, data, auth);
-                Swal.fire({
-                    icon: 'success',
-                    title: `Archivo ${file.name} subido con éxito`,
-                    showConfirmButton: false,
-                    timer: 1000,
-                });
-    
-                // 🔥 Limpiar los archivos
-                setForm((prevForm) => ({
-                    ...prevForm,
-                    adjuntos: {
-                        xml: { files: [], value: '' },
-                        pdf: { files: [], value: '' }
-                    }
-                }));
-                obtenerFacturas(); // 🔥 Recargar facturas después de adjuntar
 
-                if (reloadTable) {
-                    reloadTable.reload();
+            try {
+            await apiPostForm(`v2/administracion/egresos/${egreso}/archivos/s3`, data, auth);
+
+            Swal.fire({
+                icon: 'success',
+                title: `Archivo ${file.name} subido con éxito`,
+                showConfirmButton: false,
+                timer: 1000,
+            });
+
+            setForm((prevForm) => ({
+                ...prevForm,
+                adjuntos: {
+                xml: { files: [], value: '' },
+                pdf: { files: [], value: '' },
+                imagenes: { files: [], value: '' },
+                excel: { files: [], value: '' },
+                zip: { files: [], value: '' } // ✅ reset ZIP
+
                 }
+            }));
+
+            obtenerFacturas();
+            if (reloadTable) reloadTable.reload();
+
             } catch (error) {
-                console.error(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al subir archivo',
-                    text: 'Ocurrió un error al subir el archivo',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+            console.error(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al subir archivo',
+                text: 'Ocurrió un error al subir el archivo',
+                showConfirmButton: false,
+                timer: 1500
+            });
             }
+
         } else {
-            // 🚨 FLUJO NORMAL PARA VARIOS ARCHIVOS
+            // 🔹 Flujo para varios archivos
             Swal.fire({ title: 'Subiendo archivos...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-    
-            apiGet(`v1/constant/admin-proyectos`, auth)
-                .then((response) => {
-                    const { alma } = response.data;
-                    let filePath = `facturas/egresos/`;
-                    let auxPromises = allFiles.map((file) => {
-                        return new Promise((resolve, reject) => {
-                            new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
-                                .then((data) => {
-                                    const { location, status } = data;
-                                    if (status === 204) resolve({ name: file.name, url: location });
-                                    else reject(data);
-                                })
-                                .catch((error) => reject(error));
-                        });
-                    });
-    
-                    Promise.all(auxPromises)
-                        .then((values) => {
-                            addNewFacturaAxios(values, egreso);
-    
-                            setForm((prevForm) => ({
-                                ...prevForm,
-                                adjuntos: {
-                                    xml: { files: [], value: '' },
-                                    pdf: { files: [], value: '' }
-                                }
-                            }));
-    
-                            if (reloadTable) {
-                                reloadTable.reload();
-                            }
-                        })
-                        .catch((err) => {
-                            console.error(err);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error al subir archivos',
-                                text: 'Ocurrió un error al adjuntar los archivos',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        });
-                })
-                .catch((error) => {
-                    console.error(error);
-                    Swal.close();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error al obtener configuración de S3',
-                        text: 'No se pudo obtener la configuración de S3',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+
+            try {
+            const { data: config } = await apiGet(`v1/constant/admin-proyectos`, auth);
+            const alma = config.alma;
+            const filePath = `facturas/egresos/`;
+
+            const uploads = allFiles.map((file) => {
+                const nombre = `${Math.floor(Date.now() / 1000)}-${file.name}`;
+                return new Promise((resolve, reject) => {
+                new S3(alma).uploadFile(file.file, `${filePath}${nombre}`)
+                    .then((data) => {
+                    if (data.status === 204) {
+                        resolve({ name: file.name, url: data.location });
+                    } else {
+                        reject(data);
+                    }
+                    })
+                    .catch((error) => reject(error));
                 });
+            });
+
+            const uploaded = await Promise.all(uploads);
+
+            addNewFacturaAxios(uploaded, egreso);
+
+            setForm((prevForm) => ({
+                ...prevForm,
+                adjuntos: {
+                xml: { files: [], value: '' },
+                pdf: { files: [], value: '' },
+                imagenes: { files: [], value: '' },
+                excel: { files: [], value: '' },
+                }
+            }));
+
+            if (reloadTable) reloadTable.reload();
+
+            } catch (error) {
+            console.error(error);
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al subir archivos',
+                text: 'Ocurrió un error al adjuntar los archivos',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            }
         }
-    };
-    
+        };
+
 
     const addNewFacturaAxios = (files, egreso) => {
         let aux = form
@@ -707,7 +727,7 @@ export default function Factura(props) {
         ]
         return aux
     }
-
+console.log(facturas)
     return (
         <>
         
@@ -808,6 +828,7 @@ export default function Factura(props) {
                                 ))}
                             </Grid>
                         </CardContent>
+                        
                     </Card>
                 </Grid>
 
@@ -817,11 +838,11 @@ export default function Factura(props) {
                         <CardContent>
                             <InputLabel>📑 PDF de la Factura</InputLabel>
                             <input
-                                accept="application/pdf"
+                                accept="application/pdf,application/zip,image/jpeg,image/png,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                                 style={{ display: 'none' }}
                                 id="pdf-upload"
                                 type="file"
-                                onChange={(e) => handleAddFile(e, 'pdf')}
+                                onChange={handleAddFile}
                             />
                             <label htmlFor="pdf-upload">
                                 <Button
@@ -880,6 +901,136 @@ export default function Factura(props) {
                                 ))}
                             </Grid>
                         </CardContent>
+                        <CardContent>
+                            <Grid container spacing={2}>
+                                {form.adjuntos.imagenes?.files.map((item, index) => (
+                                <Grid item xs={12} key={index}>
+                                    <Paper
+                                    elevation={2}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        padding: 1,
+                                        backgroundColor: 'rgba(58, 137, 201, 0.15)',
+                                        borderRadius: 2,
+                                    }}
+                                    >
+                                    <img src={item.url} alt={item.name} width={40} height={40} style={{ marginRight: 10, borderRadius: 4 }} />
+                                    <Tooltip title={item.name} arrow>
+                                        <Typography
+                                        sx={{
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            maxWidth: '150px',
+                                            fontWeight: 'bold',
+                                            color: '#3f51b5',
+                                        }}
+                                        >
+                                        {item.name.length > 15 ? item.name.slice(0, 10) + '...' : item.name}
+                                        </Typography>
+                                    </Tooltip>
+
+                                    <IconButton
+                                        size="small"
+                                        onClick={() => handleDeleteFile('imagenes', index)}
+                                        sx={{ '&:hover': { backgroundColor: '#f77c5d', color: '#fff' } }}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                    </Paper>
+                                </Grid>
+                                ))}
+                            </Grid>
+                        </CardContent>
+
+                        <CardContent>
+                            <Grid container spacing={2}>
+                                {form.adjuntos.excel?.files.map((item, index) => (
+                                <Grid item xs={12} key={index}>
+                                    <Paper
+                                    elevation={2}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        padding: 1,
+                                        backgroundColor: 'rgba(58, 137, 201, 0.15)',
+                                        borderRadius: 2,
+                                    }}
+                                    >
+                                    <Tooltip title={item.name} arrow>
+                                        <Typography
+                                        sx={{
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            maxWidth: '150px',
+                                            fontWeight: 'bold',
+                                            color: '#388e3c',
+                                        }}
+                                        >
+                                        📊 {item.name.length > 15 ? item.name.slice(0, 10) + '...' : item.name}
+                                        </Typography>
+                                    </Tooltip>
+
+                                    <IconButton
+                                        size="small"
+                                        onClick={() => handleDeleteFile('excel', index)}
+                                        sx={{ '&:hover': { backgroundColor: '#f77c5d', color: '#fff' } }}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                    </Paper>
+                                </Grid>
+                                ))}
+                            </Grid>
+                            </CardContent>
+                        <CardContent>
+                             <Grid container spacing={2}>
+                                    {form.adjuntos.zip?.files.map((item, index) => (
+                                    <Grid item xs={12} key={index}>
+                                        <Paper
+                                        elevation={2}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            padding: 1,
+                                            backgroundColor: 'rgba(58, 137, 201, 0.15)',
+                                            borderRadius: 2,
+                                        }}
+                                        >
+                                        <Tooltip title={item.name} arrow>
+                                            <Typography
+                                            sx={{
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                maxWidth: '150px',
+                                                fontWeight: 'bold',
+                                                color: '#000',
+                                            }}
+                                            >
+                                            🗜️ {item.name}
+                                            </Typography>
+                                        </Tooltip>
+
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleDeleteFile('zip', index)}
+                                            sx={{ '&:hover': { backgroundColor: '#f77c5d', color: '#fff' } }}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                        </Paper>
+                                    </Grid>
+                                    ))}
+                                </Grid>
+                                </CardContent>
+
+
                     </Card>
                 </Grid>
 

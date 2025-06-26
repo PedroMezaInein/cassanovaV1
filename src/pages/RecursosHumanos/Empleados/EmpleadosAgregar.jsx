@@ -89,7 +89,7 @@ const history = useHistory();
     apellido_materno: '',
     email_personal: '',
     telefono_movil: '',
-    telefono_particular: '',
+    // telefono_particular: '',
     curp: '',
     nss: '',
     fecha_nacimiento: '',
@@ -131,12 +131,16 @@ const history = useHistory();
     total: '',
     nomina_imss:'',
     nomina_extras: '',
+    extraImss:'',
+    efectivo:'',
+    extraEfectivo:'',
     adicionales_efectivo: '',
     isn: '',
     isr:'',
     infonavit: '',
     imss: '',
     rcv: '',
+
     nombre_emergencia:'',
     nombre_emergencia2:'',
     telefono_emergencia:'',
@@ -155,7 +159,7 @@ const history = useHistory();
   // { campo: 'rfc', label: 'RFC', validator: validarRFC, mensaje: 'RFC inválido' },
   { campo: 'email_personal', label: 'Correo Personal', validator: validarCorreo, mensaje: 'Correo inválido' },
   { campo: 'telefono_movil', label: 'Teléfono Móvil', validator: validarTelefono, mensaje: 'Debe tener 10 dígitos' },
-  { campo: 'telefono_particular', label: 'Teléfono Particular', validator: validarTelefono, mensaje: 'Debe tener 10 dígitos' },
+  // { campo: 'telefono_particular', label: 'Teléfono Particular', validator: validarTelefono, mensaje: 'Debe tener 10 dígitos' },
   { campo: 'empresa', label: 'Empresa' },
   { campo: 'departamentos', label: 'Departamentos', isArray: true },
   // ... puedes seguir agregando campos y validadores
@@ -249,7 +253,7 @@ const [nuevoEstudio, setNuevoEstudio] = useState({
         domicilio: emp.domicilio || '',
         email_personal: emp.email_personal || '',
         telefono_movil: emp.telefono_movil || '',
-        telefono_particular: emp.telefono_particular || '',
+        // telefono_particular: emp.telefono_particular || '',
         nacionalidad: emp.nacionalidad || '',
         estado_civil: emp.estado_civil?.id || '',
         nombre_emergencia:emp.nombre_emergencia || '',
@@ -290,7 +294,12 @@ const [nuevoEstudio, setNuevoEstudio] = useState({
         numero_empleado : emp.numero_empleado || '',
         salario_bruto: emp.salario_bruto || '',
         total: emp.total || '',
+        extraImss: emp.extraImss || '',
         nomina_imss: emp.nomina_imss || '',
+        efectivo: emp.efectivo || '',
+        extraEfectivo: emp.extraEfectivo || '',
+        extraImss: emp.extraImss || '',
+        comision: emp.comision || '',
         nomina_extras: emp.nomina_extras || '',
         adicionales_efectivo: emp.adicionales_efectivo || '',
         isn: emp.isn || '',
@@ -783,7 +792,7 @@ const camposObligatoriosPorPaso = {
 
     { campo: 'email_personal', label: 'Correo Personal', validator: validarCorreo, mensaje: 'Correo inválido' },
     { campo: 'telefono_movil', label: 'Teléfono Móvil', validator: validarTelefono, mensaje: 'Debe tener 10 dígitos' },
-    { campo: 'telefono_particular', label: 'Teléfono Particular', validator: validarTelefono, mensaje: 'Debe tener 10 dígitos' },
+    // { campo: 'telefono_particular', label: 'Teléfono Particular', validator: validarTelefono, mensaje: 'Debe tener 10 dígitos' },
     { campo: 'domicilio', label: 'Domicilio' },
     { campo: 'nombre_emergencia', label: 'Contacto de emergencia' },
     { campo: 'telefono_emergencia', label: 'Telefono de emergencia' },
@@ -796,7 +805,7 @@ const camposObligatoriosPorPaso = {
     { campo: 'estatus_empleado', label: 'Estatus' },
     { campo: 'email_empresarial', label: 'Correo empresarial' },
     { campo: 'puesto', label: 'Puesto' },
-    { campo: 'checador', label: 'Numero de checador' },
+    // { campo: 'checador', label: 'Numero de checador' },
 
   ],
   2: [
@@ -809,8 +818,10 @@ const camposObligatoriosPorPaso = {
     { campo: 'salario_bruto', label: 'Sueldo Bruto Mensual' },
     { campo: 'total', label: 'Sueldo completo' },
     { campo: 'nomina_imss', label: 'Nomina imss quincenal' },
-    { campo: 'nomina_extras', label: 'Efectivo Quincenal' },
-    { campo: 'adicionales_efectivo', label: 'Comision Efectiva' },        
+    // { campo: 'nomina_extras', label: 'Efectivo Quincenal' },
+    { campo: 'comision', label: 'Comision Efectiva' },   
+    { campo: 'efectivo', label: 'efectivo' },        
+     
     // { campo: 'imss', label: 'Imss' },
     // { campo: 'isr', label: 'isr' },
     // { campo: 'isn', label: 'isn' },
@@ -960,7 +971,7 @@ const validarCamposDelPaso = (paso) => {
                     {/* <TextField label="Fecha nacimiento" name="fecha_nacimiento" type="text" fullWidth value={form.fecha_nacimiento} onChange={handleInputChange} /> */}
                      <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                         <KeyboardDatePicker
-                          label="Fecha de nacimeinto"
+                          label="Fecha de nacimiento"
                           format="dd/MM/yyyy"
                           value={form.fecha_nacimiento !== '' ? form.fecha_nacimiento : null}
                           onChange={(e) => handleChangeFecha(e, 'fecha_nacimiento')}
@@ -1028,7 +1039,7 @@ const validarCamposDelPaso = (paso) => {
 
 
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+                  {/* <Grid item xs={12} sm={6} md={3}>
                      <InputMask
                         mask="(999) 999-9999"
                         value={form.telefono_particular}
@@ -1058,7 +1069,7 @@ const validarCamposDelPaso = (paso) => {
                             />
                         )}
                         </InputMask>
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12} sm={6} md={3}>
                     {/* <TextField label="Estado Civil" name="estado_civil" type="text" fullWidth value={form.estado_civil} onChange={handleInputChange} /> */}
                     {opciones.estado_civil.length > 0 && (
@@ -1350,7 +1361,7 @@ const validarCamposDelPaso = (paso) => {
                     </FormControl>
 
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+                  {/* <Grid item xs={12} sm={6} md={3}>
                     <TextField
                         label="Número Checador"
                         name="checador"
@@ -1374,8 +1385,8 @@ const validarCamposDelPaso = (paso) => {
                         />
 
 
-                  </Grid> 
-                  <Grid item xs={12} sm={6} md={3}>
+                  </Grid>  */}
+                  {/* <Grid item xs={12} sm={6} md={3}>
                       <TextField
                         label="Matrícula"
                         name="matricula"
@@ -1402,7 +1413,7 @@ const validarCamposDelPaso = (paso) => {
                         helperText={errores.matricula}
                         />
 
-                  </Grid>                  
+                  </Grid>                   */}
                   <Grid item xs={12} sm={6} md={3}>
                     <TextField
                         label="Correo empresarial"
@@ -1799,12 +1810,20 @@ const validarCamposDelPaso = (paso) => {
                     <TextField   label="Nomina Imss Quincenal" name="nomina_imss" type="number" fullWidth value={form.nomina_imss}  error={!!errores.nomina_imss}   helperText={errores.nomina_imss || ''}  onChange={handleInputChange}
                       InputProps={{  startAdornment: <span style={{ marginRight: 8 }}>$</span>, inputProps: { min: 0, step: 0.01 },  }}  />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
-                    <TextField   label="Efectivo Quincenal" name="nomina_extras" type="number" fullWidth value={form.nomina_extras}  error={!!errores.nomina_extras}   helperText={errores.nomina_extras || ''}  onChange={handleInputChange}
+                   <Grid item xs={12} sm={6} md={3}>
+                    <TextField   label="Extra Nomina Imss" name="extraImss" type="number" fullWidth value={form.extraImss}  error={!!errores.extraImss}   helperText={errores.extraImss || ''}  onChange={handleInputChange}
                       InputProps={{  startAdornment: <span style={{ marginRight: 8 }}>$</span>, inputProps: { min: 0, step: 0.01 },  }}  />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
-                    <TextField   label="Comision Efectiva" name="adicionales_efectivo" type="number" fullWidth value={form.adicionales_efectivo}  error={!!errores.adicionales_efectivo}   helperText={errores.adicionales_efectivo || ''}  onChange={handleInputChange}
+                    <TextField   label="Efectivo Quincenal" name="efectivo" type="number" fullWidth value={form.efectivo}  error={!!errores.efectivo}   helperText={errores.efectivo || ''}  onChange={handleInputChange}
+                      InputProps={{  startAdornment: <span style={{ marginRight: 8 }}>$</span>, inputProps: { min: 0, step: 0.01 },  }}  />
+                  </Grid>
+                   <Grid item xs={12} sm={6} md={3}>
+                    <TextField   label="Extra Efectivo" name="extraEfectivo" type="number" fullWidth value={form.extraEfectivo}  error={!!errores.extraEfectivo}   helperText={errores.extraEfectivo || ''}  onChange={handleInputChange}
+                      InputProps={{  startAdornment: <span style={{ marginRight: 8 }}>$</span>, inputProps: { min: 0, step: 0.01 },  }}  />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <TextField   label="Comision Efectiva" name="comision" type="number" fullWidth value={form.comision}  error={!!errores.comision}   helperText={errores.comision || ''}  onChange={handleInputChange}
                       InputProps={{  startAdornment: <span style={{ marginRight: 8 }}>$</span>, inputProps: { min: 0, step: 0.01 },  }}  />
                   </Grid>
 
@@ -1825,17 +1844,17 @@ const validarCamposDelPaso = (paso) => {
                       InputProps={{  startAdornment: <span style={{ marginRight: 8 }}>$</span>, inputProps: { min: 0, step: 0.01 },  }}  />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
-                    <TextField   label="Infonavit" name="infonavit" type="number" fullWidth value={form.infonavit} error={!!errores.infonavit}   helperText={errores.infonavit || ''}   onChange={handleInputChange}
+                    <TextField   label="Infonavit / rcv" name="infonavit" type="number" fullWidth value={form.infonavit} error={!!errores.infonavit}   helperText={errores.infonavit || ''}   onChange={handleInputChange}
                       InputProps={{  startAdornment: <span style={{ marginRight: 8 }}>$</span>, inputProps: { min: 0, step: 0.01 },  }}  />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
                     <TextField   label="Imss" name="imss" type="number" fullWidth value={form.imss} error={!!errores.imss}   helperText={errores.imss || ''}   onChange={handleInputChange}
                       InputProps={{  startAdornment: <span style={{ marginRight: 8 }}>$</span>, inputProps: { min: 0, step: 0.01 },  }}  />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+                  {/* <Grid item xs={12} sm={6} md={3}>
                     <TextField   label="Rcv" name="rcv" type="number" fullWidth value={form.rcv} error={!!errores.rcv}   helperText={errores.rcv || ''}   onChange={handleInputChange}
                       InputProps={{  startAdornment: <span style={{ marginRight: 8 }}>$</span>, inputProps: { min: 0, step: 0.01 },  }}  />
-                  </Grid>
+                  </Grid> */}
                 
                   </Grid> 
                

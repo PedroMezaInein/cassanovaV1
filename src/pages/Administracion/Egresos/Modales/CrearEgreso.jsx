@@ -57,6 +57,8 @@ export default function CrearEgreso(props) {
         pago: null,
         presupuesto: null,
         zip: null,
+        excel: null,
+        imagenes: null,
     });
 
     const [proveedorSelect, setProveedorSelect] = useState({
@@ -79,12 +81,13 @@ export default function CrearEgreso(props) {
         empresas: [],
         estatusCompras: [],
         proveedores: [],
+        proyectos: [],
         tiposImpuestos: [],
         tiposPagos: [],
     })
 
     useEffect(() => {
-
+        // console.log(opcionesData
         if (opcionesData) {
             setOpciones(opcionesData)
         }
@@ -97,6 +100,10 @@ export default function CrearEgreso(props) {
             presupuesto: { files: [], value: '' },
             xml: { files: [], value: '' },
             zip: { files: [], value: '' },
+            imagenes: { files: [], value: '' },
+            excel: { files: [], value: '' },
+
+            
         },
         area: '',
         banco: 0,
@@ -254,7 +261,7 @@ export default function CrearEgreso(props) {
                         })
                     }
 
-                   let proveedor = proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor);
+                    let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
 
                     if (!proveedor) {
                         Swal.fire({
@@ -271,10 +278,6 @@ export default function CrearEgreso(props) {
                         form.contrato = ''
                         // options.contratos = setOptions(proveedor.contratos, 'nombre', 'id')
                     }
-
-
-                    console.log(form)
-                                        console.log(proveedores)
 
                     let aux = []
                     files.forEach((file, index) => {
@@ -842,7 +845,7 @@ export default function CrearEgreso(props) {
 
                     aux.factura = form.factura ? 'Con factura' : 'Sin factura'
                     aux.adjuntos = { ...files }; // Asegurar que se copian bien los archivos
-
+                    console.log(aux)
                     try {
                         apiPostForm('v3/administracion/egresos', form, auth)
                         .then((response) => {
@@ -856,22 +859,74 @@ export default function CrearEgreso(props) {
                                 didOpen: () => Swal.showLoading(),
                             });
 
-                            const tareas = [];
+                           const tareas = [];
 
-                            // ✅ Factura Extranjera - PDF
-                            if (form.tipoFactura === "extranjera" && files?.pdf?.length > 0) {
-                                const data = new FormData();
-                                files.pdf.forEach(file => {
-                                    data.append(`files_name_facturas_pdf[]`, file.name);
-                                    data.append(`files_facturas[]`, file);
-                                });
-                                data.append('adjuntos[]', 'facturas');
-                                data.append('tipo', 'facturas');
-                                tareas.push(apiPostForm(`v2/administracion/egresos/${egreso.id}/archivos/s3`, data, auth));
-                            }
+                                    if (
+                                        (form.tipoFactura === "extranjera" || form.tipoFactura === "nacional") &&
+                                        (files?.pdf?.length > 0 || files?.imagenes?.length > 0 || files?.excel?.length > 0)
+                                    ) {
+                                        const data = new FormData();
 
+                                        // PDF
+                                        if (files?.pdf?.length > 0) {
+                                            files.pdf.forEach(file => {
+                                                data.append(`files_name_facturas_pdf[]`, file.name);
+                                                data.append(`files_facturas[]`, file);
+                                            });
+                                        }
+
+                                        // Imágenes
+                                        if (files?.imagenes?.length > 0) {
+                                            files.imagenes.forEach(file => {
+                                                data.append(`files_name_facturas_imagen[]`, file.name);
+                                                data.append(`files_facturas[]`, file);
+                                            });
+                                        }
+
+                                        // Excel
+                                        if (files?.excel?.length > 0) {
+                                            files.excel.forEach(file => {
+                                                data.append(`files_name_facturas_excel[]`, file.name);
+                                                data.append(`files_facturas[]`, file);
+                                            });
+                                        }
+
+                                        // Metadatos adicionales
+                                        data.append('adjuntos[]', 'facturas');
+                                        data.append('tipo', form.tipoFactura === "extranjera" ? 'facturas_pdf' : 'facturas');
+
+                                        tareas.push(
+                                            apiPostForm(`v2/administracion/egresos/${egreso.id}/archivos/s3`, data, auth)
+                                        );
+                                    }
+
+                                    // Enviar imágenes por separado
+                                    // if (form.tipoFactura === "extranjera"  && files?.imagenes?.length > 0) {
+                                    //     const dataImg = new FormData();
+                                    //     files.imagenes.forEach(file => {
+                                    //         dataImg.append(`files_name[]`, file.name);
+                                    //         dataImg.append(`files[]`, file);
+                                    //     });
+                                    //     dataImg.append('adjuntos[]', 'imagenes_factura');
+                                    //     dataImg.append('tipo', 'facturas_pdf');
+                                    //     tareas.push(apiPostForm(`v2/administracion/egresos/${egreso.id}/archivos/s3`, dataImg, auth));
+                                    // }
+                                    // if (form.tipoFactura === "nacional"  && files?.imagenes?.length > 0) {
+                                    //     const dataImg = new FormData();
+                                    //     files.imagenes.forEach(file => {
+                                    //         dataImg.append(`files_name[]`, file.name);
+                                    //         dataImg.append(`files[]`, file);
+                                    //     });
+                                    //     dataImg.append('adjuntos[]', 'imagenes_factura');
+                                    //     dataImg.append('tipo', 'facturas');
+                                    //     tareas.push(apiPostForm(`v2/administracion/egresos/${egreso.id}/archivos/s3`, dataImg, auth));
+                                    // }
+
+
+
+                            console.log(files)
                             // ✅ ZIP
-                            if (files.zip?.length > 0) {
+                            if (files.zip?.length > 0 ) {
                                 const data = new FormData();
                                 files.zip.forEach(file => {
                                     data.append(`files_name_facturas_pdf[]`, file.name);
@@ -881,6 +936,7 @@ export default function CrearEgreso(props) {
                                 data.append('tipo', 'facturas');
                                 tareas.push(apiPostForm(`v2/administracion/egresos/${egreso.id}/archivos/s3`, data, auth));
                             }
+                            
 
                             // ✅ Si es factura nacional, agrega a S3
                             if (egreso.factura && Object.keys(form.facturaObject).length > 0) {
@@ -943,7 +999,7 @@ export default function CrearEgreso(props) {
 
      const { getRootProps: getRootPropsXmlPdf, getInputProps: getInputPropsXmlPdf } = useDropzone({
             multiple: true,
-            accept: "application/pdf, application/xml, text/xml, application/zip",
+            accept: "application/pdf, application/xml, text/xml, application/zip, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/png, image/jpeg",
             onDrop: async (acceptedFiles) => {
                 if (!form.factura) {
                     Swal.fire({
@@ -957,45 +1013,56 @@ export default function CrearEgreso(props) {
                     let updatedFiles = { 
                         xml: [...(prevFiles.xml || [])], 
                         pdf: [...(prevFiles.pdf || [])],
-                        zip: [...(prevFiles.zip || [])]
- 
+                        zip: [...(prevFiles.zip || [])],
+                        excel: [...(prevFiles.excel || [])],
+                        imagenes: [...(prevFiles.imagenes || [])], 
                     };
         
                     let tieneXML = updatedFiles.xml.length > 0;
                     let facturaTipo = form.tipoFactura;
         
                     for (const file of acceptedFiles) {
-                        try {
-                            // console.log(file.type, file.name);
-        
-                            if (file.type.includes("xml") || file.name.toLowerCase().endsWith(".xml")) {
-                                // 📌 Agrega XML automáticamente
-                                updatedFiles.xml.push(file);
-                                tieneXML = true;
-                                form.tipoFactura = "nacional";
-        
-                                // Simula evento para procesarlo con `onChangeFactura`
-                                const fakeEvent = { target: { files: [file] } };
-                                // console.log(fakeEvent);
-                                onChangeFactura(fakeEvent);
-        
-                            } else if (file.type.includes("pdf") || file.name.toLowerCase().endsWith(".pdf")) {
-                                // 📌 Agrega PDF sin afectar XML
-                                updatedFiles.pdf.push(file);
-                            }else if (file.type.includes("zip") || file.name.toLowerCase().endsWith(".zip")) {
-                                // 📌 Agrega ZIP
-                                updatedFiles.zip.push(file);
-                            }
-                        } catch (error) {
-                            console.error("Error en la selección del archivo:", error);
+                        const ext = file.name.split('.').pop()?.toLowerCase();
+
+                        switch (ext) {
+                            case 'xml':
+                            // aquí sí validas que sea CFDI
+                            updatedFiles.xml.push(file);
+                            tieneXML = true;
+                            form.tipoFactura = "nacional";
+                            onChangeFactura({ target: { files: [file] } });
+                            break;
+
+                            case 'pdf':
+                            updatedFiles.pdf.push(file);
+                            break;
+
+                            case 'zip':
+                            updatedFiles.zip.push(file);
+                            break;
+
+                            case 'xls':
+                            case 'xlsx':
+                            updatedFiles.excel.push(file); // ✅ ya no se confunde con xml
+                            break;
+
+                            case 'png':
+                            case 'jpg':
+                            case 'jpeg':
+                            updatedFiles.imagenes.push(file);
+                            break;
+
+                            default:
+                            console.warn("Archivo desconocido:", file.name, file.type);
                         }
-                    }
+                        }
+
         
                     // 🔥 Si NO hay XML y se sube un PDF, pregunta si es Factura Nacional o Extranjera
-                    if (!tieneXML && (updatedFiles.pdf.length > 0 || updatedFiles.zip.length > 0)) {
+                    if (!tieneXML && (updatedFiles.pdf.length > 0 || updatedFiles.zip.length > 0 || updatedFiles.excel.length > 0 || updatedFiles.imagenes.length > 0)) {
                         Swal.fire({
                             title: "Tipo de Factura",
-                            text: "¿La factura PDF/ZIP es Nacional o Extranjera?",
+                            text: "¿La factura PDF es Nacional o Extranjera?",
                             icon: "question",
                             showCancelButton: true,
                             confirmButtonText: "Guardar",
@@ -1340,6 +1407,8 @@ export default function CrearEgreso(props) {
                         )}
                     </Box>
                     ))}
+                    *
+
                 </Paper>
                 </Grid>
 
@@ -1368,13 +1437,13 @@ export default function CrearEgreso(props) {
                         
                     <Autocomplete
                             name="proveedor"
-                            options={proveedores.sort((a, b) => a.name.localeCompare(b.name))} // Orden alfabético
+                            options={opciones.proveedores.sort((a, b) => a.name.localeCompare(b.name))} // Orden alfabético
                             groupBy={(option) => option.name.charAt(0).toUpperCase()} // Agrupa por la primera letra del nombre
                             getOptionLabel={(option) => option.name} // Mostrar nombre del proveedor
                             isOptionEqualToValue={(option, value) => option.id === value?.id} // Comparar por ID
-                            value={proveedores.find((item) => item.id === form.proveedor) || null} // Ajustar el valor actual
+                            value={opciones.proveedores.find((item) => item.id === form.proveedor) || null} // Ajustar el valor actual
                             onChange={(event, value) => handleChangeProveedor(event, value)} // Manejar cambios
-                            renderInput={(params) => ( 
+                            renderInput={(params) => (
                                 <TextField
                                     {...params}
                                     variant="outlined"

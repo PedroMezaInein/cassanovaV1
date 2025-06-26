@@ -103,7 +103,9 @@ const DropzoneButton = ({ tipo, form, setForm, handleSubmit }) => {
     // Configuración de Dropzone
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop, // Llama a la función onDrop al arrastrar archivos
-        accept: 'image/*,application/pdf,.xml,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip',
+        // accept: 'image/*,application/pdf,.xml,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip',
+        accept: "application/pdf, application/xml, text/xml, application/zip, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/png, image/jpeg",
+
         multiple: true, // Permitir múltiples archivos
     });
 
@@ -215,13 +217,13 @@ export default function AdjuntosCompras(props) {
     const [adjuntos, setAdjuntos] = useState(false);
 
     useEffect(() => {
-        Swal.fire({
-            title: 'Cargando...',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            },
-        });
+        // Swal.fire({
+        //     title: 'Cargando...',
+        //     allowOutsideClick: false,
+        //     didOpen: () => {
+        //         Swal.showLoading();
+        //     },
+        // });
         getAdjuntos();
     }, []);
 

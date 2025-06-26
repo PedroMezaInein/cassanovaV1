@@ -60,11 +60,14 @@ export default function CrearCompras(props) {
     const [fileName, setFileName] = useState(""); // Nombre del archivo
 
     const [files, setFiles] = useState({
-        xml: null,
-        pdf: null,
-        pago: null,
-        presupuesto: null,
-      });
+            xml: null,
+            pdf: null,
+            pago: null,
+            presupuesto: null,
+            zip: null,
+            excel: null,
+            imagenes: null,
+        });
 
       const { getRootProps, getInputProps } = useDropzone({
         onDrop: async (acceptedFiles) => {
@@ -73,14 +76,15 @@ export default function CrearCompras(props) {
           for (const file of acceptedFiles) {
             try {
               // Validar tipos de archivo permitidos
-              const allowedTypes = [
+               const allowedTypes = [
                 "application/pdf",
                 "application/xml",
                 "text/xml",
                 "image/png",
                 "image/jpeg",
                 "image/jpg",
-              ];
+                "application/zip",
+                ];
       
               if (!allowedTypes.includes(file.type)) {
                 Swal.fire({
@@ -139,7 +143,7 @@ export default function CrearCompras(props) {
 
       const { getRootProps: getRootPropsXmlPdf, getInputProps: getInputPropsXmlPdf } = useDropzone({
         multiple: true,
-        accept: "application/pdf, application/xml, text/xml",
+        accept: "application/pdf, application/xml, text/xml, application/zip, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/png, image/jpeg",
         onDrop: async (acceptedFiles) => {
             if (!form.factura) {
                 Swal.fire({
@@ -150,40 +154,55 @@ export default function CrearCompras(props) {
                 return;
             }
             setFiles((prevFiles) => {
-                let updatedFiles = { 
+                 let updatedFiles = { 
                     xml: [...(prevFiles.xml || [])], 
-                    pdf: [...(prevFiles.pdf || [])] 
+                    pdf: [...(prevFiles.pdf || [])],
+                    zip: [...(prevFiles.zip || [])],
+                    excel: [...(prevFiles.excel || [])],
+                    imagenes: [...(prevFiles.imagenes || [])], 
                 };
     
                 let tieneXML = updatedFiles.xml.length > 0;
                 let facturaTipo = form.tipoFactura;
     
-                for (const file of acceptedFiles) {
-                    try {
-                        // console.log(file.type, file.name);
-    
-                        if (file.type.includes("xml") || file.name.toLowerCase().endsWith(".xml")) {
-                            // 📌 Agrega XML automáticamente
+                 for (const file of acceptedFiles) {
+                        const ext = file.name.split('.').pop()?.toLowerCase();
+
+                        switch (ext) {
+                            case 'xml':
+                            // aquí sí validas que sea CFDI
                             updatedFiles.xml.push(file);
                             tieneXML = true;
                             form.tipoFactura = "nacional";
-    
-                            // Simula evento para procesarlo con `onChangeFactura`
-                            const fakeEvent = { target: { files: [file] } };
-                            // console.log(fakeEvent);
-                            onChangeFactura(fakeEvent);
-    
-                        } else if (file.type.includes("pdf") || file.name.toLowerCase().endsWith(".pdf")) {
-                            // 📌 Agrega PDF sin afectar XML
+                            onChangeFactura({ target: { files: [file] } });
+                            break;
+
+                            case 'pdf':
                             updatedFiles.pdf.push(file);
+                            break;
+
+                            case 'zip':
+                            updatedFiles.zip.push(file);
+                            break;
+
+                            case 'xls':
+                            case 'xlsx':
+                            updatedFiles.excel.push(file); // ✅ ya no se confunde con xml
+                            break;
+
+                            case 'png':
+                            case 'jpg':
+                            case 'jpeg':
+                            updatedFiles.imagenes.push(file);
+                            break;
+
+                            default:
+                            console.warn("Archivo desconocido:", file.name, file.type);
                         }
-                    } catch (error) {
-                        console.error("Error en la selección del archivo:", error);
                     }
-                }
     
                 // 🔥 Si NO hay XML y se sube un PDF, pregunta si es Factura Nacional o Extranjera
-                if (!tieneXML && updatedFiles.pdf.length > 0) {
+                    if (!tieneXML && (updatedFiles.pdf.length > 0 || updatedFiles.zip.length > 0 || updatedFiles.excel.length > 0 || updatedFiles.imagenes.length > 0)) {
                     Swal.fire({
                         title: "Tipo de Factura",
                         text: "¿La factura PDF es Nacional o Extranjera?",
@@ -258,10 +277,13 @@ export default function CrearCompras(props) {
 
     const [form, setForm] = useState({
         adjuntos: {
-            // pago: { files: [], value: '' },
-            // pdf: { files: [], value: '' },
-            // presupuesto: { files: [], value: '' },
-            // xml: { files: [], value: '' },
+            pago: { files: [], value: '' },
+            pdf: { files: [], value: '' },
+            presupuesto: { files: [], value: '' },
+            xml: { files: [], value: '' },
+            zip: { files: [], value: '' },
+            imagenes: { files: [], value: '' },
+            excel: { files: [], value: '' },
         },
         area: '',
         banco: 0,
@@ -995,7 +1017,7 @@ export default function CrearCompras(props) {
                     aux.adjuntos = { ...files }; // Asegurar que se copian bien los archivos
                     // form.adjutnos =  { ...files };
                     // console.log("Archivos antes de enviar:", aux.adjuntos);
-    
+                    console.log(aux)   
                     try {
                         apiPostForm('v2/proyectos/compras', aux, auth)
                             .then((response) => {
@@ -1010,22 +1032,83 @@ export default function CrearCompras(props) {
                                         Swal.showLoading();
                                     },
                                 });
-    
+                                const tareas = [];
+
                                 setForm({ ...form, compra });
                                 // 📌 **Subir archivos XML/PDF si la factura es extranjera**
-                                if (form.tipoFactura === "extranjera" && files.pdf.length > 0) {
-                                    let data = new FormData();
-                                    files.pdf.forEach((file) => {
-                                        data.append(`files_name_facturas_pdf[]`, file.name);
-                                        data.append(`files_facturas_pdf[]`, file);
-                                    });
-                                    data.append('adjuntos[]', 'facturas_pdf');
-                                    data.append('tipo', 'facturas_pdf');
+                                // if (form.tipoFactura === "extranjera" && files.pdf.length > 0) {
+                                //     let data = new FormData();
+                                //     files.pdf.forEach((file) => {
+                                //         data.append(`files_name_facturas_pdf[]`, file.name);
+                                //         data.append(`files_facturas_pdf[]`, file);
+                                //     });
+                                //     data.append('adjuntos[]', 'facturas_pdf');
+                                //     data.append('tipo', 'facturas_pdf');
 
-                                    apiPostForm(`v2/proyectos/compras/${compra.id}/archivos/adjuntos/s3`, data, auth);
-                                }
+                                //     apiPostForm(`v2/proyectos/compras/${compra.id}/archivos/adjuntos/s3`, data, auth);
+                                // }
+                                //  if (form.tipoFactura === "nacional" && files?.pdf?.length > 0) {
+                                //         const data = new FormData();
+                                //         files.pdf.forEach(file => {
+                                //             data.append(`files_name_facturas_pdf[]`, file.name);
+                                //             data.append(`files_facturas[]`, file);
+                                //         });
+                                //         data.append('adjuntos[]', 'facturas');
+                                //         data.append('tipo', 'facturas');
+                                //         tareas.push(apiPostForm(`v2/proyectos/compras/${compra.id}/archivos/adjuntos/s3`, data, auth));
+                                //     }
+
+                                     if (
+                                        (form.tipoFactura === "extranjera" || form.tipoFactura === "nacional") &&
+                                        (files?.pdf?.length > 0 || files?.imagenes?.length > 0 || files?.excel?.length > 0)
+                                    ) {
+                                        const data = new FormData();
+
+                                        // PDF
+                                        if (files?.pdf?.length > 0) {
+                                            files.pdf.forEach(file => {
+                                                data.append(`files_name_facturas_pdf[]`, file.name);
+                                                data.append(`files_facturas[]`, file);
+                                            });
+                                        }
+
+                                        // Imágenes
+                                        if (files?.imagenes?.length > 0) {
+                                            files.imagenes.forEach(file => {
+                                                data.append(`files_name_facturas_imagen[]`, file.name);
+                                                data.append(`files_facturas[]`, file);
+                                            });
+                                        }
+
+                                        // Excel
+                                        if (files?.excel?.length > 0) {
+                                            files.excel.forEach(file => {
+                                                data.append(`files_name_facturas_excel[]`, file.name);
+                                                data.append(`files_facturas[]`, file);
+                                            });
+                                        }
+
+                                        // Metadatos adicionales
+                                        data.append('adjuntos[]', 'facturas');
+                                        data.append('tipo', form.tipoFactura === "extranjera" ? 'facturas_pdf' : 'facturas');
+
+                                        tareas.push(
+                                            apiPostForm(`v2/proyectos/compras/${compra.id}/archivos/adjuntos/s3`, data, auth)
+                                        );
+                                    }
     
                                 console.log("Estado form después de la compra:", form);
+                                // ✅ ZIP
+                                if (files.zip?.length > 0 ) {
+                                    const data = new FormData();
+                                    files.zip.forEach(file => {
+                                        data.append(`files_name_facturas_pdf[]`, file.name);
+                                        data.append(`files_facturas[]`, file);
+                                    });
+                                    data.append('adjuntos[]', 'facturas');
+                                    data.append('tipo', 'facturas');
+                                    tareas.push(apiPostForm(`v2/proyectos/compras/${compra.id}/archivos/adjuntos/s3`, data, auth));
+                                }
     
                                 // Verificar si la compra tiene factura
                                 if (compra.factura) {
@@ -1333,7 +1416,7 @@ export default function CrearCompras(props) {
                 <Paper sx={{ padding: 2, textAlign: "center",}} elevation={0}>
 
                     {/* Lista de archivos subidos con estilos mejorados */}
-                    {["xml", "pdf"].map((type) => (
+                    {["xml", "pdf","zip"].map((type) => (
                     <Box key={type} sx={{ marginTop: "10px" }}>
                         {files[type]?.length > 0 && (
                         <>
@@ -1357,8 +1440,10 @@ export default function CrearCompras(props) {
                                 {/* Icono según el tipo de archivo */}
                                 {type === "xml" ? (
                                 <Typography sx={{ fontWeight: "bold", color: "#FFA500" }}>📄 <strong>{type} :</strong></Typography>
-                                ) : (
+                                ) : type === "pdf" ? (
                                 <Typography sx={{ fontWeight: "bold", color: "#28A745" }}>📑 <strong>{type} :</strong></Typography>
+                                ) : (
+                                    <Typography sx={{ fontWeight: "bold", color: "#FF5733" }}>📦 <strong>{type} :</strong></Typography>
                                 )}
 
                                 {/* Nombre del archivo */}
@@ -1378,9 +1463,11 @@ export default function CrearCompras(props) {
                                 </Typography>
 
                                 {/* Botón para visualizar */}
-                                <IconButton color="primary" href={URL.createObjectURL(file)} target="_blank">
-                                <VisibilityIcon />
-                                </IconButton>
+                                {type !== "zip" && (
+                                    <IconButton color="primary" href={URL.createObjectURL(file)} target="_blank">
+                                        <VisibilityIcon />
+                                    </IconButton>
+                                )}
 
                                 {/* Botón para eliminar */}
                                 <IconButton color="secondary" onClick={() => handleDeleteFile(type, index)}>
@@ -1392,6 +1479,36 @@ export default function CrearCompras(props) {
                         )}
                     </Box>
                     ))}
+                    {files.imagenes?.length > 0 && (
+                        <Box sx={{ mt: 2 }}>
+                            <Typography variant="h6" sx={{ color: "#007BFF" }}>🖼️ Imágenes</Typography>
+                            {files.imagenes.map((file, index) => (
+                            <Box key={index} sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                                <img src={URL.createObjectURL(file)} alt="imagen" width={60} style={{ marginRight: 8, borderRadius: 4 }} />
+                                <Typography variant="body2">{file.name}</Typography>
+                                <IconButton onClick={() => handleDeleteFile("imagenes", index)}><DeleteIcon /></IconButton>
+                            </Box>
+                            ))}
+                        </Box>
+                        )}
+                        {files.excel?.length > 0 && (
+                        <Box sx={{ mt: 2 }}>
+                            <Typography variant="h6" sx={{ color: "#007BFF" }}>📊 Excel</Typography>
+                            {files.excel.map((file, index) => (
+                            <Box key={index} sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                                <Typography variant="body2" sx={{ flexGrow: 1 }}>{file.name}</Typography>
+                                <IconButton color="primary" href={URL.createObjectURL(file)} target="_blank">
+                                <VisibilityIcon />
+                                </IconButton>
+                                <IconButton onClick={() => handleDeleteFile("excel", index)}>
+                                <DeleteIcon />
+                                </IconButton>
+                            </Box>
+                            ))}
+                        </Box>
+                        )}
+
+
                 </Paper>
                 </Grid>
 

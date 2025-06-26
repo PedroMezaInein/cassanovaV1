@@ -33,12 +33,11 @@ export default function Factura(props) {
  
     const [form, setForm] = useState({
         adjuntos: {
-            xml: {
-                files: [], value: ''
-            },
-            pdf: {
-                files: [], value: ''
-            }
+           xml: { files: [], value: '' },
+            pdf: { files: [], value: '' },
+            imagenes: { files: [], value: '' },
+            excel: { files: [], value: '' },
+            zip: { files: [], value: '' } // ✅ Agregado ZIP
         },
         options: {
             clientes: [],
@@ -81,7 +80,41 @@ export default function Factura(props) {
      const obtenerFacturas = async () => {
         try {
             const response = await apiGet(`v2/proyectos/compras/facturas/${compra}`, auth);
-            setFacturas(response.data.compra.facturas); // Almacenar facturas en el estado
+            console.log(response)
+
+            const facturasCFDI = response.data.compra.facturas || []; // facturas "normales"
+            const facturasAdjuntos = response.data.compra.facturas_pdf || []; // nuevos adjuntos
+            const todasFacturas = [...facturasCFDI];
+                // 🔥 Si existen adjuntos, agrégalos como "factura simulada"
+                // console.log(facturasAdjuntos)
+                facturasCFDI.forEach(f => {
+                // Busca si hay un PDF adjunto correspondiente al XML de esta factura
+                const adjuntoPDF = facturasAdjuntos.find(a => a.name.toLowerCase().includes('.pdf') && a.name.includes(f.folio || ''));
+
+                if (adjuntoPDF) {
+                    f.pdf = {
+                    url: adjuntoPDF.url,
+                    name: adjuntoPDF.name
+                    };
+                }
+                });
+                facturasAdjuntos.forEach((adjunto) => {
+                    todasFacturas.push({
+                        id: adjunto.id, // o algún ID único
+                        nombre_emisor: 'Adjunto',
+                        nombre_receptor: 'Adjunto',
+                        subtotal: 'n/a',
+                        total: 'n/a',
+                        archivoAdjunto: { url: adjunto.url, name: adjunto.name }, // ⚡️
+                        esAdjunto: true
+                    });
+                });
+
+                // Ahora seteas todo
+                setFacturas(todasFacturas);
+
+          
+            // setFacturas(response.data.compra.facturas); // Almacenar facturas en el estado
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'Error al obtener facturas' });
         }
@@ -283,82 +316,232 @@ export default function Factura(props) {
         })
     }
 
-    const handleAddFile = (e, tipo) => {
-        let aux = []
+      const handleAddFile = (e) => {
+        const archivos = Array.from(e.target.files);
+        const nuevosAdjuntos = { ...form.adjuntos };
 
-        Array.from(e.target.files).forEach((file, index) => {
+        archivos.forEach((file, index) => {
+            const nombre = file.name.toLowerCase();
+            const tipoMime = file.type;
 
-            aux.push({
-                name: file.name,
-                file: file,
-                url: URL.createObjectURL(file),
-                key: index
-            })
-        })
+            const fileObj = {
+            name: file.name,
+            file: file,
+            url: URL.createObjectURL(file),
+            key: Date.now() + index,
+            };
 
-        let path = 'C:/fakepath/' + aux[0].name
+            // Clasificación por tipo de archivo
+            if (tipoMime.includes("pdf") || nombre.endsWith(".pdf")) {
+            if (!nuevosAdjuntos.pdf) nuevosAdjuntos.pdf = { files: [], value: '' };
+            nuevosAdjuntos.pdf.files.push(fileObj);
+            nuevosAdjuntos.pdf.value = 'C:/fakepath/' + file.name;
+            } else if (tipoMime.includes("image") || nombre.match(/\.(jpg|jpeg|png)$/)) {
+            if (!nuevosAdjuntos.imagenes) nuevosAdjuntos.imagenes = { files: [], value: '' };
+            nuevosAdjuntos.imagenes.files.push(fileObj);
+            nuevosAdjuntos.imagenes.value = 'C:/fakepath/' + file.name;
+            } else if (
+            tipoMime.includes("sheet") ||
+            nombre.endsWith(".xls") ||
+            nombre.endsWith(".xlsx")
+            ) {
+            if (!nuevosAdjuntos.excel) nuevosAdjuntos.excel = { files: [], value: '' };
+            nuevosAdjuntos.excel.files.push(fileObj);
+            nuevosAdjuntos.excel.value = 'C:/fakepath/' + file.name;
+            } else if (tipoMime.includes("zip") || nombre.endsWith(".zip")) {
+            if (!nuevosAdjuntos.zip) nuevosAdjuntos.zip = { files: [], value: '' };
+            nuevosAdjuntos.zip.files.push(fileObj);
+            nuevosAdjuntos.zip.value = 'C:/fakepath/' + file.name;
+            }
+        });
 
         setForm({
             ...form,
-            adjuntos: {
-                ...form.adjuntos,
-                [tipo]: { files: aux, value: path }
-            }
-        })
-    }
+            adjuntos: nuevosAdjuntos,
+        });
+    };
 
     // *************** AGREGAR ARCHIVOS ***************
-    const addFacturaS3 = () => { //attachFiles
+    // const addFacturaS3 = () => { //attachFiles
 
-        if (!form.adjuntos.xml.files.length && !form.adjuntos.pdf.files.length) {
-            Swal.fire({ icon: 'error', title: 'Debe agregar al menos un archivo' });
-            return;
-        }
+    //     if (!form.adjuntos.xml.files.length && !form.adjuntos.pdf.files.length) {
+    //         Swal.fire({ icon: 'error', title: 'Debe agregar al menos un archivo' });
+    //         return;
+    //     }
+    //             Swal.fire({ title: 'Subiendo archivo...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+
+    //     apiGet(`v1/constant/admin-proyectos`, auth).then(
+    //         (response) => {
+    //             const { alma } = response.data
+    //             let filePath = `facturas/compras/`
+    //             let aux = []
+    //             form.adjuntos.xml.files.forEach((file) => {
+    //                 aux.push(file)
+    //             })
+    //             form.adjuntos.pdf.files.forEach((file) => {
+    //                 aux.push(file)
+    //             })
+    //             let auxPromises = aux.map((file) => {
+    //                 return new Promise((resolve, reject) => {
+    //                     new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
+    //                         .then((data) => {
+    //                             const { location, status } = data
+    //                             if (status === 204) resolve({ name: file.name, url: location })
+    //                             else reject(data)
+    //                         })
+
+    //                         .catch((error) => {
+    //                             reject(error)
+    //                         })
+    //                     if (reload) {
+    //                         reload.reload()
+    //                     }
+    //                 })
+    //             })
+    //             Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, compra) }).catch(err => console.error(err))
+    //         }, (error) => { }
+    //     ).catch((error) => {
+    //         Swal.close()
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: 'Error al adjuntar archivos',
+    //             text: 'Ocurrio un error al adjuntar los archivos',
+    //             showConfirmButton: false,
+    //             timer: 1500
+    //         })
+
+    //     })
+    // }
+
+     const addFacturaS3 = async () => {
+            const { xml, pdf, imagenes, excel, zip } = form.adjuntos;
+    
+            if (
+                xml.files.length === 0 &&
+                pdf.files.length === 0 &&
+                imagenes.files.length === 0 &&
+                excel.files.length === 0 &&
+                zip.files.length === 0 // ✅ Añadir verificación ZIP
+            ) {
+                Swal.fire({ icon: 'error', title: 'Debe agregar al menos un archivo' });
+                return;
+            }
+    
+            const allFiles = [...xml.files, ...pdf.files, ...imagenes.files, ...excel.files, ...zip.files]; // ✅ Incluir ZIP
+    
+            // 🔹 Flujo para un solo archivo
+            if (allFiles.length === 1) {
+                const file = allFiles[0];
+                const fileName = file.name.toLowerCase();
+                const mimeType = file.file.type;
+    
+                const data = new FormData();
+                data.append(`files_name_facturas[]`, file.name);
+                data.append(`files_facturas[]`, file.file);
+    
+                let tipo = 'facturas';
+                if (fileName.endsWith('.pdf')) tipo = 'facturas_pdf';
+                else if (fileName.match(/\.(jpg|jpeg|png)$/)) tipo = 'factura-imagen';
+                else if (fileName.match(/\.(xls|xlsx)$/)) tipo = 'factura-excel';
+                else if (fileName.endsWith('.xml')) tipo = 'factura-xml';
+                else if (fileName.endsWith('.zip')) tipo = 'factura-zip'; // ✅ Agregado ZIP
+    
+                data.append('adjuntos[]', tipo);
+                data.append('tipo', tipo);
+    
                 Swal.fire({ title: 'Subiendo archivo...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-
-        apiGet(`v1/constant/admin-proyectos`, auth).then(
-            (response) => {
-                const { alma } = response.data
-                let filePath = `facturas/compras/`
-                let aux = []
-                form.adjuntos.xml.files.forEach((file) => {
-                    aux.push(file)
-                })
-                form.adjuntos.pdf.files.forEach((file) => {
-                    aux.push(file)
-                })
-                let auxPromises = aux.map((file) => {
+    
+                try {
+                await apiPostForm(`v2/proyectos/compras/${compra}/archivos/adjuntos/s3`, data, auth);
+    
+                Swal.fire({
+                    icon: 'success',
+                    title: `Archivo ${file.name} subido con éxito`,
+                    showConfirmButton: false,
+                    timer: 1000,
+                });
+    
+                setForm((prevForm) => ({
+                    ...prevForm,
+                    adjuntos: {
+                    xml: { files: [], value: '' },
+                    pdf: { files: [], value: '' },
+                    imagenes: { files: [], value: '' },
+                    excel: { files: [], value: '' },
+                    zip: { files: [], value: '' } // ✅ reset ZIP
+    
+                    }
+                }));
+    
+                obtenerFacturas();
+                if (reloadTable) reloadTable.reload();
+    
+                } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al subir archivo',
+                    text: 'Ocurrió un error al subir el archivo',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                }
+    
+            } else {
+                // 🔹 Flujo para varios archivos
+                Swal.fire({ title: 'Subiendo archivos...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    
+                try {
+                const { data: config } = await apiGet(`v1/constant/admin-proyectos`, auth);
+                const alma = config.alma;
+                const filePath = `facturas/compras/`;
+    
+                const uploads = allFiles.map((file) => {
+                    const nombre = `${Math.floor(Date.now() / 1000)}-${file.name}`;
                     return new Promise((resolve, reject) => {
-                        new S3(alma).uploadFile(file.file, `${filePath}${Math.floor(Date.now() / 1000)}-${file.name}`)
-                            .then((data) => {
-                                const { location, status } = data
-                                if (status === 204) resolve({ name: file.name, url: location })
-                                else reject(data)
-                            })
-
-                            .catch((error) => {
-                                reject(error)
-                            })
-                        if (reload) {
-                            reload.reload()
+                    new S3(alma).uploadFile(file.file, `${filePath}${nombre}`)
+                        .then((data) => {
+                        if (data.status === 204) {
+                            resolve({ name: file.name, url: data.location });
+                        } else {
+                            reject(data);
                         }
-                    })
-                })
-                Promise.all(auxPromises).then(values => { addNewFacturaAxios(values, compra) }).catch(err => console.error(err))
-            }, (error) => { }
-        ).catch((error) => {
-            Swal.close()
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al adjuntar archivos',
-                text: 'Ocurrio un error al adjuntar los archivos',
-                showConfirmButton: false,
-                timer: 1500
-            })
-
-        })
-    }
+                        })
+                        .catch((error) => reject(error));
+                    });
+                });
+    
+                const uploaded = await Promise.all(uploads);
+    
+                addNewFacturaAxios(uploaded, compra);
+    
+                setForm((prevForm) => ({
+                    ...prevForm,
+                    adjuntos: {
+                    xml: { files: [], value: '' },
+                    pdf: { files: [], value: '' },
+                    imagenes: { files: [], value: '' },
+                    excel: { files: [], value: '' },
+                    }
+                }));
+    
+                if (reloadTable) reloadTable.reload();
+    
+                } catch (error) {
+                console.error(error);
+                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al subir archivos',
+                    text: 'Ocurrió un error al adjuntar los archivos',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                }
+            }
+            };
+    
 
     const addNewFacturaAxios = (files, compra) => {
         let aux = form
@@ -512,7 +695,7 @@ export default function Factura(props) {
     //     ).catch((error) => { catchErrors(error) })
     // }
 
-    const deleteEgresoAxios = (id) => {
+    const deleteEgresoAxios = (factura) => {
         Swal.fire({
             title: '¿Estás seguro?',
             text: "Esta acción no se puede deshacer.",
@@ -524,17 +707,38 @@ export default function Factura(props) {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                apiDelete(`v2/proyectos/compras/${compra}/facturas/${id}`, auth)
+                 let deletePromise;
+                
+                  if (factura.esAdjunto) {
+                              // 🔥 Si es adjunto eliminar de la ruta de adjuntos
+                        deletePromise = apiDelete(`v2/proyectos/compras/${compra}/adjuntos/${factura.id}`, auth);
+                    } else {
+                        // 🔥 Si es factura CFDI eliminar de la ruta de facturas
+                        deletePromise = apiDelete(`v2/proyectos/compras/${compra}/facturas/${factura.id}`, auth);
+                    }
+
+                    deletePromise
                     .then(() => {
-                        Swal.fire('¡Eliminado!', 'La factura ha sido eliminada.', 'success');
-                         // 🔥 Actualizar estado eliminando la factura eliminada
-                    setFacturas(prevFacturas => prevFacturas.filter(factura => factura.id !== id));
-                   
-                        obtenerFacturas(); // Recargar facturas tras eliminar
+                    Swal.fire('¡Eliminado!', 'Se ha eliminado correctamente.', 'success');
+                    setFacturas(prevFacturas => prevFacturas.filter(f => f.id !== factura.id));
+                    obtenerFacturas(); // 🔥 Recargar después de eliminar
                     })
                     .catch(() => {
-                        Swal.fire('Error', 'No se pudo eliminar la factura.', 'error');
+                    Swal.fire('Error', 'No se pudo eliminar.', 'error');
                     });
+
+
+                // apiDelete(`v2/proyectos/compras/${compra}/facturas/${id}`, auth)
+                //     .then(() => {
+                //         Swal.fire('¡Eliminado!', 'La factura ha sido eliminada.', 'success');
+                //          // 🔥 Actualizar estado eliminando la factura eliminada
+                //     setFacturas(prevFacturas => prevFacturas.filter(factura => factura.id !== id));
+                   
+                //         obtenerFacturas(); // Recargar facturas tras eliminar
+                //     })
+                //     .catch(() => {
+                //         Swal.fire('Error', 'No se pudo eliminar la factura.', 'error');
+                //     });
             }
         });
     };
@@ -694,7 +898,7 @@ export default function Factura(props) {
                         <CardContent>
                             <InputLabel>📑 PDF de la Factura</InputLabel>
                             <input
-                                accept="application/pdf"
+                                accept="application/pdf,application/zip,image/jpeg,image/png,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                                 style={{ display: 'none' }}
                                 id="pdf-upload"
                                 type="file"
@@ -757,6 +961,134 @@ export default function Factura(props) {
                                 ))}
                             </Grid>
                         </CardContent>
+                         <CardContent>
+                            <Grid container spacing={2}>
+                                {form.adjuntos.imagenes?.files.map((item, index) => (
+                                <Grid item xs={12} key={index}>
+                                    <Paper
+                                    elevation={2}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        padding: 1,
+                                        backgroundColor: 'rgba(58, 137, 201, 0.15)',
+                                        borderRadius: 2,
+                                    }}
+                                    >
+                                    <img src={item.url} alt={item.name} width={40} height={40} style={{ marginRight: 10, borderRadius: 4 }} />
+                                    <Tooltip title={item.name} arrow>
+                                        <Typography
+                                        sx={{
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            maxWidth: '150px',
+                                            fontWeight: 'bold',
+                                            color: '#3f51b5',
+                                        }}
+                                        >
+                                        {item.name.length > 15 ? item.name.slice(0, 10) + '...' : item.name}
+                                        </Typography>
+                                    </Tooltip>
+
+                                    <IconButton
+                                        size="small"
+                                        onClick={() => handleDeleteFile('imagenes', index)}
+                                        sx={{ '&:hover': { backgroundColor: '#f77c5d', color: '#fff' } }}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                    </Paper>
+                                </Grid>
+                                ))}
+                            </Grid>
+                        </CardContent>
+
+                        <CardContent>
+                            <Grid container spacing={2}>
+                                {form.adjuntos.excel?.files.map((item, index) => (
+                                <Grid item xs={12} key={index}>
+                                    <Paper
+                                    elevation={2}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        padding: 1,
+                                        backgroundColor: 'rgba(58, 137, 201, 0.15)',
+                                        borderRadius: 2,
+                                    }}
+                                    >
+                                    <Tooltip title={item.name} arrow>
+                                        <Typography
+                                        sx={{
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            maxWidth: '150px',
+                                            fontWeight: 'bold',
+                                            color: '#388e3c',
+                                        }}
+                                        >
+                                        📊 {item.name.length > 15 ? item.name.slice(0, 10) + '...' : item.name}
+                                        </Typography>
+                                    </Tooltip>
+
+                                    <IconButton
+                                        size="small"
+                                        onClick={() => handleDeleteFile('excel', index)}
+                                        sx={{ '&:hover': { backgroundColor: '#f77c5d', color: '#fff' } }}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                    </Paper>
+                                </Grid>
+                                ))}
+                            </Grid>
+                            </CardContent>
+                        <CardContent>
+                                <Grid container spacing={2}>
+                                    {form.adjuntos.zip?.files.map((item, index) => (
+                                    <Grid item xs={12} key={index}>
+                                        <Paper
+                                        elevation={2}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            padding: 1,
+                                            backgroundColor: 'rgba(58, 137, 201, 0.15)',
+                                            borderRadius: 2,
+                                        }}
+                                        >
+                                        <Tooltip title={item.name} arrow>
+                                            <Typography
+                                            sx={{
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                maxWidth: '150px',
+                                                fontWeight: 'bold',
+                                                color: '#000',
+                                            }}
+                                            >
+                                            🗜️ {item.name}
+                                            </Typography>
+                                        </Tooltip>
+
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleDeleteFile('zip', index)}
+                                            sx={{ '&:hover': { backgroundColor: '#f77c5d', color: '#fff' } }}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                        </Paper>
+                                    </Grid>
+                                    ))}
+                                </Grid>
+                                </CardContent>
                     </Card>
                 </Grid>
 
@@ -786,77 +1118,95 @@ export default function Factura(props) {
                     </Typography>
                 ) : (
                     facturas.map((factura, index) => (
-                        <Grid item xs={12} sm={8} md={6} key={index}>
-                            <Card elevation={4} sx={{ padding: 2 }}>
-                                <CardContent>
-                                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                                        {factura.folio ? `Folio: ${factura.folio}` : 'Sin Folio'}
-                                    </Typography>
-                                    <Typography variant="body2" >
-                                        <strong>CFDI:</strong> {factura.serie || 'N/A'}
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        <strong>Fecha:</strong> {factura.fecha || 'N/A'}
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        <strong>Serie:</strong> {factura.serie || 'N/A'}
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        <strong>Emisor:</strong> {factura.nombre_emisor || 'N/A'}
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        <strong>Receptor:</strong> {factura.nombre_receptor || 'N/A'}
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        <strong>Total:</strong> ${factura.total ? Number(factura.total).toFixed(2) : 'N/A'}
-                                    </Typography>
-                                </CardContent>
+                    <Grid item xs={12} sm={8} md={6} key={index}>
+                    <Card elevation={4} sx={{ padding: 2 }}>
+                        <CardContent>
+                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                            {factura.esAdjunto
+                            ? 'Factura Adjunto'
+                            : factura.folio
+                            ? `Folio: ${factura.folio}`
+                            : 'Sin Folio'}
+                        </Typography>
 
-                                {/* Botones de acciones */}
-                                <CardActions sx={{ justifyContent: 'space-between' }}>
-                                    {/* Enlace a XML */}
-                                    {factura.xml?.url && (
-                                        <Tooltip title="Ver XML">
-                                            <Button
-                                                variant="outlined"
-                                                color="primary"
-                                                href={factura.xml.url}
-                                                target="_blank"
-                                                size="small"
-                                            >
-                                                XML
-                                            </Button>
-                                        </Tooltip>
-                                    )}
+                        {/* Si es adjunto solo muestra nombre del archivo */}
+                        {factura.esAdjunto ? (
+                            <Typography variant="body2">
+                            <strong>Archivo:</strong> {factura.archivoAdjunto?.name || 'N/A'}
+                            </Typography>
+                        ) : (
+                            <>
+                            <Typography variant="body2"><strong>CFDI:</strong> {factura.serie || 'N/A'}</Typography>
+                            <Typography variant="body2"><strong>Fecha:</strong> {factura.fecha || 'N/A'}</Typography>
+                            <Typography variant="body2"><strong>Serie:</strong> {factura.serie || 'N/A'}</Typography>
+                            <Typography variant="body2"><strong>Emisor:</strong> {factura.nombre_emisor || 'N/A'}</Typography>
+                            <Typography variant="body2"><strong>Receptor:</strong> {factura.nombre_receptor || 'N/A'}</Typography>
+                            <Typography variant="body2"><strong>Total:</strong> {factura.total !== 'n/a' ? `$${Number(factura.total).toFixed(2)}` : 'N/A'}</Typography>
+                            </>
+                        )}
+                        </CardContent>
 
-                                    {/* Enlace a PDF */}
-                                    {factura.pdf?.url && (
-                                        <Tooltip title="Ver PDF">
-                                            <Button
-                                                variant="outlined"
-                                                color="secondary"
-                                                href={factura.pdf.url}
-                                                target="_blank"
-                                                size="small"
-                                            >
-                                                PDF
-                                            </Button>
-                                        </Tooltip>
-                                    )}
+                        {/* Botones de acciones */}
+                        <CardActions sx={{ justifyContent: 'space-between' }}>
+                        {/* Botón para ver archivo */}
+                        {factura.esAdjunto ? (
+                            <Tooltip title="Ver archivo">
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                href={factura.archivoAdjunto?.url}
+                                target="_blank"
+                                size="small"
+                            >
+                                Ver
+                            </Button>
+                            </Tooltip>
+                        ) : (
+                            <>
+                            {/* Botón Ver XML */}
+                            {factura.xml?.url && (
+                                <Tooltip title="Ver XML">
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    href={factura.xml.url}
+                                    target="_blank"
+                                    size="small"
+                                >
+                                    XML
+                                </Button>
+                                </Tooltip>
+                            )}
+                            {/* Botón Ver PDF */}
+                            {factura.pdf?.url && (
+                                <Tooltip title="Ver PDF">
+                                <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                    href={factura.pdf.url}
+                                    target="_blank"
+                                    size="small"
+                                >
+                                    PDF
+                                </Button>
+                                </Tooltip>
+                            )}
+                            </>
+                        )}
 
-                                     {/* Botón de eliminación */}
-                                     <Tooltip title="Eliminar Factura">
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => deleteEgresoAxios(factura.id)}
-                                            sx={{ color: '#f77c5d' }}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                </CardActions>
-                            </Card>
-                        </Grid>
+                        {/* Botón eliminar (común para ambos) */}
+                        <Tooltip title="Eliminar">
+                            <IconButton
+                            size="small"
+                            onClick={() => deleteEgresoAxios(factura)}
+                            sx={{ color: '#f77c5d' }}
+                            >
+                            <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                        </CardActions>
+                    </Card>
+                    </Grid>
                     ))
                 )}
 

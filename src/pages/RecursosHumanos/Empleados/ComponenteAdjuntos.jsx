@@ -15,16 +15,17 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import Grid from '@mui/material/Grid';
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import ListSubheader from '@mui/material/ListSubheader';
+import { apiDelete} from '../../../functions/api';
 
-
-const tiposAdjuntos = [
-  { codigo: 'ACNA', descripcion: 'Acta de nacimiento', obligatorio: true },
-  { codigo: 'CURP', descripcion: 'CURP', obligatorio: true },
-  { codigo: 'RFC', descripcion: 'Constancia de situación fiscal', obligatorio: true },
-  { codigo: 'NSS', descripcion: 'Credencial IMSS', obligatorio: true },
-  { codigo: 'IDO', descripcion: 'INE', obligatorio: true },
-  // Agrega más según tu tabla
-];
+// const tiposAdjuntos = [
+//   { codigo: 'ACNA', descripcion: 'Acta de nacimiento', obligatorio: true },
+//   { codigo: 'CURP', descripcion: 'CURP', obligatorio: true },
+//   { codigo: 'RFC', descripcion: 'Constancia de situación fiscal', obligatorio: true },
+//   { codigo: 'NSS', descripcion: 'Credencial IMSS', obligatorio: true },
+//   { codigo: 'IDO', descripcion: 'INE', obligatorio: true },
+//   // Agrega más según tu tabla
+// ];
 
 const ComponenteAdjuntos = ({ colaborador }) => {
   const [adjuntos, setAdjuntos] = useState([]);
@@ -110,7 +111,7 @@ useEffect(() => {
 }, []);
 
     const handleAgregar = () => {
-      const tipoSeleccionado = tiposAdjuntos.find(t => t.id === parseInt(tipo));
+      const tipoSeleccionado = tiposAdjuntos.find(t => t.id.toString() === tipo);
       if (!archivo || !tipoSeleccionado) {
         return Swal.fire('Error', 'Selecciona archivo y tipo válido.', 'warning');
       }
@@ -232,7 +233,73 @@ const coloresPorSeccion = {
 //     fetchAdjuntos();
 //   }, [colaborador]);
 
+   // 1. Agrupar por "codigo" (ej. IDO, ACNA, etc.)
+    const agruparTiposPorCodigo = (tipos) => {
+      const agrupados = tipos.reduce((acc, tipo) => {
+        const grupo = tipo.codigo?.toUpperCase() || 'OT';
+        if (!acc[grupo]) acc[grupo] = [];
+        acc[grupo].push(tipo);
+        return acc;
+      }, {});
 
+      // Ordenar los documentos dentro de cada grupo alfabéticamente por descripcion
+      Object.keys(agrupados).forEach(grupo => {
+        agrupados[grupo].sort((a, b) => a.descripcion.localeCompare(b.descripcion));
+      });
+
+      return agrupados;
+    };
+
+    // 2. Documentos ya subidos (por ID del tipo adjunto)
+    const tiposYaSubidos = new Set(
+      adjuntos.map(adj => adj.tipo_adjunto?.id).filter(Boolean)
+    );
+
+    // 3. Filtrar tipos que NO han sido subidos
+    const tiposDisponibles = tiposAdjuntos.filter(
+      tipo => !tiposYaSubidos.has(tipo.id)
+    );
+
+    // 4. Agrupar tipos disponibles por `codigo`
+    const agrupados = agruparTiposPorCodigo(tiposDisponibles);
+
+    // 5. Obtener todos los códigos de los tipos subidos (para saber si un grupo tiene algo subido)
+    const gruposYaSubidos = new Set(
+      adjuntos.map(adj => adj.tipo_adjunto?.codigo?.toUpperCase()).filter(Boolean)
+    );
+
+    // 6. Lista de todos los grupos únicos (disponibles o subidos)
+    const todosLosGrupos = Array.from(
+      new Set([...Object.keys(agrupados), ...gruposYaSubidos])
+    ).sort(); // Orden alfabético de los grupos
+
+
+    const handleEliminarAdjunto = async (adjuntoId) => {
+      const confirm = await Swal.fire({
+        title: '¿Eliminar adjunto?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+      });
+
+      if (!confirm.isConfirmed) return;
+
+      try {
+        await apiDelete(`rh/empleado/${colaborador.id}/adjuntos/${adjuntoId}`, userAuth.access_token);
+        Swal.fire('Eliminado', 'El archivo ha sido eliminado.', 'success');
+
+        // Actualizar lista local
+        setAdjuntos((prev) => prev.filter((a) => a.id !== adjuntoId));
+      } catch (error) {
+        Swal.fire('Error', 'No se pudo eliminar el archivo.', 'error');
+        console.error(error);
+      }
+    };
+
+
+    console.log(setTipo)
   return (
     <Box>
       <Typography variant="h6" mb={2}>
@@ -260,20 +327,42 @@ const coloresPorSeccion = {
         </Box>
       </Grid>
       <Grid item xs={12} sm={6} md={4}>
-         <TextField
-            select
-            label="Tipo de documento"
-            value={tipo}
-            onChange={(e) => setTipo(e.target.value)}
-            fullWidth
-          >
-           {tiposAdjuntos.map((item) => (
-              <MenuItem key={item.id} value={item.id}>
-                [{item.codigo}] {item.descripcion} {item.obligatorio ? '(Obligatorio)' : ''}
-              </MenuItem>
-            ))}
+       <TextField
+          select
+          label="Tipo de documento"
+          value={tipo}
+          onChange={(e) => setTipo(e.target.value)}
+          fullWidth
+        >
+        {
+            todosLosGrupos.flatMap((grupo) => {
+              const tipos = agrupados[grupo] || [];
+              const estaSubido = gruposYaSubidos.has(grupo);
 
-          </TextField>
+              // Encabezado y opciones del grupo como un solo array
+              return [
+                <ListSubheader
+                  key={`header-${grupo}`}
+                  sx={{
+                    fontWeight: 'bold',
+                    color: estaSubido ? 'green' : 'inherit',
+                    lineHeight: '2rem',
+                  }}
+                >
+                  — Grupo {grupo} {estaSubido && '✓'}
+                </ListSubheader>,
+                ...tipos.map((item) => (
+                  <MenuItem key={item.id} value={item.id.toString()}>
+                    {item.descripcion} {item.obligatorio ? '(Obligatorio)' : ''}
+                  </MenuItem>
+                ))
+              ];
+            })
+          }
+        </TextField>
+        <Typography variant="caption">Tipo seleccionado: {tipo}</Typography>
+
+
       </Grid>
       <Grid item xs={12} sm={6} md={4}>
         {/* <TextField
@@ -364,6 +453,9 @@ const coloresPorSeccion = {
                       </IconButton>
                       <IconButton component="a" href={adj.url} target="_blank" rel="noopener noreferrer">
                         <DownloadIcon />
+                      </IconButton>
+                       <IconButton onClick={() => handleEliminarAdjunto(adj.id)}>
+                        ❌
                       </IconButton>
                     </ListItem>
                   );
