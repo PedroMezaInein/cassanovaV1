@@ -33,8 +33,8 @@ class AvanceForm extends Component {
     }
     render() {
         const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, onSubmit, formeditado, handleChange, isNew,
-            deleteRowAvance, 
-            
+            deleteRowAvance,
+
             // tagInputChange, sendMail, proyecto, onChangeAdjunto,  ...props
         } = this.props
         // const { activeKey } = this.state
@@ -151,7 +151,7 @@ class AvanceForm extends Component {
                                                 </div>
 
                                                 <div className="form-group row form-group-marginless justify-content-start">
-                                                    
+
                                                     <div className="col-sm-6">
                                                         <InputNumberGray
                                                             withtaglabel={1}
@@ -187,27 +187,8 @@ class AvanceForm extends Component {
                                                         />
                                                     </div>
                                                 </div>
-                                                
-                                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                                <div className="row form-group-marginless">
-                                                    <div className="col-md-12">
-                                                        <InputGray
-                                                            withtaglabel={1}
-                                                            withtextlabel={1}
-                                                            withplaceholder={1}
-                                                            withicon={0}
-                                                            withformgroup={0}
-                                                            requirevalidation={1}
-                                                            placeholder="ACTIVIDADES REALIZADAS"
-                                                            name="actividades_realizadas"
-                                                            value={form.actividades_realizadas}
-                                                            onChange={onChange}
-                                                            rows={5}
-                                                            as='textarea'
-                                                            messageinc="Ingresa las actividades realizadas."
-                                                        />
-                                                    </div>
-                                                </div>
+
+                                           
                                             </div>
                                         </Row>
                                         <div className="d-flex justify-content-end pt-3 border-top mt-10">
@@ -272,12 +253,12 @@ class AvanceForm extends Component {
                                                                                     formeditado={formeditado}
                                                                                     as="textarea"
                                                                                     rows="3"
-                                                                                    placeholder="DESCRIPCIÓN"
-                                                                                    name="descripcion"
-                                                                                    value={form['avances'][key]['descripcion']}
-                                                                                    onChange={e => onChangeAvance(key, e, 'descripcion')}
-                                                                                    messageinc="Ingresa la descripción."
-                                                                                    customclass="px-2"
+                                                                                    name="actividades_realizadas"
+                                                                                    value={form.avances[key].actividades_realizadas}
+                                                                                    onChange={e => onChangeAvance(key, e, 'actividades_realizadas')}
+                                                                                    placeholder="ACTIVIDADES REALIZADAS"
+
+                                                                                    messageinc="Ingresa las actividades realizadas."
                                                                                 />
                                                                             </div>
                                                                         </div>
@@ -368,31 +349,12 @@ class AvanceForm extends Component {
                                             </div>
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="row form-group-marginless">
-                                            <div className="col-md-12">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={0}
-                                                    withformgroup={0}
-                                                    requirevalidation={1}
-                                                    placeholder="ACTIVIDADES REALIZADAS"
-                                                    name="actividades_realizadas"
-                                                    value={form.actividades_realizadas}
-                                                    onChange={onChange}
-                                                    rows={5}
-                                                    as='textarea'
-                                                    messageinc="Ingresa las actividades realizadas."
-                                                />
-                                            </div>
-                                        </div>
                                     </div>
                                 </Row>
                                 <div className="separator separator-dashed mt-5 mb-2"></div>
                                 <div className='mt-2 col-md-12 text-center'>
                                     <label className="col-form-label mb-2 font-weight-bolder text-dark-60">Adjuntar avance</label><br />
-                                    <ItemSlider items={form.adjuntos.avance.files} item='avance' multiple={false} accept = 'application/pdf' 
+                                    <ItemSlider items={form.adjuntos.avance.files} item='avance' multiple={false} accept='application/pdf'
                                         handleChange={handleChange} />
                                 </div>
                                 <div className="d-flex justify-content-end border-top mt-5 pt-3">
@@ -405,76 +367,7 @@ class AvanceForm extends Component {
                             </Form>
                         </>
                 }
-                {/* {
-                    proyecto ?
-                        proyecto.avances ?
-                            proyecto.avances.length ?
-                                <div className="d-flex justify-content-center">
-                                    <div className="col-md-7">
-                                        <Accordion activeKey={activeKey} className="accordion accordion-solid">
-                                            {
-                                                proyecto.avances.map((avance, key) => {
-                                                    return (
-                                                        <Card key={key}>
-                                                            <Accordion.Toggle as={Card.Header} eventKey={avance.id} onClick={() => this.handleAccordion(avance.id)}>
-                                                                <div className="card-title">
-                                                                    <div className="text-center">SEMANA {avance.semana}</div>
-                                                                </div>
-                                                            </Accordion.Toggle>
-                                                            <Accordion.Collapse eventKey={avance.id}>
-                                                                <Card.Body>
-                                                                    <Row className="mx-0">
-                                                                        <Col md={12} className="mb-5">
-                                                                            <div className="d-flex justify-content-end">
-                                                                                <div rel="noopener noreferrer" href={avance.pdf} target="_blank" className="btn btn-sm btn-bg-light btn-icon-info btn-hover-light-info text-info font-weight-bold font-size-13px px-2 py-1">
-                                                                                    <span className="svg-icon svg-icon-xl svg-icon-info mr-2">
-                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Download.svg')} />
-                                                                                    </span>
-                                                                                    Descargar PDF
-                                                                                </div>
-                                                                            </div>
-                                                                        </Col>
-                                                                        <Col md={12} className="my-5">
-                                                                            <SliderImages elements={avance.adjuntos} />
-                                                                        </Col>
-                                                                        <Col md={12} className="p-0">
-                                                                            <Form
-                                                                                onSubmit={
-                                                                                    (e) => {
-                                                                                        e.preventDefault();
-                                                                                        validateAlert(sendMail, e, 'form-send-avance')
-                                                                                    }
-                                                                                }
-                                                                                {...props} >
-                                                                                <div className="d-flex justify-content-between align-items-end row mx-0">
-                                                                                    <div className="col">
-                                                                                        <TagInputGray tags={form.correos_avances} onChange={tagInputChange} placeholder="CORREO" iconclass="flaticon-email" uppercase={false} />
-                                                                                    </div>
-                                                                                    <div className="col-md-auto d-flex justify-content-end">
-                                                                                        <div onClick={(e) => { e.preventDefault(); sendMail(avance.id) }} className="btn btn-sm btn-bg-light btn-icon-pink btn-hover-light-pink text-pink font-weight-bold font-size-13px bg-hover-pink px-2 py-1">
-                                                                                            <span className="svg-icon svg-icon-xl svg-icon-pink mr-2">
-                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Mail-notification.svg')} />
-                                                                                            </span>
-                                                                                            Enviar por correo
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </Form>
-                                                                        </Col>
-                                                                    </Row>
-                                                                </Card.Body>
-                                                            </Accordion.Collapse>
-                                                        </Card>
-                                                    )
-                                                })
-                                            }
-                                        </Accordion>
-                                    </div>
-                                </div>
-                                : ''
-                            : ''
-                        : ''
-                } */}
+                
             </>
         )
     }

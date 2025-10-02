@@ -175,12 +175,12 @@ class Satisfaccion extends Component {
 
     render() {
         const { form, options, formeditado } = this.state
-        let logo= 'https://admin-proyectos-aws.s3.us-east-2.amazonaws.com/empresas/4/adjuntos/logos/Logo_IM_CMYK-01-1597874562.png'    
+        let logo= 'https://inein-aws.s3.us-east-2.amazonaws.com/empresas/4/adjuntos/logos/Logo_IM_CMYK-01-1597874562.png'    
           const body = {
             backgroundColor: "#315694",
             width: "100%",
             height: "100%" ,
-            backgroundImage: "url(https://admin-proyectos-aws.s3.us-east-2.amazonaws.com/empresas/4/adjuntos/logos/Background-IM-encuesta.jpg)",
+            backgroundImage: "url(https://inein-aws.s3.us-east-2.amazonaws.com/empresas/4/adjuntos/logos/Background-IM-encuesta.jpg)",
             fontWeight: "bold",
         }
         const centrar = {

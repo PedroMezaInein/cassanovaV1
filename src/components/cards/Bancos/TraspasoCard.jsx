@@ -93,14 +93,21 @@ export default class TranspasoCard extends Component {
                             }
                         </div>
                         {
-                            traspaso.adjunto ?
+                            traspaso.adjunto && traspaso.adjunto.length > 0 ? (
                                 <div className="d-flex justify-content-center">
                                     <div className="col-md-10">
-                                        <ItemSlider items={[traspaso.adjunto]} item='' />
+                                        <ItemSlider
+                                            items={traspaso.adjunto.map(doc => ({
+                                                id: doc.id,
+                                                name: doc.name,
+                                                url: doc.url_temporal || doc.url   // 👈 usa la temporal si existe
+                                            }))}
+                                        />
                                     </div>
                                 </div>
-                                : ''
+                            ) : null
                         }
+
                         {
                             traspaso.comentario ?
                                 <div className="mt-4">

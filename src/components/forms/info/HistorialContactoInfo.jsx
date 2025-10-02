@@ -3,11 +3,53 @@ import SVG from 'react-inlinesvg'
 import Pagination from 'react-js-pagination'
 import { Card, DropdownButton, Dropdown } from 'react-bootstrap'
 import { setNaviIcon, setContactoIcon, dayDMY } from '../../../functions/setters'
-import { deleteAlert, doneAlert, printResponseErrorAlert, solicitarCita, waitAlert} from '../../../functions/alert'
+import { deleteAlert, doneAlert, printResponseErrorAlert, solicitarCita, waitAlert } from '../../../functions/alert'
 import { toAbsoluteUrl } from '../../../functions/routers'
 import { apiPutForm, apiPostForm, catchErrors } from '../../../functions/api'
 import AgendarCitaForm from '../info/AgendarCitaForm'
 import HistorialContactoForm from '../HistorialContactoForm'
+// ===== Helpers de URL (S3 / absolutas) =====
+const RAW_S3_BASE = process.env.REACT_APP_S3_BASE || ''
+const FALLBACK_S3 = 'https://adminpruebas.s3.us-east-2.amazonaws.com/' // ajusta si tu bucket es otro
+const S3_BASE = (RAW_S3_BASE || FALLBACK_S3).replace(/\/+$/, '') + '/'
+
+const isHttpUrl = (u) => {
+    if (!u) return false
+    try { const x = new URL(u); return x.protocol === 'http:' || x.protocol === 'https:' }
+    catch { return /^https?:\/\//i.test(String(u)) }
+}
+
+// Codifica cada segmento para no romper los '/'
+const encodeS3Key = (key) => String(key)
+    .replace(/^\/+/, '')
+    .split('/')
+    .map(s => encodeURIComponent(s))
+    .join('/')
+
+const resolveUrl = (u) => {
+    if (!u) return ''
+    if (isHttpUrl(u)) return u           // ya es absoluta/presignada
+    return S3_BASE + encodeS3Key(u)      // compón absoluta a S3
+}
+
+const getPdfUrl = (fileObj) => {
+    const raw =
+        fileObj?.url_temporal ??
+        fileObj?.url ??
+        fileObj?.pivot?.url ??
+        fileObj?.ruta ??
+        fileObj?.path ??
+        ''
+    return resolveUrl(raw)
+}
+
+// Abre en nueva pestaña
+const openPdf = (e, url) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!url) return
+    window.open(url, '_blank', 'noopener,noreferrer')
+}
 
 class ComentariosProyectos extends Component {
     state = {
@@ -50,9 +92,9 @@ class ComentariosProyectos extends Component {
             case 'historial':
                 return 'HISTORIAL DE CONTACTOS'
             case 'agendar-cita':
-                if(formAgenda.agendarLlamada){
+                if (formAgenda.agendarLlamada) {
                     return 'AGENDAR LLAMADA'
-                }else{
+                } else {
                     return 'AGENDAR CITA'
                 }
             case 'nuevo-contacto':
@@ -61,7 +103,7 @@ class ComentariosProyectos extends Component {
                 return ''
         }
     }
-    onChangePage(pageNumber){
+    onChangePage(pageNumber) {
         let { activePage } = this.state
         activePage = pageNumber
         this.setState({ ...this.state, activePage })
@@ -70,13 +112,13 @@ class ComentariosProyectos extends Component {
         let sizeContactado = 0
         let sizeNoContactado = 0
         contactos.map((contacto) => {
-            if(contacto.success){
+            if (contacto.success) {
                 return sizeContactado++
-            }else{
+            } else {
                 return sizeNoContactado++
             }
         })
-        return(
+        return (
             <div className="w-auto d-flex flex-column mx-auto mb-8">
                 <div className="bg-light-warning p-4 rounded-xl flex-grow-1 align-self-center">
                     <div className="d-flex align-items-center justify-content-center font-size-lg font-weight-light mb-2">
@@ -140,7 +182,7 @@ class ComentariosProyectos extends Component {
     }
     onChangeAgendaLC = e => {
         const { name, value, checked, type } = e.target
-        const { formAgenda  } = this.state
+        const { formAgenda } = this.state
         formAgenda[name] = value
         if (type === 'radio') {
             if (name === "agendarLlamada") {
@@ -178,7 +220,7 @@ class ComentariosProyectos extends Component {
     refreshNav = () => {
         const { refresh } = this.props
         let { activeHistorial } = this.state
-        activeHistorial="historial"
+        activeHistorial = "historial"
         this.setState({
             ...this.state,
             activeHistorial
@@ -203,25 +245,25 @@ class ComentariosProyectos extends Component {
                                                     {setNaviIcon(`las la-user-tie icon-xl`, 'SOLICITAR CITA')}
                                                 </Dropdown.Item>
                                                 {
-                                                    activeHistorial !== 'agendar-cita'?
-                                                    <Dropdown.Item className="agendar-cita" onClick={() => { this.onClickActiveHistorial('agendar-cita') }}>
-                                                        {setNaviIcon(`las la-calendar-check icon-xl`, 'AGENDAR CITA')}
-                                                    </Dropdown.Item>
-                                                    :<></>
+                                                    activeHistorial !== 'agendar-cita' ?
+                                                        <Dropdown.Item className="agendar-cita" onClick={() => { this.onClickActiveHistorial('agendar-cita') }}>
+                                                            {setNaviIcon(`las la-calendar-check icon-xl`, 'AGENDAR CITA')}
+                                                        </Dropdown.Item>
+                                                        : <></>
                                                 }
                                                 {
-                                                    activeHistorial !== 'nuevo-contacto'?
-                                                    <Dropdown.Item className="nuevo-contacto" onClick={() => { this.onClickActiveHistorial('nuevo-contacto') }}>
-                                                        {setNaviIcon(`las la-comments icon-xl`, 'AGREGAR CONTACTO')}
-                                                    </Dropdown.Item>
-                                                    :<></>
+                                                    activeHistorial !== 'nuevo-contacto' ?
+                                                        <Dropdown.Item className="nuevo-contacto" onClick={() => { this.onClickActiveHistorial('nuevo-contacto') }}>
+                                                            {setNaviIcon(`las la-comments icon-xl`, 'AGREGAR CONTACTO')}
+                                                        </Dropdown.Item>
+                                                        : <></>
                                                 }
                                                 {
                                                     lead.prospecto.contactos.length > 0 && activeHistorial !== 'historial' ?
-                                                    <Dropdown.Item className="historial" onClick={() => { this.onClickActiveHistorial('historial') }}>
-                                                        {setNaviIcon(`las la-clipboard-list icon-xl`, 'HISTORIAL DE CONTACTOS')}
-                                                    </Dropdown.Item>
-                                                    :<></>
+                                                        <Dropdown.Item className="historial" onClick={() => { this.onClickActiveHistorial('historial') }}>
+                                                            {setNaviIcon(`las la-clipboard-list icon-xl`, 'HISTORIAL DE CONTACTOS')}
+                                                        </Dropdown.Item>
+                                                        : <></>
                                                 }
                                             </DropdownButton>
                                         </div>
@@ -239,13 +281,13 @@ class ComentariosProyectos extends Component {
                                     onChangeAgendaLC={this.onChangeAgendaLC} lead={lead}
                                     formeditado={formeditado}
                                 />
-                            :<></>
+                                : <></>
                         }
                         {
-                            activeHistorial === 'nuevo-contacto'?
-                                <HistorialContactoForm refresh = { this.refreshNav } 
-                                lead = { lead } at = { at } options = { options } classcalendar="col-md-10 col-xxl-6 mx-auto" classhora="col-md-7 col-xxl-4"/>
-                            :<></>
+                            activeHistorial === 'nuevo-contacto' ?
+                                <HistorialContactoForm refresh={this.refreshNav}
+                                    lead={lead} at={at} options={options} classcalendar="col-md-10 col-xxl-6 mx-auto" classhora="col-md-7 col-xxl-4" />
+                                : <></>
                         }
                         {
                             activeHistorial === 'historial' ?
@@ -292,17 +334,22 @@ class ComentariosProyectos extends Component {
                                                                                                     </span>
                                                                                                     : <></>
                                                                                             }
-                                                                                            {
-                                                                                                contacto.adjunto ?
-                                                                                                    <div className="d-flex justify-content-end mt-1">
-                                                                                                        <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
-                                                                                                            <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-                                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
-                                                                                                            </span>VER ADJUNTO
-                                                                                                        </a>
-                                                                                                    </div>
-                                                                                                    : ''
-                                                                                            }
+                                                                                            {contacto.adjunto ? (
+                                                                                                <div className="d-flex justify-content-end mt-1">
+                                                                                                    <button
+                                                                                                        type="button"
+                                                                                                        onClick={(e) => openPdf(e, getPdfUrl(contacto.adjunto))}
+                                                                                                        className="btn btn-link text-muted text-hover-primary font-weight-bold p-0"
+                                                                                                    >
+                                                                                                        <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                                                                        </span>
+                                                                                                        VER ADJUNTO
+                                                                                                    </button>
+
+                                                                                                </div>
+                                                                                            ) : ''}
+
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -337,7 +384,7 @@ class ComentariosProyectos extends Component {
                                             : ''
                                     }
                                 </div>
-                            : <></>
+                                : <></>
                         }
                     </Card.Body>
                 </Card>

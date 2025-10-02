@@ -127,14 +127,14 @@ export default function CarruselAdjuntos(props) {
                 {adjuntos.map((item, index) => (
                     <div key={index} >
                         <object
-                            data={item.url}
+                            data={item.url_temporal}
                             className={classes.adjuntos}
                         >
                         </object>
                         <br />
                         <div className="text-center">
                             <button id={style.button_delete} onClick={() => handleDelete(item.id)}>Eliminar</button>
-                            <a style={{marginLeft:'2rem'}} href={item.url} target="_blank" ><button id={style.button_view}>Ver</button></a>
+                            <a style={{marginLeft:'2rem'}} href={item.url_temporal} target="_blank" ><button id={style.button_view}>Ver</button></a>
                         </div>
                         
                     </div>

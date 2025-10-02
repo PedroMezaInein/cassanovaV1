@@ -1,311 +1,220 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import Swal from 'sweetalert2'
+import React, { useEffect, useState } from 'react';
+import { MaterialReactTable } from 'material-react-table';
+import { apiGet, apiPostForm, apiDelete } from '../../../functions/api';
+import { waitAlert, printResponseErrorAlert } from '../../../functions/alert';
+import { Button, Stack } from '@mui/material';
+import Swal from 'sweetalert2';
+import Modal from 'react-bootstrap/Modal';
 
-import { Modal } from '../../../components/singles'
-import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
-import { apiPostForm, apiDelete } from '../../../functions/api'
+// IMPORTA AQUÍ tus componentes modales:
+import Editar from './Modales/Editar';
+import Adjuntos from './Adjuntos/Adjuntos';
 
-import Adjuntos from './Adjuntos/Adjuntos'
-import Editar from './Modales/Editar'
-import Nuevo from './Modales/Nuevo'
-import Ver from './Modales/Ver'
-/* import Aprobar from './Modales/Aprobar' */
+const SoporteTecnicoTable = ({ access_token, userAuth }) => {
+  const [data, setData] = useState([]);
+  const [registro, setRegistro] = useState(null);
+  const [showVerModal, setShowVerModal] = useState(false);
+  const [showEditarModal, setShowEditarModal] = useState(false);
+  const [showAdjuntosModal, setShowAdjuntosModal] = useState(false);
 
-import Style from './SoporteTecnico.module.css'
+  useEffect(() => {
+    fetchMantenimiento();
+  }, []);
 
-export default function SoporteTecnicoTable() {
-    const userAuth = useSelector((state) => state.authUser);
-    const [reloadTable, setReloadTable] = useState(false)
-    const [modal, setModal] = useState({
-        editar: {
-            show: false,
-            data: false
-        },
-        ver: {
-            show: false,
-            data: false
-        },
-        adjuntos: {
-            show: false,
-            data: false
-        },
-        crear: {
-            show: false,
-            data: false
-        },
-        aprobar: {
-            show: false,
-            data: false
-        }
-    })
-
-    // let prop = {
-    //     pathname: '/ti/soporte',
-    // }
-
-    const columnas = [
-        { nombre: 'Acciones', identificador: 'acciones' },
-        { nombre: 'F. solicitud', identificador: 'fecha' },
-        { nombre: 'F. servicio', identificador: 'fecha_servicio' },
-        { nombre: 'Equipo', identificador: 'equipo' },
-        { nombre: 'Marca', identificador: 'marca' },
-        {nombre: 'Monto Autorizado', identificador: 'monto_autorizado'},
-        { nombre: 'Autorización', identificador: 'autorizacion' },
-    ];
-
-    const opciones = [
-        {
-            nombre: 'Nuevo soporte',
-            funcion: (item) => {
-                setModal({
-                    ...modal,
-                    crear: {
-                        show: true,
-                        data: item
-                    }
-                })
-            }
-        },
-    ]
-
-    const ProccessData = (data) => {
-        let aux = []
-        console.log(data)
-        data.computo.forEach((item) => { 
-            aux.push({
-                aprobacion: item.aprobacion,
-                fecha: reformatDate(item.fecha),
-                acciones: createAcciones(),
-                fecha_servicio: reformatDate(item.fecha_mantenimiento),
-                autorizacion: viewAprobacion(item),
-                monto_autorizado: `$${item.costo}`,
-                equipo: item.equipo.length > 10 ? item.equipo.substring(0, 10) + '...' : item.equipo,
-                marca: item.marca.length > 15 ? item.marca.substring(0, 15) + '...' : item.marca,
-                id: item.id,
-                id_equipo: item.id_equipo,
-                id_usuario: item.id_usuario,
-                usuario: item.usuario,
-                costo: item.costo,
-                descripcion: item.descripcion,
-            })
-        })
-        aux = aux.reverse()
-        return aux
+  const fetchMantenimiento = async () => {
+    waitAlert();
+    try {
+      const res = await apiGet('computo', access_token);
+      setData(res.data.computo ?? []);
+    } catch (error) {
+      printResponseErrorAlert(error);
     }
+  };
 
-    function reformatDate(dateStr) {
-        var dArr = dateStr.split("-");  // ex input: "2010-01-18"
-        return dArr[2] + "/" + dArr[1] + "/" + dArr[0]/* .substring(2) */; //ex output: "18/01/10"
-    }
+  const handleAprobar = (item) => {
+    Swal.fire({
+      title: '¿Autorizar soporte?',
+      text: `Monto: $${item.costo}`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, autorizar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        apiPostForm(`computo/autorizar/${item.id}`, {}, access_token)
+          .then(() => {
+            Swal.fire('Autorizado', 'El ticket fue aprobado.', 'success');
+            fetchMantenimiento();
+          })
+          .catch(() => {
+            Swal.fire('Error', 'No se pudo aprobar.', 'error');
+          });
+      }
+    });
+  };
 
-    const viewAprobacion = (item) => { 
-        if (item.aprobacion) {
-            return <span className={Style.autorizado}>Aprobado</span>
-        } else {
-            return <span className={Style.pendiente}>Pendiente</span>
-        }
-    }
+  const handleEliminar = (item) => {
+    Swal.fire({
+      title: '¿Eliminar soporte?',
+      text: `Esta acción no se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        apiDelete(`computo/${item.id}`, access_token)
+          .then(() => {
+            Swal.fire('Eliminado', 'El ticket fue eliminado.', 'success');
+            fetchMantenimiento();
+          })
+          .catch(() => {
+            Swal.fire('Error', 'No se pudo eliminar.', 'error');
+          });
+      }
+    });
+  };
 
-    const autorizar = (data) => { 
-        Swal.fire({
-            title: 'Autorizando ticket de soporte',
-            text: `¿Estas seguro de autorizar este ticket de soporte por un monto de $${data.costo}?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Si, autorizar!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Autorizando ticket de sopote',
-                    text: "Por favor espere...",
-                    icon: 'info',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    allowEnterKey: false,
-                    showConfirmButton: false,
-                })
-                try {
-                    apiPostForm(`computo/autorizar/${data.id}`, {}, userAuth.access_token)
-                        .then((res) => {
-                            Swal.fire({
-                                title: 'Ticket de soporte aprobado',
-                                text: "El ticket de soporte ha sido aprobado",
-                                icon: 'success',
-                            })
-                            if (reloadTable) {
-                                reloadTable.reload()
-                            }
-                        })
-                } catch (error) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: "Ha ocurrido un error al aprobar el ticket de soporte",
-                        icon: 'error',
-                    })
+  const columns = [
+    {
+      accessorKey: 'acciones',
+      header: 'Acciones',
+      Cell: ({ row }) => {
+        const item = row.original;
+
+        return (
+          <Stack direction="row" spacing={1}>
+            <Button size="small" variant="outlined" onClick={() => { setRegistro(item); setShowVerModal(true); }}>Ver</Button>
+            <Button size="small" variant="outlined" onClick={() => {
+              if (item.estatus === 1 || item.estatus === "1") {
+                Swal.fire('No permitido', 'Ya está aprobado.', 'error');
+              } else {
+                setRegistro(item);
+                setShowEditarModal(true);
+              }
+            }}>Editar</Button>
+            <Button size="small" variant="outlined" onClick={() => { setRegistro(item); setShowAdjuntosModal(true); }}>Adjuntos</Button>
+            <Button size="small" variant="outlined" color="success" onClick={() => {
+              if (userAuth?.user?.tipo?.id === 1) {
+                if (item.estatus === 1 || item.estatus === "1") {
+                  Swal.fire('No permitido', 'Ya está aprobado.', 'error');
+                } else {
+                  handleAprobar(item);
                 }
-            }
-        })
-    }
+              } else {
+                Swal.fire('Sin permisos', 'No tienes permisos para aprobar.', 'error');
+              }
+            }}>Aprobar</Button>
+            <Button size="small" variant="outlined" color="error" onClick={() => {
+              if (userAuth?.user?.tipo?.id === 1) {
+                handleEliminar(item);
+              } else {
+                Swal.fire('Sin permisos', 'No tienes permisos para eliminar.', 'error');
+              }
+            }}>Eliminar</Button>
+          </Stack>
+        );
+      },
+    },
+    {
+      accessorKey: 'equipo',
+      header: 'Equipo',
+    },
+    {
+      accessorKey: 'marca',
+      header: 'Marca',
+    },
+    {
+      accessorKey: 'fecha',
+      header: 'F. Solicitud',
+    },
+    {
+      accessorKey: 'fecha_mantenimiento',
+      header: 'F. Servicio',
+    },
+    {
+      accessorKey: 'costo',
+      header: 'Monto Autorizado',
+      Cell: ({ cell }) => `$${cell.getValue()}`,
+    },
+    {
+      accessorKey: 'estatus',
+      header: 'Autorización',
+      Cell: ({ cell }) => {
+        const value = cell.getValue();
+        return (
+          <span
+            style={{
+              padding: '4px 8px',
+              borderRadius: '4px',
+              background: value === 1 || value === "1" ? '#6cbd7d' : '#f9c74f',
+              color: '#fff',
+            }}
+          >
+            {value === 1 || value === "1" ? 'APROBADO' : 'PENDIENTE'}
+          </span>
+        );
+      },
+    },
+  ];
 
-    const handleDelete = (data) => {
-        Swal.fire({
-            title: 'Eliminando ticket de sopote',
-            text: "¿Estas seguro de eliminar este ticket de soporte?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Si, eliminar!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Eliminando ticket de sopote',
-                    text: "Por favor espere...",
-                    icon: 'info',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    allowEnterKey: false,
-                    showConfirmButton: false,
-                })
-                try {
-                    apiDelete(`computo/${data.id}`, userAuth.access_token)
-                        .then((res) => {
-                            Swal.fire({
-                                title: 'Ticket de soporte eliminado',
-                                text: "El ticket de soporte ha sido eliminado",
-                                icon: 'success',
-                            })
-                            if (reloadTable) {
-                                reloadTable.reload()
-                            }
-                        })
-                } catch (error) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: "Ha ocurrido un error al eliminar el ticket de soporte",
-                        icon: 'error',
-                    })
-                }
-            }
-        })
-    }
+  return (
+    <>
+      <MaterialReactTable
+        columns={columns}
+        data={data}
+        enableColumnOrdering
+        enablePagination
+        enableStickyHeader
+        muiTableContainerProps={{ sx: { maxHeight: '630px' } }}
+      />
 
+      {/* Ver */}
+      <Modal show={showVerModal} onHide={() => setShowVerModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Detalle del Soporte</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {registro && (
+            <div>
+              <p><strong>Equipo:</strong> {registro.equipo}</p>
+              <p><strong>Marca:</strong> {registro.marca}</p>
+              <p><strong>Descripción:</strong> {registro.descripcion}</p>
+              <p><strong>Fecha Solicitud:</strong> {registro.fecha}</p>
+              <p><strong>Fecha Mantenimiento:</strong> {registro.fecha_mantenimiento}</p>
+              <p><strong>Costo:</strong> ${registro.costo}</p>
+              <p><strong>Estatus:</strong> {registro.estatus === 1 || registro.estatus === "1" ? 'APROBADO' : 'PENDIENTE'}</p>
+              {registro.usuario && (
+                <p><strong>Usuario:</strong> {registro.usuario.name} ({registro.usuario.email})</p>
+              )}
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
 
-    const createAcciones = () => {
-        return [
-            {
-                nombre: 'Editar',
-                icono: 'fas fa-edit',
-                color: 'blueButton',
-                funcion: (item) => {
-                    if (item.aprobacion) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'No puedes editar un ticket de soporte aprobado',
-                        })
-                    } else {
-                        handleOpenModal('editar', item)  
-                    }
-                    
-                }
-            },
-            {
-                nombre: 'Adjuntos',
-                icono: 'fas fa-paperclip',
-                color: 'blueButton',
-                funcion: (item) => {
-                    handleOpenModal('adjuntos', item)
-                }
-            },
-            {
-                nombre: 'Aprobar',
-                icono: 'fas fa-check',
-                color: 'greenButton',
-                funcion: (item) => {
-                    if (userAuth.user.tipo.id === 1) {
-                        if (item.aprobar) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Este ticket de soporte ya ha sido aprobado',
-                            })
-                        } else {
-                            autorizar(item)
-                        }
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'No tienes permisos para aprobar tickets',
-                        })
-                    }
-                }
-            },
-            {
-                nombre: 'Eliminar',
-                icono: 'fas fa-trash',
-                color: 'redButton',
-                funcion: (item) => {
-                    if (userAuth.user.tipo.id === 1) {
-                        handleDelete(item)
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'No tienes permisos para eliminar tickets',
-                        })
-                    }
-                }
-            }
+      {/* Editar */}
+      {registro && (
+        <Modal size="lg" show={showEditarModal} onHide={() => setShowEditarModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Editar Soporte</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Editar data={registro} handleClose={() => { setShowEditarModal(false); fetchMantenimiento(); }} />
+          </Modal.Body>
+        </Modal>
+      )}
 
-        ]
-    }
+      {/* Adjuntos */}
+      {registro && (
+        <Modal size="lg" show={showAdjuntosModal} onHide={() => setShowAdjuntosModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Adjuntos</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Adjuntos data={registro} handleClose={() => setShowAdjuntosModal(false)} />
+          </Modal.Body>
+        </Modal>
+      )}
+    </>
+  );
+};
 
-    const handleOpenModal = (tipo, data) => {
-        setModal({
-            ...modal,
-            [tipo]: {
-                show: true,
-                data: data
-            }
-        })
-    }
-
-    return (
-        <>
-            {/* <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='ti'> */}
-                <>
-                    <TablaGeneral titulo='Soporte ' columnas={columnas} url='computo' ProccessData={ProccessData} numItemsPagina={10} acciones={createAcciones()} reload={setReloadTable} opciones={opciones} />
-                </>
-            {/* </Layout> */}
-            
-            {
-                modal.editar.data &&
-                <Modal size="lg" show={modal.editar.show} handleClose={() => setModal({ ...modal, editar: { show: false, data: modal.editar.data} })} title='Editar ticket'>
-                    <Editar data={modal.editar.data} reload={reloadTable} handleClose={() => setModal({ ...modal, editar: { show: false} })} />
-                </Modal>
-
-            }
-            
-            <Modal show={modal.ver.show} handleClose={() => setModal({ ...modal, ver: { show: false, data: modal.ver.data } })} title='Ver ticket'>
-                <Ver data={modal.ver.data} />
-            </Modal>
-
-            <Modal size="lg" show={modal.adjuntos.show} handleClose={() => setModal({ ...modal, adjuntos: { show: false, data: false } })} title='Adjuntos'>
-                <Adjuntos data={modal.adjuntos.data} reload={reloadTable} handleClose={() => setModal({ ...modal, adjuntos: { show: false, data: false } })} />
-            </Modal>
-
-            <Modal size="lg" show={modal.crear.show} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} title='Nuevo mantenimiento'>
-                <Nuevo reload={reloadTable} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} />
-            </Modal>
-
-            {/* <Modal size="md" show={modal.aprobar.show} handleClose={() => setModal({ ...modal, aprobar: { show: false, data: false } })} title='Aprobar Mantenimiento'>
-                <Aprobar data={modal.aprobar.data} reload={reloadTable} handleClose={() => setModal({ ...modal, aprobar: { show: false, data: false } })} />
-            </Modal> */}
-        </>
-    );
-}
+export default SoporteTecnicoTable;

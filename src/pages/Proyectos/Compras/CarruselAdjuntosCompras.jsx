@@ -1,5 +1,5 @@
 import React from 'react'
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux'
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import Button from '@material-ui/core/Button';
@@ -10,7 +10,7 @@ import { autoPlay } from 'react-swipeable-views-utils';
 import Swal from 'sweetalert2'
 
 import { apiDelete } from './../../../functions/api'
-// import style from './CarruselCompras.module.scss'
+import style from './CarruselCompras.module.scss'
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -30,13 +30,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CarruselAdjuntos(props) {
-    const { data, id, getAdjuntos} = props;
+    const { data, id, getAdjuntos, reloadKey } = props;
     let adjuntos = data
     const classes = useStyles();
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
     const auth = useSelector(state => state.authUser.access_token)
-    const maxSteps = adjuntos.length;
+    const maxSteps = adjuntos?.length || 0;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -125,24 +125,42 @@ export default function CarruselAdjuntos(props) {
                 onChangeIndex={handleStepChange}
                 enableMouseEvents
                 autoplay={false}
-                sx={{ padding: 2, textAlign: 'center', }} 
-                
+                sx={{ padding: 2, textAlign: 'center', }}
+
             >
-                {adjuntos.map((item, index) => (
-                    <div key={index} >
-                        <object
-                            data={item.url}
-                            className={classes.adjuntos}
-                        >
-                        </object>
-                        <br />
-                        <div className="text-center">
-                            <Button variant="contained"style={{ backgroundColor: '#F96D49', color: '#fff', '&:hover': { backgroundColor: '#F96D49', }, }} onClick={() => handleDelete(item.id)}>Eliminar</Button>
-                            <a  style={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#0A3E27', },marginLeft:'2rem' }} href={item.url} target="_blank" ><Button style={{ backgroundColor: '#457FF4', color: '#fff', '&:hover': { backgroundColor: '#568eff', },}}  >Ver</Button></a>
+                {adjuntos.map((item, index) => {
+                    // ✅ usa la firmada tal cual
+                    let href = item.url_temporal;
+
+                    // ⚠️ Sólo si NO hay firmada, arma la pública
+                    if (!href && item.url) {
+                        const base = 'https://adminpruebas.s3.us-east-2.amazonaws.com/';
+                        href = item.url.startsWith('http') ? item.url : base + item.url;
+                    }
+
+                    // ❌ NO agregar query extra a una URL firmada (rompe la firma y/o el cache)
+                    // if (href) href += ...  ← elimínalo
+
+                    return (
+                        <div key={`${index}-${reloadKey}`}>
+                            <iframe
+                                key={`${(item.id || index)}-${reloadKey}`} // fuerza remount sin tocar href
+                                src={href}
+                                title={`adjunto-${item.id || index}`}
+                                className={classes.adjuntos}
+                                style={{ border: 0, width: 550, height: 250 }}
+                            />
+                            <br />
+                            <div className="text-center">
+                                <button id={style.button_delete} onClick={() => handleDelete(item.id)}>Eliminar</button>
+                                <a style={{ marginLeft: '2rem' }} href={href} target="_blank" rel="noopener noreferrer">
+                                    <button id={style.button_view}>Ver</button>
+                                </a>
+                            </div>
                         </div>
-                        
-                    </div>
-                ))}
+                    );
+                })}
+
             </AutoPlaySwipeableViews>
         </div>
     );

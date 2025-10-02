@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { useSelector } from 'react-redux';
 import { apiPostForm, apiGet, apiPutForm, apiDelete, catchErrors } from './../../../../functions/api'
+
 import InputLabel from '@material-ui/core/InputLabel';
 import j2xParser from 'fast-xml-parser'
 import Swal from 'sweetalert2'
-import S3 from 'react-aws-s3'
+// import S3 from 'react-aws-s3'
 import {Grid, Paper, Tooltip, Typography, IconButton, 
     Card, CardContent, CardActions, Box,Dialog, DialogTitle, DialogContent, DialogActions 
 } from '@mui/material';
@@ -119,7 +120,7 @@ export default function Factura(props) {
                             nombre_receptor: 'Adjunto',
                             subtotal: 'n/a',
                             total: 'n/a',
-                            archivoAdjunto: { url: adjunto.url, name: adjunto.name }, // ⚡️
+                            archivoAdjunto: { url: adjunto.url_temporal, name: adjunto.name }, // ⚡️
                             esAdjunto: true
                         });
                     });
@@ -432,28 +433,9 @@ export default function Factura(props) {
             Swal.fire({ title: 'Subiendo archivos...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
             try {
-            const { data: config } = await apiGet(`v1/constant/admin-proyectos`, auth);
-            const alma = config.alma;
-            const filePath = `facturas/egresos/`;
 
-            const uploads = allFiles.map((file) => {
-                const nombre = `${Math.floor(Date.now() / 1000)}-${file.name}`;
-                return new Promise((resolve, reject) => {
-                new S3(alma).uploadFile(file.file, `${filePath}${nombre}`)
-                    .then((data) => {
-                    if (data.status === 204) {
-                        resolve({ name: file.name, url: data.location });
-                    } else {
-                        reject(data);
-                    }
-                    })
-                    .catch((error) => reject(error));
-                });
-            });
-
-            const uploaded = await Promise.all(uploads);
-
-            addNewFacturaAxios(uploaded, egreso);
+            // console.log(allFiles)
+            addNewFacturaAxios(allFiles, egreso);
 
             setForm((prevForm) => ({
                 ...prevForm,
@@ -481,44 +463,132 @@ export default function Factura(props) {
         }
         };
 
+        // drop-in replacement
+    const addNewFacturaAxios = async (files: any, egreso: any) => {
+        try {
+            // 1) arma FormData
+            const fd = new FormData();
 
-    const addNewFacturaAxios = (files, egreso) => {
-        let aux = form
-        aux.archivos = files
-        // console.log(egreso)
-        apiPostForm(`v2/administracion/facturas`, aux, auth).then(
-            (response) => {
-                const { factura } = response.data
-                Swal.close()
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Factura subida con éxito',
-                    text: 'Se subio la factura con éxito',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                setFacturas((prevFacturas) => [...prevFacturas, factura]); // 🔥 Agregar la nueva factura al estado
+            // facturaObject: ajusta al nombre real dentro de tu "form"
+            const facturaObject =
+            (form && (form.facturaObject || form.factura)) || {};
+            fd.append("facturaObject", JSON.stringify(facturaObject));
 
-                attachFactura(egreso, factura);
+            // helper para empujar archivos al mismo campo files_zip[]
+            const pushFiles = (list?: { file: File; name?: string }[]) => {
+            if (!Array.isArray(list)) return;
+            list.forEach(({ file, name }) => {
+                // debe ser un File real (no {} ni blob:url)
+                if (!(file instanceof File) || file.size === undefined) return;
+                const stamped =
+                `${Math.floor(Date.now() / 1000)}-` + (name || file.name || "file");
+                fd.append("files_zip[]", file, stamped);
+            });
+            };
 
-                setForm({
-                    ...form,
-                    facturaItem: factura,
-                    archivos: files,
-                    adjuntos: {
-                        xml: { files: [], value: '' },
-                        pdf: { files: [], value: '' }
-                    }
-                });
-                if (reloadTable) {
-                    reloadTable.reload()
-                }
-                // attachFactura(egreso, factura)
-            }, (error) => { }
-        ).catch((error) => {
-            console.error(error, 'error')
-        })
-    }
+            // 2) soporta las distintas formas en que te llega "files"
+            // a) objeto tipo adjuntos { pdf:{files:[]}, xml:{files:[]}, ... }
+            if (
+            files?.pdf || files?.xml || files?.zip || files?.excel || files?.imagenes
+            ) {
+            pushFiles(files?.pdf?.files);
+            pushFiles(files?.xml?.files);
+            pushFiles(files?.zip?.files);
+            pushFiles(files?.excel?.files);
+            pushFiles(files?.imagenes?.files);
+            }
+            // b) files.adjuntos (por si te lo pasan envuelto)
+            else if (files?.adjuntos) {
+            const adj = files.adjuntos;
+            pushFiles(adj?.pdf?.files);
+            pushFiles(adj?.xml?.files);
+            pushFiles(adj?.zip?.files);
+            pushFiles(adj?.excel?.files);
+            pushFiles(adj?.imagenes?.files);
+            }
+            // c) arreglo plano [{ file, name }]
+            else if (Array.isArray(files)) {
+            pushFiles(files);
+            }
+            fd.append("facturaObject", JSON.stringify(facturaObject));
+            fd.append("filePath", "facturas/egresos/");
+
+            // console.log(fd)
+            // 3) POST (apiPostForm debe detectar FormData y NO serializarlo)
+            const response = await apiPostForm(`v2/administracion/facturas`, fd, auth);
+
+            const { factura } = response.data;
+
+            Swal.close();
+            Swal.fire({
+            icon: "success",
+            title: "Factura subida con éxito",
+            text: "Se subio la factura con éxito",
+            showConfirmButton: false,
+            timer: 1500,
+            });
+
+            setFacturas((prev) => [...prev, factura]);
+            attachFactura(egreso, factura);
+
+            // Limpia estado (no mutamos form directamente)
+            setForm((prev) => ({
+            ...prev,
+            facturaItem: factura,
+            adjuntos: {
+                xml: { files: [], value: "" },
+                pdf: { files: [], value: "" },
+                zip: { files: [], value: "" },
+                excel: { files: [], value: "" },
+                imagenes: { files: [], value: "" },
+            },
+            }));
+
+            if (reloadTable) reloadTable.reload();
+        } catch (error) {
+            console.error(error, "error");
+        }
+        };
+
+
+
+    // const addNewFacturaAxios = (files, egreso) => {
+    //     let aux = form
+    //     aux.archivos = files
+    //     // console.log(egreso)
+    //     apiPostForm(`v2/administracion/facturas`, aux, auth).then(
+    //         (response) => {
+    //             const { factura } = response.data
+    //             Swal.close()
+    //             Swal.fire({
+    //                 icon: 'success',
+    //                 title: 'Factura subida con éxito',
+    //                 text: 'Se subio la factura con éxito',
+    //                 showConfirmButton: false,
+    //                 timer: 1500
+    //             })
+    //             setFacturas((prevFacturas) => [...prevFacturas, factura]); // 🔥 Agregar la nueva factura al estado
+
+    //             attachFactura(egreso, factura);
+
+    //             setForm({
+    //                 ...form,
+    //                 facturaItem: factura,
+    //                 archivos: files,
+    //                 adjuntos: {
+    //                     xml: { files: [], value: '' },
+    //                     pdf: { files: [], value: '' }
+    //                 }
+    //             });
+    //             if (reloadTable) {
+    //                 reloadTable.reload()
+    //             }
+    //             // attachFactura(egreso, factura)
+    //         }, (error) => { }
+    //     ).catch((error) => {
+    //         console.error(error, 'error')
+    //     })
+    // }
 
     const attachFactura = (egreso, factura) => {
 
@@ -542,9 +612,9 @@ export default function Factura(props) {
                 })
                 obtenerFacturas(); // 🔥 Recargar facturas después de adjuntar
 
-                // if (reloadTable) {
-                //     reloadTable.reload()
-                // }
+                if (reloadTable) {
+                    reloadTable.reload()
+                }
 
             }, (error) => {
                 Swal.close()
@@ -727,8 +797,9 @@ export default function Factura(props) {
         ]
         return aux
     }
-console.log(facturas)
-    return (
+
+
+return (
         <>
         
 <Box sx={{ maxWidth: 900, margin: 'auto', padding: '2rem' }}>
@@ -1105,12 +1176,12 @@ console.log(facturas)
                         ) : (
                             <>
                             {/* Botón Ver XML */}
-                            {factura.xml?.url && (
+                            {factura.xml?.url_temporal && (
                                 <Tooltip title="Ver XML">
                                 <Button
                                     variant="outlined"
                                     color="primary"
-                                    href={factura.xml.url}
+                                    href={factura.xml.url_temporal}
                                     target="_blank"
                                     size="small"
                                 >
@@ -1119,12 +1190,12 @@ console.log(facturas)
                                 </Tooltip>
                             )}
                             {/* Botón Ver PDF */}
-                            {factura.pdf?.url && (
+                            {factura.pdf?.url_temporal && (
                                 <Tooltip title="Ver PDF">
                                 <Button
                                     variant="outlined"
                                     color="secondary"
-                                    href={factura.pdf.url}
+                                    href={factura.pdf.url_temporal}
                                     target="_blank"
                                     size="small"
                                 >

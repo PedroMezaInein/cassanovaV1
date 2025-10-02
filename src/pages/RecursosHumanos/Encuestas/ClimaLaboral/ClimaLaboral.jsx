@@ -511,7 +511,7 @@ export default function ClimaLaboral() {
                                             <option value="OBRA">OBRA</option>
                                             <option value="MANTENIMIENTO">MANTENIMIENTO</option>
                                             <option value="INNOVACION">INNOVACION</option>
-                                            <option value="INNOVACION">PLANEACION</option>
+                                            <option value="PLANEACION">PLANEACION</option>
 
                                         </select>
                                     </div>

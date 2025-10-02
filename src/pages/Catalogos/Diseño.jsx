@@ -1172,6 +1172,7 @@ class Diseño extends Component {
                                                                                 value = { form.esquema_1[form.esquema_1.length-1].nombre } onChange = { (e) => { this.handleChangePlanos('esquema_1', e,form.esquema_1.length-1) }}
                                                                                 customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" />
                                                                         </div>
+                                                                        
                                                                         <div className='col-2 text-center d-flex align-items-end justify-content-center'>
                                                                             <Button icon = '' onClick = { () => { this.sendPlano('esquema_1', form.esquema_1.length - 1) } } 
                                                                                 className = "btn btn-icon btn-light-success btn-xs mr-2 px-2" only_icon = "fas fa-plus icon-xs"

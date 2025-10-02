@@ -3,7 +3,7 @@ import { Card, DropdownButton, Dropdown, OverlayTrigger, Tooltip, Col, Row } fro
 import SVG from "react-inlinesvg";
 import axios from 'axios'
 import { toAbsoluteUrl } from "../../../../functions/routers"
-import SliderImages from '../../../singles/SliderImages'
+import SliderImages from '../../../singles/SliderImages2'
 import { dayDMY } from "../../../../functions/setters"
 import { ItemSlider, ModalSendMail } from '../../../singles'
 import { CreatableMultiselectGray } from '../../../../components/form-components'
@@ -19,14 +19,14 @@ class Avances extends Component {
     state = {
         tabAvance: 'avances',
         accordion: [],
-        formeditado:0,
-        modal:{
-            avance_cliente:false
+        formeditado: 0,
+        modal: {
+            avance_cliente: false
         },
-        form:{
+        form: {
             correos_avances: [],
-            url_avance:'',
-            id_avance:0,
+            url_avance: '',
+            id_avance: 0,
             fechaInicio: new Date(),
             fechaFin: new Date(),
             semana: '',
@@ -34,7 +34,7 @@ class Avances extends Component {
             programado: '0',
             ejecutado: '0',
             trabajadores_anterior: 0,
-            actividades_realizadas:'',
+            actividades_realizadas: '',
             avances: [
                 {
                     avance: '',
@@ -55,7 +55,7 @@ class Avances extends Component {
             }
         },
         options: {
-            correos_clientes:[]
+            correos_clientes: []
         }
     }
 
@@ -63,8 +63,8 @@ class Avances extends Component {
         const { isActive, proyecto } = this.props
         const { isActive: prevActive } = prev
         let { tabAvance } = this.state
-        if(isActive && !prevActive){
-            if(proyecto.avances.length === 0){
+        if (isActive && !prevActive) {
+            if (proyecto.avances.length === 0) {
                 tabAvance = 'new'
                 this.setState({
                     ...this.state,
@@ -73,7 +73,7 @@ class Avances extends Component {
             }
         }
     }
-    
+
     setNaviIcon(icon, text) {
         return (
             <span className="navi-icon d-flex align-self-center">
@@ -98,7 +98,7 @@ class Avances extends Component {
         avances.forEach((element, key) => {
             if (element.id === indiceClick) {
                 element.isActive = element.isActive ? false : true
-            }else {
+            } else {
                 element.isActive = false
             }
         })
@@ -106,15 +106,15 @@ class Avances extends Component {
             accordion: avances
         });
     }
-    
+
     openModalEnviarAvance = (avance) => {
         const { modal, options } = this.state
         const { user, proyecto } = this.props
         let { form } = this.state
 
-        form.url_avance = avance.pdf
+        form.url_avance = avance.pdf_url
         modal.avance_cliente = true
-        
+
         form.correos_avances = []
         form.id_avance = avance.id
         let aux_contactos = [];
@@ -123,7 +123,7 @@ class Avances extends Component {
             aux_contactos.push({
                 value: user.email,
                 label: user.email,
-                id: user.id.toString() 
+                id: user.id.toString()
             })
         }
         options.correos_clientes = []
@@ -139,8 +139,8 @@ class Avances extends Component {
 
         // ELIMINAR OPCIÓN DUPLICADO
         const values = aux_contactos.map(o => o.value)
-        const filtered = aux_contactos.filter(({value}, index) => !values.includes(value, index + 1))
-        
+        const filtered = aux_contactos.filter(({ value }, index) => !values.includes(value, index + 1))
+
         options.correos_clientes = filtered
         this.setState({
             ...this.state,
@@ -149,18 +149,18 @@ class Avances extends Component {
             options
         })
     }
-    
+
     handleCloseModalEnviarAvance = () => {
         const { form, modal } = this.state
         form.correos_clientes = []
         form.url_avance = ''
         modal.avance_cliente = false
-        this.setState({...this.state, modal, form })
+        this.setState({ ...this.state, modal, form })
     }
 
     handleChangeCreateMSelect = (newValue) => {
         const { form } = this.state
-        if(newValue == null){
+        if (newValue == null) {
             newValue = []
         }
         let currentValue = []
@@ -168,32 +168,45 @@ class Avances extends Component {
             currentValue.push({
                 value: valor.value,
                 label: valor.label,
-                id:valor.id
+                id: valor.id
             })
             return ''
         })
         form.correos_avances = currentValue
-        this.setState({...this.state, form })
+        this.setState({ ...this.state, form })
     };
 
     sendMail = async () => {
         waitAlert();
         const { at, proyecto } = this.props
         const { form } = this.state
-        let aux = []
-        form.correos_avances.map((contacto) => {
-            aux.push(contacto.value)
-            return false
-        })
-        form.correos_avances = aux
-        await axios.put(`${URL_DEV}v2/proyectos/proyectos/${proyecto.id}/avances/${form.id_avance}`, form, { headers: setSingleHeader(at) }).then(
-            (response) => { doneAlert(response.data.message !== undefined ? response.data.message : 'El avance fue enviado con éxito.') }, 
-            (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-    }
+
+        const emails = (form.correos_avances || [])
+            .map(c => (typeof c === 'string' ? c.trim() : (c && c.value ? String(c.value).trim() : null)))
+            .filter(Boolean)
+            .filter(c => /^\S+@\S+\.\S+$/.test(c))
+            .filter((c, i, arr) => arr.indexOf(c) === i);
+
+        if (!emails.length) {
+            errorAlert('Agrega al menos un correo válido.');
+            return;
+        }
+        try {
+            const { data } = await axios.put(
+                `${URL_DEV}v2/proyectos/proyectos/${proyecto.id}/avances/${form.id_avance}`,
+                { correos_avances: emails },
+                { headers: { ...setSingleHeader(at), 'Content-Type': 'application/json' } }
+            );
+            doneAlert(data?.message || 'El avance fue enviado con éxito.');
+            this.handleCloseModalEnviarAvance();          // ← cerrar modal
+            // opcional: this.props.refresh(proyecto.id);  // si quieres refrescar la lista
+        } catch (error) {
+            console.error('sendMail error:', error?.response?.data || error);
+            printResponseErrorAlert(error);
+        }
+
+    };
+
 
     clearForm = () => {
         const { form } = this.state
@@ -257,7 +270,7 @@ class Avances extends Component {
             maxSizeMB: 1,
             maxWidthOrHeight: 1024,
             useWebWorker: true,
-        }   
+        }
         try {
             const compressedFile = await imageCompression(imageFile, options);
             return compressedFile
@@ -289,20 +302,20 @@ class Avances extends Component {
             this.setState({ ...this.state, form })
         })
 
-/*         for (let counter = 0; counter < files.length; counter++) {
-            let aux2 = this.handleImageUpload(files[counter])
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: aux2,
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
+        /*         for (let counter = 0; counter < files.length; counter++) {
+                    let aux2 = this.handleImageUpload(files[counter])
+                    aux.push(
+                        {
+                            name: files[counter].name,
+                            file: aux2,
+                            url: URL.createObjectURL(files[counter]),
+                            key: counter
+                        }
+                    )
                 }
-            )
-        }
-        form.avances[key][name].value = value
-        form.avances[key][name].files = aux
-        this.setState({ ...this.state, form }) */
+                form.avances[key][name].value = value
+                form.avances[key][name].files = aux
+                this.setState({ ...this.state, form }) */
     }
 
     clearFilesAvances = (name, key, _key) => {
@@ -318,7 +331,7 @@ class Avances extends Component {
         form.avances[_key].adjuntos.files = aux
         this.setState({ ...this.state, form })
     }
-    
+
     addRowAvance = () => {
         const { form } = this.state
         form.avances.push(
@@ -343,56 +356,80 @@ class Avances extends Component {
         })
     }
 
-    onSubmitNewAvance = async() => {
+    onSubmitNewAvance = async () => {
         const { form, tabAvance } = this.state
         const { proyecto, at } = this.props
-        let auxPromises = []
-        let files = []
-        await axios.get(`${URL_DEV}v1/constant/admin-proyectos`, { headers: setSingleHeader(at) }).then(
-            (response) => {
-                const { alma } = response.data
-                let urlPath = `proyectos/${proyecto.id}/avance/${form.semana}/`
-                if(tabAvance !== 'attached'){
-                    form.avances.forEach((avance, key) => {
-                        avance.adjuntos.files.forEach((file, index) => {
-                            files.push({ file: file, key: key })
-                        })
-                    })
-                    auxPromises  = files.map((file) => {
-                        return new Promise((resolve, reject) => {
-                            new S3(alma).uploadFile(file.file.file, `${urlPath}${file.key}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
-                                .then((data) =>{
-                                    const { location,status } = data
-                                    if(status === 204) resolve({ name: file.file.name, url: location, key: file.key })
-                                    else reject(data)
-                                }).catch(err => reject(err))
-                        })
-                    })
-                    Promise.all(auxPromises).then(values => { this.addNewAvance(values) }).catch(err => console.error(err))
-                }else{
-                    if(form.adjuntos.avance.files.length === 1){
-                        let auxPromises  = form.adjuntos.avance.files.map((file) => {
-                            return new Promise((resolve, reject) => {
-                                new S3(alma).uploadFile(file.file, `${urlPath}/${Math.floor(Date.now() / 1000)}-${file.file.name}`)
-                                    .then((data) =>{
-                                        const { location,status } = data
-                                        if(status === 204) resolve({ name: file.file.name, url: location })
-                                        else reject(data)
-                                    }).catch(err => reject(err))
+
+        // siempre termina en "/"
+        const urlPath = `proyectos/${proyecto.id}/avance/${form.semana}/`
+
+        try {
+            if (tabAvance !== 'attached') {
+                // 1) Prepara payload
+                const avancesPayload = form.avances.map(a => ({
+                    descripcion: a.descripcion,
+                    avance: a.avance,
+                    actividades_realizadas: a.actividades_realizadas,
+                    files: []
+                }))
+
+                const uploads = []
+
+                form.avances.forEach((a, i) => {
+                    a.adjuntos.files.forEach(({ file }) => {
+                        const fd = new FormData()
+                        fd.append('file', file)             // binario
+                        fd.append('path', urlPath)          // solo directorio
+                        fd.append('proyecto_id', proyecto.id) // para que el backend genere "596-avance-{timestamp}.ext"
+
+                        uploads.push(
+                            axios.post(`${URL_DEV}upload`, fd, {
+                                headers: { ...setSingleHeader(at), 'Content-Type': 'multipart/form-data' }
+                            }).then(({ data }) => {
+                                // guardar la key que devolvió el backend
+                                avancesPayload[i].files.push({ name: file.name, path: data.path })
                             })
-                        })
-                        Promise.all(auxPromises).then(values => { this.attachAvance(values) }).catch(err => console.error(err))
-                    }else{ errorAlert('Agrega UN archivo con el avance del proyecto') }
+                        )
+                    })
+                })
+
+                await Promise.all(uploads)
+
+                // 2) Guarda el avance en tu endpoint
+                await this.addNewAvance(avancesPayload)
+
+            } else {
+                // PDF único
+                if (form.adjuntos.avance.files.length === 1) {
+                    const file = form.adjuntos.avance.files[0].file
+
+                    const fd = new FormData()
+                    fd.append('file', file)
+                    fd.append('path', urlPath)             // solo directorio
+                    fd.append('proyecto_id', proyecto.id)
+
+                    const { data } = await axios.post(`${URL_DEV}upload`, fd, {
+                        headers: { ...setSingleHeader(at), 'Content-Type': 'multipart/form-data' }
+                    })
+
+                    await this.attachAvance([{ name: file.name, path: data.path }])
+                } else {
+                    errorAlert('Agrega UN archivo con el avance del proyecto')
                 }
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
-        
+            }
+        } catch (err) {
+            console.error('Error en onSubmitNewAvance:', err)
+            if (err.response) printResponseErrorAlert(err)
+            else errorAlert(err.message || 'Ocurrió un error desconocido.')
+        }
     }
 
-    attachAvance = async(values) => {
+
+
+
+
+
+    attachAvance = async (values) => {
         const { form } = this.state
         const { at, proyecto, refresh } = this.props
         let data = {}
@@ -408,9 +445,9 @@ class Avances extends Component {
         await axios.put(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/avances`, data, { headers: setSingleHeader(at) }).then(
             (response) => {
                 const { avance } = response.data
-                var win = window.open(avance.pdf, '_blank');
+                var win = window.open(avance.pdf_url, '_blank');
                 win.focus();
-                doneAlert(`Avance generado con éxito`, ()=> {refresh(proyecto.id)})
+                doneAlert(`Avance generado con éxito`, () => { refresh(proyecto.id) })
                 this.setState({
                     ...this.state,
                     tabAvance: 'avances',
@@ -423,51 +460,50 @@ class Avances extends Component {
         })
     }
 
-    addNewAvance = async(files) => {
+    addNewAvance = async (avancesPayload) => {
         const { form } = this.state
         const { at, proyecto, refresh } = this.props
-        files.forEach((file) => {
-            if(!form.avances[file.key].files){
-                form.avances[file.key].files = []
-            }
-            form.avances[file.key].files.push( file )
-            form.avances[file.key].adjuntos.files = []
-            form.avances[file.key].adjuntos.value = null
-        })
-        let data = {}
-        data.semana = form.semana
-        data.trabajadores = form.trabajadores
-        data.trabajadores_anterior = form.trabajadores_anterior
-        data.programado = form.programado
-        data.ejecutado = form.ejecutado
-        data.actividades = form.actividades_realizadas
-        data.fechaInicio = form.fechaInicio
-        data.fechaFin = form.fechaFin
-        data.avances = form.avances
-        await axios.post(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/avances`, data, { headers: setSingleHeader(at) }).then(
-            (response) => {
-                // const { avance } = response.data
-                // var win = window.open(avance.pdf, '_blank');
-               
-                doneAlert(`Avance generado con éxito`, ()=> {refresh(proyecto.id)})
-                this.setState({
-                    ...this.state,
-                    tabAvance: 'avances',
-                    form: this.clearForm()
-                })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
+
+        // Construye exactamente el shape que espera el backend
+        const avances = form.avances.map((a, i) => ({
+            descripcion: a.descripcion,
+            avance: a.avance,
+            actividades_realizadas: a.actividades_realizadas,
+            files: (avancesPayload[i]?.files || [])  // ← paths subidos a S3
+        }))
+
+        const data = {
+            semana: form.semana,
+            trabajadores: form.trabajadores,
+            trabajadores_anterior: form.trabajadores_anterior,
+            programado: form.programado,
+            ejecutado: form.ejecutado,
+            actividades: form.actividades_realizadas,
+            fechaInicio: form.fechaInicio,
+            fechaFin: form.fechaFin,
+            avances
+        }
+
+        await axios.post(
+            `${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/avances`,
+            data,
+            { headers: setSingleHeader(at) }
+        ).then(() => {
+            doneAlert(`Avance generado con éxito`, () => { refresh(proyecto.id) })
+            this.setState({ ...this.state, tabAvance: 'avances', form: this.clearForm() })
+        }).catch((error) => {
+            printResponseErrorAlert(error)
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.error(error, 'error')
         })
     }
 
-    deleteAvance = async(id) => {
+    deleteAvance = async (id) => {
         const { at, proyecto, refresh } = this.props
         waitAlert()
         await axios.delete(`${URL_DEV}v3/proyectos/proyectos/${proyecto.id}/avances/${id}`, { headers: setSingleHeader(at) }).then(
             (response) => {
-                doneAlert(`Avance eliminado con éxito`, ()=> {refresh(proyecto.id)})
+                doneAlert(`Avance eliminado con éxito`, () => { refresh(proyecto.id) })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -481,7 +517,7 @@ class Avances extends Component {
         form[name] = value
         this.setState({ ...this.state, form })
     }
-    
+
     handleChangeAvance = (files, item) => { this.onChangeAdjunto({ target: { name: item, value: files, files: files } }) }
 
     onChangeAdjunto = e => {
@@ -504,7 +540,7 @@ class Avances extends Component {
     }
     getTitle = () => {
         const { tabAvance } = this.state
-        switch(tabAvance){
+        switch (tabAvance) {
             case 'new':
                 return 'NUEVO AVANCE'
             case 'attached':
@@ -524,24 +560,24 @@ class Avances extends Component {
                     <Card.Header className="border-0 align-items-center pt-6 pt-md-0">
                         <div className="font-weight-bold font-size-h4 text-dark">{this.getTitle()}</div>
                         <div className="card-toolbar toolbar-dropdown">
-                            <DropdownButton menualign="right" 
+                            <DropdownButton menualign="right"
                                 title={<span className="d-flex">OPCIONES <i className="las la-angle-down icon-md p-0 ml-2"></i></span>} id='dropdown-proyectos' >
                                 {
                                     proyecto ?
                                         proyecto.avances ?
-                                            proyecto.avances.length > 0 && (tabAvance === 'new' || tabAvance === 'attached')?
+                                            proyecto.avances.length > 0 && (tabAvance === 'new' || tabAvance === 'attached') ?
                                                 <Dropdown.Item className="text-hover-info dropdown-info" onClick={() => { this.openFormAvance('avances') }}>
                                                     {this.setNaviIcon('las la-clipboard-list icon-xl', 'HISTORIAL DE AVANCES')}
                                                 </Dropdown.Item>
+                                                : <></>
                                             : <></>
                                         : <></>
-                                    : <></>
                                 }
                                 {
-                                    tabAvance === 'new'?<></>:
-                                    <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.openFormAvance('new') }}>
-                                        {this.setNaviIcon('las la-camera-retro icon-xl', 'NUEVO AVANCE')}
-                                    </Dropdown.Item>
+                                    tabAvance === 'new' ? <></> :
+                                        <Dropdown.Item className="text-hover-success dropdown-success" onClick={() => { this.openFormAvance('new') }}>
+                                            {this.setNaviIcon('las la-camera-retro icon-xl', 'NUEVO AVANCE')}
+                                        </Dropdown.Item>
                                 }
                                 <Dropdown.Item className="text-hover-primary dropdown-primary" onClick={() => { this.openFormAvance('attached') }}>
                                     {this.setNaviIcon('las la-paperclip icon-xl', 'ADJUNTAR AVANCE')}
@@ -550,7 +586,7 @@ class Avances extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        
+
                         {
                             tabAvance === 'avances' ?
                                 proyecto ?
@@ -564,13 +600,13 @@ class Avances extends Component {
                                                                 return (
                                                                     <Card className="w-auto" key={key}>
                                                                         <Card.Header >
-                                                                            <Card.Title 
-                                                                                className = { `rounded-0 ${ (avance.isActive) ? 
-                                                                                    'text-primary2 collapsed' 
-                                                                                    : 'text-dark'}`} 
+                                                                            <Card.Title
+                                                                                className={`rounded-0 ${(avance.isActive) ?
+                                                                                    'text-primary2 collapsed'
+                                                                                    : 'text-dark'}`}
                                                                                 onClick={() => { this.handleAccordion(avance.id) }}>
-                                                                                <span className = { `svg-icon ${avance.isActive ? 
-                                                                                        'svg-icon-primary2' 
+                                                                                <span className={`svg-icon ${avance.isActive ?
+                                                                                    'svg-icon-primary2'
                                                                                     : 'svg-icon-dark'}`}>
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/Angle-right.svg')} />
                                                                                 </span>
@@ -582,44 +618,45 @@ class Avances extends Component {
                                                                                         </div>
                                                                                     </div>
                                                                                     <div className="align-self-center">
-                                                                                        <OverlayTrigger rootClose 
+                                                                                        <OverlayTrigger rootClose
                                                                                             overlay={
                                                                                                 <Tooltip>
                                                                                                     <span className='font-weight-bolder'>VER PDF</span>
                                                                                                 </Tooltip>}>
-                                                                                            <a rel="noopener noreferrer" href={avance.pdf} target="_blank" 
-                                                                                                className={`btn btn-icon ${avance.isActive ? 
-                                                                                                    'btn-color-primary2' 
-                                                                                                : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}>
+                                                                                            <a rel="noopener noreferrer" href={avance.pdf_url} target="_blank"
+                                                                                                className={`btn btn-icon ${avance.isActive ?
+                                                                                                    'btn-color-primary2'
+                                                                                                    : ''}  btn-active-light-primary2 w-30px h-30px mr-2`}>
                                                                                                 <i className="las la-file-download icon-xl"></i>
                                                                                             </a>
                                                                                         </OverlayTrigger>
-                                                                                        <OverlayTrigger rootClose 
+                                                                                        <OverlayTrigger rootClose
                                                                                             overlay={
                                                                                                 <Tooltip>
                                                                                                     <span className='font-weight-bolder'>ENVIAR A CLIENTE</span>
                                                                                                 </Tooltip>}>
-                                                                                            <span onClick={() => { this.openModalEnviarAvance(avance) }} 
-                                                                                                className={`btn btn-icon ${avance.isActive ? 
-                                                                                                        'btn-color-success2' 
+                                                                                            <span onClick={() => { this.openModalEnviarAvance(avance) }}
+                                                                                                className={`btn btn-icon ${avance.isActive ?
+                                                                                                    'btn-color-success2'
                                                                                                     : ''}  btn-active-light-success2 w-30px h-30px mr-2`}>
                                                                                                 <i className="las la-envelope icon-xl"></i>
                                                                                             </span>
                                                                                         </OverlayTrigger>
-                                                                                        <OverlayTrigger rootClose 
-                                                                                            overlay = { 
+                                                                                        <OverlayTrigger rootClose
+                                                                                            overlay={
                                                                                                 <Tooltip>
                                                                                                     <span className='font-weight-bolder'>ELIMINAR</span>
                                                                                                 </Tooltip>}>
-                                                                                            <span className={`btn btn-icon ${avance.isActive ? 
-                                                                                                    'btn-color-danger' 
+                                                                                            <span className={`btn btn-icon ${avance.isActive ?
+                                                                                                'btn-color-danger'
                                                                                                 : ''}  btn-active-light-danger w-30px h-30px mr-2`}
-                                                                                                onClick = { (e) => { 
-                                                                                                        e.preventDefault(); 
-                                                                                                        deleteAlert(
-                                                                                                            `ELIMINARÁS EL AVANCE DE LA SEMANA ${avance.semana}`, 
-                                                                                                            '¿DESEAS CONTINUAR?', 
-                                                                                                            () => this.deleteAvance(avance.id)) } }>
+                                                                                                onClick={(e) => {
+                                                                                                    e.preventDefault();
+                                                                                                    deleteAlert(
+                                                                                                        `ELIMINARÁS EL AVANCE DE LA SEMANA ${avance.semana}`,
+                                                                                                        '¿DESEAS CONTINUAR?',
+                                                                                                        () => this.deleteAvance(avance.id))
+                                                                                                }}>
                                                                                                 <i className="las la-trash icon-xl"></i>
                                                                                             </span>
                                                                                         </OverlayTrigger>
@@ -639,25 +676,26 @@ class Avances extends Component {
                                                                                                     </span>
                                                                                                 </div>
                                                                                                 <ul className="mb-0">
-                                                                                                    { 
-                                                                                                        avance.actividades.split('\n').map(( actividad, index) =>  {
-                                                                                                            return(
-                                                                                                                <li key = { index }>{actividad}</li>
+                                                                                                    {
+                                                                                                        avance.actividades.split('\n').map((actividad, index) => {
+                                                                                                            return (
+                                                                                                                <li key={index}>{actividad}</li>
                                                                                                             )
                                                                                                         })
                                                                                                     }
                                                                                                 </ul>
-                                                                                                <div className="separator separator-dashed my-6"/>
+                                                                                                <div className="separator separator-dashed my-6" />
                                                                                             </div>
                                                                                         </div>
-                                                                                    :<></>
+                                                                                        : <></>
                                                                                 }
                                                                                 <Col md={9} className="mb-5 mx-auto">
                                                                                     {
                                                                                         avance.adjuntos.length > 0 ?
                                                                                             <SliderImages elements={avance.adjuntos} />
-                                                                                        :
-                                                                                            <ItemSlider  items={[{ url: avance.pdf, name: 'ficha_tecnica.pdf' }]}/>
+                                                                                            :
+                                                                                            <ItemSlider items={[{ url: avance.pdf_url, name: 'ficha_tecnica.pdf' }]} />
+
                                                                                     }
                                                                                 </Col>
                                                                             </Row>
@@ -673,49 +711,50 @@ class Avances extends Component {
                                             : ''
                                         : ''
                                     : ''
-                            :tabAvance === 'new' ?
-                                <AvanceForm
-                                    form = { form }
-                                    onChangeAvance = { this.onChangeAvance }
-                                    onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
-                                    clearFilesAvances = { this.clearFilesAvances }
-                                    addRowAvance = { this.addRowAvance }
-                                    deleteRowAvance = { this.deleteRowAvance }
-                                    onSubmit = { (e) => {e.preventDefault(); waitAlert(); this.onSubmitNewAvance() } }
-                                    onChange = { this.onChange }
-                                    proyecto = { proyecto } 
-                                    sendMail = { this.sendMail }
-                                    handleChange = { this.handleChangeAvance }
-                                    formeditado = { formeditado } 
-                                    isNew = { tabAvance === 'attached' ? true : false }
-                                />
-                            :tabAvance === 'attached' ?
-                                <AvanceForm
-                                    form = { form }
-                                    onChangeAvance = { this.onChangeAvance }
-                                    onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
-                                    clearFilesAvances = { this.clearFilesAvances }
-                                    addRowAvance = { this.addRowAvance }
-                                    deleteRowAvance = { this.deleteRowAvance }
-                                    onSubmit = { (e) => {e.preventDefault(); waitAlert(); this.onSubmitNewAvance() } }
-                                    onChange = { this.onChange }
-                                    proyecto = { proyecto } 
-                                    sendMail = { this.sendMail }
-                                    handleChange = { this.handleChangeAvance }
-                                    formeditado = { formeditado } 
-                                    isNew = { tabAvance === 'attached' ? true : false }
-                                />
-                            :<></>
+                                : tabAvance === 'new' ?
+                                    <AvanceForm
+                                        form={form}
+                                        onChangeAvance={this.onChangeAvance}
+                                        onChangeAdjuntoAvance={this.onChangeAdjuntoAvance}
+                                        clearFilesAvances={this.clearFilesAvances}
+                                        addRowAvance={this.addRowAvance}
+                                        deleteRowAvance={this.deleteRowAvance}
+                                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.onSubmitNewAvance() }}
+                                        onChange={this.onChange}
+                                        proyecto={proyecto}
+                                        sendMail={this.sendMail}
+                                        handleChange={this.handleChangeAvance}
+                                        formeditado={formeditado}
+                                        isNew={tabAvance === 'attached' ? true : false}
+                                    />
+                                    : tabAvance === 'attached' ?
+                                        <AvanceForm
+                                            form={form}
+                                            onChangeAvance={this.onChangeAvance}
+                                            onChangeAdjuntoAvance={this.onChangeAdjuntoAvance}
+                                            clearFilesAvances={this.clearFilesAvances}
+                                            addRowAvance={this.addRowAvance}
+                                            deleteRowAvance={this.deleteRowAvance}
+                                            onSubmit={(e) => { e.preventDefault(); waitAlert(); this.onSubmitNewAvance() }}
+                                            onChange={this.onChange}
+                                            proyecto={proyecto}
+                                            sendMail={this.sendMail}
+                                            handleChange={this.handleChangeAvance}
+                                            formeditado={formeditado}
+                                            isNew={tabAvance === 'attached' ? true : false}
+                                        />
+                                        : <></>
                         }
                     </Card.Body>
                 </Card>
-                <ModalSendMail show = { modal.avance_cliente } handleClose = { this.handleCloseModalEnviarAvance } header = '¿DESEAS ENVIAR EL AVANCE?' 
-                    validation = 'url_avance !==' url = { form.url_avance } url_text = 'EL AVANCE' sendMail = { this.sendMail } >
+                <ModalSendMail show={modal.avance_cliente} handleClose={this.handleCloseModalEnviarAvance} header='¿DESEAS ENVIAR EL AVANCE?'
+
+                    validation='!!form.url_avance' url={form.url_avance} url_text='EL AVANCE' sendMail={this.sendMail} >
                     <div className="col-md-11 mt-5">
                         <div>
-                            <CreatableMultiselectGray placeholder = "SELECCIONA/AGREGA EL O LOS CORREOS" iconclass = "flaticon-email"
-                                requirevalidation = { 1 } messageinc = "Selecciona el o los correos" uppercase = { false }
-                                onChange = { this.handleChangeCreateMSelect } options = { options.correos_clientes } elementoactual = { form.correos_avances } />
+                            <CreatableMultiselectGray placeholder="SELECCIONA/AGREGA EL O LOS CORREOS" iconclass="flaticon-email"
+                                requirevalidation={1} messageinc="Selecciona el o los correos" uppercase={false}
+                                onChange={this.handleChangeCreateMSelect} options={options.correos_clientes} elementoactual={form.correos_avances} />
                         </div>
                     </div>
                 </ModalSendMail>

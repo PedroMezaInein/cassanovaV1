@@ -15,35 +15,35 @@ import { FormularioContrato, LicenciasEquiposForm, HistorialVacaciones, Prestaci
 import moment from 'moment';
 import { setFormHeader, setSingleHeader } from '../../../functions/routers'
 import { Modal, ModalDelete } from '../../../components/singles';
-import TextField from '@mui/material/TextField';
+// import TextField from '@mui/material/TextField';
 
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import MobileStepper from '@mui/material/MobileStepper';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+// import Stepper from '@mui/material/Stepper';
+// import Step from '@mui/material/Step';
+// import StepLabel from '@mui/material/StepLabel';
+// import MobileStepper from '@mui/material/MobileStepper';
+// import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 
-import Grid from '@mui/material/Grid';
+// import Grid from '@mui/material/Grid';
 import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
-import { es } from 'date-fns/locale'
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+// import { es } from 'date-fns/locale'
+// import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+// import DateFnsUtils from '@date-io/date-fns';
 import { waitAlert, errorAlert, printResponseErrorAlert, deleteAlert,sendFileAlert } from '../../../functions/alert'; // importa tus helpers
-import { setOptions} from '../../../functions/setters'
+// import { setOptions} from '../../../functions/setters'
 import { URL_DEV } from '../../../constants'
 import axios from 'axios'
 import {
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  Select,
+  // FormControl,
+  // FormLabel,
+  // RadioGroup,
+  // FormControlLabel,
+  // Radio,
+  // Select,
   MenuItem, 
   Button,
 } from '@mui/material';
-import { Typography } from '@material-ui/core';
+// import { Typography } from '@material-ui/core';
 import EmpleadosAgregar from './EmpleadosAgregar'; // ajusta la ruta si está en otro nivel
 import Menu from '@mui/material/Menu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -70,7 +70,7 @@ const Empleados = () => {
   const [totalRows, setTotalRows] = useState(0);
   const [empleados, setEmpleados] = useState([]);
   const [data, setData] = useState(new Array(10).fill({ field: '', values: [] }));
-  const [columnFilters, setColumnFilters] = useState([]);
+  // const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
 
 
@@ -281,29 +281,30 @@ useEffect(() => {
     return formattedData;
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const page = pagination.pageIndex + 1;
-        const pageSize = pagination.pageSize;
-        const response = await apiGet(`v2/rh/empleados?type=admin&page=${page}&page_size=${pageSize}`, auth);
-        const { data: empleadosData, total } = response.data.data;
-        // console.log(empleadosData.datos_generales)
-        setEmpleados(empleadosData);
-        const datosFormateados = transformarEmpleados(empleadosData);
-        setData(datosFormateados);
-        setTotalRows(total);
-      } catch (error) {
-        console.error(error);
-        Swal.fire('Error', 'No se pudieron cargar los datos.', 'error');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const page = pagination.pageIndex + 1;
+  //       const pageSize = pagination.pageSize;
+  //       const searchQuery = globalFilter ? `&search=${globalFilter}` : '';
+  //       const response = await apiGet(`v2/rh/empleados?type=admin&page=${page}&page_size=${pageSize}${searchQuery}`, auth);
+  //       const { data: empleadosData, total } = response.data.data;
+  //       // console.log(empleadosData.datos_generales)
+  //       setEmpleados(empleadosData);
+  //       const datosFormateados = transformarEmpleados(empleadosData);
+  //       setData(datosFormateados);
+  //       setTotalRows(total);
+  //     } catch (error) {
+  //       console.error(error);
+  //       Swal.fire('Error', 'No se pudieron cargar los datos.', 'error');
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
   
-    fetchData();
-  }, [pagination.pageIndex, pagination.pageSize, globalFilter, columnFilters]);
+  //   fetchData();
+  // }, [pagination.pageIndex, pagination.pageSize, globalFilter]);
   
   
 
@@ -332,7 +333,7 @@ useEffect(() => {
     },
     ...empleados.map((emp, index) => ({
     accessorKey: `${index}`,
-    header: ` ${emp.nombre} ${emp.apellido_materno}`,
+    header: ` ${emp.nombre} ${emp.apellido_paterno}`,
     size: 200,
     Cell: ({ row }) => {
       const value = row.original.values[index];
@@ -481,7 +482,7 @@ useEffect(() => {
   
   useEffect(() => {
     reloadData();
-  }, [reloadData, columnFilters, globalFilter]); // ← AÑADIDO
+  }, [reloadData]); // ← AÑADIDO
 
   const onChangeRange = (range) => {
   const { startDate, endDate } = range;
@@ -556,8 +557,8 @@ const generarContrato = async () => {
         timer: 1500
     })
 
-    if (contrato?.contrato) window.open(contrato.contrato, '_blank');
-    if (contrato?.carta) window.open(contrato.carta, '_blank');
+    if (contrato?.contrato_url_temporal) window.open(contrato.contrato_url_temporal, '_blank');
+    if (contrato?.carta_url_temporal) window.open(contrato.carta_url_temporal, '_blank');
 
     setFormContrato(prev => ({ ...prev, tipos: [] }));
     reloadData(); // Refrescar tabla si es necesario
@@ -723,8 +724,8 @@ const renovarContrato = async (empleado) => {
     })
     // doneAlert(response.data.message ?? 'El contrato fue generado con éxito.');
 
-    if (contrato?.contrato) window.open(contrato.contrato, '_blank');
-    if (contrato?.carta) window.open(contrato.carta, '_blank');
+    if (contrato?.contrato_url_temporal) window.open(contrato.contrato_url_temporal, '_blank');
+    if (contrato?.carta_url_temporal) window.open(contrato.carta_url_temporal, '_blank');
 
     setFormContrato(prev => ({ ...prev, tipos: [] }));
     setModals(prev => ({
@@ -776,8 +777,8 @@ const regeneratePdfAxios = async (empleadoId, contratoId) => {
 
     // doneAlert(response.data.message ?? 'Contrato regenerado con éxito.');
 
-    if (contrato?.contrato) window.open(contrato.contrato, '_blank');
-    if (contrato?.carta) window.open(contrato.carta, '_blank');
+    if (contrato?.contrato_url_temporal) window.open(contrato.contrato_url_temporal, '_blank');
+    if (contrato?.carta_url_temporal) window.open(contrato.carta_url_temporal, '_blank');
 
     reloadData(); // Refresca si hace falta
   } catch (error) {
@@ -852,8 +853,12 @@ const SemaforoDocumentosPorCodigo = ({ empleado, tiposAdjuntos }) => {
   // Obtener códigos únicos obligatorios
   const codigosObligatorios = [...new Set(
     tiposAdjuntos
-      .filter(tipo => tipo.obligatorio === 1)
-      .map(tipo => tipo.codigo)
+    .filter(tipo => 
+      tipo.obligatorio === 1 &&
+      tipo.codigo !== 'COVID' &&
+      tipo.codigo !== 'FOREE'
+    )
+    .map(tipo => tipo.codigo)
   )];
 
   return (
@@ -965,7 +970,7 @@ const SemaforoDocumentosPorCodigo = ({ empleado, tiposAdjuntos }) => {
             state={{
               isLoading,
               pagination,
-              columnFilters,
+              // columnFilters,
               globalFilter,            // ✅ pasa el valor del filtro
 
             }}
@@ -979,7 +984,7 @@ const SemaforoDocumentosPorCodigo = ({ empleado, tiposAdjuntos }) => {
             enableDensityToggle
             enableColumnOrdering
             enableColumnFilters={false}
-            enableFullScreenToggle={false}
+            enableFullScreenToggle={true}
             enablePagination
             enableRowVirtualization
             muiTablePaginationProps={{

@@ -224,19 +224,19 @@ class FormularioContrato extends Component {
                                                         <div className="w-fit-content mx-auto">
                                                             {
                                                                 contrato.contrato !== null &&
-                                                                <a className="text-dark-50 font-weight-normal text-hover-primary d-block" rel="noopener noreferrer" href={contrato.contrato} target="_blank">CONTRATO GENERADO</a>
+                                                                <a className="text-dark-50 font-weight-normal text-hover-primary d-block" rel="noopener noreferrer" href={contrato.contrato_url_temporal} target="_blank">CONTRATO GENERADO</a>
                                                             }
                                                             {
                                                                 contrato.contrato_firmado !== null &&
-                                                                <a className="text-dark-50 font-weight-normal  mt-1 text-hover-primary" rel="noopener noreferrer" href={contrato.contrato_firmado} target="_blank">CONTRATO FIRMADO</a>
+                                                                <a className="text-dark-50 font-weight-normal  mt-1 text-hover-primary" rel="noopener noreferrer" href={contrato.contrato_firmado_url_temporal} target="_blank">CONTRATO FIRMADO</a>
                                                             }
                                                             {
                                                                 contrato.carta !== null &&
-                                                                <a className="text-dark-50 font-weight-normal text-hover-primary d-block" rel="noopener noreferrer" href={contrato.carta} target="_blank">CARTA GENERADA</a>
+                                                                <a className="text-dark-50 font-weight-normal text-hover-primary d-block" rel="noopener noreferrer" href={contrato.carta_url_temporal} target="_blank">CARTA GENERADA</a>
                                                             }
                                                             {
                                                                 contrato.carta_firmada !== null &&
-                                                                <a className="text-dark-50 font-weight-normal  mt-1 text-hover-primary" rel="noopener noreferrer" href={contrato.carta_firmada} target="_blank">CARTA FIRMADA</a>
+                                                                <a className="text-dark-50 font-weight-normal  mt-1 text-hover-primary" rel="noopener noreferrer" href={contrato.carta_firmada_url_temporal} target="_blank">CARTA FIRMADA</a>
                                                             }
                                                         </div>
                                                     </td>
@@ -260,7 +260,7 @@ class FormularioContrato extends Component {
                                                             : <></>
                                                         }
                                                         {
-                                                            contrato.contrato_firmado === null ? 
+                                                            contrato.contrato_firmado_url_temporal === null ? 
                                                                 <OverlayTrigger rootClose overlay={<Tooltip>REGENERAR PDF</Tooltip>}>
                                                                     <span className="btn btn-light btn-icon h-35px font-weight-bolder ml-2 my-1" onClick = { (e) => { e.preventDefault(); regeneratePdf(empleado, contrato);   }}>
                                                                         <span className="svg-icon svg-icon-lg svg-icon-info">

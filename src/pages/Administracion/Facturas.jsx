@@ -30,6 +30,11 @@ import {Form } from 'react-bootstrap'
 import {  FileInput } from '../../components/form-components'
 import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
+// import { format } from 'date-fns'
+import { format } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
+
+
 
 // import Favorite from '@material-ui/icons/Favorite';
 // import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
@@ -181,7 +186,7 @@ export default function FacturaTable(props) {
         // apiOptions(`facturas/facturaOpcciones`, auth)
             .then(res => {
                 let data = res.data
-                console.log(data)
+                // console.log(data)
                 let aux = {
                     clientes: [],
                     proveedores: [],
@@ -255,7 +260,8 @@ export default function FacturaTable(props) {
         { nombre: '', identificador: 'acciones', sort: false, stringSearch: false },
         { nombre: 'Estatus', identificador: 'estatus'},
         { nombre: 'Folio', identificador: 'folio', stringSearch: false },
-        { nombre: 'Fecha', identificador: 'fecha', stringSearch: false },
+        { nombre: 'Fecha factura', identificador: 'fechaF', stringSearch: false },
+        { nombre: 'Fecha subida', identificador: 'fechaS', stringSearch: false },
         { nombre: 'Serie', identificador: 'serie', orderable: false },
         { nombre: 'Emisor', identificador: 'emisor', stringSearch: false },
         { nombre: 'Receptor', identificador: 'receptor', stringSearch: false },
@@ -508,7 +514,9 @@ export default function FacturaTable(props) {
                 id: dato.id,
                 estatus: setLabelTables(dato),
                 folio: dato ? dato.folio : 'N/A',
-                fecha: dato.created_at ? setDateTable(dato.created_at) : 'N/A',
+                fechaF: dato.fecha ? setDateTable(dato.fecha) : 'N/A',
+                fechaS: dato.created_at ? setDateTable(dato.created_at) : 'N/A',
+
                 serie: dato.serie ? dato.serie : 'N/A',
                 emisor: dato.rfc_emisor && dato.nombre_emisor ? emisor(dato.rfc_emisor,dato.nombre_emisor)  : 'N/A',
                 receptor: dato.rfc_receptor && dato.nombre_receptor ? receptor( dato.rfc_receptor,dato.nombre_receptor)  : 'N/A',
@@ -815,7 +823,24 @@ export default function FacturaTable(props) {
                         obj.regimen_fiscal = jsonObj['cfdi:Emisor']['RegimenFiscal']
                     } else { errores.push('El XML no tiene el emisor') }
                     obj.lugar_expedicion = jsonObj['LugarExpedicion']
-                    obj.fecha = jsonObj['Fecha'] ? new Date(jsonObj['Fecha']) : null
+                    // obj.fecha = jsonObj['Fecha'] ? new Date(jsonObj['Fecha']) : null
+                                        obj.fecha = (() => {
+                        if (!jsonObj['Fecha']) return null;
+                        const fechaRaw = jsonObj['Fecha']; // "2025-05-28T09:41:48"
+                        const [fechaStr, horaStr] = fechaRaw.split("T");
+                        const [year, month, day] = fechaStr.split("-");
+                        const [hour, minute, second] = horaStr.split(":");
+
+                        return new Date(
+                            parseInt(year),
+                            parseInt(month) - 1,
+                            parseInt(day),
+                            parseInt(hour),
+                            parseInt(minute),
+                            parseInt(second)
+                        );
+                    })()
+
                     obj.metodo_pago = jsonObj['MetodoPago']
                     obj.tipo_de_comprobante = jsonObj['TipoDeComprobante']
                     obj.total = jsonObj['Total']
@@ -856,7 +881,7 @@ export default function FacturaTable(props) {
                     }
 
                     let empresa = opcionesData.empresas.find((empresa) => empresa.rfc === obj.rfc_receptor)
-                    console.log(obj.rfc_receptor)
+                    // console.log(obj.rfc_receptor)
                     if(empresa === undefined ){
                         Swal.fire({
                             icon: 'error',
@@ -868,7 +893,7 @@ export default function FacturaTable(props) {
                     }
 
                     let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
-                    console.log(obj.rfc_emisor)
+                    // console.log(obj.rfc_emisor)
                     if(!proveedor){
                         Swal.fire({
                             icon: 'error',
@@ -894,10 +919,10 @@ export default function FacturaTable(props) {
                             key: index
                         })
                     })
-                    console.log(obj)
+                    // console.log(obj)
 
                     let path = `C:/fakepath/` + aux[0].name // a lo mejor tiene que ser C:\\fakepath\\ o algo asi
-                    console.log(obj)
+                    // console.log(obj)
                     setForm({
                         ...form,
                         fecha: obj.fecha,
@@ -978,7 +1003,7 @@ export default function FacturaTable(props) {
                 key: index
             })
         })
-        console.log(aux)
+        // console.log(aux)
 
         let path = 'C:/fakepath/'+ aux[0].name
 
@@ -1054,13 +1079,14 @@ export default function FacturaTable(props) {
         })
     }
 
+   
     const  onChangeAdjuntoFacturas = (e) => {
-        console.log(opcionesData)
+        // console.log(opcionesData)
         // const [form, setForm] = useState({
 // 
         const { files, value, name } = e.target;
         // const { files } = e.target
-        console.log(selectData)
+        // console.log(selectData)
         let aux = []
         for (let counter = 0; counter < files.length; counter++) {
             if (name === 'factura') {
@@ -1098,7 +1124,14 @@ export default function FacturaTable(props) {
                         const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
                         const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
                         let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
-                       
+                        // const fechaFormateada = format(obj.fecha, 'yyyy-MM-dd HH:mm:ss');
+                        const formatearFechaXML = (fechaRaw) => {
+                            if (!fechaRaw || typeof fechaRaw !== 'string') return '';
+                            return fechaRaw.includes('T')
+                                ? fechaRaw.replace('T', ' ')
+                                : fechaRaw;
+                            };
+
 
                         let obj = {
                             rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
@@ -1108,7 +1141,9 @@ export default function FacturaTable(props) {
                             nombre_emisor: emisor.attributes.Nombre ? emisor.attributes.Nombre : '',
                             regimen_fiscal: emisor.attributes.RegimenFiscal ? emisor.attributes.RegimenFiscal : '',
                             lugar_expedicion: xml.attributes.LugarExpedicion ? xml.attributes.LugarExpedicion : '',
-                            fecha: xml.attributes.Fecha ? new Date(xml.attributes.Fecha) : '',
+                            // fecha: xml.attributes.Fecha ? new Date(xml.attributes.Fecha) : '',
+                            fecha: formatearFechaXML(xml.attributes.Fecha),
+
                             metodo_pago: xml.attributes.MetodoPago ? xml.attributes.MetodoPago : '',
                             tipo_de_comprobante: xml.attributes.TipoDeComprobante ? xml.attributes.TipoDeComprobante : '',
                             total: xml.attributes.Total ? xml.attributes.Total : '',
@@ -1171,7 +1206,7 @@ export default function FacturaTable(props) {
                         }
                         form.facturaObject = obj
 
-                        console.log( form)
+                        // console.log( form)
                         setForm({
                             ...form,
                             form

@@ -9,7 +9,9 @@ import ListGroup from 'react-bootstrap/ListGroup';
 class PresupuestoDiseñoCRMForm extends Component {
 
     state = {
-        date: new Date()
+        date: new Date(),
+        montosPlanos: {}
+
     }
 
     updateEsquema = value => {
@@ -116,10 +118,37 @@ class PresupuestoDiseñoCRMForm extends Component {
         // Rest of the method...
     };
 
+   handleChangeMontoPlanos = (id, e) => {
+    const value = parseFloat(e.target.value) || 0;
+    const { formDiseño, onChangeCheckboxes } = this.props;
+
+    // 1. Actualizar estado local para los inputs controlados
+    this.setState(prevState => ({
+        montosPlanos: {
+            ...prevState.montosPlanos,
+            [id]: value
+        }
+    }));
+
+    // 2. Actualizar directamente el monto dentro de formDiseño.planos
+    const planosActualizados = formDiseño.planos.map(plano => {
+        if (plano.id === id) {
+            return { ...plano, monto: value };
+        }
+        return plano;
+    });
+
+    // 3. Aplicar el cambio en el form principal
+    onChangeCheckboxes(planosActualizados, 'planos');
+};
+
+
+
 
     render() {
         const { options, key, formDiseño, onChange, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, onClickTab, activeKey, defaultKey, onChangePartidas, ...props } = this.props
         const { date } = this.state
+        console.log(formDiseño)
         // console.log(formDiseño)
 
         return (
@@ -400,7 +429,11 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                             name='planos'
                                                             value={formDiseño.planos}
                                                             onChange={this.handleChangeCheckboxPlanos}
-                                                        />
+                                                            onChangeMonto={this.handleChangeMontoPlanos}
+                                                            montos={this.state.montosPlanos}
+                                                            esquema={formDiseño.esquema} // <== AÑADE ESTA LÍNEA
+
+                                                        /> 
                                                     </div>
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="#link1">

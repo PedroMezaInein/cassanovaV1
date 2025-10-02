@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { MaterialReactTable, MRT_ActionMenuItem } from 'material-react-table';
 import Swal from 'sweetalert2';
-import {apiGet, apiOptions, catchErrors, apiDelete, apiPostFormResponseBlob } from './../../../functions/api';
-import { Edit, Delete ,Settings, MoreVert} from '@mui/icons-material';
+import { apiGet, apiOptions, catchErrors, apiDelete, apiPostFormResponseBlob } from './../../../functions/api';
+import { Edit, Delete, Settings, MoreVert } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { Box, Button, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import { ContentCopy } from '@mui/icons-material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { mkConfig, generateCsv, download } from 'export-to-csv'; //or use your library of choice here
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField,Grid } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Grid } from '@mui/material';
 // import Modal from '@material-ui/core/Modal';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 
@@ -19,7 +19,7 @@ import AttachFile from '@mui/icons-material/AttachFile';
 import AdjuntosCompras from './AdjuntosCompras'
 import FacturasCompras from './FacturasCompras'
 
-import { Modal, ModalDelete, ItemSlider} from '../../../components/singles'
+import { Modal, ModalDelete, ItemSlider } from '../../../components/singles'
 import { emphasize, styled } from '@mui/material/styles';
 
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -32,7 +32,7 @@ import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 
 
 export default function ComprasTable(props) {
-  const {  handleClose, reload  } = props
+  const { handleClose, reload } = props
 
   const auth = useSelector((state) => state.authUser.access_token);
   const authUser = useSelector((state) => state.authUser);
@@ -48,9 +48,9 @@ export default function ComprasTable(props) {
     crearCompra: { show: false, data: null },
     editarCompra: { show: false, data: null },
     exportar: { show: false },
-    adjuntos: { show: false, data: null },    
+    adjuntos: { show: false, data: null },
   });
-
+  const [adjuntosReloadKey, setAdjuntosReloadKey] = useState(0);
 
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal
   const [fechaInicio, setFechaInicio] = useState(''); // Fecha de inicio
@@ -65,15 +65,15 @@ export default function ComprasTable(props) {
   // const handleOpenMenu = (event) => setAnchorEl(event.currentTarget);
   // const handleCloseMenu = () => setAnchorEl(null);
 
-const handleOpenMenu = (event, row) => {
+  const handleOpenMenu = (event, row) => {
     setAnchorEl(event.currentTarget); // Abre el menú en la posición del clic
     setSelectedRow(row); // Guarda los datos de la fila seleccionada
-};
+  };
 
-const handleCloseMenu = () => {
+  const handleCloseMenu = () => {
     setAnchorEl(null); // Cierra el menú
     setSelectedRow(null); // Limpia la fila seleccionada
-};
+  };
 
   const [opcionesData, setOpcionesData] = useState({
     cuentas: [],
@@ -89,7 +89,8 @@ const handleCloseMenu = () => {
     { accessorKey: 'id', header: 'ID', size: 80 },
     { accessorKey: 'fecha', header: 'Fecha', size: 120 },
     { accessorKey: 'empresa', header: 'Empresa', size: 120 },
-    { accessorKey: 'proyecto', header: 'Proyecto', size: 200,
+    {
+      accessorKey: 'proyecto', header: 'Proyecto', size: 200,
       // enableClickToCopy: true,
       //   muiCopyButtonProps: {
       //     fullWidth: true,
@@ -98,15 +99,16 @@ const handleCloseMenu = () => {
       //   },
       Cell: ({ cell }) => (
         <Tooltip title={cell.getValue()} arrow>
-          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block', maxWidth: '100%',}}>
+          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block', maxWidth: '100%', }}>
             {cell.getValue()}
           </span>
         </Tooltip>
       ),
-     },
-    {  accessorKey: 'proveedor', header: 'Proveedor', size: 200,
+    },
+    {
+      accessorKey: 'proveedor', header: 'Proveedor', size: 200,
       enableClickToCopy: true,
-      muiCopyButtonProps: { fullWidth: true, startIcon: <ContentCopy />, sx: { justifyContent: 'flex-start' },},
+      muiCopyButtonProps: { fullWidth: true, startIcon: <ContentCopy />, sx: { justifyContent: 'flex-start' }, },
       Cell: ({ cell }) => (
         <Tooltip title={cell.getValue()} arrow>
           <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block', maxWidth: '100%', }} >
@@ -121,15 +123,16 @@ const handleCloseMenu = () => {
       size: 120,
       Cell: ({ row }) => (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-            {label(row.original)}
+          {label(row.original)}
         </div>
-       ),
-    }, 
-    { accessorKey: 'tipo', header: 'Tipo F',size: 150 },
-    { accessorKey: 'area', header: 'Área',size: 150 },
-    { accessorKey: 'partida', header: 'Partida',size: 120 },
-    { accessorKey: 'subarea', header: 'Sub-partida',size: 150 },
-    { accessorKey: 'monto', header: 'Monto' ,size: 150,
+      ),
+    },
+    { accessorKey: 'tipo', header: 'Tipo F', size: 150 },
+    { accessorKey: 'area', header: 'Área', size: 150 },
+    { accessorKey: 'partida', header: 'Partida', size: 120 },
+    { accessorKey: 'subarea', header: 'Sub-partida', size: 150 },
+    {
+      accessorKey: 'monto', header: 'Monto', size: 150,
       // Cell: ({ cell }) =>
       //   cell.getValue().toLocaleString('es-MX', {
       //     style: 'currency',
@@ -150,50 +153,52 @@ const handleCloseMenu = () => {
       // },
 
     },
-    {  accessorKey: 'cuenta', header: 'Cuenta', size: 180,
+    {
+      accessorKey: 'cuenta', header: 'Cuenta', size: 180,
       Cell: ({ cell }) => (
         <Tooltip title={cell.getValue()} arrow>
-          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',display: 'block', maxWidth: '100%',}}>
+          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block', maxWidth: '100%', }}>
             {cell.getValue()}
           </span>
         </Tooltip>
       ),
-     },
-    { accessorKey: 'pago', header: 'Pago',size: 130, enableColumnFilter: false, },
-    { accessorKey: 'impuesto', header: 'Impuesto',size: 130 , enableColumnFilter: false,},
-    { accessorKey: 'requisicion', header: 'Requisición',size: 150 },
-    { accessorKey: 'descripcion', header: 'Descripción', size: 200,
-      enableClickToCopy: true, muiCopyButtonProps: { fullWidth: true, startIcon: <ContentCopy />, sx: { justifyContent: 'flex-start' },},
+    },
+    { accessorKey: 'pago', header: 'Pago', size: 130, enableColumnFilter: false, },
+    { accessorKey: 'impuesto', header: 'Impuesto', size: 130, enableColumnFilter: false, },
+    { accessorKey: 'requisicion', header: 'Requisición', size: 150 },
+    {
+      accessorKey: 'descripcion', header: 'Descripción', size: 200,
+      enableClickToCopy: true, muiCopyButtonProps: { fullWidth: true, startIcon: <ContentCopy />, sx: { justifyContent: 'flex-start' }, },
       Cell: ({ cell }) => (
         <Tooltip title={cell.getValue()} arrow>
-          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',display: 'block', maxWidth: '100%',}}>
+          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block', maxWidth: '100%', }}>
             {cell.getValue()}
           </span>
         </Tooltip>
       ),
-     },
+    },
   ];
 
 
-   const label = (dato) => { 
-          return(
-      
-              <div   title={`${ dato.data?.factura == 1 ? 'Con factura': 'Sin factura'}`}  >
-                  {
-                      dato.data?.factura ?
-                      dato.data?.facturas.length > 0 || dato.data?.facturas_pdf.length ?
-                       <span   style={{ color: 'green' }}><RequestQuoteIcon/></span>
-                          : <span   style={{ color: 'red' }}><RequestQuoteIcon/></span>
-                      : <span><DescriptionOutlinedIcon/></span>
-                  }
-              </div>
-          )
-      }
-  
+  const label = (dato) => {
+    return (
 
-    useEffect(() => {
-        getProveedores();
-      }, []); //
+      <div title={`${dato.data?.factura == 1 ? 'Con factura' : 'Sin factura'}`}  >
+        {
+          dato.data?.factura ?
+            dato.data?.facturas.length > 0 || dato.data?.facturas_pdf.length ?
+              <span style={{ color: 'green' }}><RequestQuoteIcon /></span>
+              : <span style={{ color: 'red' }}><RequestQuoteIcon /></span>
+            : <span><DescriptionOutlinedIcon /></span>
+        }
+      </div>
+    )
+  }
+
+
+  useEffect(() => {
+    getProveedores();
+  }, []); //
 
 
   // Obtener datos de la API
@@ -208,8 +213,8 @@ const handleCloseMenu = () => {
           return acc;
         }, {});
         const queryString = Object.keys(columnFilterParams)
-        .map((key) => `${key}=${encodeURIComponent(columnFilterParams[key])}`)
-        .join('&');
+          .map((key) => `${key}=${encodeURIComponent(columnFilterParams[key])}`)
+          .join('&');
         // console.log(`Fetching page: ${pagination.pageIndex + 1}, pageSize: ${pagination.pageSize}`);
         // console.log(columnFilterParams)
         const response = await apiGet(
@@ -228,17 +233,22 @@ const handleCloseMenu = () => {
       }
     };
     fetchData();
-  }, [pagination.pageIndex, pagination.pageSize,globalFilter,columnFilters]);
+  }, [pagination.pageIndex, pagination.pageSize, globalFilter, columnFilters]);
 
   useEffect(() => {
-    if (!modals.crearCompra.show && !modals.editarCompra.show && !modals.adjuntos.show ) {
-        reloadData();
+    if (!modals.crearCompra.show && !modals.editarCompra.show && !modals.adjuntos.show) {
+      reloadData();
     }
-}, [modals.crearCompra.show, modals.editarCompra.show, modals.adjuntos.show]);
+  }, [modals.crearCompra.show, modals.editarCompra.show, modals.adjuntos.show]);
+
+
+  useEffect(() => {
+    if (modals.adjuntos.show) setAdjuntosReloadKey(Date.now());
+  }, [modals.adjuntos.show]);
 
   // Procesar los datos
   const processData = (datos) => {
-  
+
     const formatMonto = (monto) => {
       if (!monto) return 's/i'; // Sin información
       return new Intl.NumberFormat('es-MX', {
@@ -247,7 +257,7 @@ const handleCloseMenu = () => {
         minimumFractionDigits: 2,
       }).format(monto);
     };
-    console.log(datos)
+    // console.log(datos)
       return datos.map((dato) => ({
       id: dato.id || 's/i',
       fecha: dato.created_at ? format(new Date(dato.created_at), 'yyyy/MM/dd') : 's/i',
@@ -266,7 +276,7 @@ const handleCloseMenu = () => {
       factura: dato.factura ? 'Con factura' : 'Sin factura',
       tipo: dato.tipo === 'nacional' ? 'FN' : dato.tipo === 'extranjera' ? 'CE' : '',
       empresa: dato?.empresa?.name || 's/i',
-      data:dato,
+      data: dato,
 
     }));
   };
@@ -279,11 +289,11 @@ const handleCloseMenu = () => {
         Swal.showLoading();
       },
     });
-  
+
     apiOptions(`v2/administracion/egresos`, auth)
       .then((res) => {
         let data = res.data;
-  
+
         let aux = {
           cuentas: [],
           empresas: [],
@@ -292,7 +302,7 @@ const handleCloseMenu = () => {
           tiposImpuestos: [],
           tiposPagos: [],
         };
-  
+
         data.proveedores.forEach((proveedor) => {
           if (proveedor.razon_social !== null) {
             aux.proveedores.push({
@@ -302,7 +312,7 @@ const handleCloseMenu = () => {
             });
           }
         });
-  
+
         data.empresas.forEach((empresa) => {
           if (empresa.name !== null) {
             aux.empresas.push({
@@ -313,7 +323,7 @@ const handleCloseMenu = () => {
             });
           }
         });
-  
+
         data.estatusCompras.forEach((estatusCompra) => {
           if (estatusCompra.estatus !== null) {
             aux.estatusCompras.push({
@@ -322,7 +332,7 @@ const handleCloseMenu = () => {
             });
           }
         });
-  
+
         data.tiposImpuestos.forEach((tipoImpuesto) => {
           if (tipoImpuesto.tipo !== null) {
             aux.tiposImpuestos.push({
@@ -331,7 +341,7 @@ const handleCloseMenu = () => {
             });
           }
         });
-  
+
         data.tiposPagos.forEach((tipoPago) => {
           if (tipoPago.tipo !== null) {
             aux.tiposPagos.push({
@@ -340,7 +350,7 @@ const handleCloseMenu = () => {
             });
           }
         });
-  
+
         Swal.close();
         setOpcionesData(aux);
       })
@@ -350,7 +360,7 @@ const handleCloseMenu = () => {
         Swal.fire('Error', 'No se pudieron cargar los datos.', 'error');
       });
   };
-  
+
 
   // Función para eliminar una compra
   const deleteCompraAxios = (id) => {
@@ -371,7 +381,7 @@ const handleCloseMenu = () => {
           apiDelete(`compras/${id}`, auth)
             .then(() => {
               Swal.fire('¡Eliminado!', 'La compra ha sido eliminada.', 'success');
-              reloadData(); 
+              reloadData();
               // Actualiza los datos de la tabla eliminando el elemento eliminado
               setData((prevData) => prevData.filter((item) => item.id !== id));
             })
@@ -392,84 +402,93 @@ const handleCloseMenu = () => {
       }
     });
   };
-  
+
 
   // Renderizar acciones para cada fila
   const renderRowActions = ({ row }) => (
     <>
-        <IconButton
-            onClick={(event) => handleOpenMenu(event, row.original)} // Pasa la fila seleccionada
-            sx={{ color: '#F96D49', fontSize: '1.5rem' }}
-        >
-            <Settings />
-        </IconButton>
-        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu} sx={{ '& .MuiPaper-root': {
-             boxShadow: 'none', border: 'none',},}}>
-            <MenuItem onClick={() => { toggleModal('editarCompra', selectedRow); handleCloseMenu(); }}
-                sx={{'&:hover': { backgroundColor: 'primary.light', color: 'white', },}} >
-                <Edit sx={{ marginRight: '10px', color: 'primary.main' }} />
-                Editar
-            </MenuItem>
-            <MenuItem onClick={() => { deleteCompraAxios(selectedRow.id); handleCloseMenu(); }} sx={{ '&:hover': {
-                backgroundColor: '#f77c5d',color: 'white',},}} >
-                <Delete sx={{ marginRight: '10px', color: '#d65e40' }} />
-                Eliminar
-            </MenuItem>
-            <MenuItem onClick={() => { toggleModal('adjuntos', selectedRow.id); handleCloseMenu(); }} sx={{ '&:hover': {
-                backgroundColor: '#E2D1BF',color: 'white',},}}>
-                <AttachFile sx={{ marginRight: '10px', color: '#c6b7a9' }} />
-                Adjuntos
-            </MenuItem>
-            {/* <MenuItem onClick={() => { toggleModal('facturas', selectedRow.id); handleCloseMenu(); }} sx={{ '&:hover': {
+      <IconButton
+        onClick={(event) => handleOpenMenu(event, row.original)} // Pasa la fila seleccionada
+        sx={{ color: '#F96D49', fontSize: '1.5rem' }}
+      >
+        <Settings />
+      </IconButton>
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu} sx={{
+        '& .MuiPaper-root': {
+          boxShadow: 'none', border: 'none',
+        },
+      }}>
+        <MenuItem onClick={() => { toggleModal('editarCompra', selectedRow); handleCloseMenu(); }}
+          sx={{ '&:hover': { backgroundColor: 'primary.light', color: 'white', }, }} >
+          <Edit sx={{ marginRight: '10px', color: 'primary.main' }} />
+          Editar
+        </MenuItem>
+        <MenuItem onClick={() => { deleteCompraAxios(selectedRow.id); handleCloseMenu(); }} sx={{
+          '&:hover': {
+            backgroundColor: '#f77c5d', color: 'white',
+          },
+        }} >
+          <Delete sx={{ marginRight: '10px', color: '#d65e40' }} />
+          Eliminar
+        </MenuItem>
+        <MenuItem onClick={() => { toggleModal('adjuntos', selectedRow.id); handleCloseMenu(); }} sx={{
+          '&:hover': {
+            backgroundColor: '#E2D1BF', color: 'white',
+          },
+        }}>
+          <AttachFile sx={{ marginRight: '10px', color: '#c6b7a9' }} />
+          Adjuntos
+        </MenuItem>
+        {/* <MenuItem onClick={() => { toggleModal('facturas', selectedRow.id); handleCloseMenu(); }} sx={{ '&:hover': {
                 backgroundColor: '#E2D1BF',color: 'white',},}}>
                 <ReceiptIcon sx={{ marginRight: '10px', color: '#c6b7a9' }} />
                 Facturas
             </MenuItem> */}
-        </Menu>
+      </Menu>
     </>
-);
+  );
 
 
 
- const handleExport = async () => {
-  if (!fechaInicio || !fechaFin) {
-    Swal.fire('Error', 'Por favor selecciona ambas fechas.', 'error');
-    return;
-  }
+  const handleExport = async () => {
+    if (!fechaInicio || !fechaFin) {
+      Swal.fire('Error', 'Por favor selecciona ambas fechas.', 'error');
+      return;
+    }
 
-  try {
-    const form = {
-      fecha_inicio: fechaInicio,
-      fecha_fin: fechaFin,
-    };
-    const response = await apiPostFormResponseBlob(
-      `v3/proyectos/compra/exportar`,
-      { columnas: form },
-      auth
-    );
+    try {
+      const form = {
+        fecha_inicio: fechaInicio,
+        fecha_fin: fechaFin,
+      };
+      const response = await apiPostFormResponseBlob(
+        `v3/proyectos/compra/exportar`,
+        { columnas: form },
+        auth
+      );
 
-    // Crear un enlace para descargar el archivo
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'compras.xlsx'); // Nombre del archivo descargado
-    document.body.appendChild(link);
-    link.click();
+      // Crear un enlace para descargar el archivo
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'compras.xlsx'); // Nombre del archivo descargado
+      document.body.appendChild(link);
+      link.click();
 
-    // Cierra el modal
-    setIsModalOpen(false);
+      // Cierra el modal
+      setIsModalOpen(false);
 
-    // Mensaje de éxito
-    Swal.fire(
-      'Exportación exitosa',
-      response.data.message || 'Compras exportadas con éxito.',
-      'success'
-    );
-  } catch (error) {
-    console.error(error);
-    Swal.fire('Error', 'No se pudo exportar los datos.', 'error');
-  }
-};
+      // Mensaje de éxito
+      Swal.fire(
+        'Exportación exitosa',
+        response.data.message || 'Compras exportadas con éxito.',
+        'success'
+      );
+    } catch (error) {
+      console.error(error);
+      Swal.fire('Error', 'No se pudo exportar los datos.', 'error');
+    }
+  };
 
 
   // Función para abrir modales (reutiliza tu lógica actual)
@@ -482,7 +501,7 @@ const handleCloseMenu = () => {
     decimalSeparator: '.',
     useKeysAsHeaders: true,
   });
-  
+
   const handleExportData = () => {
     const csv = generateCsv(csvConfig)(data);
     download(csvConfig)(csv);
@@ -495,17 +514,17 @@ const handleCloseMenu = () => {
 
   const toggleModal = (modalKey, data = null) => {
     setModals((prevModals) => {
-        const isOpen = prevModals[modalKey]?.show ?? false;
-        return {
-            ...prevModals,
-            [modalKey]: { 
-                show: !isOpen, 
-                data: data ?? prevModals[modalKey]?.data // 🔥 Mantiene los datos si se cierra
-            },
-        };
+      const isOpen = prevModals[modalKey]?.show ?? false;
+      return {
+        ...prevModals,
+        [modalKey]: {
+          show: !isOpen,
+          data: data ?? prevModals[modalKey]?.data // 🔥 Mantiene los datos si se cierra
+        },
+      };
     });
 
-};
+  };
 
   const reloadData = async () => {
     setIsLoading(true);
@@ -546,186 +565,159 @@ const handleCloseMenu = () => {
       },
     };
   }); // TypeScript only: need a type cast here because https://github.com/Microsoft/TypeScript/issues/26591
-  
+
   function handleClick(event) {
     event.preventDefault();
     console.info('You clicked a breadcrumb.');
   }
-  
+
 
   return (
     <>
-   <Box sx={{ padding: "20px" }}>
+      <Box sx={{ padding: "20px" }}>
         {/* 🏠 Breadcrumbs: Rastro de Navegación */}
-        <Box mb={2}> 
-            <Breadcrumbs aria-label="breadcrumb">
-                <StyledBreadcrumb
-                    component="a"
-                    href="#"
-                    label="Home"
-                    icon={<HomeIcon fontSize="small" />}
-                />
-                <StyledBreadcrumb component="a" href="#" label="Proyectos" />
-                <StyledBreadcrumb component="a" href="#" label="Compras"   />
-            </Breadcrumbs>
+        <Box mb={2}>
+          <Breadcrumbs aria-label="breadcrumb">
+            <StyledBreadcrumb
+              component="a"
+              href="#"
+              label="Home"
+              icon={<HomeIcon fontSize="small" />}
+            />
+            <StyledBreadcrumb component="a" href="#" label="Proyectos" />
+            <StyledBreadcrumb component="a" href="#" label="Compras" />
+          </Breadcrumbs>
         </Box>
 
         {/* 📌 Contenedor para los Botones y la Tabla */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {/* 🛠️ Botones de Acciones */}
-            {/* <Grid container spacing={2} alignItems="center">
-                <Grid item>
-                    <Button
-                        sx={{
-                            backgroundColor: "#0A3E27",
-                            color: "#fff",
-                            "&:hover": { backgroundColor: "#075633" },
-                        }}
-                        onClick={() => toggleModal("crearCompra")}
-                        variant="contained"
-                    >
-                        Crear Nuevo
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button
-                        sx={{
-                            backgroundColor: "#457FF4",
-                            color: "#fff",
-                            "&:hover": { backgroundColor: "#568eff" },
-                        }}
-                        onClick={() => setIsModalOpen(true)}
-                        variant="contained"
-                    >
-                        Exportar Compras
-                    </Button>
-                </Grid>
-            </Grid> */}
 
-            {/* 📊 Tabla de Datos */}
-            <MaterialReactTable
-                columns={columns}
-                data={data}
-                state={{
-                    isLoading,
-                    pagination,
-                    columnFilters,
-                }}
-                manualPagination
-                onColumnFiltersChange={setColumnFilters}
-                rowCount={totalRows}
-                onPaginationChange={setPagination}
-                renderRowActions={renderRowActions}
-                enableColumnOrdering
-                enableColumnPinning
-                enableColumnResizing={true}
-                enableFullScreenToggle={false}
-                enableToolbar={true}
-                enableGlobalFilter={false}
-                enableColumnFilters={true}
-                enableDensityToggle={true}
-                enablePagination={true}
-                enableRowVirtualization
-                muiTablePaginationProps={{
-                    rowsPerPageOptions: [10, 25, 50, 100],
-                    labelRowsPerPage: "Filas por página",
-                    shape: "rounded",
-                    variant: "outlined",
-                    sx: { maxHeight: '600px' }
-                }}
-                paginationDisplayMode="pages"
-                initialState={{
-                  initialState: { pagination: { pageSize: 50, pageIndex: 1 } },
-                  density: 'compact', // Opciones: 'compact', 'comfortable', 'spacious'
-                  }}
-                enableRowActions
-                renderTopToolbarCustomActions={({ table }) => (
-                  <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
-                    <Button sx={{backgroundColor: '#0A3E27',color: '#fff','&:hover': {backgroundColor: '#075633', },}} onClick={() => toggleModal('crearCompra')}variant="contained">
-                      Crear Nuevo
-                    </Button>
-                    <Button sx={{ backgroundColor: '#457FF4', color: '#fff', '&:hover': { backgroundColor: '#568eff', },}} onClick={() => setIsModalOpen(true)} variant="contained">
-                    Exportar Compras
-                  </Button>
-                 
-                  </Box>
-                )}
-            />
+
+          {/* 📊 Tabla de Datos */}
+          <MaterialReactTable
+            columns={columns}
+            data={data}
+            state={{
+              isLoading,
+              pagination,
+              columnFilters,
+            }}
+            manualPagination
+            onColumnFiltersChange={setColumnFilters}
+            rowCount={totalRows}
+            onPaginationChange={setPagination}
+            renderRowActions={renderRowActions}
+            enableColumnOrdering
+            enableColumnPinning
+            enableColumnResizing={true}
+            enableFullScreenToggle={false}
+            enableToolbar={true}
+            enableGlobalFilter={false}
+            enableColumnFilters={true}
+            enableDensityToggle={true}
+            enablePagination={true}
+            enableRowVirtualization
+            muiTablePaginationProps={{
+              rowsPerPageOptions: [10, 25, 50, 100],
+              labelRowsPerPage: "Filas por página",
+              shape: "rounded",
+              variant: "outlined",
+              sx: { maxHeight: '600px' }
+            }}
+            paginationDisplayMode="pages"
+            initialState={{
+              initialState: { pagination: { pageSize: 50, pageIndex: 1 } },
+              density: 'compact', // Opciones: 'compact', 'comfortable', 'spacious'
+            }}
+            enableRowActions
+            renderTopToolbarCustomActions={({ table }) => (
+              <Box sx={{ display: 'flex', gap: '1rem', p: '4px' }}>
+                <Button sx={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#075633', }, }} onClick={() => toggleModal('crearCompra')} variant="contained">
+                  Crear Nuevo
+                </Button>
+                <Button sx={{ backgroundColor: '#457FF4', color: '#fff', '&:hover': { backgroundColor: '#568eff', }, }} onClick={() => setIsModalOpen(true)} variant="contained">
+                  Exportar Compras
+                </Button>
+
+              </Box>
+            )}
+          />
         </Box>
-    </Box>
+      </Box>
 
-     <Modal size = "xl" title = "Crear compra" show={modals.crearCompra.show} handleClose={() => toggleModal('crearCompra')} >
+      <Modal size="xl" title="Crear compra" show={modals.crearCompra.show} handleClose={() => toggleModal('crearCompra')} >
         <CrearCompras handleClose={() => toggleModal('crearCompra')} reload={reloadData} opcionesData={opcionesData} getProveedores={getProveedores} />
 
-    </Modal>
+      </Modal>
 
-    {
+      {
         modals.editarCompra?.data &&
         <Modal size="xl" title={"Editar compra"} show={modals.editarCompra.show} handleClose={() => toggleModal('editarCompra')} >
-            <EditarCompra handleClose={() => toggleModal('editarCompra')} opcionesData={opcionesData} reload={reloadTable} data={modals.editarCompra.data} />
+          <EditarCompra handleClose={() => toggleModal('editarCompra')} opcionesData={opcionesData} reload={reloadTable} data={modals.editarCompra.data} />
         </Modal>
-    }
-
-    {
-        modals.adjuntos?.data &&
-        <Modal size="lg" title={"adjuntos"} show={modals.adjuntos?.show}  handleClose={() => toggleModal('adjuntos')} >
-            <AdjuntosCompras  handleClose={() => toggleModal('adjuntos')} opcionesData={opcionesData} reload={reloadTable} data={modals.adjuntos?.data} />
-        </Modal>
-    }
-
-    {
-          modals.facturas?.data &&
-          <Modal size="xl" title={"facturas"} show={modals.facturas?.show} handleClose={() => toggleModal('facturas')} >
-              <FacturasCompras handleClose={() => toggleModal('facturas')} opcionesData={opcionesData} reload={reloadTable} compra={modals.facturas?.data} />
-          </Modal>
       }
 
-      {/* <Modal size="lg" title={"Nueva compra"}   open={editarCompraModalCreateOpen}
-         aria-labelledby="modal-title" aria-describedby="modal-description"
-        onClose={handleCloseModal} 
-        >       
-          <CrearCompras handleClose={e => handleClose('crear')} reload={reloadTable} opcionesData={opcionesData} getProveedores={getProveedores} />
-      </Modal> */}
+      {
+        modals.adjuntos?.data &&
+        <Modal size="lg" title={"adjuntos"} show={modals.adjuntos?.show} handleClose={() => toggleModal('adjuntos')} >
+          <AdjuntosCompras
+            handleClose={() => toggleModal('adjuntos')}
+            opcionesData={opcionesData}
+            reload={reloadTable}
+            data={modals.adjuntos?.data}
+            open={modals.adjuntos.show}         // 👈 importante
+            reloadKey={adjuntosReloadKey}       // 👈 fuerza remount/refresh
+          />
 
-       {/* Modal para la exportación */}
-       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <DialogTitle>Exportar Compras</DialogTitle>
-          <DialogContent><br />
-            <TextField
-              label="Fecha Inicio"
-              type="date"
-              fullWidth
-              value={fechaInicio}
-              onChange={(e) => setFechaInicio(e.target.value)}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              label="Fecha Fin"
-              type="date"
-              fullWidth
-              value={fechaFin}
-              onChange={(e) => setFechaFin(e.target.value)}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setIsModalOpen(false)} color="secondary">
-              Cancelar
-            </Button>
-            <Button onClick={handleExport} color="primary" variant="contained">
-              Exportar
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
+        </Modal>
+      }
 
-    
+      {
+        modals.facturas?.data &&
+        <Modal size="xl" title={"facturas"} show={modals.facturas?.show} handleClose={() => toggleModal('facturas')} >
+          <FacturasCompras handleClose={() => toggleModal('facturas')} opcionesData={opcionesData} reload={reloadTable} compra={modals.facturas?.data} />
+        </Modal>
+      }
+
+
+      {/* Modal para la exportación */}
+      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <DialogTitle>Exportar Compras</DialogTitle>
+        <DialogContent><br />
+          <TextField
+            label="Fecha Inicio"
+            type="date"
+            fullWidth
+            value={fechaInicio}
+            onChange={(e) => setFechaInicio(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            sx={{ marginBottom: 2 }}
+          />
+          <TextField
+            label="Fecha Fin"
+            type="date"
+            fullWidth
+            value={fechaFin}
+            onChange={(e) => setFechaFin(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsModalOpen(false)} color="secondary">
+            Cancelar
+          </Button>
+          <Button onClick={handleExport} color="primary" variant="contained">
+            Exportar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+
+
   );
 };
 
-// export default ComprasTable;

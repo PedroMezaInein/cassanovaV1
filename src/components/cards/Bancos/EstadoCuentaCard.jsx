@@ -68,11 +68,25 @@ export default class EstadoCuentaCard extends Component {
                             estado.adjunto ?
                                 <div className="d-flex justify-content-center">
                                     <div className="col-md-6">
-                                        <ItemSlider items={[estado.adjunto]} item='' />
+                                        <ItemSlider
+                                            items={[
+                                                {
+                                                    id: estado.adjunto.id,
+                                                    url: estado.adjunto.url_temporal,   // por si espera "url"
+                                                    file: estado.adjunto.url_temporal,  // por si espera "file"
+                                                    src: estado.adjunto.url_temporal,   // por si espera "src"
+                                                    name: estado.adjunto.nombre || 'Adjunto'
+                                                }
+                                            ]}
+                                            item=''
+                                        />
+
+
                                     </div>
                                 </div>
                                 : ''
                         }
+
                     </div>
                 </Card>
             </div>

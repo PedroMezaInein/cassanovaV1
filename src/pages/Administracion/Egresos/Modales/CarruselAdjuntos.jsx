@@ -46,6 +46,13 @@ export default function CarruselAdjuntos(props) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+
+
+
+
+
+
+    
     const handleStepChange = (step) => {
         setActiveStep(step);
     };
@@ -129,14 +136,14 @@ export default function CarruselAdjuntos(props) {
                  {adjuntos.map((item, index) => (
                     <div key={index} >
                         <object
-                            data={item.url}
+                            data={item.url_temporal}
                             className={classes.adjuntos}
                         >
                         </object>
                         <br />
                         <div className="text-center">
                             <Button variant="contained"style={{ backgroundColor: '#F96D49', color: '#fff', '&:hover': { backgroundColor: '#F96D49', }, }} onClick={() => handleDelete(item.id)}>Eliminar</Button>
-                            <a  style={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#0A3E27', },marginLeft:'2rem' }} href={item.url} target="_blank" ><Button style={{ backgroundColor: '#457FF4', color: '#fff', '&:hover': { backgroundColor: '#568eff', },}}  >Ver</Button></a>
+                            <a  style={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#0A3E27', },marginLeft:'2rem' }} href={item.url_temporal} target="_blank" ><Button style={{ backgroundColor: '#457FF4', color: '#fff', '&:hover': { backgroundColor: '#568eff', },}}  >Ver</Button></a>
                         </div>
                         
                     </div>

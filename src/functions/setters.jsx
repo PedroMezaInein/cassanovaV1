@@ -9,6 +9,7 @@ import $ from "jquery";
 import moment from 'moment'
 import 'moment/locale/es'
 
+
 function compare(a, b) {
     if (a.name < b.name) {
         return -1;
@@ -881,14 +882,25 @@ export function setMoneyTableSinSmall(value) {
     )
 }
 
-export function setMoneyTableForNominas(value) {
-    let cantidad = 0
-    cantidad = parseFloat(value).toFixed(2)
-    return (
-        <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
-            renderText={cantidad => <p className="font-weight-bolder mb-0" style={{ fontSize: "1.01rem" }}> {cantidad} </p>} />
-    )
-}
+    export function setMoneyTableForNominas(value) {
+    // let cantidad = 0
+    const cantidad = isNaN(value) ? 0 : Number(parseFloat(value).toFixed(2));
+            return (
+            <NumberFormat
+            value={cantidad}
+            displayType={'text'}
+            thousandSeparator={true}
+            decimalScale={2}
+            fixedDecimalScale={true} // 👈 fuerza mostrar siempre 2 decimales
+            prefix={'$'}
+            renderText={formatted => (
+                <p className="font-weight-bolder mb-0" style={{ fontSize: "1.01rem" }}>
+                {formatted}
+                </p>
+            )}
+            />
+        );
+        }
 
 export function setPercentTable(value) {
     let cantidad = 0

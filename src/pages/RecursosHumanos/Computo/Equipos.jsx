@@ -1,893 +1,486 @@
+
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
-import Layout from '../../../components/layout/layout';
-import { URL_DEV } from '../../../constants';
-import Modal from '@material-ui/core/Modal';
-import Box from '@material-ui/core/Box';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import TablaGeneralPaginado from './../../../components/NewTables/TablaGeneral/TablaGeneralPaginado'
 import Swal from 'sweetalert2';
-import { makeStyles } from '@material-ui/core/styles';
-import { Card } from 'react-bootstrap'
-import SaveIcon from '@material-ui/icons/Save';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Input from '@material-ui/core/Input';
-import { setSingleHeader } from './../../../functions/routers'
-import {  printResponseErrorAlert, errorAlert } from './../../../functions/alert'
-import Filtrar from './Filtrar'
+import {
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  TextField,
 
+} from '@mui/material';
+import { MaterialReactTable } from 'material-react-table';
 
+import { apiGet, apiPutForm, apiDelete } from '../../../functions/api';
+import Layout from '../../../components/layout/layout';
 
-const useStyles = makeStyles({
-  // container: {
-  //   maxWidth: 400,
-  //   margin: '0 auto',
-  //   padding: 20,
-  // },
-  error: {
-    color: 'red',
-    marginBottom: 10,
-  },
-  errorInput: {
-    borderBottom: '1px solid red',
-  },
-  textField: {
-    marginBottom: 20,
-  },
-});
+import AsignarEquipo from './Modales/AsignarEquipo';
+import EditarEquipo from './Modales/EditarEquipo';
+import AgregarEquipo from './Modales/AgregarEquipo';
+import VerHistorial from './Modales/VerHistorial';
+import EstatusEquipo from './Modales/EstatusEquipo';
+import TouchAppIcon from '@mui/icons-material/TouchApp';
+import EditIcon from '@mui/icons-material/Edit';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import ReplayIcon from '@mui/icons-material/Replay';
+import HistoryIcon from '@mui/icons-material/History';
+import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import TuneIcon from '@mui/icons-material/Tune';
 
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
-function App(props) {
-  const classes = useStyles();
+export default function Equipos() {
+  const auth = useSelector(state => state.authUser.access_token);
 
-  const [equipos, setEquipos] = useState([]);
-  const [error, setError] = useState(null);
-  const [openModal, setOpenModal] = useState(false);
-  const [openAddModal, setOpenAddModal] = useState(false); // Nuevo estado para controlar el modal de agregar equipo
-
-  const [selectedEquipo, setSelectedEquipo] = useState(null);
-  const [selectedUser, setSelectedUser] = useState('');
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [inventarioOriginal, setInventarioOriginal] = useState([]);
+  const [data, setData] = useState([]);
   const [users, setUsers] = useState([]);
-  const [availableEquipos, setAvailableEquipos] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const auth = useSelector((state) => state.authUser.access_token);
-  const authUser = useSelector((state) => state.authUser);
-  const [reloadTable, setReloadTable] = useState(false)
-  const [newEquipo, setNewEquipo] = useState({
-    nombre: '',
+  const [filterMode, setFilterMode] = useState('all');
+  const [filters, setFilters] = useState({
+    marca: '',
+    equipo: '',
     modelo: '',
-    tipo: '',
     serie: '',
     descripcion: '',
+    disponible: '',
   });
 
-  const tiposEquipos = [
-    "laptop","Pc escritorio","Mouse", "Pantalla", "Teclado", "Cable HDMI", "Memoria RAM", "Disco Duro", 
-    "Adaptador HUB", "Audífonos", "Impresora 3D", "Tarjeta Gráfica", "Monitor","camara fotografica", 
-    "Router", "Switch", "Cámara Web", "Escáner", "Proyector", "Smartphone","accesorios para dron","luces", 
-    "Tablet", "Robot", "Drone", "GPS", "Altavoz Bluetooth", "Impresora Multifunción","estabilizador de camara", 
-    "Cámara de Seguridad", "Micrófono", "Batería Externa", "Cargador", "Memoria USB",
-    "Silla de Oficina", "Escritorio", "Cable USB", "Cable Ethernet", "Estabilizador",  
-    "UPS", "Teclado Inalámbrico", "Mouse Inalámbrico", "Estuche para Portátil", 
-    "Mochila para Portátil", "Soporte para Portátil", "Protector de Pantalla", 
-    "Kit de Limpieza", "Herramientas", "Distanciometro", "Cámara de Fotos", 
-    "Lente de Cámara", "Trípode", "Mochila de Fotografía", "Estudio Fotográfico", 
-    "Disco SSD", "Software", "Licencia de Software", "lente de camara fotografica", 
-    "Servidor", "Unidad de Almacenamiento en Red (NAS)", "Teclado Ergonómico", 
-    "Pantalla Táctil", "Monitor Curvo", "Sistema de Sonido", "Teclado Mecánico", 
-    "Procesador", "Placa Base", "Tarjeta de Red", "Enrutador Inalámbrico", 
-    "Interruptor de Red", "Tarjeta de Captura de Video", "Auriculares Inalámbricos", 
-    "Gafas de Realidad Virtual", "Controlador de Juegos", "Consola de Videojuegos", 
-    "Juego de Mesa", "Equipo de Gimnasio", "Instrumento Musical", "Herramientas de Jardinería", 
-    "Artículos de Camping", "Equipo de Seguridad", "Material de Oficina", "Suministros de Arte", 
-    "Adaptador de Corriente", "Cargador de Teléfono", "Lámpara LED", "Herramientas Eléctricas", 
-    "Máquina de Café", "Dispensador de Agua", "Cafetera", "Microondas", "Aspiradora", "Termómetro", 
-    "Lámpara de Escritorio", "Kit de Primeros Auxilios", "Ventilador", "Pizarra Blanca", "Grapadora", 
-    "Soporte para TV", "TV", "Calculadora", "Cable VGA", "Kit de Accesorios para Computadoras", 
-    "Kit de Mantenimiento de Impresoras", "Kit de Limpieza de Impresoras", "Otro"
-  ];
-  const [currentAssignedUser, setCurrentAssignedUser] = useState('');
-  const [openReassignModal, setOpenReassignModal] = useState(false);
-  const [equipoUser, setEquipoUser] = useState('');
-  const [historial, setHistorial] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [showHistorialModal, setShowHistorialModal] = useState(false);
-  const [selectedEquipoId, setSelectedEquipoId] = useState(null);
-  const [filtrado, setFiltrado] = useState('') 
-  const [openEditModal, setOpenEditModal] = useState(false);
-  const [openFiltrarModal, setOpenFiltrarModal] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
-  
-  const [editedEquipo, setEditedEquipo] = useState({
-    id: null,
-    nombre: '',
-    modelo: '',
-    tipo: '',
-    serie: '',
-    descripcion: '',
+  const [modal, setModal] = useState({
+    asignar: { show: false, data: null },
+    editar: { show: false, data: null },
+    agregar: { show: false, data: null },
+    historial: { show: false, data: null },
+    reasignar: { show: false, data: null },
+    estatus: { show: false, data: null },
   });
-  const [modal, setModal] = useState({    
-    filtrar: {
-        show: false,
-        data: false
-    },
-  })
 
-  useEffect(() => {
-    axios.get(`${URL_DEV}equipos/equipos`, { headers: { Authorization: `Bearer ${auth}` } })
-      .then(response => {
-        setEquipos(response.data.inventario);
-        setUsers(response.data.usuarios);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const open = Boolean(anchorEl);
 
-        // Filter available equipos
-        const available = response.data.inventario.filter(equipo => equipo.disponible);
-        setAvailableEquipos(available);
+  const prop = { pathname: '/rh/equipos-computo' };
 
-      })
-      .catch(error => {
-        console.error('Error fetching equipos:', error);
-        setError('Error al cargar los equipos. Por favor, intenta nuevamente.');
-      });
-  }, [auth]);
+  const exportToExcel = (data) => {
+    const rows = [];
+    data.forEach(grupo => {
+      const length = grupo.marcas.length;
+      for (let i = 0; i < length; i++) {
+        const raw = grupo.raws[i]; // Aquí viene la info completa del backend
+        rows.push({
+          Asignado: grupo.asignado,
+          Disponibilidad: grupo.disponible,
+          Marca: grupo.marcas[i],
+          Equipo: grupo.equipos[i],
+          Modelo: grupo.modelos[i],
+          Serie: grupo.series[i],
+          Descripción: grupo.descripciones[i],
+          Estatus: grupo.estatus[i] || 'N/A',
+          'Fecha de compra': raw?.fecha_compra?.slice(0, 10) || 'N/A',
+          'Fecha de garantía': raw?.fecha_garantia?.slice(0, 10) || 'N/A',
 
-  useEffect(() => {
-    if (filtrado) {
-        reloadTable.reload(filtrado)
-        if(borrar == false){
-            setFiltrado('')   
-        }
-    }
-}, [filtrado])
-
-const borrar = ( id) =>{
-  if(id == false){
-      reloadTable.reload(filtrado)
-      setFiltrado('')   
-  }
-}
-
-  const handleOpenModal = (equipo) => {
-    setSelectedEquipo(equipo.id);
-    // setSelectedEquipo(equipo);
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-    setSelectedUser('');
-  };
-
-  const handleOpenAddModal = () => {
-    setOpenAddModal(true);
-  };
-
-  const handleOpenFiltrarModal = () => {
-    setOpenFiltrarModal(true);
-  };
-
-
-  const handleCloseAddModal = () => {
-    setOpenAddModal(false);
-    setNewEquipo({
-      nombre: '',
-      modelo: '',
-      tipo: '',
-      serie: '',
-      descripcion: '',
-    });
-  };
-
-
-  const handleCloseReassignModal = () => {
-    setOpenReassignModal(false);
-    setSelectedUser(''); // Limpiar el usuario seleccionado al cerrar el modal
-    setEquipoUser('');
-  }
-
-  const handleCloseFiltrarModal = () => {
-    setOpenFiltrarModal(false);
-    setSelectedUser(''); // Limpiar el usuario seleccionado al cerrar el modal
-    setEquipoUser('');
-  }
-
-    // Función para abrir el modal de asignación y obtener el usuario actualmente asignado
-    const handleOpenReassignModal = (equipo) => {
-      setSelectedEquipo(equipo.id);
-      setOpenReassignModal(true);
-        // Obtener el usuario actualmente asignado al equipo seleccionado
-      axios.get(`${URL_DEV}equipos/persona/${equipo.id}`, { headers: { Authorization: `Bearer ${auth}` } })
-        .then(response => {
-          const asignado = response.data.asignado;
-
-          if (asignado && asignado.empleado) {
-            setCurrentAssignedUser(asignado.empleado.nombre);
-            setEquipoUser(asignado);
-          } else {
-            setCurrentAssignedUser('N/A');
-            setEquipoUser('N/A');
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching assigned user:', error);
-          setError('Error al obtener el usuario asignado. Por favor, intenta nuevamente.');
         });
-    };
-
-  const handleAssignEquipo = () => {
-
-    if (!selectedEquipo || !selectedUser) {
-      // Mostrar mensaje de error o tomar la acción correspondiente
-      setError('Por favor selecciona un equipo y un usuario.');
-
-      return;
-    }
-  
-    axios.post(`${URL_DEV}equipos/asignar`, {
-      equipoId: selectedEquipo,
-      persona: selectedUser.id
-    }, { headers: { Authorization: `Bearer ${auth}` } })
-      .then(response => {
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Equipo asignado con éxito",
-          showConfirmButton: false,
-          timer: 2500
-        });
-          // Actualizar el estado de disponibilidad local del equipo
-          setEquipos(prevEquipos => {
-            return prevEquipos.map(equipo => {
-              if (equipo.id === selectedEquipo) {
-                return { ...equipo, disponible: false }; // Marcar el equipo como no disponible
-              }
-              return equipo;
-            });
-          });
-
-        handleCloseModal();
-        if (reloadTable) {
-          reloadTable.reload()
-        }      
-      })
-      .catch(error => {
-        console.error('Error al asignar el equipo:', error);
-        setError('Error al asignar el equipo. Por favor, intenta nuevamente.');
-      });
-  };
-  
-
-  const handleAddEquipo = () => {
-    if (!newEquipo.nombre || !newEquipo.tipo  || !newEquipo.descripcion || !newEquipo.modelo ) {
-      // Mostrar mensaje de error o tomar la acción correspondiente
-      setError('Por favor selecciona un equipo y un usuario.');
-      return;
-    }
-
-    axios.post(`${URL_DEV}equipos/agregar`, newEquipo, { headers: { Authorization: `Bearer ${auth}` } })
-      .then(response => {
-        // Cerrar el modal
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Equipo agregado con exito",
-          showConfirmButton: false,
-          timer: 2500
-        });
-        handleCloseAddModal();
-        if (reloadTable) {
-          reloadTable.reload()
-        }
-
-        axios.get(`${URL_DEV}equipos/equipos`, { headers: { Authorization: `Bearer ${auth}` } })
-          .then(response => {
-            // Filtrar equipos disponibles nuevamente
-            const available = response.data.inventario.filter(equipo => equipo.disponible);
-            setAvailableEquipos(available);
-          })
-          .catch(error => {
-            console.error('Error fetching equipos:', error);
-            setError('Error al cargar los equipos. Por favor, intenta nuevamente.');
-          });
-         
-      })
-      .catch(error => {
-        console.error('Error al agregar el equipo:', error);
-        setError('Error al agregar el equipo. Por favor, intenta nuevamente.');
-      });
-      setError('');
-
-  };
-
-  const columnas = [
-    { nombre: 'Acciones', identificador: 'acciones' },
-    { nombre: 'Marca', identificador: 'nombre', sort: false, stringSearch: false },
-    { nombre: 'Modelo', identificador: 'modelo', sort: false, stringSearch: false },
-    { nombre: 'Equipo', identificador: 'equipo', sort: false, stringSearch: false },
-    { nombre: 'Serie', identificador: 'serie', sort: false, stringSearch: false },
-    { nombre: 'Descripcion', identificador: 'descripcion', sort: false, stringSearch: false },
-    { nombre: 'Asignado', identificador: 'asignado', sort: false, stringSearch: false },
-    { nombre: 'Estatus', identificador: 'disponible', sort: false, stringSearch: false },
-];
-
-
-const ProccessData = (data) => { 
-    let aux = []
-    data.data.data.map((item) => {
-      console.log(item)
-        aux.push({
-            ...item,
-            id: item.id,
-            asignado: item.asigna ? item.asigna.empleado.nombre +" " + item.asigna.empleado.apellido_paterno  +" " + item.asigna.empleado.apellido_materno: 'N/A',
-            // nombre: item.equipo ? item.equipo.nombre : 'N/A',
-            nombre: item.nombre ? item.nombre : 'N/A',
-            modelo: item.modelo ? item.modelo : 'N/A',
-            equipo: item.tipo ? item.tipo : 'N/A',
-            serie: item.serie ? item.serie : 'N/A',
-            descripcion: item.descripcion ? item.descripcion : 'N/A',
-            disponible : item.disponible == 1 ?  'Disponible' : 'No disponible',
-            data: item,
-        })
-    }
-    )
-    aux = aux.reverse()
-    return aux
-}
-
-    const createAcciones = () => {
-      let aux = [
-        
-            {
-              nombre: 'Editar',
-              icono: 'fas fa-edit',
-              color: 'blueButton ',
-              funcion: (item) => {
-                handleOpenEditModal(item) 
-              }
-            },
-            {
-              nombre: 'Asignar',
-              icono: 'fas fa-file-invoice',
-              color: 'blueButton ',
-              funcion: (item) => {
-                item.disponible == 'Disponible' ?
-                handleOpenModal(item)  
-                :  Swal.fire({
-                      position: "top-end",
-                      icon: "error",
-                      title: "Equipo ya esta asignado",
-                      showConfirmButton: false,
-                      timer: 2500
-                  });
-              }
-            },
-          {
-            nombre: 'Reasignar',
-            icono: 'fas fa-eye',
-            color: 'blueButton ',
-            funcion: (item) => {
-              item.disponible == 'No disponible' ?
-              handleOpenReassignModal(item)  
-              :  Swal.fire({
-                    position: "top-end",
-                    icon: "error",
-                    title: "Equipo no esta asignado no se puede reasignar, primero asignalo",
-                    showConfirmButton: false,
-                    timer: 2500
-                });
-            }
-          },
-          {
-            nombre: 'Historial',
-            icono: 'fas fa-paperclip',
-            color: 'blueButton ',
-            funcion: (item) => {
-              handleOpenHistorialModal(item)    
-            }
-          },
-          {
-            nombre: 'Desasignar',
-            icono: 'fas fa-trash-alt',
-            color: 'redButton',
-            funcion: (item) => {
-                // authUser.user.tipo.tipo === 'Administrador' ?
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "¡No podrás revertir esto!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Cancelar',
-                    confirmButtonText: 'Sí, Desasignar',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                       item.disponible == 'No disponible' ?
-                       handleUnassignEquipo(item)  
-                        :  Swal.fire({
-                              position: "top-end",
-                              icon: "error",
-                              title: "Equipo ya esta esta desasignado",
-                              showConfirmButton: false,
-                              timer: 3500
-                          });
-                    }
-                })
-            }
-        },
-      ]
-
-      return aux
-    }
-
-    const handleOpenHistorialModal = (equipoId) => {
-      setSelectedEquipoId(equipoId.id);
-      setShowHistorialModal(true);
-      obtenerHistorial(equipoId); // Obtener el historial al abrir el modal
-    };
-    
-    const handleCloseHistorialModal = () => {
-      setShowHistorialModal(false);
-      setSelectedEquipoId(null);
-    };
-
-    const opciones = [
-      {
-        nombre: <div><i className="fas fa-plus mr-5"></i><span>Agregar inventario</span></div>,
-        funcion: (item) => {
-          handleOpenAddModal()
-        }        
-     },
-     {
-      //filtrar
-      nombre: <div><i className="fas fa-filter mr-5"></i><span>Filtrar</span></div>,
-      funcion: (item) => {
-          handleOpenFiltrarModal()
-
       }
-  },
-  ]
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Equipos');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(blob, 'equipos.xlsx');
+  };
 
 
-  const handleReassignEquipo = () => {
-    
-    if (!selectedEquipo || !selectedUser) {
-      // Mostrar mensaje de error o tomar la acción correspondiente
-      setError('Por favor selecciona un equipo y un usuario.');
+  const processData = (inventario, mode = 'all', filters = {}) => {
+    const grouped = {};
+    const individualesDisponibles = [];
+    const individualesNoDisponibles = [];
+    const estatusNoDisponible = ['vendido', 'dañado', 'reparación', 'robado'];
 
+    inventario.forEach(item => {
+      const estatusEsNoDisponible = estatusNoDisponible.includes((item.estatus || '').toLowerCase());
+      const disponibleReal = item.disponible && !estatusEsNoDisponible ? 'Disponible' : 'No disponible';
+
+      const empleado = item.asigna?.empleado;
+      if (empleado) {
+        if (mode === 'noAsignados') return;
+        const key = `${empleado.id}`;
+        if (!grouped[key]) {
+          grouped[key] = {
+            asignado: `${empleado.nombre} ${empleado.apellido_paterno} ${empleado.apellido_materno}`,
+            disponible: disponibleReal,
+            marcas: [],
+            equipos: [],
+            modelos: [],
+            series: [],
+            descripciones: [],
+            estatus: [],
+            raws: [],
+            estatusReal: item.estatus || null,
+          };
+        }
+        grouped[key].marcas.push(item.nombre || 'N/A');
+        grouped[key].equipos.push(item.tipo || 'N/A');
+        grouped[key].modelos.push(item.modelo || 'N/A');
+        grouped[key].series.push(item.serie || 'N/A');
+        grouped[key].descripciones.push(item.descripcion || 'N/A');
+        grouped[key].estatus.push(item.estatus || 'N/A');
+        grouped[key].raws.push(item);
+
+        if (grouped[key].disponible !== 'No disponible' && disponibleReal === 'No disponible') {
+          grouped[key].disponible = 'No disponible';
+        }
+        if (!grouped[key].estatusReal && item.estatus) grouped[key].estatusReal = item.estatus;
+
+      } else {
+        if (filters.marca && !item.nombre?.toLowerCase().includes(filters.marca.toLowerCase())) return;
+        if (filters.equipo && !item.tipo?.toLowerCase().includes(filters.equipo.toLowerCase())) return;
+        if (filters.modelo && !item.modelo?.toLowerCase().includes(filters.modelo.toLowerCase())) return;
+        if (filters.serie && !item.serie?.toLowerCase().includes(filters.serie.toLowerCase())) return;
+        if (filters.descripcion && !item.descripcion?.toLowerCase().includes(filters.descripcion.toLowerCase())) return;
+        if (filters.estatus && item.estatus !== filters.estatus) return;
+
+        const obj = {
+          asignado: 'N/A',
+          disponible: disponibleReal,
+          marcas: [item.nombre || 'N/A'],
+          equipos: [item.tipo || 'N/A'],
+          modelos: [item.modelo || 'N/A'],
+          series: [item.serie || 'N/A'],
+          descripciones: [item.descripcion || 'N/A'],
+          estatus: [item.estatus || 'N/A'],
+          raws: [item],
+        };
+
+        if (disponibleReal === 'Disponible') individualesDisponibles.push(obj);
+        else individualesNoDisponibles.push(obj);
+      }
+    });
+
+    const gruposFiltrados = Object.values(grouped).map(grupo => {
+      const indices = grupo.raws.map((item, idx) => {
+        if (filters.marca && !item.nombre?.toLowerCase().includes(filters.marca.toLowerCase())) return null;
+        if (filters.equipo && !item.tipo?.toLowerCase().includes(filters.equipo.toLowerCase())) return null;
+        if (filters.modelo && !item.modelo?.toLowerCase().includes(filters.modelo.toLowerCase())) return null;
+        if (filters.serie && !item.serie?.toLowerCase().includes(filters.serie.toLowerCase())) return null;
+        if (filters.descripcion && !item.descripcion?.toLowerCase().includes(filters.descripcion.toLowerCase())) return null;
+        if (filters.estatus && item.estatus !== filters.estatus) return null;
+        return idx;
+      }).filter(idx => idx !== null);
+
+      if (indices.length === 0) return null;
+
+      return {
+        ...grupo,
+        marcas: indices.map(i => grupo.marcas[i]),
+        equipos: indices.map(i => grupo.equipos[i]),
+        modelos: indices.map(i => grupo.modelos[i]),
+        series: indices.map(i => grupo.series[i]),
+        descripciones: indices.map(i => grupo.descripciones[i]),
+        estatus: indices.map(i => grupo.estatus[i]),
+        raws: indices.map(i => grupo.raws[i]),
+        estatusReal: indices.length > 0 ? grupo.raws[indices[0]].estatus || null : null,
+      };
+    }).filter(Boolean);
+
+    return [...individualesDisponibles, ...gruposFiltrados, ...individualesNoDisponibles];
+  };
+
+  const fetchEquipos = async () => {
+    setIsLoading(true);
+    try {
+      const res = await apiGet('equipos/equipos', auth);
+      const inventarioOrdenado = res.data.inventario.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+      setInventarioOriginal(inventarioOrdenado);
+      setUsers(res.data.usuarios);
+    } catch (error) {
+      console.error('Error al cargar inventario:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchEquipos(); }, []);
+  useEffect(() => {
+    setData(processData(inventarioOriginal, 'filtered', filters));
+  }, [inventarioOriginal, filters]);
+
+  const handleFilterChange = (field, value) => {
+    const updatedFilters = { ...filters, [field]: value };
+    const allEmpty = Object.values(updatedFilters).every(v => !v);
+
+    if (allEmpty) {
+      setFilterMode('all');
+    } else {
+      setFilterMode('filtered');  // ⬅️ Usa un valor que identifique cuando se están aplicando filtros
+    }
+
+    setFilters(updatedFilters);
+    setPagination(prev => ({ ...prev, pageIndex: 0 }));
+  };
+
+
+  const handleOpenModal = (tipo, item = null) => setModal(prev => ({ ...prev, [tipo]: { show: true, data: item } }));
+  const handleCloseModal = (tipo) => setModal(prev => ({ ...prev, [tipo]: { show: false, data: null } }));
+  const handleMenuOpen = (event, row) => { setAnchorEl(event.currentTarget); setSelectedRow(row); };
+  const handleMenuClose = () => { setAnchorEl(null); setSelectedRow(null); };
+
+  const handleUnassignEquipo = async (equipo) => {
+    try {
+      await apiPutForm(`equipos/desasignar/${equipo.id}`, { equipo: equipo.id }, auth);
+      Swal.fire({ icon: 'success', title: 'Equipo desasignado', showConfirmButton: false, timer: 1500 });
+      fetchEquipos();
+    } catch (error) {
+      console.error(error);
+      Swal.fire('Error al desasignar', '', 'error');
+    }
+  };
+
+  const handleDeleteEquipo = async (equipo) => {
+    if (equipo && !equipo.disponible) {
+      Swal.fire('No puedes eliminar este equipo', 'Primero desasigna el equipo antes de eliminarlo.', 'warning');
       return;
     }
-    axios.put(`${URL_DEV}equipos/reasignar/${selectedEquipo}`, {
-        equipo:equipoUser.id,
-        equipo_id:equipoUser.equipo_id,
-        nuevaPersona: selectedUser.id
-    }, { headers: { Authorization: `Bearer ${auth}` } })
-    .then(response => {
-        Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: "Equipo desasignado y reasignado con éxito",
-            showConfirmButton: false,
-            timer: 2500
-        });
-        // handleCloseReassignModal(false)
-        // Actualizar el estado local de equipos
-        if (reloadTable) {
-          reloadTable.reload()
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡Esta acción eliminará el equipo!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await apiDelete(`equipos/${equipo.id}`, auth);
+          Swal.fire({ icon: 'success', title: 'Equipo eliminado', showConfirmButton: false, timer: 1500 });
+          fetchEquipos();
+        } catch (error) {
+          console.error(error);
+          Swal.fire('Error al eliminar', '', 'error');
         }
-
-        axios.post(`${URL_DEV}equipos/historial`, {
-          equipoId: equipoUser.equipo_id,
-          personaId: selectedUser.id,
-          fecha: new Date()
-          }, { headers: { Authorization: `Bearer ${auth}` } })
-          .then(response => {
-            console.log('Historial registrado con éxito');
-        })
-        .catch(error => {
-            console.error('Error al registrar historial:', error);
-        });
-
-
-        setEquipos(prevEquipos => {
-            return prevEquipos.map(equipo => {
-                if (equipo.id === selectedEquipo) {
-                    return { ...equipo, disponible: true }; // Marcar el equipo como disponible nuevamente
-                }
-                return equipo;
-            });
-        });
-        // Cerrar el modal u otras operaciones necesarias
-        handleCloseReassignModal();
-    })
-    .catch(error => {
-        console.error('Error al desasignar y reasignar el equipo:', error);
-        setError('Error al desasignar y reasignar el equipo. Por favor, intenta nuevamente.');
+      }
     });
   };
-
-
-  const obtenerHistorial = (equipoId) => {
-    setLoading(true);
-    axios.get(`${URL_DEV}equipos/historial/${equipoId.id}`, { headers: { Authorization: `Bearer ${auth}` } })
-      .then(response => {
-        setHistorial(response.data.historial);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error al obtener historial:', error);
-        setLoading(false);
-      });
+  const handleOpenHistorial = (item) => {
+    // Buscamos el equipo actualizado en el inventario original
+    const actualizado = inventarioOriginal.find(e => e.id === item.id);
+    // Abrimos el modal con el equipo actualizado (o el viejo si no lo encuentra)
+    handleOpenModal('historial', actualizado || item);
   };
-
-  const handleUnassignEquipo = (data) => {
-    axios.put(`${URL_DEV}equipos/desasignar/${data.id}`, {
-        equipo:data.id,
-        equipo_id:data.id,
-    }, { headers: { Authorization: `Bearer ${auth}` } })
-      .then(response => {
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Equipo desasignado con éxito",
-          showConfirmButton: false,
-          timer: 2500
-        });
-  
-        if (reloadTable) {
-            reloadTable.reload()
-        }
-         // Actualizar el estado local de equipos
-            const updatedEquipos = equipos.map(equipo => {
-              if (equipo.id === data.equipo_id) {
-                return { ...equipo, disponible: true };
-              }
-              return equipo;
-            });
-
-            // Si el equipo desasignado no existe en la lista de equipos, agrégalo
-            if (!updatedEquipos.find(equipo => equipo.id === selectedEquipo)) {
-              updatedEquipos.push({
-                id: selectedEquipo,
-                // Agrega otras propiedades del equipo si es necesario
-                disponible: true // Marca el equipo como disponible nuevamente
-              });
-            }
-
-            setEquipos(updatedEquipos);
-
-            // Volver a cargar los equipos disponibles
-            axios.get(`${URL_DEV}equipos/equipos`, { headers: { Authorization: `Bearer ${auth}` } })
-              .then(response => {
-                // Filtrar equipos disponibles nuevamente
-                const available = response.data.inventario.filter(equipo => equipo.disponible);
-                setAvailableEquipos(available);
-              })
-              .catch(error => {
-                console.error('Error fetching equipos:', error);
-                setError('Error al cargar los equipos. Por favor, intenta nuevamente.');
-              });
-  
-        // Cerrar el modal u otras operaciones necesarias
-        handleCloseModal(); // Cierra el modal de asignación si está abierto
-      })
-      .catch(error => {
-        console.error('Error al desasignar el equipo:', error);
-        setError('Error al desasignar el equipo. Por favor, intenta nuevamente.');
-      });
-  };
-
-  const handleOpenEditModal = (equipo) => {
-    // Carga los datos del equipo en el estado de editedEquipo
-    setEditedEquipo({
-      id: equipo.id,
-      nombre: equipo.nombre,
-      modelo: equipo.modelo,
-      tipo: equipo.tipo,
-      serie: equipo.serie,
-      descripcion: equipo.descripcion,
-    });
-    // Abre el modal de editar equipo
-    setOpenEditModal(true);
-  };
-
-  const handleCloseEditModal = () => {
-    setOpenEditModal(false);
-  };
-
-  const handleSaveEditedEquipo = () => {
-    // Aquí puedes agregar la lógica para guardar los cambios del equipo
-      axios.put(`${URL_DEV}equipos/${editedEquipo.id}`, editedEquipo, { headers: setSingleHeader(auth) }).then(
-          (response) => {
-              const { avance } = response.data
-              Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "Equipo desasignado con éxito",
-                showConfirmButton: false,
-                timer: 2500
-              });
-              if (reloadTable) {
-                  reloadTable.reload()
-              }
-          }, (error) => { printResponseErrorAlert(error) }
-      ).catch((error) => {
-          errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-          console.error(error, 'error')
-      })
-
-    // Cierra el modal después de guardar los cambios
-    handleCloseEditModal();
-  };
-
-  let handleClose = (tipo) => () => {
-    setModal({
-        ...modal,
-        [tipo]: {
-            show: false,
-            data: false
-          }
-      })
-  }
 
   return (
-    <Layout authUser={authUser.access_token} location={{ pathname: '/rh/equipos-computo' }} history={{ location: { pathname: '/rh/equipos-computo' } }} active='rh'>
-        <>
-        <TablaGeneralPaginado
-            titulo="Equipos" 
-            columnas={columnas} 
-            url="equipos" 
-            // opciones={opcionesbtn} 
-            acciones={createAcciones()} 
-            numItemsPagina={50} 
-            ProccessData={ProccessData}
-            opciones={opciones}
-            filtros={filtrado}
-            reload={setReloadTable} 
-            />
-            
-      <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="asignar-equipo-modal-title" aria-describedby="asignar-equipo-modal-description"  >
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 700, bgcolor: 'background.paper', boxShadow: 24, p: 6 }}>
-            <div className='row  justify-content-center px-2'>
-                <div className="col-md-12 mx-auto">
-                  <h2 id="asignar-equipo-modal-title">Asignar Equipo</h2>
-                  <Card.Body className="d-flex align-items-center justify-content-center">
-                    <div className='row mx-0 justify-content-center px-2'>
-                          <div className="form-group row form-group-marginless mb-1">
-                            <div className="col-md-12 text-justify">
-                              <Autocomplete id="persona" options={users} getOptionLabel={(user) => {
-                                    const nombre = user.nombre || '';
-                                    const apellidoPaterno = user.apellido_paterno || '';
-                                    const apellidoMaterno = user.apellido_materno || '';
-                                    return `${nombre} ${apellidoPaterno} ${apellidoMaterno}`;
-                                  }}
-                                  value={selectedUser} onChange={(e, newValue) => setSelectedUser(newValue)} renderInput={(params) => (
-                                    <TextField {...params} label="Persona" variant="outlined" fullWidth required error={error && !selectedUser} className={classes.errorInput} /> )} style={{ width: 300 }}  
-                                />
-                          </div>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </div>
-                <div className='row  justify-content-center px-2'>
-                    <div className="col-md-6 text-justify">
-                      <Button variant="outlined" size="large" color="primary" onClick={handleAssignEquipo} startIcon={<SaveIcon />}>Asignar</Button>               
-                    </div>
-                    <div className="col-md-6 text-justify">
-                    <Button variant="outlined" size="large" color="secondary"  onClick={()=>handleCloseModal()} >cerrar</Button>
-                    </div>
-                </div>
-            </div>
-          </Box>                  
-        </Modal>
-
-        <Modal open={openAddModal} onClose={handleCloseAddModal}  aria-labelledby="agregar-equipo-modal-title" aria-describedby="agregar-equipo-modal-description">
-          <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 600, bgcolor: 'background.paper', boxShadow: 24, p: 6 }}>
-            <div className='row  justify-content-center px-2'>
-                  <div className="col-md-12 mx-auto">
-                    <h2 id="asignar-equipo-modal-title">Agregar Equipo</h2>
-                    <Card.Body className="d-flex align-items-center justify-content-center">
-                      <div className='row mx-0 justify-content-center px-2'>
-                            <div className="form-group row form-group-marginless mb-1">
-                              <div className="col-md-12 text-justify mb-3">
-                                  <TextField label="Marca" value={newEquipo.nombre} onChange={(e) => setNewEquipo({ ...newEquipo, nombre: e.target.value })} fullWidth mb={2} required  className={error && !newEquipo.nombre ?  classes.errorInput : ''} />
-                              </div>
-                              
-                              <div className="col-md-12 text-justify mb-3">
-                                  <TextField label="Modelo" value={newEquipo.modelo} onChange={(e) => setNewEquipo({ ...newEquipo, modelo: e.target.value })} fullWidth mb={2} required  className={error && !newEquipo.modelo ?  classes.errorInput : ''} />
-                              </div>
-                              <div className="col-md-12 text-justify mb-2">
-                               <Autocomplete
-                                  id="tipo"
-                                  options={tiposEquipos}
-                                  getOptionLabel={(option) => option} value={newEquipo.tipo} onChange={(event, newValue) => setNewEquipo({ ...newEquipo, tipo: newValue })} renderInput={(params) => (
-                                  <TextField {...params} label="Tipo" variant="outlined" fullWidth required className={error && !newEquipo.tipo ? classes.errorInput : ''} />
-                                  )}
-                                  />
-
-                              </div>
-                              <div className="col-md-12 text-justify mb-2">
-                                <TextField label="Serie" value={newEquipo.serie} onChange={(e) => setNewEquipo({ ...newEquipo, serie: e.target.value })} fullWidth mb={2} />
-                              </div>
-                              <div className="col-md-12 text-justify mb-2 ">
-                              <TextField label="Descripcion" value={newEquipo.descripcion} onChange={(e) => setNewEquipo({ ...newEquipo, descripcion: e.target.value })} fullWidth mb={2} required  className={error && !newEquipo.descripcion ?  classes.errorInput : ''} />
-                              </div>
-                        </div>
-                      </div>
-                    </Card.Body>
+    <Layout authUser={auth} location={prop} history={{ location: prop }} active="rh">
+      <MaterialReactTable
+        columns={[
+          { accessorKey: 'asignado', header: 'Asignado' },
+          {
+            accessorKey: 'disponible',
+            header: 'Disponibilidad',
+            Cell: ({ cell }) => {
+              const estatus = cell.getValue();
+              const color = estatus === 'Disponible' ? 'green' : 'red';
+              return <span style={{ color, fontWeight: 'bold' }}>{estatus}</span>;
+            },
+          },
+          {
+            id: 'detalles',
+            header: showFilters && (
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px', gap: '4px' }}>
+                  <div style={{ width: 70, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setFilters({ marca: '', equipo: '', modelo: '', serie: '', descripcion: '', disponible: '', estatus: '' });
+                        setFilterMode('all');
+                        setPagination({ pageIndex: 0, pageSize: 10 });
+                        fetchEquipos();
+                        setShowFilters(false);
+                      }}
+                    >
+                      <RefreshIcon fontSize="small" />
+                    </IconButton>
                   </div>
-                  <div className='row  justify-content-center px-2'>
-                    <div className="col-md-6 text-justify">
-                      <Button variant="outlined" size="large" color="primary" onClick={handleAddEquipo} startIcon={<SaveIcon />}>Agregar</Button>               
-                    </div>
-                    <div className="col-md-6 text-justify">
-                    <Button variant="outlined" size="large" color="secondary"  onClick={()=>handleCloseAddModal()} >cerrar</Button>
-                    </div>
+                  <div style={{ flex: 1 }}>
+                    <TextField placeholder="Marca" size="small" fullWidth value={filters.marca} onChange={e => handleFilterChange('marca', e.target.value)} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <TextField placeholder="Equipo" size="small" fullWidth value={filters.equipo} onChange={e => handleFilterChange('equipo', e.target.value)} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <TextField placeholder="Modelo" size="small" fullWidth value={filters.modelo} onChange={e => handleFilterChange('modelo', e.target.value)} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <TextField placeholder="Serie" size="small" fullWidth value={filters.serie} onChange={e => handleFilterChange('serie', e.target.value)} />
+                  </div>
+                  <div style={{ flex: 2 }}>
+                    <TextField placeholder="Descripción" size="small" fullWidth value={filters.descripcion} onChange={e => handleFilterChange('descripcion', e.target.value)} />
+                  </div>
+                 
+                  <div style={{ flex: 1 }}>
+                    <TextField placeholder="Estatus" size="small" fullWidth value={filters.estatus} onChange={e => handleFilterChange('estatus', e.target.value)} />
+                  </div>
                 </div>
               </div>
-          </Box>
-        </Modal>
 
-        <Modal open={openReassignModal} onClose={handleCloseReassignModal} aria-labelledby="reasignar-equipo-modal-title" aria-describedby="reasignar-equipo-modal-description">
-          <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 600, bgcolor: 'background.paper', boxShadow: 24, p: 6 }}>
-              <div className='row  justify-content-center px-2'>
-                  <div className="col-md-12 mx-auto">
-                    <h2 id="asignar-equipo-modal-title">Desasignar y Reasignar Equipo</h2>
-                    <Card.Body className="d-flex align-items-center justify-content-center">
-                      <div className='row mx-0 justify-content-center px-2'>
-                            <div className="form-group row form-group-marginless mb-1">
-                            <div className="col-md-12 text-justify">
-                               {equipoUser && (
-                                  <p><strong>Marca:</strong> {equipos.find(equipo => equipo.id === equipoUser.equipo_id)?.nombre}</p>
-                                )}
-                             </div> 
-                             <div className="col-md-12 text-justify">
-                               {equipoUser && (
-                                  <p><strong>Modelo:</strong> {equipos.find(equipo => equipo.id === equipoUser.equipo_id)?.modelo}</p>
-                                )}
-                             </div> 
-                             <div className="col-md-12 text-justify">
-                               {equipoUser && (
-                                  <p><strong>Serie:</strong> {equipos.find(equipo => equipo.id === equipoUser.equipo_id)?.serie}</p>
-                                )}
-                             </div>       
-                            <div className="col-md-12 text-justify">
-                                <p> <strong>Usuario actualmente asignado: </strong> {currentAssignedUser}</p>                          
-                              </div>       
-                              <div className="col-md-12 text-justify">
-
-                              <Autocomplete id="nuevaPersona" options={users} getOptionLabel={(user) => {
-                                    const nombre = user.nombre || '';
-                                    const apellidoPaterno = user.apellido_paterno || '';
-                                    const apellidoMaterno = user.apellido_materno || '';
-                                    return `${nombre} ${apellidoPaterno} ${apellidoMaterno}`;
-                                  }}
-                                  value={selectedUser} onChange={(e, newValue) => setSelectedUser(newValue)} renderInput={(params) => (
-                                    <TextField {...params} label="Persona" variant="outlined" fullWidth required error={error && !selectedUser} className={classes.errorInput} /> )} style={{ width: 400 }}  
-                                />
-                              </div>                           
-                        </div>
-                      </div>
-                    </Card.Body>
+            ),
+            Cell: ({ row }) => {
+              const { marcas = [], equipos = [], modelos = [], series = [], descripciones = [], raws = [], estatus = [] } = row.original;
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <div style={{ display: 'flex', fontWeight: 'bold', borderBottom: '2px solid #000', marginBottom: '4px' }}>
+                    <div style={{ width: '70px', textAlign: 'center' }}>Acciones</div>
+                    <div style={{ width: '120px', textAlign: 'center' }}>Equipo</div>
+                    <div style={{ width: '120px', textAlign: 'center' }}>Marca</div>
+                    
+                    <div style={{ width: '120px', textAlign: 'center' }}>Modelo</div>
+                    <div style={{ width: '120px', textAlign: 'center' }}>Serie</div>
+                    <div style={{ flex: 1, textAlign: 'center' }}>Descripción</div>
+                    <div style={{ width: '100px', textAlign: 'center' }}>Estatus</div>
                   </div>
-                  <div className='row  justify-content-center px-2'>
-                    <div className="col-md-6 text-justify">
-                      <Button variant="outlined" size="large" color="primary" onClick={handleReassignEquipo} startIcon={<SaveIcon />}>Reasignar</Button>               
-                    </div>
-                    <div className="col-md-6 text-justify">
-                    <Button variant="outlined" size="large" color="secondary"  onClick={()=>handleCloseReassignModal()} >cerrar</Button>
-                    </div>
-                </div>
-              </div>
-          </Box>
-        </Modal>
-
-        <Modal open={showHistorialModal} onClose={handleCloseHistorialModal}>
-          <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, bgcolor: 'background.paper', boxShadow: 24, p: 6 }}>
-             <div className='row  justify-content-center px-2'>
-                  <div className="col-md-12 mx-auto">
-                    <h2 id="asignar-equipo-modal-title">Historial de Asignación</h2>
-                  <div style={{ maxHeight: '70vh', overflow: 'auto' }}> {/* Establece una altura máxima y permite el desplazamiento vertical */}
-                    <Card.Body className="d-flex align-items-center justify-content-center">
-                      <div className='row mx-0 justify-content-center px-2'>
-                        <div className="form-group row form-group-marginless mb-1">
-                          <div className="col-md-12 text-justify">
-                            {loading && <p>Cargando historial...</p>}
-                              {!loading && historial.length === 0 && <p>No hay historial disponible para este equipo.</p>}
-                              {!loading && historial.length > 0 && (
-                                
-                                historial.map(asignacion => (
-                                 <List className={classes.root}>
-                                 <ListItem>
-                                   <ListItemAvatar>
-                                     <Avatar src= {asignacion.empleado && asignacion.empleado.usuario ? asignacion.empleado.usuario.avatar : '' } >
-                                     </Avatar>
-                                   </ListItemAvatar>
-                                   <ListItemText primary={asignacion.empleado ? asignacion.empleado.nombre+' '+asignacion.empleado.apellido_paterno+' '+asignacion.empleado.apellido_materno : ''} secondary={asignacion.fecha_asignacion} />
-                                 </ListItem>
-                                 </List>
-                                 ))
-                              )}
-                          </div>                              
-                        </div>
+                  {marcas.map((_, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #ddd', padding: '2px 0' }}>
+                      <div style={{ width: '70px', textAlign: 'center' }}>
+                        <IconButton size="small" onClick={(e) => handleMenuOpen(e, raws[idx])}>
+                          <TouchAppIcon fontSize="small" style={{ color: '#1976d2' }} />
+                        </IconButton>
                       </div>
-                    </Card.Body>
-                    </div>
-
-                  </div>
-                  <div className='row  justify-content-center px-2'>
-                    <div className="col-md-6 text-justify">
-                    <Button variant="outlined" size="large" color="secondary"  onClick={()=>handleCloseHistorialModal()} >cerrar</Button>
-                    </div>
-                </div>
-              </div>
-          </Box>
-        </Modal>
-
-        <Modal open={openEditModal} onClose={handleCloseEditModal} >
-          <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, bgcolor: 'background.paper', boxShadow: 24, p: 6 }}>
-             <div className='row  justify-content-center px-2'>
-                  <div className="col-md-12 mx-auto">
-                    <h2 id="asignar-equipo-modal-title">Editar de registro</h2>
-                  <div style={{ maxHeight: '70vh', overflow: 'auto' }}> {/* Establece una altura máxima y permite el desplazamiento vertical */}
-                    <Card.Body className="d-flex align-items-center justify-content-center">
-                      <div className='row mx-0 justify-content-center px-2'>
-                        <div className="form-group row form-group-marginless mb-1">
-                          <div className="col-md-12 text-justify mb-2">
-                            <TextField  label="Marca"  value={editedEquipo.nombre}  onChange={(e) => setEditedEquipo({ ...editedEquipo, nombre: e.target.value })}  fullWidth  mb={2}  required  />
-                          </div>   
-                          <div className="col-md-12 text-justify mb-2">
-                             <TextField  label="Modelo"  value={editedEquipo.modelo}  onChange={(e) => setEditedEquipo({ ...editedEquipo, modelo: e.target.value })}  fullWidth  mb={2}  required  />
-                          </div>  
-                          <div className="col-md-12 text-justify mb-2">
-                          <Autocomplete
-                            id="tipo"
-                            options={tiposEquipos}
-                            value={editedEquipo.tipo}
-                            onChange={(event, newValue) => setEditedEquipo(prevState => ({ ...prevState, tipo: newValue }))}
-                            renderInput={(params) => <TextField {...params} label="Tipo" variant="outlined" fullWidth />}
-                          />                        
-                          </div>
-                          <div className="col-md-12 text-justify mb-2">
-                            <TextField  label="Serie"  value={editedEquipo.serie}  onChange={(e) => setEditedEquipo({ ...editedEquipo, serie: e.target.value })}  fullWidth  mb={2} />
-                          </div>
-                          <div className="col-md-12 text-justify mb-2">
-                            <TextField  label="Descripción"  value={editedEquipo.descripcion}  onChange={(e) => setEditedEquipo({ ...editedEquipo, descripcion: e.target.value })}  fullWidth  mb={2}  required />
-                          </div>  
-
-                        </div>
+                      <div style={{ width: '120px', textAlign: 'center' }}>{equipos[idx]}</div>
+                      <div style={{ width: '120px', textAlign: 'center' }}>{marcas[idx]}</div>
+                      
+                      <div style={{ width: '120px', textAlign: 'center' }}>{modelos[idx]}</div>
+                      <div style={{ width: '120px', textAlign: 'center' }}>{series[idx]}</div>
+                      <div style={{ flex: 1, textAlign: 'center', whiteSpace: 'pre-line' }}>{descripciones[idx]}</div>
+                      <div style={{ width: '100px', textAlign: 'center', flexShrink: 0 }}>
+                        {estatus[idx]
+                          ? <span style={{ fontSize: '12px' }}>{estatus[idx]}</span>
+                          : <span style={{ color: '#bbb' }}>N/A</span>}
                       </div>
-                    </Card.Body>
-                    </div>
 
-                  </div>
-                  <div className='row  justify-content-center px-2'>
-                    <div className="col-md-6 text-justify">
-                      <Button variant="outlined" size="large" color="primary" onClick={handleSaveEditedEquipo}>Guardar </Button>
                     </div>
-                    <div className="col-md-6 text-justify">
-                    <Button variant="outlined" size="large" color="secondary"  onClick={()=>handleCloseEditModal()} >cerrar</Button>
-                    </div>
+                  ))}
                 </div>
-              </div>
-          </Box>
-        </Modal>
+              );
+            },
 
-        <Modal open={openFiltrarModal} onClose={handleCloseFiltrarModal} aria-labelledby="reasignar-equipo-modal-title" aria-describedby="reasignar-equipo-modal-description">
-        {/* <Modal size="lg" title={"filtrar"} show={modal.filtrar.show} handleClose={handleClose('filtrar')}> */}
-            <Filtrar handleClose={handleCloseFiltrarModal} opciones={users} filtrarTabla={setFiltrado} borrarTabla={borrar} users={users} error={error}
-             newEquipo={newEquipo} setNewEquipo={setNewEquipo} classes={classes} selectedUser={selectedUser} setSelectedUser={setSelectedUser}  />
-        </Modal>
+          },
+        ]}
+        data={data}
+        state={{ isLoading, pagination, showColumnFilters: showFilters, }}
+        onPaginationChange={setPagination}
+        onShowColumnFiltersChange={setShowFilters}
+        enableColumnOrdering
+        enableRowActions={false}
+        initialState={{ pagination: { pageSize: 10 } }}
+        muiTablePaginationProps={{
+          rowsPerPageOptions: [10, 20, 50],
+          labelRowsPerPage: 'Equipos por página',
+        }}
+        enableGlobalFilter={false}
 
-    </>
+
+        renderTopToolbarCustomActions={() => (
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <IconButton onClick={() => {
+              fetchEquipos();
+              setPagination({ pageIndex: 0, pageSize: 10 });
+            }}>
+              <RefreshIcon fontSize="small" />
+            </IconButton>
+            <Button variant="contained" onClick={() => handleOpenModal('agregar')}>Nuevo equipo</Button>
+            <Button variant="outlined" onClick={() => exportToExcel(data)}>Exportar a Excel</Button>
+          </div>
+        )}
+      />
+
+      {/* Modales y Menú */}
+      <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose} onClick={handleMenuClose}>
+        <MenuItem onClick={() => handleOpenModal('editar', selectedRow)}>
+          <ListItemIcon><EditIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Editar</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => { if (selectedRow?.disponible) handleOpenModal('asignar', selectedRow); else Swal.fire('Ya está asignado', '', 'info'); }}>
+          <ListItemIcon><AssignmentIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Asignar</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => handleOpenModal('estatus', selectedRow)}>
+          <ListItemIcon><TuneIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Estatus</ListItemText>
+        </MenuItem>
+
+        <MenuItem onClick={() => { if (!selectedRow?.disponible) handleOpenModal('reasignar', selectedRow); else Swal.fire('Primero asigna el equipo', '', 'info'); }}>
+          <ListItemIcon><ReplayIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Reasignar</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => handleOpenHistorial(selectedRow)}>
+          <ListItemIcon><HistoryIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Historial</ListItemText>
+        </MenuItem>
+
+        <MenuItem onClick={() => {
+          if (!selectedRow?.disponible) {
+            Swal.fire({
+              title: '¿Estás seguro?',
+              text: "Esto desasignará el equipo",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Sí, desasignar',
+              cancelButtonText: 'Cancelar',
+            }).then((result) => {
+              if (result.isConfirmed) handleUnassignEquipo(selectedRow);
+            });
+          } else {
+            Swal.fire('Este equipo no está asignado', '', 'info');
+          }
+        }}>
+          <ListItemIcon><ReplayIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Desasignar</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => handleDeleteEquipo(selectedRow)}>
+          <ListItemIcon><DeleteIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Eliminar</ListItemText>
+        </MenuItem>
+
+      </Menu>
+
+      <AsignarEquipo data={modal.asignar.data} show={modal.asignar.show} handleClose={() => handleCloseModal('asignar')} reload={fetchEquipos} users={users} mode="asignar" />
+      <AsignarEquipo data={modal.reasignar.data} show={modal.reasignar.show} handleClose={() => handleCloseModal('reasignar')} reload={fetchEquipos} users={users} mode="reasignar" />
+      <EditarEquipo
+        data={modal.editar.data}
+        show={modal.editar.show}
+        handleClose={() => handleCloseModal('editar')}
+        reload={(equipoActualizado) => {
+          setInventarioOriginal(prev => prev.map(e => e.id === equipoActualizado.id ? equipoActualizado : e));
+          setData(processData([...inventarioOriginal]));
+        }}
+      />
+      <AgregarEquipo
+        show={modal.agregar.show}
+        handleClose={() => handleCloseModal('agregar')}
+        reload={() => {
+          fetchEquipos();                 // ✅ Recarga la data
+          setPagination({ pageIndex: 0, pageSize: 10 }); // ✅ Resetea a la primera página
+        }}
+      />
+
+
+
+
+
+      <VerHistorial data={modal.historial.data} show={modal.historial.show} handleClose={() => handleCloseModal('historial')} />
+      <EstatusEquipo data={modal.estatus.data} show={modal.estatus.show} handleClose={() => handleCloseModal('estatus')} reload={fetchEquipos} />
     </Layout>
   );
 }
-
-export default App;

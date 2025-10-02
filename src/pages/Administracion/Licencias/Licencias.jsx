@@ -58,11 +58,21 @@ class Licencias extends Component {
         ).catch((error) => { catchErrors(error) })
     }
 
-    setTableLicencias = (datos) => {
-        let aux = []
-        datos.forEach((dato) => {
-            
-            let codigos = JSON.parse(dato.codigos)
+   setTableLicencias = (datos) => {
+    console.log(datos)
+    let aux = []
+    datos.forEach((dato) => {
+        let codigos = []
+        try {
+            if (dato.codigos) {
+                const parsed = JSON.parse(dato.codigos)
+                codigos = Array.isArray(parsed) ? parsed : []
+            }
+        } catch (error) {
+            console.warn('No se pudo parsear codigos:', dato.codigos)
+            codigos = []
+        }
+
             aux.push({
                 actions: this.setActions(dato),
                 tipo: setTextTableCenter(dato.tipo),
@@ -360,7 +370,7 @@ class Licencias extends Component {
                             hideNew={true}
                             setter = { this.setTableLicencias } 
                             onClick = { this.openModal }
-                            urlRender = {`${URL_DEV}v1/administracion/licencias`}  
+                            urlRender = {`${URL_DEV}v1/administracion/licencias/datatable`}  
                             filterClick = { this.openModalFiltros } 
                             type='tab'
                             exportar_boton={true} 

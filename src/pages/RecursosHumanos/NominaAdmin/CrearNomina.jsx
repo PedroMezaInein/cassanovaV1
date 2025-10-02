@@ -42,7 +42,7 @@ export default function CrearNomina(props) {
     empresa: '',
     fechaInicio: new Date(),
     fechaFin: new Date(),
-    fecha: new Date(),
+    timbrado: new Date(),
     cuentanominaimss: '',
     cuentaextraimss: '',
     cuentaefectivo: '',
@@ -257,21 +257,23 @@ export default function CrearNomina(props) {
         usuarios: setOptions(empleadosFiltrados, 'nombre', 'id')
       }));
 
-
+      // console.log(empleadosFiltrados)
       // ✅ Inicializar nominasAdmin con los empleados filtrados
       const nominasAdmin = empleadosFiltrados.map(emp => ({
         usuario: emp.id.toString(),
         nominImss: emp.nomina_imss || 0.0,
         nomina: emp.nomina_imss || 0.0,
+        extraImss: emp.extraImss || 0.0,
         efectivo: emp.efectivo || 0.0,
-        extraEfectivo: 0.0,
-        comision: 0.0,
+        extraEfectivo:emp.extraEfectivo || 0.0,
+        comision: emp.comision || 0.0,       
         isr: emp.isr || 0.0,
         isn: emp.isn || 0.0,
         infonavit: emp.infonavit || 0.0,
+        // infonavit: parseFloat(emp.infonavit) || 0.0,
         imss: emp.imss || 0.0,
         rcv: emp.rcv || 0.0,
-        extraImss: 0.0,
+        // extraImss: 0.0,
         restanteNomina: emp.efectivo || 0.0,
         extras: 0.0,
         periodicidad_nomina: emp.nomina_imss_periodicidad || 'quincenal',
@@ -285,6 +287,7 @@ export default function CrearNomina(props) {
         periodicidad_rcv: emp.rcv_periodicidad || 'quincenal',
         periodicidad_isn: emp.isn_periodicidad || 'quincenal'
       }));
+      // console.log(nominasAdmin)
 
       setForm(prev => ({
         ...prev,
@@ -301,15 +304,29 @@ export default function CrearNomina(props) {
     const data = usuarioSeleccionado.data;
     const updatedNomina = {
       usuario: value,
-      nomina: data?.nomina_imss || 0,
-      extraImss: data?.extraImss || 0,
-      efectivo: data?.efectivo || 0,
-      extraEfectivo: data?.extraEfectivo || 0,
-      comision: data?.comision || 0,
-      isr: data?.isn || 0,
-      infonavit: data?.infonavit || 0,
-      imss: data?.imss || 0,
-      rcv: data?.rcv || 0
+      nominImss: data?.nomina_imss || 0.0,
+      nomina: data?.nomina_imss || 0.0,
+      extraImss: data?.extraImss || 0.0,
+      efectivo: data?.efectivo || 0.0,
+      extraEfectivo:data?.extraEfectivo || 0.0,
+      comision: data?.comision || 0.0,       
+      isr: data?.isr || 0.0,
+      isn: data?.isn || 0.0,
+      infonavit: data?.infonavit || 0.0,
+      imss: data?.imss || 0.0,
+      rcv: data?.rcv || 0.0,
+      // extraImss: 0.0,
+      restanteNomina: data?.efectivo || 0.0,
+
+      // nomina: data?.nomina_imss || 0,
+      // extraImss: data?.extraImss || 0,
+      // efectivo: data?.efectivo || 0,
+      // extraEfectivo: data?.extraEfectivo || 0,
+      // comision: data?.comision || 0,
+      // isr: data?.isn || 0,
+      // infonavit: data?.infonavit || 0,
+      // imss: data?.imss || 0,
+      // rcv: data?.rcv || 0
     };
 
     setForm(prev => {
@@ -355,7 +372,7 @@ export default function CrearNomina(props) {
   // Funciones para cálculos
   const getTotal = (key) => {
     const n = form.nominasAdmin[key];
-    return ['nomina', 'extraImss','efectivo','extraefectivo','comision','isr','infonavit' ,'imss', 'isn']
+    return ['nomina', 'extraImss','efectivo','extraEfectivo','comision','isr','infonavit' ,'imss', 'isn']
       .reduce((acc, k) => acc + parseFloat(n[k] || 0), 0);
   };
 
@@ -487,6 +504,7 @@ export default function CrearNomina(props) {
 
     const updateQuincena = (nuevaPeriodicidad) => {
       setForm(prev => {
+        // console.log(prev)
         const nuevaNomina = prev.backupNominasAdmin.map(n => ({
           ...n,
           nomina: convertirMonto(n.nomina, n.periodicidad_nomina, nuevaPeriodicidad),
@@ -616,7 +634,7 @@ export default function CrearNomina(props) {
         keys.forEach((key) => {
           if (key === 'nominasAdmin') {
             data.append(key, JSON.stringify(form[key]));
-          } else if (key === 'fecha' || key === 'fechaInicio' || key === 'fechaFin') {
+          } else if (key === 'timbrado' || key === 'fechaInicio' || key === 'fechaFin') {
             // 👇 Formatear las fechas
             data.append(key, formatDate(form[key]));
           } else if (key !== 'adjuntos') {
@@ -671,7 +689,7 @@ export default function CrearNomina(props) {
           apiPostForm(`v2/rh/nomina-administrativa`, data, access_token).then(
               (response) => {
                   const { factura } = response.data
-                  console.log('Subida de archivos :', response)
+                  // console.log('Subida de archivos :', response)
   
                   Swal.fire({
                     icon: 'success',
@@ -723,7 +741,7 @@ export default function CrearNomina(props) {
     if (!form.periodo) errores.periodo = 'Seleccione un periodo';
     if (!form.nombre) errores.nombre = 'Ingrese un nombre a la nomina';
     // if (!form.año) errores.año = 'Seleccione un año';
-    if (!form.fecha) errores.fecha = 'Ingrese una fecha válida';
+    if (!form.timbrado) errores.timbrado = 'Ingrese una fecha válida';
     if (tipo == 'enviar') {
       // Solo pedir cuenta si el total de esa columna es mayor a 0
     
@@ -778,7 +796,7 @@ export default function CrearNomina(props) {
     <form id="form-nominaadmin" onSubmit={(e) => handleSubmit(e, "guardar", false)}>
 
     <Box sx={{ overflowX: 'auto' }}>
-        <Container maxWidth="xl">
+        <Container maxWidth={false} disableGutters sx={{ padding: 0 }}>
         {/* <DialogTitle  >Editar Gasto</DialogTitle> */}
         <DialogContent >
 
@@ -882,14 +900,14 @@ export default function CrearNomina(props) {
             </Grid>   
 
         </Grid>    
-        <Grid container spacing={3}>    
-             <Grid item  xs={12} sm={6} md={3} justifyContent="space-around">
+        <Grid container spacing={3}>  
+           <Grid item  xs={12} sm={6} md={3} justifyContent="space-around">
                 <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
                 {/* <InputLabel>Fecha de Compra</InputLabel> */}
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                     <KeyboardDatePicker
                         disableToolbar
-                        label="Fecha"
+                        label="Fecha Inicio"
                         format="dd/MM/yyyy"
                         margin="normal"
                         name="fechaInicio"
@@ -908,18 +926,18 @@ export default function CrearNomina(props) {
                     />
                 </MuiPickersUtilsProvider>
                 </Paper>
-            </Grid>
+            </Grid>  
              <Grid item  xs={12} sm={6} md={3} justifyContent="space-around">
                 <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
                 {/* <InputLabel>Fecha de Compra</InputLabel> */}
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                     <KeyboardDatePicker
                         disableToolbar
-                        label="Fecha"
+                        label="Fecha Fin"
                         format="dd/MM/yyyy"
                         margin="normal"
-                        name="fechaFin"
-                        value={form.fechaFin !== '' ? form.fechaFin : null}
+                        name="fechaInicio"
+                        value={form.fechaInicio !== '' ? form.fechaFin : null}
                         placeholder="dd/mm/yyyy"
                         onChange={(date) => {
                             handleChangeFecha(date, 'fechaFin');
@@ -931,6 +949,32 @@ export default function CrearNomina(props) {
                         }}
                         error={!!errores.fechaFin}
                         helperText={errores.fechaFin || ''}
+                    />
+                </MuiPickersUtilsProvider>
+                </Paper>
+            </Grid>
+             <Grid item  xs={12} sm={6} md={3} justifyContent="space-around">
+                <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                {/* <InputLabel>Fecha de Compra</InputLabel> */}
+                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                    <KeyboardDatePicker
+                        disableToolbar
+                        label="Fecha de timbrado"
+                        format="dd/MM/yyyy"
+                        margin="normal"
+                        name="timbrado"
+                        value={form.timbrado !== '' ? form.timbrado : null}
+                        placeholder="dd/mm/yyyy"
+                        onChange={(date) => {
+                            handleChangeFecha(date, 'timbrado');
+                            setErrores(prev => ({...prev, timbrado: undefined}));
+                        }}                       
+                        className="w-100"
+                        KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                        }}
+                        error={!!errores.timbrado}
+                        helperText={errores.timbrado || ''}
                     />
                 </MuiPickersUtilsProvider>
                 </Paper>
@@ -1645,10 +1689,12 @@ export default function CrearNomina(props) {
                             </TableCell>
                             <TableCell align="right">
                                 <FormControl variant="standard" sx={{ minWidth: 200 }}>
-                                    <Input id={`nomina-${key}`} value={nominaAdmin.nomina} 
+                                    <Input id={`nomina-${key}`}  value={nominaAdmin.nomina}// 👈 fuerza mostrar con 2 decimales
                                     onChange={(e) => {
-                                        onChangeNominasAdmin(key, e, 'nomina');
-                                        setErrores(prev => ({...prev, [`nomina-${key}-nomina`]: undefined}));
+                                        const value = e.target.value;
+                                        if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
+                                          onChangeNominasAdmin(key, e, 'nomina');
+                                        }
                                       }}
                                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                     inputProps={{
@@ -1665,7 +1711,7 @@ export default function CrearNomina(props) {
                             </TableCell>
                              <TableCell align="right">
                                 <FormControl variant="standard" sx={{ minWidth: 200 }}>
-                                    <Input id={`nomina-${key}`} value={nominaAdmin.extraImss} 
+                                    <Input id={`nomina-${key}-extraImss`}   value={nominaAdmin.extraImss} 
                                     onChange={(e) => {
                                         onChangeNominasAdmin(key, e, 'extraImss');
                                         setErrores(prev => ({...prev, [`nomina-${key}-extraImss`]: undefined}));
@@ -1685,7 +1731,8 @@ export default function CrearNomina(props) {
                             </TableCell>
                             <TableCell align="right">
                                 <FormControl variant="standard" sx={{ minWidth: 160 }}>
-                                <Input id={`efectivo-${key}`} value={nominaAdmin.efectivo} onChange={(e) => onChangeNominasAdmin(key, e, 'efectivo')}
+                                <Input id={`nomina-${key}-efectivo`} value={nominaAdmin.efectivo}  
+                                 onChange={(e) => onChangeNominasAdmin(key, e, 'efectivo')}
                                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                     inputProps={{
                                     className: 'form-control-sm text-center',
@@ -1694,12 +1741,15 @@ export default function CrearNomina(props) {
                                     }}
                                     type="text"
                                 />
-                                <FormHelperText>Efectivo QNAL</FormHelperText>
+                                <FormHelperText>
+                                        {errores[`nomina-${key}-efectivo`] || 'Efectivo QNAL'}
+                                    </FormHelperText>
                                 </FormControl>
                             </TableCell>
                              <TableCell align="right">
                                 <FormControl variant="standard" sx={{ minWidth: 160 }}>
-                                <Input id={`extraEfectivo-${key}`} value={nominaAdmin.extraEfectivo} onChange={(e) => onChangeNominasAdmin(key, e, 'extraEfectivo')}
+                                <Input id={`nomina-${key}-extraEfectivo`} value={nominaAdmin.extraEfectivo}    
+                                onChange={(e) => onChangeNominasAdmin(key, e, 'extraEfectivo')}
                                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                     inputProps={{
                                     className: 'form-control-sm text-center',
@@ -1708,12 +1758,15 @@ export default function CrearNomina(props) {
                                     }}
                                     type="text"
                                 />
-                                <FormHelperText>Extra Efectivo</FormHelperText>
+                                <FormHelperText>
+                                      {errores[`nomina-${key}-extraEfectivo`] || 'Extra Efectivo'}
+                                </FormHelperText>
                                 </FormControl>
                             </TableCell>
                               <TableCell align="right">
                                 <FormControl variant="standard" sx={{ minWidth: 160 }}>
-                                  <Input id={`comision-${key}`} value={nominaAdmin.comision} onChange={(e) => onChangeNominasAdmin(key, e, 'comision')}
+                                  <Input id={`nomina-${key}-comision`} value={nominaAdmin.comision}   
+                                  onChange={(e) => onChangeNominasAdmin(key, e, 'comision')}
                                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                     inputProps={{
                                     className: 'form-control-sm text-center',
@@ -1722,12 +1775,15 @@ export default function CrearNomina(props) {
                                     }}
                                     type="text"
                                 />
-                                <FormHelperText>comision</FormHelperText>
+                                <FormHelperText>
+                                      {errores[`nomina-${key}-comision`] || 'Comision'}
+                                </FormHelperText>
                                 </FormControl>
                             </TableCell>
                             <TableCell align="right">
                                 <FormControl variant="standard" sx={{ minWidth: 160 }}>
-                                <Input  id={`isr-${key}`} value={nominaAdmin.isr} onChange={(e) => onChangeNominasAdmin(key, e, 'isr')}
+                                <Input  id={`nomina-${key}-isr`} value={nominaAdmin.isr} 
+                                onChange={(e) => onChangeNominasAdmin(key, e, 'isr')}
                                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                     inputProps={{
                                     className: 'form-control-sm text-center',
@@ -1736,16 +1792,16 @@ export default function CrearNomina(props) {
                                     }}
                                     type="text"
                                 />
-                                <FormHelperText>ISR</FormHelperText>
+                                <FormHelperText>
+                                    {errores[`nomina-${key}-isr`] || 'ISR'}
+                                </FormHelperText>
                                 </FormControl>
 
                             </TableCell>
 
                             <TableCell align="right">
                               <FormControl variant="standard" sx={{ minWidth: 160 }}>
-                                <Input
-                                    id={`infonavit-${key}`}
-                                    value={nominaAdmin.infonavit}
+                                <Input id={`nomina-${key}-infonavit`} value={nominaAdmin.infonavit} 
                                     onChange={(e) => onChangeNominasAdmin(key, e, 'infonavit')}
                                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                     inputProps={{
@@ -1755,14 +1811,14 @@ export default function CrearNomina(props) {
                                     }}
                                     type="text"
                                 />
-                                <FormHelperText>Infonavit</FormHelperText>
+                                <FormHelperText>
+                                      {errores[`nomina-${key}-infonavit`] || 'Infonavit'}
+                                </FormHelperText>
                                 </FormControl>
                             </TableCell>
                             <TableCell align="right">
                                  <FormControl variant="standard" sx={{ minWidth: 160 }}>
-                                    <Input
-                                        id={`imss-${key}`}
-                                        value={nominaAdmin.imss}
+                                    <Input id={`nomina-${key}-imss`}  value={nominaAdmin.imss} 
                                         onChange={(e) => onChangeNominasAdmin(key, e, 'imss')}
                                         startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                         inputProps={{
@@ -1772,7 +1828,9 @@ export default function CrearNomina(props) {
                                         }}
                                         type="text"
                                     />
-                                    <FormHelperText>IMSS</FormHelperText>
+                                    <FormHelperText>
+                                          {errores[`nomina-${key}-imss`] || 'IMSS'}
+                                    </FormHelperText>
                                 </FormControl>
 
                             </TableCell>
@@ -1795,9 +1853,7 @@ export default function CrearNomina(props) {
                             </TableCell> */}
                             <TableCell align="right">
                                 <FormControl variant="standard" sx={{ minWidth: 160 }}>
-                                <Input
-                                    id={`isn-${key}`}
-                                    value={nominaAdmin.isn}
+                                <Input id={`nomina-${key}-isn`}  value={nominaAdmin.isn}  
                                     onChange={(e) => onChangeNominasAdmin(key, e, 'isn')}
                                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                     inputProps={{
@@ -1807,7 +1863,9 @@ export default function CrearNomina(props) {
                                     }}
                                     type="text"
                                 />
-                                <FormHelperText>ISN</FormHelperText>
+                                <FormHelperText>
+                                      {errores[`nomina-${key}-isn`] || 'ISN'}
+                                </FormHelperText>
                                 </FormControl>
                             </TableCell>
                             

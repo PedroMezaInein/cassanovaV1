@@ -92,3 +92,51 @@
     width: 100%;
     border-radius: 8px;
 }
+.table-status {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.statusSolicitado {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.statusDesarrollo {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.statusTerminado {
+    background-color: #198754;
+    color: white;
+}
+
+.statusCancelado {
+    background-color: #dc3545;
+    color: white;
+}
+
+.statusRechazado {
+    background-color: #6c757d;
+    color: white;
+}
+
+.prioridadAlta {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.prioridadMedia {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.prioridadBaja {
+    color: #198754;
+    font-weight: bold;
+}

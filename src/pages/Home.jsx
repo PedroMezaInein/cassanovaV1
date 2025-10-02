@@ -1383,7 +1383,7 @@ class Home extends Component{
                         <Card style={{ textAlign:'center' }}>
                                 <Card.Body style={{ textAlign:'center' }}>
                                 <Card.Title>VACACIONES</Card.Title>
-                                <Card.Img  style={{ width: '8rem'  }}  variant="top" src="https://admin-proyectos-aws.s3.us-east-2.amazonaws.com/images/vacaciones.png" />
+                                <Card.Img  style={{ width: '8rem'  }}  variant="top" src="https://inein-aws.s3.us-east-2.amazonaws.com/images/vacaciones.png" />
 
                                 <Card.Text >
                                 <div className="mb-4">
@@ -1414,7 +1414,7 @@ class Home extends Component{
                         <Card  style={{ textAlign:'center' }}>
                             <Card.Body style={{ textAlign:'center' }}>
                             <Card.Title>PERMISOS</Card.Title>
-                            <Card.Img style={{ width: '8rem'}} variant="top" src="https://admin-proyectos-aws.s3.us-east-2.amazonaws.com/images/permisos.png" />
+                            <Card.Img style={{ width: '8rem'}} variant="top" src="https://inein-aws.s3.us-east-2.amazonaws.com/images/permisos.png" />
                             <Card.Text>
                             <br />
                             <br />
@@ -1441,7 +1441,7 @@ class Home extends Component{
                         <Card style={{ textAlign:'center' }}>
                             <Card.Body style={{ textAlign:'center' }}>
                             <Card.Title>SALAS</Card.Title>
-                            <Card.Img style={{ width: '12rem' , marginLeft:'30px' }} variant="top" src="https://admin-proyectos-aws.s3.us-east-2.amazonaws.com/images/juntas.png" />
+                            <Card.Img style={{ width: '12rem' , marginLeft:'30px' }} variant="top" src="https://inein-aws.s3.us-east-2.amazonaws.com/images/juntas.png" />
 
                             <Card.Text>
                             {
@@ -1467,7 +1467,7 @@ class Home extends Component{
                         <Card style={{ textAlign:'center' }}>
                             <Card.Body style={{ textAlign:'center' }}>
                             <Card.Title>VEHÍCULOS</Card.Title>
-                            <Card.Img style={{ width: '8rem' }} variant="top" src="https://admin-proyectos-aws.s3.us-east-2.amazonaws.com/images/camioneta.png" />
+                            <Card.Img style={{ width: '8rem' }} variant="top" src="https://inein-aws.s3.us-east-2.amazonaws.com/images/camioneta.png" />
 
                             <Card.Text>
                             {

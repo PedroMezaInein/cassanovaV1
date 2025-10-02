@@ -1,87 +1,73 @@
-import React, { Component } from 'react'
-import Form from 'react-bootstrap/Form'
+import React, { Component } from 'react';
+import TextField from '@mui/material/TextField';
+
 class InputLEmail extends Component {
-    state = {
-        inputValido: !this.props.requirevalidation,
-        showPassword: false
+  state = {
+    inputValido: !this.props.requirevalidation
+  };
+
+  validarInput = (e) => {
+    const { value } = e.target;
+    const { patterns, requirevalidation } = this.props;
+
+    if (value && requirevalidation) {
+      const expRegular = new RegExp(patterns);
+      this.setState({ inputValido: expRegular.test(value) });
+    } else {
+      this.setState({ inputValido: !requirevalidation });
     }
-    changeInputType = () => {
-        this.setState({
-            showPassword: !this.state.showPassword
-        })
+  };
+
+  componentDidMount() {
+    const { formeditado, value } = this.props;
+    if (formeditado) {
+      this.validarInput({ target: { value } });
     }
-    validarInput(e) {
-        const { value } = e.target 
-        const {patterns, requirevalidation}= this.props
-        if(value !== '' && value !== null && value !== undefined){
-            if(requirevalidation){
-                var expRegular = new RegExp(patterns);
-                if(expRegular.test(value))
-                    this.setState({ inputValido: true })
-                else
-                    this.setState({ inputValido: false })
-            }else
-                this.setState({ inputValido: true })
-        }else{
-            if(requirevalidation)
-                this.setState({ inputValido: false })
-            else
-                this.setState({ inputValido: true })
-        }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.value !== this.props.value) {
+      this.validarInput({ target: { value: this.props.value } });
     }
-    
-    componentDidUpdate(nextProps) {
-        if (nextProps.value !== this.props.value)
-            if (!nextProps.requirevalidation) {
-                this.setState({
-                    ...this.state,
-                    inputValido: true
-                })
-            } else {
-                if (this.props.value !== '') {
-                    this.validarInput({ target: { value: this.props.value } })
-                }
-            }
-    }
-    
-    componentDidMount(){
-        const { formeditado, value } = this.props
-        if(formeditado){
-            this.validarInput({ target: { value: value } })
-        }
-    }
-    
-    render() {
-        const {error, onChange, placeholder, letterCase, customstyle, customclass, ...props } = this.props
-        const { name } = this.props
-        const { inputValido } =  this.state
-        const toInputUppercase = e => {
-            const { type, value, selectionStart, selectionEnd } = e.target
-            if(letterCase !== false)
-                e.target.value = value.toUpperCase()
-            if( type !== 'email'){
-                e.target.selectionStart = selectionStart
-                e.target.selectionEnd = selectionEnd
-            }
-            return e
-        }
-        return (
-            <>
-            <div className="form-group mb-5 fv-plugins-icon-container">
-                <Form.Control
-                    placeholder = { placeholder }
-                    style = { customstyle }
-                    autoComplete="off"
-                    className = {`${customclass} form-control h-auto form-control-solid text-dark-50 font-weight-bold py-4 px-8` }
-                    onChange = { (e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }} {...props}
-                />
-                {
-                    error[name] !== '' &&
-                    <span className={ inputValido ? "text-muted font-size-sm hidden" : "text-danger font-size-sm is-invalid" }> {error[name]} </span>
-                }
-            </div>
-            </>
-        )
-    }
+  }
+
+  render() {
+    const {
+      name,
+      value,
+      onChange,
+      placeholder,
+      error = {},
+      requirevalidation,
+      ...props
+    } = this.props;
+
+    const { inputValido } = this.state;
+
+    return (
+      <TextField
+        fullWidth
+        type="email"
+        name={name}
+        value={value}
+        margin="normal" // 👈 esto agrega espacio vertical entre inputs
+
+        label={placeholder}
+        variant="outlined"
+        size="medium"
+        autoComplete="off"
+        required={requirevalidation === 1}
+        error={!!error[name] && !inputValido}
+        helperText={!!error[name] && !inputValido ? error[name] : ''}
+        onChange={(e) => {
+          e.target.value = e.target.value.toLowerCase(); // Forzar minúsculas
+          this.validarInput(e);
+          onChange(e);
+        }}
+        {...props}
+      />
+    );
+  }
 }
-export default InputLEmail
+
+export default InputLEmail;

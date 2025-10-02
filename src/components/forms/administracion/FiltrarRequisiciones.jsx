@@ -62,7 +62,7 @@ export default function CrearEgreso(props) {
 
 
     const handleChange = (e) => {
-        console.log(e.target.name)
+        // console.log(e.target.name)
         if(e.target.name === 'empresa'){
             setForm({
                 ...form,

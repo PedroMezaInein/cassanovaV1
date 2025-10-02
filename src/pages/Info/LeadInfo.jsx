@@ -18,20 +18,20 @@ import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, printR
 class LeadInfo extends Component {
     state = {
         navs: [
-            { eventKey: 'informacion', icon: 'flaticon-user', name: 'EDITAR INFORMACIÓN', show_item:true },
-            { eventKey: 'historial-contacto', icon: 'flaticon-folder-1', name: 'HISTORIAL DE CONTACTO', show_item:true },
-            { eventKey: 'cotizacion', icon: 'flaticon-file-1', name: 'COTIZACIÓN', show_item:true},
-            { eventKey: 'cotizacion-aceptada', icon: 'flaticon-list-1', name: 'COTIZACIÓN ACEPTADA', show_item:false },
-            { eventKey: 'facturación', icon: 'las la-file-invoice-dollar icon-xl', name: 'FACTURACIÓN', show_item:false },
-            { eventKey: 'necesidades', icon: 'flaticon-folder-1 icon-xl', name: 'PROGRAMA DE NECESIDADES', show_item:true }
-            
+            { eventKey: 'informacion', icon: 'flaticon-user', name: 'EDITAR INFORMACIÓN', show_item: true },
+            { eventKey: 'historial-contacto', icon: 'flaticon-folder-1', name: 'HISTORIAL DE CONTACTO', show_item: true },
+            { eventKey: 'cotizacion', icon: 'flaticon-file-1', name: 'COTIZACIÓN', show_item: true },
+            { eventKey: 'cotizacion-aceptada', icon: 'flaticon-list-1', name: 'COTIZACIÓN ACEPTADA', show_item: false },
+            { eventKey: 'facturación', icon: 'las la-file-invoice-dollar icon-xl', name: 'FACTURACIÓN', show_item: false },
+            { eventKey: 'necesidades', icon: 'flaticon-folder-1 icon-xl', name: 'PROGRAMA DE NECESIDADES', show_item: true }
+
         ],
         solicitud: '',
         tipo: '',
         activeNav: 'historial-contacto',
         modal: {
             presupuesto: false,
-            email:false
+            email: false
         },
         messages: [],
         form: {
@@ -49,12 +49,12 @@ class LeadInfo extends Component {
             proyecto: '',
             fecha: '',
             estado: '',
-            
+
         },
-        formSendMail:{
+        formSendMail: {
             correos: [],
-            pdf:'',
-            identificador:0
+            pdf: '',
+            identificador: 0
         },
         formDiseño: {
             m2: '',
@@ -69,7 +69,7 @@ class LeadInfo extends Component {
             desglose: [],
             MontoIngenerias: [],
             MontoEsquemas: [],
-            concepto1:'60',
+            concepto1: '60',
             concepto2: '30',
             concepto3: '10',
             conceptos: [
@@ -152,7 +152,7 @@ class LeadInfo extends Component {
             tiposContactos: [],
             esquemas: [],
             motivosCancelacion: [],
-            correos:[]
+            correos: []
         },
         formeditado: 0,
         data: {
@@ -162,7 +162,7 @@ class LeadInfo extends Component {
         },
         lead: '',
         activePage: 1, flag: false,
-        cotizacion_aceptada:[]
+        cotizacion_aceptada: []
     }
 
     componentDidMount() {
@@ -181,11 +181,11 @@ class LeadInfo extends Component {
     navsActive = lead => {
         const { navs } = this.state;
         navs.forEach((nav) => {
-            if(lead.estatus.estatus === 'Contratado'){
-                if(nav.eventKey === 'cotizacion-aceptada' || nav.eventKey === 'facturación'){
+            if (lead.estatus.estatus === 'Contratado') {
+                if (nav.eventKey === 'cotizacion-aceptada' || nav.eventKey === 'facturación') {
                     nav.show_item = true
                 }
-                if(nav.eventKey === 'cotizacion'){
+                if (nav.eventKey === 'cotizacion') {
                     nav.show_item = true
                 }
             }
@@ -193,7 +193,7 @@ class LeadInfo extends Component {
         this.setState({
             navs
         });
-        
+
     }
     getOneLeadInfoAxios = async (lead, tipo) => {
         waitAlert()
@@ -208,9 +208,9 @@ class LeadInfo extends Component {
                 form.telefono = lead.telefono
                 form.estado = lead.estado !== null ? lead.estado.toString() : ''
                 form.fecha = new Date(lead.created_at)
-                
+
                 this.navsActive(lead)
-                this.cotizacionAceptada(lead) 
+                this.cotizacionAceptada(lead)
                 if (formDiseño.esquema === 'esquema_1') {
                     formDiseño.tiempo_ejecucion_diseno = 7
                     formDiseño.semanas = this.calculateSemanas(formDiseño.tiempo_ejecucion_diseno)
@@ -519,21 +519,33 @@ class LeadInfo extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { lead, formSendMail } = this.state
-        let aux = []
-        formSendMail.correos.map((contacto) => {
-            aux.push(contacto.value)
-            return false
-        })
-        formSendMail.correos = aux
-        apiPutForm(`crm/email/envio-cotizacion/${lead.id}`, { identificador: formSendMail.identificador, correos:aux }, access_token).then(
+
+        // Normaliza: acepta tanto objetos {value, label} como strings
+        const correos = (formSendMail.correos || [])
+            .map(c => {
+                if (!c) return null
+                if (typeof c === 'string') return c
+                if (typeof c === 'object' && c.value) return c.value
+                return null
+            })
+            .filter(c => !!c) // elimina nulos/undefined
+            .filter((c, idx, arr) => arr.indexOf(c) === idx) // elimina duplicados
+
+        apiPutForm(
+            `crm/email/envio-cotizacion/${lead.id}`,
+            { identificador: formSendMail.identificador, correos },
+            access_token
+        ).then(
             (response) => {
                 const { flag, modal } = this.state
                 modal.email = false
                 this.setState({ ...this.state, flag: !flag, modal })
                 doneAlert('Correo enviado con éxito', () => { this.refresh() })
-            }, (error) => { printResponseErrorAlert(error) }
+            },
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
     }
+
     /* ------------------ ANCHOR ASYNC CALL TO UPDATE LEAD INFO ----------------- */
     addLeadInfoAxios = async () => {
         const { access_token } = this.props.authUser
@@ -938,7 +950,7 @@ class LeadInfo extends Component {
             return 0.0
 
         const { data } = this.state
-        const { form ,formDiseño} = this.state
+        const { form, formDiseño } = this.state
 
         let precio_inicial = 0
         let incremento = 0
@@ -999,8 +1011,8 @@ class LeadInfo extends Component {
                 return ''
             })
 
-            raiz= Math.sqrt(precio_inicial * m2 ) * precio_inicial;
-            total = raiz.toFixed(3) *  (1 + incremento)
+            raiz = Math.sqrt(precio_inicial * m2) * precio_inicial;
+            total = raiz.toFixed(3) * (1 + incremento)
             let accu = 0
             let sum = 0
             let ra = 0
@@ -1010,13 +1022,13 @@ class LeadInfo extends Component {
             formDiseño.MontoIngenerias = []
             formDiseño.MontoEsquemas = []
 
-            if(esquema === 'esquema_3'){
-                if( data.empresa.tipos_planos3){
-                    data.empresa.tipos_planos3.forEach((tipos,key) => { 
+            if (esquema === 'esquema_3') {
+                if (data.empresa.tipos_planos3) {
+                    data.empresa.tipos_planos3.forEach((tipos, key) => {
 
-                        ra= Math.sqrt(tipos.monto * m2 ) * tipos.monto;
-                        sum = ra.toFixed(2) *  (1 + 0)
-                        nuevo = (tipos.monto * tipos.base) + (m2* tipos.monto);
+                        ra = Math.sqrt(tipos.monto * m2) * tipos.monto;
+                        sum = ra.toFixed(2) * (1 + 0)
+                        nuevo = (tipos.monto * tipos.base) + (m2 * tipos.monto);
                         // nuevo = tipos.monto * m2;
 
                         // ra= (tipos.monto * 400) + (m2* tipos.monto);
@@ -1028,37 +1040,37 @@ class LeadInfo extends Component {
                         // nuevo = (tipos.monto * 400) + (m2* tipos.monto);
                         // console.log(sum)
 
-                        formDiseño.desglose.push( [
+                        formDiseño.desglose.push([
                             {
                                 id: tipos.id,
                                 nombre: tipos.tipo,
                                 monto: nuevo,
-                                checked : true
+                                checked: true
                             }
                         ])
-                        accu =  nuevo + accu
+                        accu = nuevo + accu
                     })
-                    formDiseño.MontoIngenerias.push( [
+                    formDiseño.MontoIngenerias.push([
                         {
                             id: 1,
                             nombre: 'MONTO INGENIERIAS',
                             monto: accu
                         }
                     ])
-                    formDiseño.MontoEsquemas.push( [
+                    formDiseño.MontoEsquemas.push([
                         {
                             id: 1,
                             nombre: 'MONTO DE ESQUEMA',
                             monto: total
                         }
                     ])
-                    sum =  accu + total
-                }               
-                }else{
-                    sum = total
-                }            
-                // console.log( formDiseño.desglose)
-                return Math.round(sum.toFixed(2))
+                    sum = accu + total
+                }
+            } else {
+                sum = total
+            }
+            // console.log( formDiseño.desglose)
+            return Math.round(sum.toFixed(2))
         }
         // console.log(limiteSup)
         // console.log(m2Aux)
@@ -1205,7 +1217,7 @@ class LeadInfo extends Component {
             </div>
         )
     }
-  
+
     printComment = (coment) => {
         const { usuario } = coment
         const { user } = this.props.authUser
@@ -1265,7 +1277,7 @@ class LeadInfo extends Component {
     }
     // GUARDAR
     onSubmitPresupuestoDiseño = () => { this.onSubmitPresupuestoDiseñoAxios(false) }
-    
+
     // GUARDAR Y GENERAR PDF
     onSubmitPDF = () => { this.onSubmitPresupuestoDiseñoAxios(true) }
 
@@ -1288,10 +1300,10 @@ class LeadInfo extends Component {
 
         // ELIMINAR OPCIÓN DUPLICADO
         const values = aux_correos.map(o => o.value)
-        const filtered = aux_correos.filter(({value}, index) => !values.includes(value, index + 1))
+        const filtered = aux_correos.filter(({ value }, index) => !values.includes(value, index + 1))
 
         options.correos = filtered
-        formSendMail.pdf = pdf.url
+        formSendMail.pdf = pdf.url_temporal || pdf.url
         formSendMail.identificador = pdf.pivot.identificador
         this.setState({
             ...this.state,
@@ -1305,11 +1317,11 @@ class LeadInfo extends Component {
         const { modal } = this.state
         modal.email = false
         formSendMail.pdf = ''
-        this.setState({ ...this.state, modal, formSendMail})
+        this.setState({ ...this.state, modal, formSendMail })
     }
     handleChangeCreateMSelect = (newValue) => {
         const { formSendMail } = this.state
-        if(newValue == null){
+        if (newValue == null) {
             newValue = []
         }
         let currentValue = []
@@ -1317,12 +1329,12 @@ class LeadInfo extends Component {
             currentValue.push({
                 value: valor.value,
                 label: valor.label,
-                id:valor.id
+                id: valor.id
             })
             return ''
         })
         formSendMail.correos = currentValue
-        this.setState({...this.state, formSendMail })
+        this.setState({ ...this.state, formSendMail })
     };
     cotizacionAceptada = (lead) => {
         let { cotizacion_aceptada } = this.state
@@ -1330,42 +1342,42 @@ class LeadInfo extends Component {
         if (lead.presupuesto_diseño) {
             if (lead.presupuesto_diseño.pdfs.length > 0) {
                 lead.presupuesto_diseño.pdfs.forEach((pdf, key) => {
-                    if (pdf.pivot.fecha_aceptacion !== null && lead.estatus.estatus === 'Contratado'){
+                    if (pdf.pivot.fecha_aceptacion !== null && lead.estatus.estatus === 'Contratado') {
                         aux.push(pdf)
                     }
                 })
             }
         }
-        cotizacion_aceptada=aux
+        cotizacion_aceptada = aux
         this.setState({
             cotizacion_aceptada
         });
     }
     setEsquemaPDF(lead) {
-        if(lead.presupuesto_diseño.pdfs>0){
+        if (lead.presupuesto_diseño.pdfs > 0) {
             return setEsquema(lead.presupuesto_diseño.pdfs[0].esquema)
-        }else{
+        } else {
             return setEsquema(lead.presupuesto_diseño.esquema)
         }
     }
-    setCostoConIva(lead){
-        if(lead.presupuesto_diseño.pdfs>0){
+    setCostoConIva(lead) {
+        if (lead.presupuesto_diseño.pdfs > 0) {
             return setMoneyText(lead.presupuesto_diseño.pdfs[0].pivot.costo)
-        }else{
+        } else {
             return setMoneyText(lead.presupuesto_diseño.total)
         }
     }
-    setTextCostoConIva(lead){
-        if(lead.presupuesto_diseño.pdfs>0){
+    setTextCostoConIva(lead) {
+        if (lead.presupuesto_diseño.pdfs > 0) {
             return 'Costo con iva'
-        }else{
+        } else {
             return 'Total'
         }
     }
-    setCostoSinIva(lead){
-        if(lead.presupuesto_diseño.pdfs>0){
+    setCostoSinIva(lead) {
+        if (lead.presupuesto_diseño.pdfs > 0) {
             return setMoneyText(lead.presupuesto_diseño.pdfs[0].pivot.costo_sin_iva)
-        }else{
+        } else {
             return ''
         }
     }
@@ -1387,9 +1399,9 @@ class LeadInfo extends Component {
                                                     lead.empresa.isotipos.length > 0 ?
                                                         lead.empresa.isotipos.map((isotipo, key) => {
                                                             return (
-                                                                <img alt="Pic" 
-                                                                 style={{ height: 50 }}
-                                                                src={isotipo.url} className="w-isotipo max-height-4rem" key={key} />
+                                                                <img alt="Pic"
+                                                                    style={{ height: 50 }}
+                                                                    src={isotipo.url} className="w-isotipo max-height-4rem" key={key} />
                                                             )
                                                         })
                                                         : <></>
@@ -1464,7 +1476,7 @@ class LeadInfo extends Component {
                                             }
                                         </div>
                                         {
-                                            cotizacion_aceptada.length>0?
+                                            cotizacion_aceptada.length > 0 ?
                                                 cotizacion_aceptada.map((pdf, key) => {
                                                     return (
                                                         <div key={key}>
@@ -1479,24 +1491,24 @@ class LeadInfo extends Component {
                                                         </div>
                                                     )
                                                 })
-                                            :
-                                                lead.presupuesto_diseño?
-                                                <>
-                                                    <div className="separator separator-dashed my-7"></div>
-                                                    <div className="font-size-h6 text-dark font-weight-bolder text-center">DATOS DE ÚLTIMA COTIZACIÓN</div>
-                                                    <div className="font-weight-light text-dark-50 text-justify">
-                                                        <div className="font-weight-bolder text-dark mt-4">ESQUEMA</div>{this.setEsquemaPDF(lead)}
-                                                        <div className="font-weight-bolder text-dark mt-4">{this.setTextCostoConIva(lead)}</div>{this.setCostoConIva(lead)}
-                                                        {
-                                                            this.setCostoSinIva(lead)?
-                                                            <><div className="font-weight-bolder text-dark mt-4">COSTO SIN IVA</div>{this.setCostoSinIva(lead)}</>
-                                                            :<></>
-                                                        }
-                                                        <div className="font-weight-bolder text-dark mt-4">M²</div>{lead.presupuesto_diseño.m2}
-                                                    </div>
-                                                </>
-                                            :<></>
-                                        
+                                                :
+                                                lead.presupuesto_diseño ?
+                                                    <>
+                                                        <div className="separator separator-dashed my-7"></div>
+                                                        <div className="font-size-h6 text-dark font-weight-bolder text-center">DATOS DE ÚLTIMA COTIZACIÓN</div>
+                                                        <div className="font-weight-light text-dark-50 text-justify">
+                                                            <div className="font-weight-bolder text-dark mt-4">ESQUEMA</div>{this.setEsquemaPDF(lead)}
+                                                            <div className="font-weight-bolder text-dark mt-4">{this.setTextCostoConIva(lead)}</div>{this.setCostoConIva(lead)}
+                                                            {
+                                                                this.setCostoSinIva(lead) ?
+                                                                    <><div className="font-weight-bolder text-dark mt-4">COSTO SIN IVA</div>{this.setCostoSinIva(lead)}</>
+                                                                    : <></>
+                                                            }
+                                                            <div className="font-weight-bolder text-dark mt-4">M²</div>{lead.presupuesto_diseño.m2}
+                                                        </div>
+                                                    </>
+                                                    : <></>
+
                                         }
                                     </Card.Body>
                                 </Card>
@@ -1507,7 +1519,7 @@ class LeadInfo extends Component {
                                         <Nav className="nav nav-tabs nav-tabs-line-blue nav-tabs-line nav-tabs-line-2x font-size-h6 flex-nowrap align-items-center border-transparent align-self-end mb-4">
                                             {
                                                 navs.map((nav, key) => {
-                                                    if(nav.show_item){
+                                                    if (nav.show_item) {
                                                         return (
                                                             <Nav.Item key={key}>
                                                                 <Nav.Link eventKey={nav.eventKey} onClick={(e) => { e.preventDefault(); this.controlledNav(nav.eventKey) }}>
@@ -1518,7 +1530,7 @@ class LeadInfo extends Component {
                                                                 </Nav.Link>
                                                             </Nav.Item>
                                                         )
-                                                    }else return <span key = { key } ></span>
+                                                    } else return <span key={key} ></span>
                                                 })
                                             }
                                         </Nav>
@@ -1538,17 +1550,17 @@ class LeadInfo extends Component {
                                             </Card>
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="historial-contacto">
-                                            <HistorialContactoInfo lead={lead} at={access_token} refresh={this.refresh} options={options} eliminarContacto={this.eliminarContacto}/>
+                                            <HistorialContactoInfo lead={lead} at={access_token} refresh={this.refresh} options={options} eliminarContacto={this.eliminarContacto} />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="cotizacion">
                                             {
                                                 lead ?
                                                     lead.prospecto ?
                                                         lead.prospecto.diseño ?
-                                                            <CotizacionesDiseño flag = { flag }
+                                                            <CotizacionesDiseño flag={flag}
                                                                 lead={lead} sendPresupuesto={this.openModalSendPresupuesto}
                                                                 options={options} formDiseño={formDiseño}
-                                                                onChange={this.onChangePresupuesto} onChangeConceptos={this.onChangeConceptos} 
+                                                                onChange={this.onChangePresupuesto} onChangeConceptos={this.onChangeConceptos}
                                                                 checkButtonSemanas={this.checkButtonSemanas} onChangeCheckboxes={this.handleChangeCheckbox}
                                                                 onSubmit={this.onSubmitPresupuestoDiseño} submitPDF={this.onSubmitPDF}
                                                                 formeditado={formeditado} onClickTab={this.handleClickTab}
@@ -1677,14 +1689,14 @@ class LeadInfo extends Component {
                                                 </Card.Header>
                                                 <Card.Body className=''>
                                                     {
-                                                    lead.necesidades && lead.necesidades.length > 0 && lead.necesidades[0].veradjuntos && lead.necesidades[0].veradjuntos.length > 0 ? (
-                                                        <div className="font-weight-bold font-size-h4 text-dark">
-                                                             <iframe src={lead.necesidades[0].veradjuntos[0].url} width="100%" height="500px" title="PDF Viewer" />
-                                                        </div>                                                       
-                                                       ) : (
-                                                        <></>
-                                                      )}
-                                                
+                                                        lead.necesidades && lead.necesidades.length > 0 && lead.necesidades[0].veradjuntos && lead.necesidades[0].veradjuntos.length > 0 ? (
+                                                            <div className="font-weight-bold font-size-h4 text-dark">
+                                                                <iframe src={lead.necesidades[0].veradjuntos[0].url} width="100%" height="500px" title="PDF Viewer" />
+                                                            </div>
+                                                        ) : (
+                                                            <></>
+                                                        )}
+
 
                                                 </Card.Body>
                                             </Card>
@@ -1692,16 +1704,16 @@ class LeadInfo extends Component {
 
                                         <Tab.Pane eventKey="cotizacion-aceptada">
                                             {
-                                                lead.estatus.estatus === 'Contratado'?
-                                                <CotizacionAceptada lead={lead} at={access_token} />
-                                                :<></>
+                                                lead.estatus.estatus === 'Contratado' ?
+                                                    <CotizacionAceptada lead={lead} at={access_token} />
+                                                    : <></>
                                             }
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="facturación">
                                             {
-                                                lead.estatus.estatus === 'Contratado'?
-                                                <HistorialSolicitudes lead={lead} at={access_token} />
-                                                :<></>
+                                                lead.estatus.estatus === 'Contratado' ?
+                                                    <HistorialSolicitudes lead={lead} at={access_token} />
+                                                    : <></>
                                             }
                                         </Tab.Pane>
                                     </Tab.Content>
@@ -1710,13 +1722,13 @@ class LeadInfo extends Component {
                         </div>
                         : <></>
                 }
-                <ModalSendMail header = '¿DESEAS ENVIAR LA COTIZACIÓN AL LEAD?' show = { modal.email } handleClose = { this.handleCloseMail }
-                    validation = { true } url={formSendMail.pdf} url_text = 'EL PRESUPUESTO' sendMail = { this.sendCorreoPresupuesto } >
+                <ModalSendMail header='¿DESEAS ENVIAR LA COTIZACIÓN AL LEAD?' show={modal.email} handleClose={this.handleCloseMail}
+                    validation={true} url={formSendMail.pdf} url_text='EL PRESUPUESTO' sendMail={this.sendCorreoPresupuesto} >
                     <div className="col-md-11 mt-5">
                         <div>
-                            <CreatableMultiselectGray placeholder = 'SELECCIONA/AGREGA EL O LOS CORREOS' iconclass = 'flaticon-email' 
-                                requirevalidation = { 1 } messageinc = 'Selecciona el o los correos' uppercase = { false }
-                                onChange = { this.handleChangeCreateMSelect } options = { options.correos } elementoactual = { formSendMail.correos } />
+                            <CreatableMultiselectGray placeholder='SELECCIONA/AGREGA EL O LOS CORREOS' iconclass='flaticon-email'
+                                requirevalidation={1} messageinc='Selecciona el o los correos' uppercase={false}
+                                onChange={this.handleChangeCreateMSelect} options={options.correos} elementoactual={formSendMail.correos} />
                         </div>
                     </div>
                 </ModalSendMail>

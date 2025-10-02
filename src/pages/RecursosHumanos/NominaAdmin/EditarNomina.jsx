@@ -31,6 +31,8 @@ import { setSingleHeader } from '../../../functions/routers';
 import Button from '@material-ui/core/Button';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { apiPutForm, apiPostForm, apiGet } from './../../../functions/api';
+import { parse } from 'date-fns';
+import { format } from 'date-fns';
 
 
 
@@ -44,7 +46,7 @@ export default function CrearNomina(props) {
     empresa: '',
     fechaInicio: new Date(),
     fechaFin: new Date(),
-    fecha: new Date(),
+    timbrado: new Date(),
     cuentanominaimss: '',
     cuentaextraimss: '',
     cuentaefectivo: '',
@@ -55,6 +57,7 @@ export default function CrearNomina(props) {
     cuentacomision: '',
     // cuentarcv: '',
     cuentaisn: '',
+    editar:'',
     presupuesto: '',
     nomina_id:'',
     nombre:'',
@@ -112,6 +115,7 @@ export default function CrearNomina(props) {
       Swal.close();
   
       const { empresas, cuentas, usuarios, nomina, empleadosConPeriodos } = response.data;
+      // console.log(response.data)
   
       const usuariosFormateados = usuarios.map(usuario => ({
         ...usuario,
@@ -130,9 +134,9 @@ export default function CrearNomina(props) {
         usuario: item.empleado?.id?.toString() || '',
       
         nomina: item.nomina_imss || 0.0,
-        extraImss: item.extraImss || 0.0,
+        extraImss: item.extra_imss || 0.0,
         efectivo: item.efectivo || 0.0,
-        extraEfectivo: item.extraefectivo || 0.0,
+        extraEfectivo: item.extraEfectivo || 0.0,
         comision: item.comision || 0.0,
         isr: item.isr || 0.0,
         isn: item.isn || 0.0,
@@ -167,7 +171,7 @@ export default function CrearNomina(props) {
         }));
         setValoresPresuEmpresaSeleccionada(valores);
       }
-      
+        // console.log(nomina)
   
       setForm(prev => ({
         ...prev,
@@ -175,9 +179,10 @@ export default function CrearNomina(props) {
         presupuesto: nomina.presupuesto_id,
         periodo: nomina.periodo,
         año: nomina.año,
-        fecha: nomina.fecha,
-        fechaInicio: nomina.fecha_inicio,
-        fechaFin: nomina.fecha_fin,
+        fechaInicio: parse(nomina.fecha_inicio, 'yyyy-MM-dd HH:mm:ss', new Date()),
+        fechaFin: parse(nomina.fecha_fin, 'yyyy-MM-dd HH:mm:ss', new Date()),
+        timbrado:  new Date(nomina.fecha_nomina),
+        editar: nomina.egreso,
         nombre: nomina.nombre,
         cuentanominaimss: nomina.cuentanominaimss,
         cuentaefectivo: nomina.cuentaefectivo,
@@ -198,6 +203,12 @@ export default function CrearNomina(props) {
     }
   };
   
+  const handleChangeFecha = (date, tipo) => {
+        setForm({
+            ...form,
+            [tipo]: new Date(date)
+        })
+    };
 
   // Handlers
   const handleChange = e => {
@@ -511,24 +522,13 @@ export default function CrearNomina(props) {
         }));
       };
 
-      const handleChangeFecha = (date, tipo) => {
-        if (!date) return;
-      
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const formatted = `${year}-${month}-${day}`;
-      
-        setForm(prev => ({
-          ...prev,
-          [tipo]: formatted
-        }));
-      
-        setErrores(prev => ({
-          ...prev,
-          [tipo]: false
-        }));
-      };
+    //  const handleChangeFecha = (date, tipo) => {
+    //     if (!date || isNaN(date)) return;
+    //     const formatted = format(date, 'yyyy-MM-dd');
+    //     setForm(prev => ({ ...prev, [tipo]: formatted }));
+    //     setErrores(prev => ({ ...prev, [tipo]: false }));
+    //   };
+
 
 
       const onChangeNominasAdmin = (key, e, campo) => {
@@ -599,7 +599,7 @@ export default function CrearNomina(props) {
         keys.forEach((key) => {
           if (key === 'nominasAdmin') {
             data.append(key, JSON.stringify(form[key]));
-          } else if (key === 'fecha' || key === 'fechaInicio' || key === 'fechaFin') {
+          } else if (key === 'timbrado' || key === 'fechaInicio' || key === 'fechaFin') {
             // 👇 Formatear las fechas
             data.append(key, formatDate(form[key]));
           } else if (key !== 'adjuntos') {
@@ -621,7 +621,7 @@ export default function CrearNomina(props) {
     
         data.append('tipo', tipo); // ✅ aquí agregas bien el tipo
     
-        console.log([...data]); // Esto sirve para revisar el FormData
+        // console.log([...data]); // Esto sirve para revisar el FormData
         // form.tipo =tipo
 
         apiPostForm(`v2/rh/nomina-administrativa/${form.nomina_id}`, data, access_token) // ✅ aquí mandas el FormData
@@ -680,7 +680,7 @@ export default function CrearNomina(props) {
     if (!form.empresa) errores.empresa = 'Seleccione una empresa';
     if (!form.periodo) errores.periodo = 'Seleccione un periodo';
     // if (!form.año) errores.año = 'Seleccione un año';
-    if (!form.fecha) errores.fecha = 'Ingrese una fecha válida';
+    // if (!form.fecha) errores.fecha = 'Ingrese una fecha válida';
     if (tipo == 'enviar') {
       // Solo pedir cuenta si el total de esa columna es mayor a 0
     
@@ -715,15 +715,27 @@ export default function CrearNomina(props) {
     
   console.log(errores)
     setErrores(errores);
+   
   
     if (Object.keys(errores).length > 0) {
       errorAlert('Error', 'Por favor complete todos los campos obligatorios', errores);
       return;
     }
-  
+   if( form.editar == 1){
+      Swal.fire({
+        icon: 'success',
+        title: 'Nomina no se puede editar ya se genero el gasto',
+        text: `Nomina ya generada.`,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+      });
+
+    }else{
     validateAlert2(() => {
-      addNominaAdminAxios(tipo);
-    }, e, 'form-nominaadmin', tipo, enviar);
+          addNominaAdminAxios(tipo);
+        }, e, 'form-nominaadmin', tipo, enviar);
+    }
+   
   };
   
   const clearSingleFile = (tipo, index) => {
@@ -869,10 +881,8 @@ export default function CrearNomina(props) {
                         name="fechaInicio"
                         value={form.fechaInicio!== '' ? form.fechaInicio : null}
                         placeholder="dd/mm/yyyy"
-                        onChange={(date) => {
-                            handleChangeFecha(date, 'fechaInicio');
-                            setErrores(prev => ({...prev, fechaInicio: undefined}));
-                        }}                       
+                          onChange={(e) => handleChangeFecha(e, 'fechaInicio')}
+                     
                         className="w-100"
                         KeyboardButtonProps={{
                             'aria-label': 'change date',
@@ -893,6 +903,7 @@ export default function CrearNomina(props) {
                         format="dd/MM/yyyy"
                         margin="normal"
                         name="fechaFin"
+                        // value={form.fechaFin ? parse(form.fechaFin, 'dd/mm/yyyy', new Date()) : null}
                         value={form.fechaFin!== '' ? form.fechaFin : null}
                         placeholder="dd/mm/yyyy"
                         onChange={(date) => {
@@ -905,6 +916,34 @@ export default function CrearNomina(props) {
                         }}
                         error={!!errores.fechaFin}
                         helperText={errores.fechaFin || ''}
+                    />
+                </MuiPickersUtilsProvider>
+                </Paper>
+            </Grid>
+             <Grid item  xs={12} sm={6} md={3} justifyContent="space-around">
+                <Paper sx={{ padding: 2, textAlign: 'center', }} elevation={0} >
+                {/* <InputLabel>Fecha de Compra</InputLabel> */}
+                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                    <KeyboardDatePicker
+                        disableToolbar
+                        label="Fecha de timbrado"
+                        format="dd/MM/yyyy"
+                        margin="normal"
+                        name="timbrado"
+                        value={form.timbrado!== '' ? form.timbrado : null}
+                        // value={form.timbrado ? parse(form.timbrado, 'yyyy-MM-dd', new Date()) : null}
+                        placeholder="dd/mm/yyyy"
+                        // onChange={(date) => {
+                        //     handleChangeFecha(date, 'timbrado');
+                        //     setErrores(prev => ({...prev, timbrado: undefined}));
+                        // }} 
+                        onChange={(e) => handleChangeFecha(e, 'timbrado')}                      
+                        className="w-100"
+                        KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                        }}
+                        error={!!errores.timbrado}
+                        helperText={errores.timbrado || ''}
                     />
                 </MuiPickersUtilsProvider>
                 </Paper>
@@ -1796,7 +1835,7 @@ export default function CrearNomina(props) {
             variant="contained" 
             onClick={(e) => handleSubmit(e, "guardar", false)}
             sx={{ mr: 2 }}
-            disabled={!form.periodo || !form.empresa || !form.nombre || !form.fechaInicio || !form.fechaFin}
+            disabled={!form.periodo || !form.empresa || !form.nombre || !form.fechaInicio || !form.fechaFin || form.editar == 1  }
         >
             Guardar
         </Button>
@@ -1811,7 +1850,7 @@ export default function CrearNomina(props) {
             }} 
             variant="contained" 
             onClick={(e) => handleSubmit(e, "enviar", true)}
-            disabled={!form.periodo || !form.empresa}
+            disabled={!form.periodo || !form.empresa || !form.timbrado || form.editar == 1 }
         >
             Enviar
         </Button>

@@ -1289,7 +1289,7 @@ class Incidencias extends Component {
 
     downloadPlantilla = () => {
         const link = document.createElement('a');
-        const url = 'https://admin-proyectos-aws.s3.us-east-2.amazonaws.com/plantillas/plantilla-feriados.xlsx'
+        const url = 'https://inein-aws.s3.us-east-2.amazonaws.com/plantillas/plantilla-feriados.xlsx'
         link.href = url;
         document.body.appendChild(link);
         link.click();

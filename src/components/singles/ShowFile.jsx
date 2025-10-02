@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Small} from '../texts'
+import { Small } from '../texts'
 import FileXMLViewer from '../form-components/FileXMLViewer'
 export class ShowFile extends Component {
 
@@ -11,7 +11,7 @@ export class ShowFile extends Component {
         document.body.appendChild(link);
         link.click();
     }
-    xml = async(url)  => {
+    xml = async (url) => {
         /* await axios.get(url, { headers: setSingleHeader(null)}).then(
             (response) => {
                 waitAlert()
@@ -31,43 +31,52 @@ export class ShowFile extends Component {
         const { item } = this.props
         let arreglo = []
         let extension = ''
-        if(item.name)
+        if (item.name)
             arreglo = item.name.split('.')
-        if(arreglo.length)
+        if (arreglo.length)
             extension = arreglo[arreglo.length - 1].toUpperCase()
-        switch(extension){
+        switch (extension) {
             case 'PDF':
-                return(
+                return (
                     <div className="w-100 text-align-last-center">
-                        <iframe title = { item.name} src = { item.url} className="pdfview" />
+                        <iframe
+                            title={item.name}
+                            src={item.url}
+                            style={{
+                                width: '100%',
+                                height: '600px',
+                                border: 'none'
+                            }}
+                        />
                     </div>
                 )
+
             case 'JPG':
             case 'JPEG':
             case 'GIF':
             case 'PNG':
-                return(
+                return (
                     <div className="text-center">
-                        <img alt = '' className="rounded img-responsive" src = { item.url } style={{width:'60%', height:'60%'}}/>
+                        <img alt='' className="rounded img-responsive" src={item.url} style={{ width: '60%', height: '60%' }} />
                     </div>
                 )
             case 'MP4':
-                return(
-                    <video className = 'w-100 text-align-last-center' controls>
-                        <source src = { item.url } type="video/mp4" />
+                return (
+                    <video className='w-100 text-align-last-center' controls>
+                        <source src={item.url} type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
                 )
             case 'XML':
-                return(
+                return (
                     <div className="xml-view">
-                        <FileXMLViewer xml={this.xml(item.url)}/>
+                        <FileXMLViewer xml={this.xml(item.url)} />
                     </div>
                 )
             default:
-                return(
-                    <div id = "descarga" className = "btn btn-hover p-2 rounded pdfview d-flex align-items-center justify-content-center mx-auto" 
-                        onClick = { () => { this.downloadFile(item) } } >
+                return (
+                    <div id="descarga" className="btn btn-hover p-2 rounded pdfview d-flex align-items-center justify-content-center mx-auto"
+                        onClick={() => { this.downloadFile(item) }} >
                         <div>
                             <i className={"fas fa-file m-0 kt-font-boldest text-primary"}></i>
                             <br />
@@ -76,11 +85,11 @@ export class ShowFile extends Component {
                     </div>
                 )
         }
-        
+
     }
-    
-    render(){
-        return(
+
+    render() {
+        return (
             <div>
                 {
                     this.printSelectiveFile()

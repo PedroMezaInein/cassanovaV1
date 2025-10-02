@@ -1,36 +1,48 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import S3 from 'react-aws-s3'
+import S3 from 'react-aws-s3';
+import Swal from 'sweetalert2';
 
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import InputLabel from '@material-ui/core/InputLabel';
-import TextField from '@material-ui/core/TextField';
-import Swal from 'sweetalert2'
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Grid from '@material-ui/core/Grid';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import InputLabel from '@mui/material/InputLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+// import Button from '@mui/material/Button';
+import Autocomplete from '@mui/material/Autocomplete';
+import Typography from '@mui/material/Typography';
+import Button from '@material-ui/core/Button';
+
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { es } from 'date-fns/locale';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { es } from 'date-fns/locale'
 import DateFnsUtils from '@date-io/date-fns';
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 
 import { apiPostForm, apiGet, apiPutForm } from '../../../functions/api';
-import Style from './../../Administracion/Egresos/Modales/CrearEgreso.module.css'
+import Style from './../../Administracion/Egresos/Modales/CrearEgreso.module.css';
+// import dayjs from 'dayjs';
 
-export default function CrearCompras(props) {
+export default function EditarVenta(props) {
 
     const { opcionesData, handleClose, reload, data } = props
-    const departamentos = useSelector(state => state.opciones.ventas)
-    const proyectos = useSelector(state => state.opciones.proyectos)
-    const areaCompras = useSelector(state => state.opciones.compras)
+    const departamentos = useSelector(state => state.opciones.ventas) || [];
+    const proyectos = useSelector(state => state.opciones.proyectos) || [];
+    const areaCompras = useSelector(state => state.opciones.compras) || [];
+
     const [errores, setErrores] = useState({})
 
     const auth = useSelector((state) => state.authUser.access_token);
@@ -39,12 +51,9 @@ export default function CrearCompras(props) {
     // let valorPartida = valorArea.partidas.find((element) => parseInt(element.id) === data.partida_id)
     // let valorSubPartida = valorPartida.subpartidas.find((element) => parseInt(element.id) === data.subarea.id)
 
-    useEffect(() => {
 
-        if (opcionesData) {
-            setOpciones(opcionesData)
-        }
-    }, [opcionesData])
+    // console.log(data)
+
 
     const [form, setForm] = useState({
         adjuntos: {
@@ -53,32 +62,36 @@ export default function CrearCompras(props) {
             presupuesto: { files: [], value: '' },
             xml: { files: [], value: '' },
         },
-        area: data.area ? data.area.id : '',
-        banco: 0,
-        // cuenta: '',
-        cuenta: data.cuenta ? data.cuenta.id : '',
+        area: '',
+        banco: '',
+        cuenta: '',
         cuentas: [],
-        descripcion: data.descripcion ? data.descripcion : '',
-        empresa: data.empresa.id,
-        proveedor: data.cliente ? data.cliente.id : '',
-        proveedor_nombre: data.cliente ? data.cliente.empresa : '',
-        // empresa: data.empresa.id ? data.empresa.id : '',
+        descripcion: '',
+        empresa: '',
+        proveedor: '',
+        proveedor_nombre: '',
         estatusCompra: 2,
         factura: false,
+
         facturaItem: '',
         facturaObject: {},
-        fecha: data.created_at,
-        partida: data.partida ? data.partida.id : '',
+        rfc: '',
+        // fecha: data.created_at ? dayjs(data.created_at) : null,
+        partida: '',
         numCuenta: "",
-        proyecto: data.proyecto ? data.proyecto.id : '',
-        proyecto_nombre: data.proyecto ? data.proyecto.nombre : '',
-        subarea: data.subarea ? data.subarea.id : '',
+        proyecto: '',
+        proyecto_nombre: '',
+        subarea: '',
         tipo: 0,
         tipoImpuesto: 1,
         tipoPago: 4,
-        total: data.total ? data.total : '',
-    })
+        total: '',
+    });
 
+
+    useEffect(() => {
+        // console.log('Data al abrir:', data);
+    }, [data]);
     const [opciones, setOpciones] = useState({
         cuentas: [],
         empresas: [],
@@ -88,15 +101,85 @@ export default function CrearCompras(props) {
         proyectos: [],
         tiposImpuestos: [],
         tickets: [],
+        rfc: [],
         tiposPagos: [],
     })
+    // console.log(opciones)
 
     useEffect(() => {
+        if (data && opciones.clientes.length > 0 && proyectos.length > 0 && departamentos.length > 0) {
+            const partidaId = departamentos
+                ?.find((area) => area.nombreArea === data.area)
+                ?.partidas?.find((partida) => partida.nombre === data.partida)?.id || '';
 
-        if (opcionesData) {
-            setOpciones(opcionesData)
+            const subareaId = departamentos
+                ?.find((area) => area.nombreArea === data.area)
+                ?.partidas?.find((partida) => partida.nombre === data.partida)
+                ?.subpartidas?.find((subarea) => subarea.nombre === data.subarea)?.id || '';
+            // console.log(data)
+            //             console.log(opciones.empresas)
+
+            const cuentaId = opciones.empresas
+                ?.find((e) => e.name === data.empresa)
+                ?.cuentas?.find((c) => c.id === data.data?.cuenta?.id)?.id || '';
+
+            setForm({
+                adjuntos: {
+                    pago: { files: [], value: '' },
+                    pdf: { files: [], value: '' },
+                    presupuesto: { files: [], value: '' },
+                    xml: { files: [], value: '' },
+                },
+                area: departamentos.find(d => d.nombreArea === data.area)?.id_area || '',
+                banco: 0,
+                cuenta: cuentaId,
+                cuentas: [],
+                descripcion: data.descripcion || '',
+                empresa: opciones.empresas.find(e => e.name === data.empresa)?.id || '',
+                proveedor: opciones.clientes.find(c => c.name === data.cliente)?.id || '',
+                proveedor_nombre: data.cliente || '',
+                estatusCompra: 2,
+                factura: data.factura_icon === 'Con factura',
+                facturaItem: '',
+                facturaObject: {},
+                rfc: opciones.clientes.find(e => e.name === data.cliente)?.rfc || '',
+                partida: partidaId,   // ✅ Usas el id real obtenido
+                numCuenta: '',
+                proyecto: proyectos.find(p => p.nombre === data.proyecto)?.id || '',
+                proyecto_nombre: data.proyecto || '',
+                subarea: subareaId,  // ✅ Usas el id real obtenido
+                tipo: 0,
+                tipoImpuesto: 1,
+                tipoPago: 4,
+                total: data.monto.replace(/[^0-9.]+/g, "") || '',
+                fecha: data.fecha || '',
+
+            });
         }
-    }, [opcionesData])
+    }, [data, opciones, departamentos, proyectos]);
+
+
+
+
+    useEffect(() => {
+        if (opcionesData && Object.keys(opcionesData).length > 0) {
+            setOpciones({
+                cuentas: opcionesData.cuentas || [],
+                empresas: opcionesData.empresas || [],
+                clientes: opcionesData.clientes || [],
+                estatusCompras: opcionesData.estatusCompras || [],
+                proveedores: opcionesData.proveedores || [],
+                proyectos: opcionesData.proyectos || [],
+                tiposImpuestos: opcionesData.tiposImpuestos || [],
+                tickets: opcionesData.tickets || [],
+                tiposPagos: opcionesData.tiposPagos || [],
+            });
+        }
+    }, [opcionesData]);
+
+
+
+
 
     const handleChangeCheck = () => {
         setForm({
@@ -104,14 +187,13 @@ export default function CrearCompras(props) {
             factura: !form.factura
         });
     };
-
     const handleChange = (e) => {
         if (e.target.name === 'empresa') {
+            const empresa = opciones.empresas.find(empresa => empresa.id === e.target.value);
             setForm({
                 ...form,
                 [e.target.name]: e.target.value,
-                cuentas: opciones.empresas.find(empresa => empresa.id === e.target.value).cuentas,
-
+                cuentas: empresa?.cuentas || [],
             });
         } else {
             setForm({
@@ -121,6 +203,8 @@ export default function CrearCompras(props) {
         }
 
     };
+
+
 
     const handleChangeTicket = (e, value) => {
         if (value && value.name) {
@@ -247,86 +331,93 @@ export default function CrearCompras(props) {
     }
 
     const attachFilesS3 = (files, egreso) => {
-        apiPutForm(`v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, auth).then(
-            (response) => {
-                Swal.close()
+        apiPutForm(`v3/administracion/egresos/${egreso.id}/archivos/s3`, { archivos: files }, auth)
+            .then(() => {
+                Swal.close();
                 Swal.fire({
                     icon: 'success',
                     title: 'Archivos adjuntados',
                     text: 'Los archivos se adjuntaron correctamente',
                     showConfirmButton: false,
-                    timer: 1500
-                })
-                if (reload) {
-                    reload.reload()
-                }
-                handleClose()
-
-            }, (error) => { }
-        ).catch((error) => {
-            Swal.close()
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al adjuntar archivos',
-                text: 'Ocurrio un error al adjuntar los archivos',
-                showConfirmButton: false,
-                timer: 1500
+                    timer: 1500,
+                });
             })
-        })
-    }
+            .then((response) => {
+                // console.log("Venta que regresa la API:", response.data.venta);
+            })
+            .catch((error) => {
+                console.error(error);
+                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al adjuntar archivos',
+                    text: 'Ocurrió un error al adjuntar los archivos',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            })
+            .finally(() => {
+                if (reload) reload.reload();
+                handleClose();
+            });
+
+
+    };
 
     const attachFiles = (venta) => {
-        apiGet(`v1/constant/admin-proyectos`, auth).then(
-            (response) => {
-                const { alma } = response.data
-                let filePath = `ventas/${venta.id}/`
-                let aux = []
+        apiGet(`v1/constant/admin-proyectos`, auth)
+            .then((response) => {
+                const { alma } = response.data;
+                const filePath = `ventas/${venta.id}/`;
+                const aux = [];
+
                 form.adjuntos.pago.files.forEach((file) => {
-                    aux.push(
-                        {
-                            name: `${filePath}pagos/${Math.floor(Date.now() / 1000)}-${file.name}`,
-                            file: file,
-                            tipo: 'pago'
-                        }
-                    )
-                })
+                    aux.push({
+                        name: `${filePath}pagos/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                        file,
+                        tipo: 'pago',
+                    });
+                });
+
                 form.adjuntos.presupuesto.files.forEach((file) => {
-                    aux.push(
-                        {
-                            name: `${filePath}presupuestos/${Math.floor(Date.now() / 1000)}-${file.name}`,
-                            file: file,
-                            tipo: 'presupuesto'
-                        }
-                    )
-                })
-                let auxPromises = aux.map((file) => {
+                    aux.push({
+                        name: `${filePath}presupuestos/${Math.floor(Date.now() / 1000)}-${file.name}`,
+                        file,
+                        tipo: 'presupuesto',
+                    });
+                });
+
+                const auxPromises = aux.map((file) => {
                     return new Promise((resolve, reject) => {
-                        new S3(alma).uploadFile(file.file.file, file.name)
+                        new S3(alma)
+                            .uploadFile(file.file.file, file.name)
                             .then((data) => {
-                                const { location, status } = data
-                                if (status === 204) resolve({ name: file.name, url: location, tipo: file.tipo })
-                                else reject(data)
+                                const { location, status } = data;
+                                if (status === 204) resolve({ name: file.name, url: location, tipo: file.tipo });
+                                else reject(data);
                             })
-                            .catch((error) => {
-                                reject(error)
-                            })
-                    })
-                })
-                Promise.all(auxPromises).then(values => {
-                    attachFilesS3(values, venta)
-                }).catch(err => console.error(err))
-            }, (error) => { }
-        ).catch((error) => {
-            Swal.close()
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al adjuntar archivos',
-                text: 'Ocurrio un error al adjuntar los archivos',
-                showConfirmButton: false,
-                timer: 1500
+                            .catch(reject);
+                    });
+                });
+
+                return Promise.all(auxPromises);
             })
-        })
-    }
+            .then((values) => attachFilesS3(values, venta))
+            .catch((error) => {
+                console.error(error);
+                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al adjuntar archivos',
+                    text: 'Ocurrió un error al adjuntar los archivos',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                if (reload) reload.reload();
+                handleClose();
+            });
+    };
+
 
     const attachFactura = (egreso, factura) => {
 
@@ -436,477 +527,489 @@ export default function CrearCompras(props) {
         setErrores(error)
         return validar
     }
-
     const handleSend = () => {
-        if (validateForm()) {
-
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: 'Se editará la compra',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, editar',
-                cancelButtonText: 'No, cancelar',
-                cancelButtonColor: '#d33',
-                reverseButtons: true
-            }).then((result) => {
-
-                if (result.value) {
-                    Swal.close()
-                    Swal.fire({
-                        title: 'editando compra',
-                        text: 'Por favor, espere...',
-                        allowOutsideClick: false,
-                        onBeforeOpen: () => {
-                            Swal.showLoading()
-                        },
-                    })
-
-                    let aux = form
-
-                    aux.factura = form.factura ? 'Con factura' : 'Sin factura'
-
-
-                    try {
-                        apiPutForm(`v2/proyectos/ventas/area/${data.id}`, form, auth)
-                            .then((response) => {
-                                const { venta } = response.data
-                                Swal.close()
-                                Swal.fire({
-                                    title: 'venta editada con éxito',
-                                    text: 'Subiendo adjuntos...',
-                                    allowOutsideClick: false,
-                                    onBeforeOpen: () => {
-                                        Swal.showLoading()
-                                    },
-                                })
-
-                                setForm({
-                                    ...form,
-                                    venta
-                                })
-                                if (venta.factura) {
-                                    // Adjunto un XML
-                                    if (Object.keys(form.facturaObject).length > 0) {
-                                        if (form.facturaItem) {
-                                            //Tiene una factura guardada
-                                            attachFactura(venta, venta.factura)
-                                        } else {
-                                            //No hay factura generada
-                                            addFacturaS3(venta.id, venta)
-                                        }
-                                    } else {
-                                        //No adjunto XML
-                                        if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
-                                            //El compra tiene adjuntos
-                                            attachFiles(venta)
-                                        } else {
-                                            //compra generado con éxito 
-
-                                        }
-                                    }
-                                    Swal.close()
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Adjuntos subidos con éxito',
-                                        text: 'Se subieron los adjuntos con éxito',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    })
-                                    if (reload) {
-                                        reload.reload()
-                                    }
-                                    handleClose()
-                                } else {
-                                    // La compra no es con factura
-                                    if (form.adjuntos.pago.files.length || form.adjuntos.presupuesto.files.length) {
-                                        //La compra tiene adjuntos
-                                        attachFiles(venta)
-
-                                    } else {
-                                        //compra generado con éxito 
-                                        Swal.close()
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: 'venta editada con éxito',
-                                            text: 'Se editó la venta con éxito',
-                                            showConfirmButton: false,
-                                            timer: 1500
-                                        })
-                                        if (reload) {
-                                            reload.reload()
-                                        }
-                                        handleClose()
-                                    }
-                                }
-                            })
-                            .catch((error) => {
-                                console.log(error)
-
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: 'No se pudo editar la venta',
-                                    icon: 'error',
-                                    confirmButtonText: 'Cerrar',
-                                })
-                            })
-                    } catch (error) {
-                        console.log(error)
-                    }
-                }
-            })
-        } else {
+        if (!validateForm()) {
             Swal.fire({
                 title: 'Faltan campos',
                 text: 'Favor de llenar todos los campos',
                 icon: 'info',
                 showConfirmButton: false,
                 timer: 2000,
-            })
+            });
+            return;
         }
 
-    }
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Se editará la venta',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, editar',
+            cancelButtonText: 'No, cancelar',
+            cancelButtonColor: '#d33',
+            reverseButtons: true,
+        }).then((result) => {
+            if (!result.value) return;
+
+            Swal.close();
+            Swal.fire({
+                title: 'Editando venta',
+                text: 'Por favor, espere...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading(),
+            });
+
+
+            const payload = {
+                empresa: Number(form.empresa),
+                cliente: Number(form.proveedor),
+                proyecto: Number(form.proyecto),
+                area: parseInt(form.area) || null,
+                subarea: parseInt(form.subarea) || null,
+                partida: parseInt(form.partida) || null,
+                cuenta: parseInt(form.cuenta) || null,
+                tipoImpuesto: parseInt(form.tipoImpuesto) || null,
+                estatusCompra: parseInt(form.estatusCompra) || null,
+                tipoPago: parseInt(form.tipoPago) || null,
+                total: Number(form.total),
+                factura: form.factura ? 'Con factura' : 'Sin factura',
+                fecha: form.fecha,
+                descripcion: form.descripcion,
+                contrato: form.contrato ? parseInt(form.contrato) : null,
+                tickets: form.tickets ? parseInt(form.tickets) : null,
+                rfc: form.rfc || '',
+                total: Number(form.total),   
+                comision: Number(form.comision) || 0,
+            };
+
+
+            // 🚀 Llamada limpia
+            apiPutForm(`v2/proyectos/ventas/area/${data.id}`, payload, auth)
+                .then((response) => {
+                    const { venta } = response.data;
+                    // console.log('Venta editada:', venta);
+
+                    // 🔑 Guardamos venta por si se usa después
+                    setForm({ ...form, venta });
+
+                    // 🔍 Lógica de adjuntos / XML igual
+                    const tieneXML = Object.keys(form.facturaObject).length > 0;
+                    const tieneAdjuntos = form.adjuntos.pago.files.length > 0 || form.adjuntos.presupuesto.files.length > 0;
+
+                    if (venta.factura) {
+                        if (tieneXML) {
+                            if (form.facturaItem) {
+                                attachFactura(venta, venta.factura);
+                            } else {
+                                addFacturaS3(venta.id, venta);
+                            }
+                        } else if (tieneAdjuntos) {
+                            attachFiles(venta);
+                        } else {
+                            cerrarConExito();
+                        }
+                    } else {
+                        if (tieneAdjuntos) {
+                            attachFiles(venta);
+                        } else {
+                            cerrarConExito();
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se pudo editar la venta',
+                        icon: 'error',
+                        confirmButtonText: 'Cerrar',
+                    });
+                });
+        });
+
+        function cerrarConExito() {
+            Swal.close();
+            Swal.fire({
+                icon: 'success',
+                title: 'Venta editada con éxito',
+                text: 'Se editó la venta correctamente',
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            setTimeout(() => {
+                if (typeof reload === 'function') reload();
+                handleClose();
+            }, 1600);
+        }
+
+    };
+    // console.log("form.proyecto:", form.proyecto);
+    // console.log("opciones.proyectos:", opciones.proyectos);
+    // console.log(
+    //     "Proyecto seleccionado:",
+    //     opciones.proyectos.find(p => p.id === form.proyecto)
+    // );
+
+    if (!form) return <Typography sx={{ p: 2 }}>Cargando información...</Typography>;
+    // console.log(form)
 
     return (
-        <>
-            <Accordion defaultExpanded className="proyect-accordion">
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography className="proyect-Subtitulo">DATOS DE LA FACTURA</Typography>
-                </AccordionSummary>
+        <Box>
+            <Container maxWidth="lg">
+                <DialogTitle>Editar Venta</DialogTitle>
+                <DialogContent>
+                    <Grid container spacing={3} alignItems="center">
 
-                <AccordionDetails>
-                    <div className="container-fluid">
-                        {/* Sección de factura */}
-                        <div className="row mb-3">
-                            <div className="col-12">
-                                <InputLabel>¿Lleva factura?</InputLabel>
+
+
+                        {/* Cliente */}
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
+                                <Autocomplete
+                                    name="cliente"
+                                    options={opciones.clientes}
+                                    getOptionLabel={(option) => option?.name || ''}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    value={opciones.clientes.find(c => c.id === form.proveedor) || null}
+                                    onChange={(e, value) => handleChangeProveedor(e, value)}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Cliente" error={!!errores.clientes} fullWidth />
+                                    )}
+                                />
+
+
+
+                            </Paper>
+                        </Grid>
+
+                        {/* Proyecto */}
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
+                                <Autocomplete
+                                    name="proyecto"
+                                    options={proyectos}
+                                    getOptionLabel={(option) => option?.nombre || ''}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    value={proyectos.find(p => p.id === form.proyecto) || null}
+                                    onChange={(e, value) => handleChangeProyecto(e, value)}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Proyecto"
+                                            error={!!errores.proyecto}
+                                            fullWidth
+                                        />
+                                    )}
+                                />
+                            </Paper>
+                        </Grid>
+                        {/* ¿Lleva factura? */}
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
+                                <InputLabel sx={{ mb: 1 }}>¿Lleva factura?</InputLabel>
                                 <FormGroup row>
                                     <FormControlLabel
+                                        disabled
                                         control={<Checkbox checked={!form.factura} onChange={handleChangeCheck} color="secondary" name="factura" />}
                                         label="No"
                                     />
                                     <FormControlLabel
+                                        disabled
                                         control={<Checkbox checked={form.factura} onChange={handleChangeCheck} color="primary" name="factura" />}
                                         label="Sí"
                                     />
+
                                 </FormGroup>
-                            </div>
-                        </div>
+                            </Paper>
+                        </Grid>
 
-                        {form.factura && (
-                            <div className="row mb-3">
-                                <div className="col-md-6">
-                                    <InputLabel>RFC</InputLabel>
-                                    <TextField
-                                        variant="outlined"
-                                        name="rfc"
-                                        value={form.rfc || ''}
-                                        onChange={handleChange}
-                                        fullWidth
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Fila con Cliente, Proyecto y Empresa */}
-                        <div className="row mb-3">
-                            <div className="col-md-4">
-                                {opciones.clientes.length > 0 && (
-                                    <>
-                                        <InputLabel error={!!errores.clientes}>Cliente</InputLabel>
-                                        <Autocomplete
-                                            name="cliente"
-                                            options={opciones.clientes}
-                                            getOptionLabel={(option) => option.name}
-                                            onChange={(event, value) => handleChangeProveedor(event, value)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    variant="outlined"
-                                                    label={form.proveedor_nombre || 'Cliente'}
-                                                    error={!!errores.clientes}
-                                                />
-                                            )}
+                        {/* RFC o espacio vacío */}
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
+                                <Autocomplete
+                                    options={opciones.rfc || []} // debe ser un array de strings o de objetos con `label`
+                                    value={form.rfc || null}
+                                    onChange={(e, value) => handleChange({ target: { name: 'rfc', value } })}
+                                    freeSolo
+                                    disabled={!form.factura} // deshabilita si no hay factura
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="RFC"
+                                            variant="outlined"
                                             fullWidth
+                                            InputLabelProps={{ shrink: true }}
+                                            disabled={!form.factura} // también en el input
                                         />
-                                    </>
-                                )}
-                            </div>
-                            <div className="col-md-4">
-                                {proyectos.length > 0 && (
-                                    <>
-                                        <InputLabel error={!!errores.proyecto}>Proyecto</InputLabel>
-                                        <Autocomplete
-                                            name="proyecto"
-                                            options={proyectos}
-                                            getOptionLabel={(option) => option.nombre}
-                                            onChange={(event, value) => handleChangeProyecto(event, value)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    variant="outlined"
-                                                    label={form.proyecto_nombre || 'Proyecto'}
-                                                    error={!!errores.proyecto}
-                                                />
-                                            )}
-                                            fullWidth
-                                        />
-                                    </>
-                                )}
-                            </div>
-                            <div className="col-md-4">
-                                {opciones.empresas.length > 0 && (
-                                    <>
-                                        <InputLabel>Empresa</InputLabel>
-                                        <Select
-                                            name="empresa"
-                                            value={form.empresa}
-                                            onChange={handleChange}
-                                            fullWidth
-                                        >
-                                            {opciones.empresas.map((item, index) => (
-                                                <MenuItem key={index} value={item.id}>
-                                                    {item.name}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </>
-                                )}
-                            </div>
-                        </div>
+                                    )}
+                                />
+                            </Paper>
+                        </Grid>
 
-                        {/* Sección de Tickets */}
-                        <div className="row">
-                            <div className="col-12">
-                                {opciones.tickets.length > 0 && (
-                                    <>
-                                        <InputLabel error={!!errores.tickets}>Tickets</InputLabel>
-                                        <Autocomplete
-                                            name="tickets"
-                                            options={opciones.tickets}
-                                            getOptionLabel={(option) => option.name}
-                                            onChange={(event, value) => handleChangeTicket(event, value)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    variant="outlined"
-                                                    label={form.tickets_nombre || 'Tickets'}
-                                                    error={!!errores.tickets}
-                                                />
-                                            )}
-                                            fullWidth
-                                        />
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </AccordionDetails>
-            </Accordion>
 
-            <Accordion defaultExpanded className="proyect-accordion">
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography className="proyect-Subtitulo">ÁREA Y FECHA</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <div className="container-fluid">
-                        <div className="mb-3">
-                            <InputLabel>Fecha de la venta</InputLabel>
-                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
-                                <Grid container>
+
+
+                        {/* EMPRESA */}
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
+                                <Autocomplete
+                                    name="empresa"
+                                    options={opciones.empresas}
+                                    getOptionLabel={(option) => option?.name || ''}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    value={opciones.empresas.find(e => e.id === form.empresa) || null}
+                                    onChange={(e, value) => handleChange({ target: { name: 'empresa', value: value?.id || '' } })}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Empresa"
+                                            variant="outlined"
+                                            fullWidth
+                                            InputLabelProps={{ shrink: true }}
+                                        />
+                                    )}
+                                />
+                            </Paper>
+                        </Grid>
+
+
+
+                        {/* Departamento */}
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
+                                <Autocomplete
+                                    options={departamentos}
+                                    getOptionLabel={(option) => option?.nombreArea || ''}
+                                    isOptionEqualToValue={(option, value) => option.id_area === value.id_area}
+                                    value={departamentos.find((d) => d.id_area === form.area) || null}
+                                    onChange={(e, value) => handleChangeAreas({ target: { name: 'area', value: value?.id_area || '' } })}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Departamento"
+                                            variant="outlined"
+                                            fullWidth
+                                            error={!!errores.area}
+                                            InputLabelProps={{ shrink: true }}
+                                        />
+                                    )}
+                                />
+                            </Paper>
+                        </Grid>
+
+                        {/* Tipo de Gasto */}
+                        <Grid item xs={12} md={4}>
+
+                            <Paper sx={{ p: 2 }} elevation={0}>
+                                <Autocomplete
+                                    name="partida"
+                                    options={
+                                        departamentos
+                                            .find((item) => item.id_area === form.area)?.partidas || []
+                                    } // Filtra partidas según el área seleccionada
+                                    getOptionLabel={(option) => option.nombre || ''} // Muestra el nombre de la partida
+                                    isOptionEqualToValue={(option, value) => option.id === value?.id} // Compara las partidas por ID
+                                    value={
+                                        departamentos
+                                            .find((item) => item.id_area === form.area)
+                                            ?.partidas.find((partida) => partida.id === form.partida) || null
+                                    } // Establece el valor seleccionado
+                                    onChange={(event, value) => {
+                                        setForm((prevForm) => ({
+                                            ...prevForm,
+                                            partida: value ? value.id : '', // Actualiza el ID de la partida seleccionada
+                                        }));
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label=" Tipo de Gasto"
+                                            error={!!errores.partida}
+                                            helperText={errores.partida || ''}
+                                        />
+                                    )}
+                                />
+
+                            </Paper>
+
+                        </Grid>
+                        <Grid item xs={12} sm={8} md={4}>
+                            <Paper sx={{ padding: 2, textAlign: 'center' }} elevation={0}>
+                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
                                     <KeyboardDatePicker
+                                        disableToolbar
+                                        variant="inline"
+                                        inputVariant="outlined"         // 🔥 Igual que Autocomplete
+                                        label="Fecha de compra"
                                         format="dd/MM/yyyy"
                                         name="fecha"
-                                        value={form.fecha !== "" ? form.fecha : null}
+                                        value={form.fecha !== '' ? form.fecha : null}
                                         placeholder="dd/mm/yyyy"
-                                        onChange={(e) => handleChangeFecha(e, "fecha")}
+                                        onChange={(e) => handleChangeFecha(e, 'fecha')}
+                                        fullWidth
                                         KeyboardButtonProps={{
-                                            "aria-label": "change date",
+                                            'aria-label': 'change date',
                                         }}
-                                        error={errores.fecha ? true : false}
-                                        className="form-control"
+                                        error={!!errores.fecha}
+                                        helperText={errores.fecha || ''}
                                     />
-                                </Grid>
-                            </MuiPickersUtilsProvider>
-                        </div>
+                                </MuiPickersUtilsProvider>
+                            </Paper>
+                        </Grid>
 
-                        <div className="row mt-3">
-                            <div className="col-md-4">
-                                {departamentos.length > 0 && (
-                                    <>
-                                        <InputLabel id="demo-simple-select-label">Departamento</InputLabel>
-                                        <Select
-                                            value={form.area}
-                                            name="area"
-                                            onChange={handleChangeAreas}
-                                            className="form-control"
-                                            error={errores.area ? true : false}
-                                        >
-                                            {departamentos.map((item, index) => (
-                                                <MenuItem key={index} value={item.id_area}>
-                                                    {item.nombreArea}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </>
-                                )}
-                            </div>
+                        {/* Tipo de Subgasto */}
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
+                                <Autocomplete
+                                    name="subarea"
+                                    options={
+                                        departamentos
+                                            .find((item) => item.id_area === form.area) // Filtra por área seleccionada
+                                            ?.partidas.find((item) => item.id === form.partida) // Filtra por partida seleccionada
+                                            ?.subpartidas || [] // Obtiene las subpartidas o un array vacío
+                                    }
+                                    getOptionLabel={(option) => option.nombre || ''} // Muestra el nombre de la subpartida
+                                    isOptionEqualToValue={(option, value) => option.id === value?.id} // Compara las opciones por ID
+                                    value={
+                                        departamentos
+                                            .find((item) => item.id_area === form.area) // Encuentra el área seleccionada
+                                            ?.partidas.find((item) => item.id === form.partida) // Encuentra la partida seleccionada
+                                            ?.subpartidas.find((subpartida) => subpartida.id === form.subarea) || null // Encuentra la subpartida seleccionada
+                                    }
+                                    onChange={(event, value) => {
+                                        setForm((prevForm) => ({
+                                            ...prevForm,
+                                            subarea: value ? value.id : '', // Actualiza el ID de la subpartida seleccionada
+                                        }));
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label="Tipo de Subgasto "
+                                            error={!!errores.subarea}
+                                            helperText={errores.subarea || ''}
+                                        />
+                                    )}
+                                />
 
-                            <div className="col-md-4">
-                                {departamentos.length > 0 && form.area !== "" && (
-                                    <>
-                                        <InputLabel id="demo-simple-select-label">Tipo de Gasto</InputLabel>
-                                        <Select
-                                            value={form.partida}
-                                            name="partida"
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            error={errores.partida ? true : false}
-                                        >
-                                            {departamentos
-                                                .find((item) => item.id_area == form.area)
-                                                ?.partidas.map((item, index) => (
-                                                    <MenuItem key={index} value={item.id}>
-                                                        {item.nombre}
-                                                    </MenuItem>
-                                                ))}
-                                        </Select>
-                                    </>
-                                )}
-                            </div>
-
-                            <div className="col-md-4">
-                                {form.area && form.partida !== "" && (
-                                    <>
-                                        <InputLabel id="demo-simple-select-label">Tipo de Subgasto</InputLabel>
-                                        <Select
-                                            value={form.subarea}
-                                            name="subarea"
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            error={errores.subarea ? true : false}
-                                        >
-                                            {departamentos
-                                                .find((item) => item.id_area == form.area)
-                                                ?.partidas.find((item) => item.id == form.partida)
-                                                ?.subpartidas.map((item, index) => (
-                                                    <MenuItem key={index} value={item.id}>
-                                                        {item.nombre}
-                                                    </MenuItem>
-                                                ))}
-                                        </Select>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="mt-3">
-                            <TextField
-                                name="descripcion"
-                                label="Descripción"
-                                type="text"
-                                defaultValue={form.descripcion}
-                                onChange={handleChange}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                multiline
-                                className="form-control"
-                                style={{ minHeight: "100px" }}
-                                error={errores.descripcion ? true : false}
-                            />
-                        </div>
-                    </div>
-                </AccordionDetails>
-            </Accordion>
+                            </Paper>
+                        </Grid>
 
 
-            <Accordion defaultExpanded className='proyect-accordion'>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography className='proyect-Subtitulo'>PAGO</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <div className="container">
-                        <div className="row mb-3">
-                            <div className="col-12 col-md-4">
-                                <div>
-                                    <InputLabel id="demo-simple-select-label">Cuenta</InputLabel>
-                                    <Select
-                                        value={form.cuenta}
-                                        name="cuenta"
-                                        onChange={handleChange}
-                                        className="w-100 mb-3"
-                                        error={errores.cuenta ? true : false}
-                                    >
-                                        {opciones.empresas.map((item, index) => (
-                                            form.empresa === item.id ?
-                                                item.cuentas.map((cuenta, index2) => (
-                                                    <MenuItem key={index2} value={cuenta.id}>{cuenta.nombre}</MenuItem>
-                                                ))
-                                                : null
-                                        ))}
-                                    </Select>
-                                </div>
-                            </div>
+                        {/* Cuenta */}
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
+                                <Autocomplete
+                                    options={
+                                        opciones.empresas.find((e) => e.id === form.empresa)?.cuentas || []
+                                    }
+                                    getOptionLabel={(option) => option?.nombre || ''}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    value={
+                                        opciones.empresas
+                                            .find((e) => e.id === form.empresa)
+                                            ?.cuentas.find((c) => c.id === form.cuenta) || null
+                                    }
+                                    onChange={(e, value) => handleChange({ target: { name: 'cuenta', value: value?.id || '' } })}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Cuenta"
+                                            variant="outlined"
+                                            fullWidth
+                                            error={!!errores.cuenta}
+                                            InputLabelProps={{ shrink: true }}
+                                        />
+                                    )}
+                                />
+                            </Paper>
+                        </Grid>
 
-                            <div className="col-12 col-md-4">
-                                {opciones.clientes.length > 0 && (
-                                    <div>
-                                        <InputLabel id="demo-simple-select-label">Contrato</InputLabel>
-                                        <Select
-                                            value={form.contrato}
-                                            name="contrato"
-                                            onChange={handleChange}
-                                            className="w-100 mb-3"
-                                            error={errores.contrato ? true : false}
-                                        >
-                                            {opciones.clientes.find(item => item.id === form.cliente)?.contratos.map((item, index) => (
-                                                <MenuItem key={index} value={item.id}>{item.nombre}</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </div>
-                                )}
-                            </div>
+                        {/* Contrato */}
+                        <Grid item xs={12} md={4}>
+                            {opciones.clientes.length > 0 && (
+                                <Paper sx={{ p: 2 }} elevation={0}>
+                                    <Autocomplete
+                                        options={
+                                            (opciones.clientes?.find((cli) => cli.id === form.proveedor)?.contratos) || []
+                                        }
+                                        getOptionLabel={(option) => option?.nombre || ''}
+                                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                                        value={
+                                            opciones.clientes
+                                                ?.find((cli) => cli.id === form.proveedor)
+                                                ?.contratos?.find((c) => c.id === form.contrato) || null
+                                        }
+                                        onChange={(e, value) => handleChange({ target: { name: 'contrato', value: value?.id || '' } })}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Contrato"
+                                                variant="outlined"
+                                                fullWidth
+                                                error={!!errores.contrato}
+                                                InputLabelProps={{ shrink: true }}
+                                            />
+                                        )}
+                                    />
 
-                            <div className="col-12 col-md-4">
-                                {opciones.tiposPagos.length > 0 && (
-                                    <div>
-                                        <InputLabel id="demo-simple-select-label">Tipo de Pago</InputLabel>
-                                        <Select
-                                            value={form.tipoPago}
-                                            name="tipoPago"
-                                            onChange={handleChange}
-                                            className="w-100 mb-3"
-                                        >
-                                            {opciones.tiposPagos.map((item, index) => (
-                                                <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                                </Paper>
+                            )}
+                        </Grid>
 
-                        <div className="row mb-3">
-                            <div className="col-12 col-md-4">
-                                {opciones.tiposImpuestos.length > 0 && (
-                                    <div>
-                                        <InputLabel id="demo-simple-select-label">Tipo de Impuesto</InputLabel>
-                                        <Select
-                                            value={form.tipoImpuesto}
-                                            name="tipoImpuesto"
-                                            onChange={handleChange}
-                                            className="w-100 mb-3"
-                                        >
-                                            {opciones.tiposImpuestos.map((item, index) => (
-                                                <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
-                                            ))}
-                                        </Select>
-                                    </div>
-                                )}
-                            </div>
+                        {/* Tipo de Pago */}
+                        <Grid item xs={12} md={4}>
+                            {opciones.tiposPagos.length > 0 && (
+                                <Paper sx={{ p: 2 }} elevation={0}>
+                                    <Autocomplete
+                                        options={opciones.tiposPagos}
+                                        getOptionLabel={(option) => option?.name || ''}
+                                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                                        value={opciones.tiposPagos.find((p) => p.id === form.tipoPago) || null}
+                                        onChange={(e, value) => handleChange({ target: { name: 'tipoPago', value: value?.id || '' } })}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Tipo de Pago"
+                                                variant="outlined"
+                                                fullWidth
+                                                InputLabelProps={{ shrink: true }}
+                                            />
+                                        )}
+                                    />
+                                </Paper>
+                            )}
+                        </Grid>
 
-                            <div className="col-12 col-md-4">
+                        {/* Tipo de Impuesto */}
+                        <Grid item xs={12} md={4}>
+                            {opciones.tiposImpuestos.length > 0 && (
+                                <Paper sx={{ p: 2 }} elevation={0}>
+                                    <Autocomplete
+                                        options={opciones.tiposImpuestos}
+                                        getOptionLabel={(option) => option?.name || ''}
+                                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                                        value={opciones.tiposImpuestos.find((i) => i.id === form.tipoImpuesto) || null}
+                                        onChange={(e, value) => handleChange({ target: { name: 'tipoImpuesto', value: value?.id || '' } })}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Tipo de Impuesto"
+                                                variant="outlined"
+                                                fullWidth
+                                                InputLabelProps={{ shrink: true }}
+                                            />
+                                        )}
+                                    />
+                                </Paper>
+                            )}
+                        </Grid>
+
+
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
                                 <CurrencyTextField
                                     label="Total"
                                     variant="standard"
@@ -915,37 +1018,57 @@ export default function CrearCompras(props) {
                                     outputFormat="number"
                                     modifyValueOnWheel={false}
                                     onChange={(event, value) => handleMoney(value)}
-                                    error={errores.total ? true : false}
-                                    className="w-100 mb-3"
+                                    error={!!errores.total}
+                                    fullWidth
                                 />
-                            </div>
+                            </Paper>
+                        </Grid>
 
-                            <div className="col-12 col-md-4">
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
                                 <CurrencyTextField
                                     label="Comisión"
                                     variant="standard"
                                     value={form.comision}
                                     currencySymbol="$"
-                                    modifyValueOnWheel={false}
                                     outputFormat="number"
+                                    modifyValueOnWheel={false}
                                     onChange={(event, value) => handleMoneyComision(value)}
-                                    className="w-100 mb-3"
+                                    fullWidth
                                 />
-                            </div>
-                        </div>
-                    </div>
-                </AccordionDetails>
-            </Accordion>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                            <Paper sx={{ p: 2 }} elevation={0}>
+                                <TextField
+                                    name="descripcion"
+                                    label="Descripción"
+                                    value={form.descripcion}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    variant="standard"
+                                    multiline
+                                    error={!!errores.descripcion}
+                                    InputLabelProps={{ shrink: true }}
+                                />
+                            </Paper>
+                        </Grid>
 
 
-            <div>
-                <div className="row justify-content-end">
-                    <div className="col-md-4">
-                        <button className={Style.sendButton} onClick={e => handleSend(form)}>editar</button>
-                    </div>
-                </div>
-            </div>
+                    </Grid>
+                </DialogContent>
 
-        </>
-    )
+                <DialogActions>
+                    <Button style={{ backgroundColor: '#F96D49', color: '#fff', '&:hover': { backgroundColor: '#F96D49', }, }} variant="contained" onClick={() => handleClose()}>
+                        Cancelar
+                    </Button>
+
+                    <Button style={{ backgroundColor: '#0A3E27', color: '#fff', '&:hover': { backgroundColor: '#0A3E27', }, }} variant="contained" onClick={e => handleSend(form)}>
+                        editar
+                    </Button>
+                </DialogActions>
+            </Container>
+        </Box >
+    );
+
 }

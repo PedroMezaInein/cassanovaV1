@@ -4,6 +4,40 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { dayDMY, setMoneyText } from '../../../functions/setters'
 import { ItemSlider } from '../../singles'
+// ===== Helpers de URL (S3 / absolutas) =====
+const RAW_S3_BASE = process.env.REACT_APP_S3_BASE || ''
+const FALLBACK_S3 = 'https://adminpruebas.s3.us-east-2.amazonaws.com/' // ajusta a tu bucket real
+const S3_BASE = (RAW_S3_BASE || FALLBACK_S3).replace(/\/+$/, '') + '/'
+
+const isHttpUrl = (u) => {
+    if (!u) return false
+    try { const x = new URL(u); return x.protocol === 'http:' || x.protocol === 'https:' }
+    catch { return /^https?:\/\//i.test(String(u)) }
+}
+
+const encodeS3Key = (key) => String(key)
+    .replace(/^\/+/, '')
+    .split('/')
+    .map(s => encodeURIComponent(s))
+    .join('/')
+
+const resolveUrl = (u) => {
+    if (!u) return ''
+    if (isHttpUrl(u)) return u
+    return S3_BASE + encodeS3Key(u)
+}
+
+const getPdfUrl = (fileObj) => {
+    const raw =
+        fileObj?.url_temporal ??
+        fileObj?.url ??
+        fileObj?.pivot?.url ??
+        fileObj?.ruta ??
+        fileObj?.path ??
+        ''
+    return resolveUrl(raw)
+}
+
 class PresupuestoList extends Component {
 
     state = {
@@ -15,7 +49,7 @@ class PresupuestoList extends Component {
         pdfs.forEach((element) => {
             if (element.id === indiceClick) {
                 element.isActive = element.isActive ? false : true
-            }else {
+            } else {
                 element.isActive = false
             }
         })
@@ -23,34 +57,34 @@ class PresupuestoList extends Component {
             accordion: pdfs
         });
     }
-    getEsquema(name){
+    getEsquema(name) {
         let cadena = name.split("-", 1);
         return cadena
     }
     labelStatus = pdf => {
-        if(pdf.pivot.fecha_envio === null){
-            return(
-                <span className="label-status" style={{ backgroundColor: `#f0e3fd`, color:  `#764ca2`}}>
+        if (pdf.pivot.fecha_envio === null) {
+            return (
+                <span className="label-status" style={{ backgroundColor: `#f0e3fd`, color: `#764ca2` }}>
                     Sin enviar
-                </span>    
+                </span>
             )
         }
-        if(pdf.pivot.motivo_rechazo){
-            return(
-                <span className="label-status" style = { { backgroundColor: `#ffe6ee`, color:  `#f73967`}}>
+        if (pdf.pivot.motivo_rechazo) {
+            return (
+                <span className="label-status" style={{ backgroundColor: `#ffe6ee`, color: `#f73967` }}>
                     Rechazado
-                </span>    
+                </span>
             )
         }
-        if(pdf.pivot.fecha_aceptacion){
-            return(
-                <span className="label-status" style = { { backgroundColor: `#E1F0FF`, color:  `#2171c1`}}>
+        if (pdf.pivot.fecha_aceptacion) {
+            return (
+                <span className="label-status" style={{ backgroundColor: `#E1F0FF`, color: `#2171c1` }}>
                     Aceptado
                 </span>
             )
         }
-        return(
-            <span className="label-status" style = { { backgroundColor: `#E0F2F1`, color:  `#26A69A`}}>
+        return (
+            <span className="label-status" style={{ backgroundColor: `#E0F2F1`, color: `#26A69A` }}>
                 En espera
             </span>
         )
@@ -64,7 +98,7 @@ class PresupuestoList extends Component {
                         {
                             pdfs.map((pdf, index) => {
                                 return (
-                                    <Card key={index} className={`w-auto ${pdf.isActive? 'border-top-0' : ''}`} >
+                                    <Card key={index} className={`w-auto ${pdf.isActive ? 'border-top-0' : ''}`} >
                                         <Card.Header >
                                             <Card.Title className={`rounded-0 px-3 ${(pdf.isActive) ? 'text-primary2 collapsed bg-light' : 'text-dark'}`} onClick={() => { this.handleAccordion(pdf.id) }}>
                                                 <span className={`svg-icon ${pdf.isActive ? 'svg-icon-primary2' : 'svg-icon-dark'}`}>
@@ -73,7 +107,7 @@ class PresupuestoList extends Component {
                                                 <div className="card-label ml-3 w-100 d-flex">
                                                     <div className="w-80 d-flex">
                                                         <div className="w-33">
-                                                            <a rel="noopener noreferrer" href={pdf.url} target="_blank" className= {`font-size-lg ${(pdf.isActive) ? 'text-primary2' : 'text-dark'}`}><span className="font-size-sm">ID</span>. {pdf.pivot.identificador}</a>
+                                                            <a rel="noopener noreferrer" href={pdf.url} target="_blank" className={`font-size-lg ${(pdf.isActive) ? 'text-primary2' : 'text-dark'}`}><span className="font-size-sm">ID</span>. {pdf.pivot.identificador}</a>
                                                             <div className="font-weight-light font-size-sm text-dark-75 mt-2">
                                                                 {dayDMY(pdf.created_at)} - {this.getEsquema(pdf.name)}
                                                             </div>
@@ -101,15 +135,16 @@ class PresupuestoList extends Component {
                                         </Card.Header>
                                         <Card.Body className={`card-body p-5 ${pdf.isActive ? 'collapse show' : 'collapse'}`}>
                                             {
-                                                pdf.pivot.fecha_envio !== null?
-                                                <div className="font-weight-light mb-4 text-center">
-                                                    <span className="font-weight-bolder"><u>Fecha de envio:</u> </span>{dayDMY(pdf.pivot.fecha_envio)}
-                                                </div>
-                                                :<></>
+                                                pdf.pivot.fecha_envio !== null ?
+                                                    <div className="font-weight-light mb-4 text-center">
+                                                        <span className="font-weight-bolder"><u>Fecha de envio:</u> </span>{dayDMY(pdf.pivot.fecha_envio)}
+                                                    </div>
+                                                    : <></>
                                             }
                                             <Col md={12} className="mx-auto text-center">
-                                                <ItemSlider items={[{ url: pdf.url, name: pdf.name }]}/>
+                                                <ItemSlider items={[{ url: getPdfUrl(pdf), name: pdf.name }]} />
                                             </Col>
+
                                         </Card.Body>
                                     </Card>
                                 )

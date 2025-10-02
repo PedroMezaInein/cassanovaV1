@@ -80,7 +80,7 @@ export default function Factura(props) {
      const obtenerFacturas = async () => {
         try {
             const response = await apiGet(`v2/proyectos/compras/facturas/${compra}`, auth);
-            console.log(response)
+            // console.log(response)
 
             const facturasCFDI = response.data.compra.facturas || []; // facturas "normales"
             const facturasAdjuntos = response.data.compra.facturas_pdf || []; // nuevos adjuntos
@@ -105,7 +105,7 @@ export default function Factura(props) {
                         nombre_receptor: 'Adjunto',
                         subtotal: 'n/a',
                         total: 'n/a',
-                        archivoAdjunto: { url: adjunto.url, name: adjunto.name }, // ⚡️
+                        archivoAdjunto: { url: adjunto.url_temporal, name: adjunto.name }, // ⚡️
                         esAdjunto: true
                     });
                 });
@@ -243,7 +243,7 @@ export default function Factura(props) {
                     } else {
                         let proveedor = opcionesData.proveedores.find((proveedor) => proveedor.rfc === obj.rfc_emisor)
                         let aux = []
-                        console.log(files)
+                        // console.log(files)
                         Array.from(files).forEach((file, index) => {
                             aux.push({
                                 name: file.name,
@@ -493,79 +493,194 @@ export default function Factura(props) {
                 Swal.fire({ title: 'Subiendo archivos...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     
                 try {
-                const { data: config } = await apiGet(`v1/constant/admin-proyectos`, auth);
-                const alma = config.alma;
-                const filePath = `facturas/compras/`;
-    
-                const uploads = allFiles.map((file) => {
-                    const nombre = `${Math.floor(Date.now() / 1000)}-${file.name}`;
-                    return new Promise((resolve, reject) => {
-                    new S3(alma).uploadFile(file.file, `${filePath}${nombre}`)
-                        .then((data) => {
-                        if (data.status === 204) {
-                            resolve({ name: file.name, url: data.location });
-                        } else {
-                            reject(data);
+
+                    // console.log(allFiles)
+                    addNewFacturaAxios(allFiles, compra);
+        
+                    setForm((prevForm) => ({
+                        ...prevForm,
+                        adjuntos: {
+                        xml: { files: [], value: '' },
+                        pdf: { files: [], value: '' },
+                        imagenes: { files: [], value: '' },
+                        excel: { files: [], value: '' },
                         }
-                        })
-                        .catch((error) => reject(error));
+                    }));
+        
+                    if (reloadTable) reloadTable.reload();
+        
+                    } catch (error) {
+                    console.error(error);
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al subir archivos',
+                        text: 'Ocurrió un error al adjuntar los archivos',
+                        showConfirmButton: false,
+                        timer: 1500
                     });
-                });
-    
-                const uploaded = await Promise.all(uploads);
-    
-                addNewFacturaAxios(uploaded, compra);
-    
-                setForm((prevForm) => ({
-                    ...prevForm,
-                    adjuntos: {
-                    xml: { files: [], value: '' },
-                    pdf: { files: [], value: '' },
-                    imagenes: { files: [], value: '' },
-                    excel: { files: [], value: '' },
                     }
-                }));
+
+
+                // const { data: config } = await apiGet(`v1/constant/admin-proyectos`, auth);
+                // const alma = config.alma;
+                // const filePath = `facturas/compras/`;
     
-                if (reloadTable) reloadTable.reload();
+                // const uploads = allFiles.map((file) => {
+                //     const nombre = `${Math.floor(Date.now() / 1000)}-${file.name}`;
+                //     return new Promise((resolve, reject) => {
+                //     new S3(alma).uploadFile(file.file, `${filePath}${nombre}`)
+                //         .then((data) => {
+                //         if (data.status === 204) {
+                //             resolve({ name: file.name, url: data.location });
+                //         } else {
+                //             reject(data);
+                //         }
+                //         })
+                //         .catch((error) => reject(error));
+                //     });
+                // });
     
-                } catch (error) {
-                console.error(error);
-                Swal.close();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al subir archivos',
-                    text: 'Ocurrió un error al adjuntar los archivos',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                }
+                // const uploaded = await Promise.all(uploads);
+    
+                // addNewFacturaAxios(uploaded, compra);
+    
+                // setForm((prevForm) => ({
+                //     ...prevForm,
+                //     adjuntos: {
+                //     xml: { files: [], value: '' },
+                //     pdf: { files: [], value: '' },
+                //     imagenes: { files: [], value: '' },
+                //     excel: { files: [], value: '' },
+                //     }
+                // }));
+    
+                // if (reloadTable) reloadTable.reload();
+    
+                // } catch (error) {
+                // console.error(error);
+                // Swal.close();
+                // Swal.fire({
+                //     icon: 'error',
+                //     title: 'Error al subir archivos',
+                //     text: 'Ocurrió un error al adjuntar los archivos',
+                //     showConfirmButton: false,
+                //     timer: 1500
+                // });
+                // }
             }
             };
     
 
-    const addNewFacturaAxios = (files, compra) => {
-        let aux = form
-        aux.archivos = files
+    // const addNewFacturaAxios = (files, compra) => {
+    //     let aux = form
+    //     aux.archivos = files
 
-        apiPostForm(`v2/administracion/facturas`, aux, auth).then(
-            (response) => {
-                const { factura } = response.data
-                setFacturas(prevFacturas => [...prevFacturas, factura]);
+    //     apiPostForm(`v2/administracion/facturas`, aux, auth).then(
+    //         (response) => {
+    //             const { factura } = response.data
+    //             setFacturas(prevFacturas => [...prevFacturas, factura]);
 
-                setForm({
-                    ...form,
-                    facturaItem: factura,
-                    archivos: files
-                })
-                if (reload) {
-                    reload.reload()
+    //             setForm({
+    //                 ...form,
+    //                 facturaItem: factura,
+    //                 archivos: files
+    //             })
+    //             if (reload) {
+    //                 reload.reload()
+    //             }
+    //             attachFactura(compra, factura)
+    //         }, (error) => { }
+    //     ).catch((error) => {
+    //         console.error(error, 'error')
+    //     })
+    // }
+
+        const addNewFacturaAxios = async (files: any, egreso: any) => {
+            try {
+                // 1) arma FormData
+                const fd = new FormData();
+    
+                // facturaObject: ajusta al nombre real dentro de tu "form"
+                const facturaObject =
+                (form && (form.facturaObject || form.factura)) || {};
+                fd.append("facturaObject", JSON.stringify(facturaObject));
+    
+                // helper para empujar archivos al mismo campo files_zip[]
+                const pushFiles = (list?: { file: File; name?: string }[]) => {
+                if (!Array.isArray(list)) return;
+                list.forEach(({ file, name }) => {
+                    // debe ser un File real (no {} ni blob:url)
+                    if (!(file instanceof File) || file.size === undefined) return;
+                    const stamped =
+                    `${Math.floor(Date.now() / 1000)}-` + (name || file.name || "file");
+                    fd.append("files_zip[]", file, stamped);
+                });
+                };
+    
+                // 2) soporta las distintas formas en que te llega "files"
+                // a) objeto tipo adjuntos { pdf:{files:[]}, xml:{files:[]}, ... }
+                if (
+                files?.pdf || files?.xml || files?.zip || files?.excel || files?.imagenes
+                ) {
+                pushFiles(files?.pdf?.files);
+                pushFiles(files?.xml?.files);
+                pushFiles(files?.zip?.files);
+                pushFiles(files?.excel?.files);
+                pushFiles(files?.imagenes?.files);
                 }
-                attachFactura(compra, factura)
-            }, (error) => { }
-        ).catch((error) => {
-            console.error(error, 'error')
-        })
-    }
+                // b) files.adjuntos (por si te lo pasan envuelto)
+                else if (files?.adjuntos) {
+                const adj = files.adjuntos;
+                pushFiles(adj?.pdf?.files);
+                pushFiles(adj?.xml?.files);
+                pushFiles(adj?.zip?.files);
+                pushFiles(adj?.excel?.files);
+                pushFiles(adj?.imagenes?.files);
+                }
+                // c) arreglo plano [{ file, name }]
+                else if (Array.isArray(files)) {
+                pushFiles(files);
+                }
+                fd.append("facturaObject", JSON.stringify(facturaObject));
+                fd.append("filePath", "facturas/compras/");
+
+                // console.log(fd)
+                // 3) POST (apiPostForm debe detectar FormData y NO serializarlo)
+                const response = await apiPostForm(`v2/administracion/facturas`, fd, auth);
+    
+                const { factura } = response.data;
+    
+                Swal.close();
+                Swal.fire({
+                icon: "success",
+                title: "Factura subida con éxito",
+                text: "Se subio la factura con éxito",
+                showConfirmButton: false,
+                timer: 1500,
+                });
+    
+                setFacturas((prev) => [...prev, factura]);
+                attachFactura(egreso, factura);
+    
+                // Limpia estado (no mutamos form directamente)
+                setForm((prev) => ({
+                ...prev,
+                facturaItem: factura,
+                adjuntos: {
+                    xml: { files: [], value: "" },
+                    pdf: { files: [], value: "" },
+                    zip: { files: [], value: "" },
+                    excel: { files: [], value: "" },
+                    imagenes: { files: [], value: "" },
+                },
+                }));
+    
+                if (reloadTable) reloadTable.reload();
+            } catch (error) {
+                console.error(error, "error");
+            }
+            };
 
     const attachFactura = (compra, factura) => {
 
@@ -586,6 +701,8 @@ export default function Factura(props) {
                     showConfirmButton: false,
                     timer: 1500
                 })
+                obtenerFacturas(); // 🔥 Recargar facturas después de adjuntar
+
                 setForm({ adjuntos: { xml: { files: [], value: '' }, pdf: { files: [], value: '' } } }); // Limpiar después de subir
 
                 if (reloadTable) {
@@ -902,7 +1019,8 @@ export default function Factura(props) {
                                 style={{ display: 'none' }}
                                 id="pdf-upload"
                                 type="file"
-                                onChange={(e) => handleAddFile(e, 'pdf')}
+                                // onChange={(e) => handleAddFile(e, 'pdf')}
+                                onChange={handleAddFile}
                             />
                             <label htmlFor="pdf-upload">
                                 <Button
@@ -1164,12 +1282,12 @@ export default function Factura(props) {
                         ) : (
                             <>
                             {/* Botón Ver XML */}
-                            {factura.xml?.url && (
+                            {factura.xml?.url_temporal && (
                                 <Tooltip title="Ver XML">
                                 <Button
                                     variant="outlined"
                                     color="primary"
-                                    href={factura.xml.url}
+                                    href={factura.xml.url_temporal}
                                     target="_blank"
                                     size="small"
                                 >
@@ -1178,12 +1296,12 @@ export default function Factura(props) {
                                 </Tooltip>
                             )}
                             {/* Botón Ver PDF */}
-                            {factura.pdf?.url && (
+                            {factura.pdf?.url_temporal && (
                                 <Tooltip title="Ver PDF">
                                 <Button
                                     variant="outlined"
                                     color="secondary"
-                                    href={factura.pdf.url}
+                                    href={factura.pdf.url_temporal}
                                     target="_blank"
                                     size="small"
                                 >

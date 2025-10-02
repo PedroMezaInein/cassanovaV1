@@ -55,7 +55,7 @@ export default function EditarEgreso(props) {
     
         if (data && opcionesData) {
             // Encuentra la empresa seleccionada
-            const empresaSeleccionada = opcionesData.empresas?.find((empresa) => empresa.nombre === data.empresa);
+            const empresaSeleccionada = opcionesData.empresas?.find((empresa) => empresa.id === data.data?.empresa_id);
             const cuentas = empresaSeleccionada?.cuentas || []; // Obtén las cuentas de la empresa seleccionada
     
             // Encuentra la cuenta seleccionada
@@ -90,7 +90,7 @@ export default function EditarEgreso(props) {
             //     cuentaSeleccionada,
             //     presupuestos,
             // });
-    
+            // console.log(empresaSeleccionada)
             // Actualiza el estado del formulario
             setForm((prevForm) => ({
                 ...prevForm,
@@ -525,15 +525,15 @@ export default function EditarEgreso(props) {
         if (value && value.nombre) {
             setForm({
                 ...form,
-                proyecto: value.id,
-                proyecto_nombre: value.nombre,
+                presupuestos: value.id,
+                presupuestos_nombre: value.nombre,
             })
         }
         if (value === null) {
             setForm({
                 ...form,
-                proyecto: null,
-                proyecto_nombre: null,
+                presupuestos: null,
+                presupuestos_nombre: null,
             })
         }
     }
@@ -759,7 +759,8 @@ export default function EditarEgreso(props) {
                                 <div> 
                                 <Autocomplete
                                 id="empresas-autocomplete"
-                                options={opciones.empresas}                                
+                                options={opciones.empresas}   
+                                name="empresa"                             
                                 getOptionLabel={(option) => option.name || ''}
                                 isOptionEqualToValue={(option, value) => option.id === value} // Compara por ID
                                 value={opciones.empresas.find((item) => item.id === form.empresa) || null}

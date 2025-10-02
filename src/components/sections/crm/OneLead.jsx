@@ -8,13 +8,55 @@ import { apiDelete, catchErrors } from '../../../functions/api'
 import { setEmpresaLogo, dayDMY, setContactoIcon, setDate } from '../../../functions/setters'
 import { deleteAlert, doneAlert, printResponseErrorAlert } from '../../../functions/alert'
 import PresupuestoList from './PresupuestoList'
+// ===== Helpers de URL (S3 / absolutas) =====
+const RAW_S3_BASE = process.env.REACT_APP_S3_BASE || ''
+const FALLBACK_S3 = 'https://adminpruebas.s3.us-east-2.amazonaws.com/' // ajusta si tu bucket es otro
+const S3_BASE = (RAW_S3_BASE || FALLBACK_S3).replace(/\/+$/, '') + '/'
+
+const isHttpUrl = (u) => {
+    if (!u) return false
+    try { const x = new URL(u); return x.protocol === 'http:' || x.protocol === 'https:' }
+    catch { return /^https?:\/\//i.test(String(u)) }
+}
+
+// Codifica cada segmento para no romper los '/'
+const encodeS3Key = (key) => String(key)
+    .replace(/^\/+/, '')
+    .split('/')
+    .map(s => encodeURIComponent(s))
+    .join('/')
+
+const resolveUrl = (u) => {
+    if (!u) return ''
+    if (isHttpUrl(u)) return u           // ya es absoluta/presignada
+    return S3_BASE + encodeS3Key(u)      // compón absoluta a S3
+}
+
+const getPdfUrl = (fileObj) => {
+    const raw =
+        fileObj?.url_temporal ??
+        fileObj?.url ??
+        fileObj?.pivot?.url ??
+        fileObj?.ruta ??
+        fileObj?.path ??
+        ''
+    return resolveUrl(raw)
+}
+
+// Abre en nueva pestaña
+const openPdf = (e, url) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!url) return
+    window.open(url, '_blank', 'noopener,noreferrer')
+}
 
 class OneLead extends Component {
     state = {
         activePage: 1,
         itemsPerPage: 5
     }
-    onChangePage(pageNumber){
+    onChangePage(pageNumber) {
         let { activePage } = this.state
         activePage = pageNumber
         this.setState({
@@ -126,11 +168,17 @@ class OneLead extends Component {
                                 {
                                     contacto.adjunto ?
                                         <div className="d-flex justify-content-end mt-1">
-                                            <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold font-size-sm">
+                                            <button
+                                                type="button"
+                                                onClick={(e) => openPdf(e, getPdfUrl(contacto.adjunto))}
+                                                className="btn btn-link text-muted text-hover-primary font-weight-bold font-size-sm p-0"
+                                            >
                                                 <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                                     <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
-                                                </span>VER ADJUNTO
-                                            </a>
+                                                </span>
+                                                VER ADJUNTO
+                                            </button>
+
                                         </div>
                                         : ''
                                 }
@@ -144,10 +192,10 @@ class OneLead extends Component {
     eliminarContacto = contacto => {
         const { refresh, at, lead } = this.props
         apiDelete(`crm/prospecto/${lead.id}/contacto/${contacto.id}`, at).then((response) => {
-            doneAlert(`Registro de contacto eliminado con éxito`, () => { refresh(lead.id) } )
+            doneAlert(`Registro de contacto eliminado con éxito`, () => { refresh(lead.id) })
         }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => { catchErrors(error) })
-    }  
+    }
     render() {
         const { lead } = this.props
         const { activePage, itemsPerPage } = this.state
@@ -158,7 +206,7 @@ class OneLead extends Component {
                         <div className="d-flex justify-content-between mt-4 div-logo-empresa">
                             {
                                 setEmpresaLogo(lead) !== '' ?
-                                    <img alt='' src={setEmpresaLogo(lead)} className="logo-empresa" style={{ height: 50}} />
+                                    <img alt='' src={setEmpresaLogo(lead)} className="logo-empresa" style={{ height: 50 }} />
                                     : ''
                             }
                             {
@@ -206,8 +254,8 @@ class OneLead extends Component {
                         <Tab.Pane eventKey='presupuesto'>
                             {
                                 this.hasPresupuestoDiseno(lead) ?
-                                    <PresupuestoList pdfs={lead.presupuesto_diseño.pdfs}/>
-                                : this.noHayAdjuntos()
+                                    <PresupuestoList pdfs={lead.presupuesto_diseño.pdfs} />
+                                    : this.noHayAdjuntos()
                             }
                         </Tab.Pane>
                         <Tab.Pane eventKey='contactos'>
@@ -261,7 +309,7 @@ class OneLead extends Component {
                             <div className="row mx-auto mt-10 col-md-12">
                                 <div className="col-md-6 form-group">
                                     <div className="d-flex justify-content-start">
-                                        <SymbolIcon tipo='primary' urlIcon='las la-phone icon-xl'/>
+                                        <SymbolIcon tipo='primary' urlIcon='las la-phone icon-xl' />
                                         <div>
                                             <a target="_blank" href={`tel:+${lead.telefono}`} rel="noopener noreferrer"
                                                 className="font-size-lg text-dark-75 font-weight-bolder text-hover-primary">
@@ -273,7 +321,7 @@ class OneLead extends Component {
                                 </div>
                                 <div className="col-md-6 form-group">
                                     <div className="d-flex justify-content-start">
-                                        <SymbolIcon tipo='info' urlIcon='flaticon2-calendar-9 icon-lg'/>
+                                        <SymbolIcon tipo='info' urlIcon='flaticon2-calendar-9 icon-lg' />
                                         <div>
                                             <div className="font-size-lg text-dark-75 font-weight-bolder">{dayDMY(lead.created_at)}</div>
                                             <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
@@ -284,7 +332,7 @@ class OneLead extends Component {
                                     lead.origen &&
                                     <div className="col-md-6 form-group">
                                         <div className="d-flex justify-content-start">
-                                            <SymbolIcon tipo='primary' urlIcon='las la-mail-bulk icon-xl'/>
+                                            <SymbolIcon tipo='primary' urlIcon='las la-mail-bulk icon-xl' />
                                             <div>
                                                 <div className="font-size-lg text-dark-75 font-weight-bolder">{lead.origen.origen}</div>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">Origen</div>

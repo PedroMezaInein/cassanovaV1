@@ -160,7 +160,9 @@ const SolicitudVentaForm = React.lazy(() => import('./pages/Proyectos/SolicitudV
 const Remision = React.lazy(() => import('./pages/Proyectos/Remision/Remision') )
 const RemisionForm = React.lazy(() => import('./pages/Proyectos/Remision/RemisionForm') )
 
-const Bodega = React.lazy(() => import('./pages/Proyectos/Bodega/Bodega') )
+//const Bodega = React.lazy(() => import('./pages/Proyectos/Bodega/Bodega') )
+const materiales = React.lazy(() => import('./pages/Proyectos/Bodega/materiales.jsx') )
+const herramientas = React.lazy(() => import('./pages/Proyectos/Bodega/herramientas.jsx') )
 const BodegaForm = React.lazy(() => import('./pages/Proyectos/Bodega/BodegaForm') )
 
 const Equipo = React.lazy(() => import('./pages/Proyectos/Equipos/Equipo') )
@@ -442,9 +444,13 @@ class App extends Component{
 
                     {/* <Route path = "/proyectos/solicitud-venta" exact component ={ SolicitudVenta } /> */}
 
-                    <Route path = "/proyectos/bodega" exact component ={ Bodega } />
+                    {/* <Route path = "/proyectos/bodega" exact component ={ Bodega } /> */}
                     <Route path = "/proyectos/bodega/:action" exact component ={ BodegaForm } />
 
+                    <Route path = "/bodega/materiales" exact component ={ materiales } />
+                    <Route path = "/bodega/herramientas" exact component ={ herramientas } />
+
+                    
                     <Route path = "/proyectos/equipos" exact component ={ Equipo } />
                     <Route path = "/proyectos/equipos/:action" exact component ={ EquipoForm } />
 

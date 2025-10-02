@@ -1,201 +1,193 @@
-import React, { useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { MaterialReactTable } from 'material-react-table';
+import { Box, Button, Tooltip } from '@mui/material';
 
-import { Modal } from '../../../components/singles'
-import TablaGeneral from '../../../components/NewTables/TablaGeneral/TablaGeneral'
+import { Modal } from '../../../components/singles';
+import Layout from '../../../components/layout/layout';
 
-import Layout from '../../../components/layout/layout'
+import EditarTicketTi from './Modales/EditarTicketTi';
+import VerTicketTi from './Modales/VerTicketTi';
+import Nuevo from './NuevoTicket';
+import Funcionalidades from './Modales/Funcionalidades';
 
-import EditarTicketTi from './Modales/EditarTicketTi'
-import VerTicketTi from './Modales/VerTicketTi'
-import Nuevo from './NuevoTicket.jsx'
-import Funcionalidades from './Modales/Funcionalidades'
-
-import Style from './Modales/TicketsTi.module.css'
+import Style from './Modales/TicketsTi.module.css';
+import { apiGet } from '../../../functions/api';
 
 export default function TicketsUserTable() {
-    const userAuth = useSelector((state) => state.authUser);
-    const [reloadTable, setReloadTable] = useState(false)
-    const [modal, setModal] = useState({
-        editar: {
-            show: false,
-            data: false
-        },
-        ver: {
-            show: false,
-            data: false
-        },
-        crear: {
-            show: false,
-            data: false
-        },
-        funcionalidades: {
-            show: false,
-            data: false
-        },
-    })
+    const auth = useSelector(state => state.authUser.access_token);
+    const userAuth = useSelector(state => state.authUser);
 
-    let prop = {
-        pathname: '/ti/tickets-ti',
-    }
+    const [data, setData] = useState([]);
+    const [reloadTable, setReloadTable] = useState(false);
+
+    const [modal, setModal] = useState({
+        editar: { show: false, data: false },
+        ver: { show: false, data: false },
+        crear: { show: false, data: false },
+        funcionalidades: { show: false, data: false },
+    });
+
+    const prop = { pathname: '/ti/tickets-ti' };
+
+    useEffect(() => {
+        fetchTickets();
+    }, [reloadTable]);
+
+    const fetchTickets = async () => {
+        try {
+            const res = await apiGet('ti', auth);
+            setData(ProccessData(res.data));
+        } catch (error) {
+            console.error('Error cargando tickets', error);
+        }
+    };
 
     const columnas = [
-        { nombre: 'Acciones', identificador: 'acciones' },
-        { nombre: 'Fecha', identificador: 'fecha_view' },
-        { nombre: 'Departamento', identificador: 'depto_show' },
-        { nombre: 'Tipo', identificador: 'tipo_view' },
-        { nombre: 'Estatus', identificador: 'estatus_view' },
-        { nombre: 'F. de entrega', identificador: 'fecha_entrega_view' },
-        { nombre: 'Autorización', identificador: 'auto_view' },
+        { accessorKey: 'fecha_view', header: 'Fecha' },
+        { accessorKey: 'depto_show', header: 'Departamento' },
+        { accessorKey: 'tipo_view', header: 'Tipo' },
+        { accessorKey: 'estatus_view', header: 'Estatus' },
+        { accessorKey: 'fecha_entrega_view', header: 'F. de entrega' },
+        {
+            accessorKey: 'auto_view',
+            header: 'Autorización',
+            Cell: ({ cell }) => <span>{cell.getValue()}</span>
+        },
+        {
+            accessorKey: 'prioridad_view',
+            header: 'Prioridad',
+            Cell: ({ cell }) => <span>{cell.getValue()}</span>
+        },
+        {
+            accessorKey: 'id_asignacion',
+            header: 'Asignación',
+        }
     ];
 
     const ProccessData = (data) => {
-        let aux = []
+        if (!data || !Array.isArray(data.ti)) return [];
 
-        data.ti.map((item) => {
-            aux.push({
-                id: item.id,
-                fecha: item.fecha,
-                fecha_view: reformatDate(item.fecha),
-                fecha_entrega: item.fecha_entrega,
-                fecha_entrega_view: item.fecha_entrega ? reformatDate(item.fecha_entrega) : 'pendiente',
-                tipo: item.tipo,
-                tipo_view: setTipo(item.tipo) ,
-                estatus: item.estatus,
-                estatus_view: setEstatus(item.estatus) ,
-                autorizacion: item.autorizacion,
-                auto_view: item.autorizacion ? <span className={Style.autorizado}>Aprobado</span> : <span className={Style.pendiente}>pendiente</span>,
-                descripcion: item.descripcion,
-                funcionalidades: item.funcionalidades,
-                departamento: item.departamento,
-                id_departamento: item.departamento ? item.departamento.id : null,
-                depto_show: item.departamento ? item.departamento.nombre : 'Sin departamento',
-                id_solicitante: item.id_solicitante,
-            })
-            return true
-        })
-        aux = aux.reverse()
-        return aux
-    }
+        return data.ti.map((item) => ({
+            id: item.id,
+            fecha: item.fecha,
+            fecha_view: reformatDate(item.fecha),
+            fecha_entrega_view: item.fecha_entrega ? reformatDate(item.fecha_entrega) : 'pendiente',
+            tipo_view: setTipo(item.tipo),
+            estatus_view: setEstatus(item.estatus),
+            auto_view: item.autorizacion
+                ? <span className={Style.autorizado}>Aprobado</span>
+                : <span className={Style.pendiente}>pendiente</span>,
+            prioridad_view: renderPrioridad(item.prioridad),
+            depto_show: item.departamento ? item.departamento.nombre : 'Sin departamento',
+            id_asignacion: item.empleado
+                ? [item.empleado.nombre, item.empleado.apellido_paterno, item.empleado.apellido_materno].filter(Boolean).join(' ')
+                : '',
+            raw: item
+        })).reverse();
+    };
 
+    const reformatDate = (dateStr) => {
+        const dArr = dateStr.split("-");
+        return `${dArr[2]}/${dArr[1]}/${dArr[0]}`;
+    };
 
     const setTipo = (data) => {
-        if (data === '0') {
-            return 'cambio'
-        } else if (data === '1') {
-            return 'soporte'
-        } else if (data === '2') {
-            return 'mejora'
-        } else if (data === '3') {
-            return 'reporte'
-        } else if (data === '4') {
-            return 'información'
-        } else if (data === '5') {
-            return 'capacitación'
-        } else if (data === '6') {
-            return 'funcionalidad'
-        } else if (data === '7') {
-            return 'proyecto'
+        switch (data) {
+            case '1': return '🍠 Capacitación o ayuda técnica';
+            case '2': return '⚙️ Problemas con la plataforma';
+            case '3': return '🚀 Nuevo proyecto o desarrollo';
+            case '4': return '🧑‍💻 Problemas con computadora';
+            case '5': return '⚠️ Otro ...';
+            default: return '';
         }
-    }
+    };
 
     const setEstatus = (data) => {
-        if (data === '0') {
-            return 'Solicitado'
-        } else if (data === '1') {
-            return 'Solicitado'
-        } else if (data === '2') {
-            return 'En desarrollo'
-        } else if (data === '3') {
-            return 'Terminado'
-        } else if (data === '4') {
-            return 'Cancelado'
-        } else if (data === '5') {
-            return 'Rechazado'
+        switch (data) {
+            case '0':
+            case '1': return 'Solicitado';
+            case '2': return 'En desarrollo';
+            case '3': return 'Terminado';
+            case '4': return 'Cancelado';
+            case '5': return 'Rechazado';
+            default: return '';
         }
-    }
+    };
 
-    function reformatDate(dateStr) {
-        var dArr = dateStr.split("-");  // ex input: "2010-01-18"
-        return dArr[2] + "/" + dArr[1] + "/" + dArr[0]/* .substring(2) */; //ex output: "18/01/10"
-    }
-
-    const createAcciones = () => {
-        return [
-            {
-                nombre: 'Editar',
-                icono: 'fas fa-edit',
-                color: 'blueButton',
-                funcion: (item) => {
-                    
-                    handleOpenModal('editar', item)
-                    
-                }
-            },
-            {
-                nombre: 'Ver',
-                icono: 'fas fa-eye',
-                color: 'blueButton',
-                funcion: (item) => {
-                    handleOpenModal('ver', item)
-                }
-            },
-        ]
-    }
+    const renderPrioridad = (nivel) => {
+        switch (nivel) {
+            case 'alta': return <span className={Style.prioridadAlta}>🔴 Alta</span>;
+            case 'media': return <span className={Style.prioridadMedia}>🟡 Media</span>;
+            case 'baja': return <span className={Style.prioridadBaja}>🟢 Baja</span>;
+            default: return <span className={Style.prioridadBaja}>No definida</span>;
+        }
+    };
 
     const handleOpenModal = (tipo, data) => {
-        setModal({
-            ...modal,
-            [tipo]: {
-                show: true,
-                data: data
-            }
-        })
-    }
-
-    const opciones = [
-        {
-            nombre: 'Nuevo soporte',
-            funcion: (item) => {
-                setModal({
-                    ...modal,
-                    crear: {
-                        show: true,
-                        data: item
-                    }
-                })
-            }
-        },
-    ]
+        setModal({ ...modal, [tipo]: { show: true, data } });
+    };
 
     return (
         <>
-            <Layout authUser={userAuth.acces_token} location={prop} history={{ location: prop }} active='ti'>
-                <>
-                    <TablaGeneral titulo='Tickets TI' columnas={columnas} url='ti' ProccessData={ProccessData} numItemsPagina={8} acciones={createAcciones()} reload={setReloadTable} opciones={opciones} />
-                </>
+            <Layout authUser={auth} location={prop} history={{ location: prop }} active='ti'>
+                <MaterialReactTable
+                    columns={columnas}
+                    data={data}
+                    enableColumnOrdering
+                    enablePagination
+                    enableDensityToggle
+                    enableColumnFilters
+                    enableRowActions
+                    renderRowActions={({ row }) => (
+                        <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+                            <Button variant="outlined" size="small" onClick={() => handleOpenModal('editar', row.original.raw)}>Editar</Button>
+                            <Button variant="outlined" size="small" onClick={() => handleOpenModal('ver', row.original.raw)}>Ver</Button>
+                        </Box>
+                    )}
+                    initialState={{ pagination: { pageSize: 8 } }}
+                    muiTablePaginationProps={{
+                        rowsPerPageOptions: [8, 25, 50],
+                        labelRowsPerPage: 'Tickets por página',
+                    }}
+                />
             </Layout>
 
-            {
-                modal.editar.data &&
+            {modal.editar.data && (
                 <Modal size="md" show={modal.editar.show} handleClose={() => setModal({ ...modal, editar: { show: false, data: false } })} title='Editar ticket'>
-                    <EditarTicketTi data={modal.editar.data} reload={reloadTable} handleClose={() => setModal({ ...modal, editar: { show: false, data: false } })} />
+                    <EditarTicketTi
+                        data={modal.editar.data}
+                        reload={() => setReloadTable(!reloadTable)}
+                        handleClose={() => setModal({ ...modal, editar: { show: false, data: false } })}
+                    />
                 </Modal>
-            }
+            )}
 
+            {modal.ver.data && (
+                <Modal show={modal.ver.show} handleClose={() => setModal({ ...modal, ver: { show: false, data: false } })} title='Ver ticket'>
+                    <VerTicketTi data={modal.ver.data} />
+                </Modal>
+            )}
 
+            {modal.crear.show && (
+                <Modal size="lg" show={modal.crear.show} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} title='Nuevo mantenimiento'>
+                    <Nuevo
+                        reload={() => setReloadTable(!reloadTable)}
+                        handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })}
+                    />
+                </Modal>
+            )}
 
-            <Modal show={modal.ver.show} handleClose={() => setModal({ ...modal, ver: { show: false, data: false } })} title='Ver ticket'>
-                <VerTicketTi data={modal.ver.data} />
-            </Modal>
-
-            <Modal size="lg" show={modal.crear.show} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} title='Nuevo mantenimiento'>
-                <Nuevo reload={reloadTable} handleClose={() => setModal({ ...modal, crear: { show: false, data: false } })} />
-            </Modal>
-
-            <Modal size="lg" show={modal.funcionalidades.show} handleClose={() => setModal({ ...modal, funcionalidades: { show: false, data: false } })} title='Funcionalidades'>
-                <Funcionalidades data={modal.funcionalidades.data} reload={reloadTable} handleClose={() => setModal({ ...modal, funcionalidades: { show: false, data: false } })} />
-            </Modal>
+            {modal.funcionalidades.show && (
+                <Modal size="lg" show={modal.funcionalidades.show} handleClose={() => setModal({ ...modal, funcionalidades: { show: false, data: false } })} title='Funcionalidades'>
+                    <Funcionalidades
+                        data={modal.funcionalidades.data}
+                        reload={() => setReloadTable(!reloadTable)}
+                        handleClose={() => setModal({ ...modal, funcionalidades: { show: false, data: false } })}
+                    />
+                </Modal>
+            )}
         </>
     );
 }

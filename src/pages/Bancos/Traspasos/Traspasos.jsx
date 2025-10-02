@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { TRASPASOS_COLUMNS, URL_DEV,ADJ_TRASPASO_COLUMNS } from '../../../constants'
+import { TRASPASOS_COLUMNS, URL_DEV, ADJ_TRASPASO_COLUMNS } from '../../../constants'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import { setArrayTable, setDateTableReactDom, setMoneyTable, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
 import TableForModals from '../../../components/tables/TableForModals'
@@ -37,11 +37,11 @@ class Traspasos extends Component {
         data: {
             djuntos: []
         },
-       
+
         adjuntos: [],
         traspaso: ''
     }
-    
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -57,7 +57,7 @@ class Traspasos extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-                const {modal} = this.state
+                const { modal } = this.state
                 modal.see = true
                 this.setState({ ...this.state, modal })
                 this.getTraspaso(id)
@@ -68,15 +68,15 @@ class Traspasos extends Component {
     setTraspasos = traspasos => {
         let aux = []
         traspasos.map((traspaso) => {
-            let transpaso_destino = traspaso.destino ? [{ name: 'Nombre', text: traspaso.destino.nombre },{ name: '# cuenta', text: traspaso.destino.numero }] : []
-            let transpaso_origen = traspaso.origen ? [{ name: 'Nombre', text: traspaso.origen.nombre },{ name: '# cuenta', text: traspaso.origen.numero }]: []
+            let transpaso_destino = traspaso.destino ? [{ name: 'Nombre', text: traspaso.destino.nombre }, { name: '# cuenta', text: traspaso.destino.numero }] : []
+            let transpaso_origen = traspaso.origen ? [{ name: 'Nombre', text: traspaso.origen.nombre }, { name: '# cuenta', text: traspaso.origen.numero }] : []
             aux.push({
                 actions: this.setActions(traspaso),
                 identificador: renderToString(setTextTableCenter(traspaso.id)),
-                origen: renderToString(setArrayTable(transpaso_origen,'250px')),
-                destino: renderToString(setArrayTable(transpaso_destino,'250px')),
+                origen: renderToString(setArrayTable(transpaso_origen, '250px')),
+                destino: renderToString(setArrayTable(transpaso_destino, '250px')),
                 monto: renderToString(setMoneyTable(traspaso.cantidad)),
-                comentario: setTextTableReactDom(traspaso.comentario !== null ? traspaso.comentario :'', this.doubleClick, traspaso, 'comentario', 'text-center'),
+                comentario: setTextTableReactDom(traspaso.comentario !== null ? traspaso.comentario : '', this.doubleClick, traspaso, 'comentario', 'text-center'),
                 usuario: renderToString(setTextTableCenter(traspaso.user.name)),
                 fecha: setDateTableReactDom(traspaso.created_at, this.doubleClick, traspaso, 'fecha', 'text-center'),
                 id: traspaso.id
@@ -88,7 +88,7 @@ class Traspasos extends Component {
 
     doubleClick = (data, tipo) => {
         const { form } = this.state
-        switch(tipo){
+        switch (tipo) {
             case 'fecha':
                 form.fecha = new Date(data.created_at)
                 break
@@ -96,57 +96,57 @@ class Traspasos extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({ form })
         customInputAlert(
             <div>
-                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                <h2 className='swal2-title mb-4 mt-2'> {printSwalHeader(tipo)} </h2>
                 {
                     tipo === 'comentario' &&
-                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
+                    <InputGray withtaglabel={0} withtextlabel={0} withplaceholder={0} withicon={0}
+                        requirevalidation={0} value={form[tipo]} name={tipo} rows={6} as='textarea'
+                        onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} swal={true} />
                 }
                 {
                     tipo === 'fecha' ?
-                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
-                    :<></>
+                        <CalendarDaySwal value={form[tipo]} onChange={(e) => { this.onChangeSwal(e.target.value, tipo) }} name={tipo} date={form[tipo]} withformgroup={0} />
+                        : <></>
                 }
             </div>,
             <Update />,
             () => { this.patchTraspasos(data, tipo) },
-            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+            () => { this.setState({ ...this.state, form: this.clearForm() }); Swal.close(); },
         )
     }
 
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
-        this.setState({...this.state, form})
+        this.setState({ ...this.state, form })
     }
 
-    patchTraspasos = async( data,tipo ) => {
+    patchTraspasos = async (data, tipo) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/bancos/traspasos/${tipo}/${data.id}`, 
-            { value: value }, 
+        await axios.put(`${URL_DEV}v2/bancos/traspasos/${tipo}/${data.id}`,
+            { value: value },
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getTraspasosAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El traspaso fue editado con éxito')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.error(error, 'error')
-        })
+                (response) => {
+                    this.getTraspasosAxios()
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'El traspaso fue editado con éxito')
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.error(error, 'error')
+            })
     }
 
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.forEach((element) => {
-            switch(element){
+            switch (element) {
                 case 'adjuntos':
                     form[element] = {
                         adjuntos: {
@@ -158,7 +158,7 @@ class Traspasos extends Component {
                     break;
                 default:
                     form[element] = ''
-                break;
+                    break;
             }
         })
         return form
@@ -223,11 +223,29 @@ class Traspasos extends Component {
         this.setState({ ...this.state, modal, traspaso: '' })
     }
 
-    openModalSee = traspaso => {
+    openModalSee = async (traspaso) => {
+        const { access_token } = this.props.authUser
         const { modal } = this.state
-        modal.see = true
-        this.setState({ ...this.state, modal, traspaso: traspaso })
+
+        try {
+            // pedir traspaso fresco con nuevas urls
+            const response = await axios.get(`${URL_DEV}traspasos/single/${traspaso.id}`, {
+                headers: { Authorization: `Bearer ${access_token}` }
+            })
+
+            const freshTraspaso = response.data.traspaso
+
+            modal.see = true
+            this.setState({
+                ...this.state,
+                modal,
+                traspaso: freshTraspaso, // 👈 aquí ya llegan url_temporal frescas
+            })
+        } catch (error) {
+            printResponseErrorAlert(error)
+        }
     }
+
 
     handleCloseSee = () => {
         const { modal } = this.state
@@ -235,31 +253,43 @@ class Traspasos extends Component {
         this.setState({ ...this.state, modal, traspaso: '' })
     }
 
-    adjuntoTranspaso = (traspaso) => {
+    adjuntoTranspaso = async (traspaso) => {
+        const { access_token } = this.props.authUser
         const { modal, data } = this.state
+
+        // pedir traspaso fresco al backend
+        const response = await axios.get(`${URL_DEV}traspasos/single/${traspaso.id}`, {
+            headers: { Authorization: `Bearer ${access_token}` }
+        })
+
+        const freshTraspaso = response.data.traspaso
+
         modal.adjuntos = true
-        data.adjuntos = traspaso.adjunto
+        data.adjuntos = freshTraspaso.adjunto
+
         this.setState({
             ...this.state,
             modal,
             data,
-            adjuntos: this.setAdjuntos(traspaso.adjunto),
-            traspaso: traspaso
+            adjuntos: this.setAdjuntos(freshTraspaso.adjunto),
+            traspaso: freshTraspaso
         })
-        // var win = window.open(traspaso.adjunto.url, '_blank');
-        // win.focus();
     }
-    setAdjuntos = adjuntos => {
+
+    setAdjuntos = (adjuntos) => {
         let aux = []
-        adjuntos.forEach((documento,key) => {
+        adjuntos.forEach((documento) => {
+            const href = documento.url_temporal || documento.url  // 👈 sin concatenar nada
             aux.push({
                 actions: this.setActionsAdjuntos(documento),
-                adjunto: renderToString(setArrayTable([{ text: documento.name, url: documento.url }])),
+                adjunto: renderToString(setArrayTable([{ text: documento.name, url: href }])),
                 id: documento.id
             })
         })
         return aux
     }
+
+
 
     setActionsAdjuntos = documento => {
         let aux = []
@@ -301,7 +331,7 @@ class Traspasos extends Component {
             customClass: {
                 content: 'd-none',
                 confirmButton: 'btn-light-danger-sweetalert2',
-                cancelButton:'btn-light-gray-sweetalert2'
+                cancelButton: 'btn-light-gray-sweetalert2'
             }
         }).then((result) => {
             if (result.value) {
@@ -312,7 +342,7 @@ class Traspasos extends Component {
 
     async deleteAdjuntoContratoAxios(adjunto) {
         const { access_token } = this.props.authUser
-        const {  traspaso } = this.state
+        const { traspaso } = this.state
         await axios.delete(URL_DEV + 'traspasos/' + traspaso.id + '/adjuntos/' + adjunto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
@@ -331,7 +361,7 @@ class Traspasos extends Component {
             console.error(error, 'error')
         })
     }
-    
+
     async getTraspasosAxios() { $('#kt_datatable_transpasos').DataTable().ajax.reload(); }
 
     async getTraspaso(id) {
@@ -384,11 +414,11 @@ class Traspasos extends Component {
     }
 
     render() {
-        const { modal, traspaso, adjuntos,data } = this.state
+        const { modal, traspaso, adjuntos, data } = this.state
         return (
             <Layout active='bancos' {...this.props}>
-                <NewTableServerRender columns = { TRASPASOS_COLUMNS } title = 'Traspasos' subtitle = 'Listado de traspasos' mostrar_boton = { true }
-                    abrir_modal = { false } url = '/bancos/traspasos/add' mostrar_acciones = { true } accessToken = { this.props.authUser.access_token }
+                <NewTableServerRender columns={TRASPASOS_COLUMNS} title='Traspasos' subtitle='Listado de traspasos' mostrar_boton={true}
+                    abrir_modal={false} url='/bancos/traspasos/add' mostrar_acciones={true} accessToken={this.props.authUser.access_token}
                     actions={
                         {
                             'edit': { function: this.changePageEdit },
@@ -397,15 +427,15 @@ class Traspasos extends Component {
                             'see': { function: this.openModalSee },
                         }
                     }
-                    setter = { this.setTraspasos } urlRender = { `${URL_DEV}traspasos` } idTable = 'kt_datatable_transpasos' exportar_boton = { true }
-                    onClickExport = { () => this.exportTraspasosAxios() } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
-                <ModalDelete title = "¿Estás seguro que deseas eliminar el traspaso?" show = { modal.delete } handleClose = { this.handleCloseDelete }
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteTraspasoAxios() } } />
+                    setter={this.setTraspasos} urlRender={`${URL_DEV}traspasos`} idTable='kt_datatable_transpasos' exportar_boton={true}
+                    onClickExport={() => this.exportTraspasosAxios()} cardTable='cardTable' cardTableHeader='cardTableHeader' cardBody='cardBody' />
+                <ModalDelete title="¿Estás seguro que deseas eliminar el traspaso?" show={modal.delete} handleClose={this.handleCloseDelete}
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteTraspasoAxios() }} />
                 <Modal size="lg" title="Traspaso" show={modal.see} handleClose={this.handleCloseSee} >
                     <TraspasoCard traspaso={traspaso} />
                 </Modal>
                 <Modal size="xl" title='Adjuntos del traspaso' show={modal.adjuntos} handleClose={this.handleCloseModalAdjuntos}>
-                    
+
                     <div className="separator separator-dashed mt-1 mb-2"></div>
                     <TableForModals
                         columns={ADJ_TRASPASO_COLUMNS}

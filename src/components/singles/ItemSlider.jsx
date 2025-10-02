@@ -93,7 +93,7 @@ class ItemSlider extends Component {
     }
 
     downloadFile = item => {
-        const url = item.url;
+        const url = item.url_temporal;
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', item.name);
@@ -104,12 +104,12 @@ class ItemSlider extends Component {
     isEnablePrevButton = () => {
         const { items, handleChange } = this.props
         const { active } = this.state
-        if(items.length < 1 )
+        if (items.length < 1)
             return false
-        if(handleChange){
+        if (handleChange) {
             return true
         }
-        if(active === 0)
+        if (active === 0)
             return false
         return true
     }
@@ -117,12 +117,12 @@ class ItemSlider extends Component {
     isEnableNextButton = () => {
         const { items, handleChange } = this.props
         const { active } = this.state
-        if(items.length < 1 )
+        if (items.length < 1)
             return false
-        if(handleChange){
+        if (handleChange) {
             return true
         }
-        if(active === items.length - 1)
+        if (active === items.length - 1)
             return false
         return true
     }
@@ -143,14 +143,14 @@ class ItemSlider extends Component {
                                         </span>
                                     </div>
                                 </div>
-                            : ''
+                                : ''
                         }
                     </div>
                     <div className="w-80">
                         {
                             items.length === active && handleChange ?
                                 <div className="rounded w-80 d-flex justify-content-center align-items-center mx-auto">
-                                    <DropZone accept = { accept } multiple = { multiple === true || multiple === false ? multiple : true} handleChange={this.handleChange} >
+                                    <DropZone accept={accept} multiple={multiple === true || multiple === false ? multiple : true} handleChange={this.handleChange} >
                                         <div className="dropzone-msg dz-message needsclick">
                                             <div className="row d-flex justify-content-center align-items-center">
                                                 <span className=" col-md-12 pb-3 svg-icon svg-icon-primary svg-icon svg-icon-5x">
@@ -161,8 +161,8 @@ class ItemSlider extends Component {
                                         </div>
                                     </DropZone>
                                 </div>
-                            :
-                                items.length > 0 ? <ShowFile item = { items[active] } /> : ''
+                                :
+                                items.length > 0 ? <ShowFile item={items[active]} /> : ''
                         }
                     </div>
                     <div className="w-10 align-self-center text-center">
@@ -175,33 +175,44 @@ class ItemSlider extends Component {
                                         </span>
                                     </div>
                                 </div>
-                            : ''
+                                : ''
                         }
                     </div>
                 </div>
                 <div className="d-flex justify-content-center align-items-center mt-3">
                     <div className="text-center">
                         {
-                            items.length > 0 && active !== items.length ? 
+                            items.length > 0 && active !== items.length ?
                                 deleteFile && items[active].id ?
                                     <span className="btn btn-text-danger btn-hover-danger p-2" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) }} >
                                         <i className='fas fa-trash pr-0'></i>
                                     </span>
+                                    : ''
                                 : ''
-                            : ''
                         }
                         {
-                            items.length > 0 && active !== items.length ? 
+                            items.length > 0 && active !== items.length ?
                                 <div className="text-center">
-                                    <a href={items[active].url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
+                                    <a
+                                        href={
+                                            items[active].url_temporal ||
+                                            items[active].url ||
+                                            items[active].href ||
+                                            items[active].link
+                                        }
+                                        target='_blank'
+                                        rel="noopener noreferrer"
+                                        className="text-muted text-hover-primary font-weight-bold"
+                                    >
                                         <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                             <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
                                         </span>
                                         Ver archivo
                                     </a>
                                 </div>
-                            : ''
+                                : ''
                         }
+
                     </div>
                 </div>
             </>

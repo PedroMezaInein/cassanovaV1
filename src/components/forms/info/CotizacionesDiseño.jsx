@@ -9,7 +9,7 @@ import PresupuestoDiseñoCRMForm from '../info/PresupuestoDiseñoCRMForm'
 import FilterCotizaciones from "../../forms/info/filters/FilterCotizaciones"
 import { Card, Dropdown, DropdownButton, Modal, Form } from 'react-bootstrap'
 import HistorialCotizacionesDiseño from '../info/HistorialCotizacionesDiseño'
-import { apiPutForm, apiPostFormData, apiPostForm, catchErrors  } from '../../../functions/api' 
+import { apiPutForm, apiPostFormData, apiPostForm, catchErrors } from '../../../functions/api'
 import { validateAlert, waitAlert, doneAlert, printResponseErrorAlert } from '../../../functions/alert'
 class CotizacionesDiseño extends Component {
     state = {
@@ -44,25 +44,25 @@ class CotizacionesDiseño extends Component {
     componentDidUpdate = (prev) => {
         const { isActive, flag } = this.props
         const { isActive: prevActive, flag: flagPrev } = prev
-        if(isActive && !prevActive){
+        if (isActive && !prevActive) {
             this.setState({ ...this.state, filtering: {} })
             this.getCotizaciones({});
         }
-        if(flag !== flagPrev){
+        if (flag !== flagPrev) {
             this.setState({ ...this.state, filtering: {} })
             this.getCotizaciones({});
         }
     }
-    
-    getCotizaciones = async(filtering) => {
+
+    getCotizaciones = async (filtering) => {
         const { at, lead } = this.props
         let { activeCotizacion } = this.state
         waitAlert()
-        apiPutForm(`v2/leads/crm/presupuestos/${lead.id}`, {filters: filtering}, at).then(
+        apiPutForm(`v2/leads/crm/presupuestos/${lead.id}`, { filters: filtering }, at).then(
             (response) => {
                 const { pdfs } = response.data
                 if (pdfs.length === 0) {
-                    if(Object.entries(filtering).length > 0)
+                    if (Object.entries(filtering).length > 0)
                         activeCotizacion = 'historial'
                     else
                         activeCotizacion = 'new'
@@ -97,7 +97,7 @@ class CotizacionesDiseño extends Component {
                 icon: 'warning',
                 customClass: {
                     actions: 'd-none',
-                    icon:'justify-content-center'
+                    icon: 'justify-content-center'
                 },
                 timer: 2500,
             })
@@ -121,16 +121,16 @@ class CotizacionesDiseño extends Component {
                 return ''
         }
     }
-    showBtnHistorial(lead){
+    showBtnHistorial(lead) {
         const { activeCotizacion } = this.state
-        if((activeCotizacion === 'new' && this.hasCorizaciones(lead)) || (activeCotizacion === 'contratar')){
+        if ((activeCotizacion === 'new' && this.hasCorizaciones(lead)) || (activeCotizacion === 'contratar')) {
             return true
         }
         return false
     }
     onClickCotizacion = (type) => {
         const { filtering } = this.state
-        if( type === 'historial'){
+        if (type === 'historial') {
             this.getCotizaciones(filtering)
         }
         this.setState({
@@ -149,7 +149,7 @@ class CotizacionesDiseño extends Component {
     }
     changePageContratar = (pdf) => {
         const { history, lead } = this.props
-        history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, cotizacionId : pdf} })
+        history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, cotizacionId: pdf } })
     }
     /* -------------------------------------------------------------------------- */
     /*                              ORDEN DE COMPRA                               */
@@ -158,16 +158,16 @@ class CotizacionesDiseño extends Component {
         let { typeModal, form } = this.state
         const { modal } = this.state
         modal.orden_compra = true
-        switch(type){
+        switch (type) {
             case 'add-orden':
                 typeModal = 'add'
                 form.pdf_id = pdf
-                this.setState({...this.state, typeModal, modal, form})
+                this.setState({ ...this.state, typeModal, modal, form })
                 break;
             case 'modify-orden':
                 typeModal = 'modify'
                 form.pdf_id = pdf
-                this.setState({...this.state, typeModal, modal, form})
+                this.setState({ ...this.state, typeModal, modal, form })
                 break;
             default: break;
         }
@@ -209,46 +209,52 @@ class CotizacionesDiseño extends Component {
         const { form, typeModal } = this.state
         const { at, lead, history } = this.props
         waitAlert();
-            if(typeModal === 'add'){
-                if(form.estatus_cotizacion === 1){
-                    history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, form_orden: form } })
-                }else{
-                    let formulario = {
-                        motivo_rechazo: form.motivo_cancelacion,
-                        pdf: form.pdf_id
-                    }
-                    apiPostForm(`v3/leads/crm/${lead.id}/rechazar`, formulario, at).then(
-                        (response) => {
-                            this.handleCloseOrden()
-                            doneAlert( `La cotización fue rechazada con éxito`, () => {
-                                this.getCotizaciones({})
-                            })
-                        }, (error) => { printResponseErrorAlert(error) }
-                    ).catch((error) => { catchErrors(error) })
+        if (typeModal === 'add') {
+            if (form.estatus_cotizacion === 1) {
+                history.push({ pathname: '/leads/crm/contratar', state: { lead: lead, form_orden: form } })
+            } else {
+                let formulario = {
+                    motivo_rechazo: form.motivo_cancelacion,
+                    pdf: form.pdf_id
                 }
-            }else{
-                let data = new FormData()
-                data.append(`adjuntoEvidencia`, form.adjunto)
-                data.append(`estatus_final`, `${form.estatus_cotizacion===1?'Aceptado':'Rechazado'}`)
-                data.append(`fechaEvidencia`, (new Date(form.fechaEvidencia)).toDateString())
-                data.append(`orden_compra`, form.numero_orden)
-                data.append(`pdfId`, form.pdf_id)
-                data.append('motivo_rechazo', form.motivo_cancelacion)
-                apiPostFormData(`v3/leads/crm/info/info/${lead.id}/estatus?_method=PUT`, data, at).then(
+                apiPostForm(`v3/leads/crm/${lead.id}/rechazar`, formulario, at).then(
                     (response) => {
                         this.handleCloseOrden()
-                        doneAlert( `${form.estatus_cotizacion===1 ? 'La orden de compra fue adjuntada con éxito.' : 'La cotización fue rechazada con éxito'}`)
-                    },
-                    (error) => { printResponseErrorAlert(error) }
+                        doneAlert(`La cotización fue rechazada con éxito`, () => {
+                            this.getCotizaciones({})
+                        })
+                    }, (error) => { printResponseErrorAlert(error) }
                 ).catch((error) => { catchErrors(error) })
             }
+        } else {
+            let data = new FormData()
+            data.append('file', form.adjunto)
+            data.append('orden', form.numero_orden)
+            data.append('estatus_final', form.estatus_cotizacion === 1 ? 'Aceptado' : 'Rechazado')
+            data.append('fechaEvidencia', (new Date(form.fechaEvidencia)).toDateString())
+            data.append('pdfId', form.pdf_id)
+            data.append('motivo_rechazo', form.motivo_cancelacion)
+            data.append('_method', 'PUT')
+
+            apiPostFormData(`v3/leads/crm/${lead.id}/estatus`, data, at)
+                .then(() => {
+                    this.handleCloseOrden()
+                    doneAlert(
+                        form.estatus_cotizacion === 1
+                            ? 'La orden de compra fue adjuntada con éxito.'
+                            : 'La cotización fue rechazada con éxito'
+                    )
+                })
+                .catch((error) => { printResponseErrorAlert(error) })
+
+        }
         // }
     }
     formAceptar(form, typeModal) {
         return (
             <>
                 {
-                    form.estatus_cotizacion === 1 || typeModal === 'modify'?
+                    form.estatus_cotizacion === 1 || typeModal === 'modify' ?
                         <div className='row mx-0 justify-content-center'>
                             <div className="col-md-12 mt-6">
                                 {
@@ -308,28 +314,28 @@ class CotizacionesDiseño extends Component {
                                 </div>
                             </div>
                         </div>
-                        :form.estatus_cotizacion === 2?
-                        <div className="row mx-0 form-group-marginless mt-5">
-                            <div className="col-md-12 text-justify">
-                                <InputGray
-                                    withtaglabel={0}
-                                    withtextlabel={0}
-                                    withplaceholder={1}
-                                    withicon={0}
-                                    value={form.motivo_cancelacion}
-                                    name='motivo_cancelacion'
-                                    onChange={(e) => { this.onChange(e.target.value, 'motivo_cancelacion') }}
-                                    swal={true}
-                                    requirevalidation={1}
-                                    rows="3"
-                                    as="textarea"
-                                    placeholder="MOTIVO DE RECHAZO"
-                                    customclass="px-2"
-                                    messageinc="Incorrecto. Ingresa el motivo de rechazo."
-                                />
+                        : form.estatus_cotizacion === 2 ?
+                            <div className="row mx-0 form-group-marginless mt-5">
+                                <div className="col-md-12 text-justify">
+                                    <InputGray
+                                        withtaglabel={0}
+                                        withtextlabel={0}
+                                        withplaceholder={1}
+                                        withicon={0}
+                                        value={form.motivo_cancelacion}
+                                        name='motivo_cancelacion'
+                                        onChange={(e) => { this.onChange(e.target.value, 'motivo_cancelacion') }}
+                                        swal={true}
+                                        requirevalidation={1}
+                                        rows="3"
+                                        as="textarea"
+                                        placeholder="MOTIVO DE RECHAZO"
+                                        customclass="px-2"
+                                        messageinc="Incorrecto. Ingresa el motivo de rechazo."
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        :<></>
+                            : <></>
                 }
             </>
         )
@@ -349,9 +355,9 @@ class CotizacionesDiseño extends Component {
     handleCloseFilter = () => {
         const { modal } = this.state
         modal.filter = false
-        this.setState({ ...this.state, modal})
+        this.setState({ ...this.state, modal })
     }
-    filterTable = async(form) => {
+    filterTable = async (form) => {
         waitAlert()
         const { modal } = this.state
         modal.filter = false
@@ -394,8 +400,8 @@ class CotizacionesDiseño extends Component {
                     <Card.Body>
                         {
                             activeCotizacion === 'historial' ?
-                                    <HistorialCotizacionesDiseño pdfs={pdfs} sendPresupuesto = { sendPresupuesto } 
-                                        onClickOrden={this.onClickOrden} options={options} filtering={filtering}/>
+                                <HistorialCotizacionesDiseño pdfs={pdfs} sendPresupuesto={sendPresupuesto}
+                                    onClickOrden={this.onClickOrden} options={options} filtering={filtering} />
                                 : activeCotizacion === 'new' ?
                                     <PresupuestoDiseñoCRMForm
                                         options={options}
@@ -417,8 +423,8 @@ class CotizacionesDiseño extends Component {
                     </Card.Body>
                 </Card>
                 <Modal show={modal.orden_compra} onHide={this.handleCloseOrden} centered contentClassName='swal2-popup d-flex w-40rem padding-popup'>
-                    <Modal.Header className={`${typeModal === 'add' && (form.estatus_cotizacion === 1 || form.estatus_cotizacion === 2) ? 'd-none':'mt-5'} border-0 justify-content-center swal2-title text-center font-size-h4`}>
-                        {typeModal === 'modify'? 'MODIFICAR ORDEN DE COMPRA': 'LA COTIZACIÓN FUE:'}
+                    <Modal.Header className={`${typeModal === 'add' && (form.estatus_cotizacion === 1 || form.estatus_cotizacion === 2) ? 'd-none' : 'mt-5'} border-0 justify-content-center swal2-title text-center font-size-h4`}>
+                        {typeModal === 'modify' ? 'MODIFICAR ORDEN DE COMPRA' : 'LA COTIZACIÓN FUE:'}
                     </Modal.Header>
                     <Modal.Body className='p-0'>
                         {
@@ -532,11 +538,11 @@ class CotizacionesDiseño extends Component {
                                     MODIFICAR
                                 </button>
                             </Modal.Footer>
-                        : <></>
+                            : <></>
                     }
                 </Modal>
-                <ModalCustom size = "lg" title = 'Filtrar historial' show = { modal.filter } handleClose = { this.handleCloseFilter} >
-                    <FilterCotizaciones at={at} filtering = { this.filterTable } filters = { filtering } />
+                <ModalCustom size="lg" title='Filtrar historial' show={modal.filter} handleClose={this.handleCloseFilter} >
+                    <FilterCotizaciones at={at} filtering={this.filterTable} filters={filtering} />
                 </ModalCustom>
             </>
         )

@@ -30,7 +30,30 @@ const ModalImportarExcel = ({ handleClose, at, reloadData }) => {
         const workbook = XLSX.read(data, { type: 'array' });
 
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const json = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+        const camposDecimales = [
+          'NOMINA IMSS',
+          'EFECTIVO QNAL',
+          'EXTRAS IMSS',
+          'EXTRAS EFECTIVO',
+          'ISR',
+          'INFONAVIT /RSV',
+          'IMSS',
+          'ISN',
+          'COMISION EFECTIVO',
+          'Total'
+        ];
+
+        const json = XLSX.utils.sheet_to_json(worksheet, {
+          defval: '',
+          raw: true,
+        }).map(row => {
+          camposDecimales.forEach(key => {
+            if (row[key] !== undefined && row[key] !== '') {
+              row[key] = limpiarYParsear(row[key]);
+            }
+          });
+          return row;
+        });
 
         setExcelData(json);
       } catch (error) {
@@ -38,13 +61,51 @@ const ModalImportarExcel = ({ handleClose, at, reloadData }) => {
       }
     };
 
-    reader.readAsArrayBuffer(file); // 👈 evita el error de .replace
+    reader.readAsArrayBuffer(file);
   };
+
+  
+  const limpiarYParsear = (valor) => {
+    if (typeof valor === 'string') {
+      const limpio = valor.replace(/[^0-9.-]+/g, ''); // quita $, comas y cualquier otro carácter no numérico
+      const numero = parseFloat(limpio);
+      return isNaN(numero) ? valor : numero;
+    } else if (typeof valor === 'number') {
+      return valor;
+    }
+    return valor;
+  };
+
 
   const confirmarImportacion = async () => {
     try {
       waitAlert();
-      const res = await axios.post(`${URL_DEV}v2/rh/empleados/importar-nomina`, excelData, {
+
+      const camposDecimales = [
+        'NOMINA IMSS',
+        'EFECTIVO QNAL',
+        'EXTRAS IMSS',
+        'EXTRAS EFECTIVO',
+        'ISR',
+        'INFONAVIT /RSV',
+        'IMSS',
+        'ISN',
+        'COMISION EFECTIVO',
+        'Total'
+      ];
+
+      const datosFormateados = excelData.map(row => {
+        const nuevo = { ...row };
+        camposDecimales.forEach(key => {
+          if (nuevo[key] !== undefined && nuevo[key] !== '') {
+            const val = limpiarYParsear(nuevo[key]);
+            nuevo[key] = typeof val === 'number' ? val.toFixed(2) : val;
+          }
+        });
+        return nuevo;
+      });
+
+      const res = await axios.post(`${URL_DEV}v2/rh/empleados/importar-nomina`, datosFormateados, {
         headers: setSingleHeader(at),
       });
 
@@ -78,6 +139,7 @@ const ModalImportarExcel = ({ handleClose, at, reloadData }) => {
   };
 
 
+
   return (
     <Box>
       <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
@@ -96,8 +158,12 @@ const ModalImportarExcel = ({ handleClose, at, reloadData }) => {
               {excelData.map((row, i) => (
                 <TableRow key={i}>
                   {Object.values(row).map((value, j) => (
-                    <TableCell key={j}>{value}</TableCell>
-                  ))}
+                    <TableCell key={j}>
+                      {typeof value === 'number'
+                        ? value.toFixed(2)
+                        : value}
+                    </TableCell>
+                    ))}
                 </TableRow>
               ))}
             </TableBody>

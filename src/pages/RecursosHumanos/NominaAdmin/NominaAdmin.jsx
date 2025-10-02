@@ -107,7 +107,7 @@ const NominaAdmin = () => {
             { accessorKey: 'extraefectivo', header: 'Nomina ExtraEfectivo',size: 150 },
             { accessorKey: 'comision', header: 'Comision',size: 150 },
             { accessorKey: 'isr', header: 'Nomina Isr',size: 150 },
-            { accessorKey: 'infonavit / rcv', header: 'Nomina Infonavit',size: 150 },
+            { accessorKey: 'infonavit', header: 'Nomina Infonavit / RCV',size: 150 },
             { accessorKey: 'imss', header: 'Imss',size: 150 },
             { accessorKey: 'isn', header: 'Nomina Isn',size: 150 },
             // { accessorKey: 'rcv', header: 'Rcv',size: 150 },
@@ -140,7 +140,7 @@ const NominaAdmin = () => {
                       <Tooltip key={i} title={file.nombre || `Adjunto ${i + 1}`}>
                         <IconButton
                           component="a"
-                          href={file.url}
+                          href={file.url_temporal}
                           target="_blank"
                           rel="noopener noreferrer"
                           size="small"
@@ -179,18 +179,18 @@ const NominaAdmin = () => {
                         boxShadow: 'none', border: 'none',},}}>
                    <MenuItem
                         onClick={() => {
-                          if (selectedRow.data.egreso === 1) {
-                            Swal.fire({
-                              icon: 'warning',
-                              title: 'Nómina ya generada',
-                              text: 'Esta nómina ya tiene un egreso vinculado y no puede ser editada.',
-                              confirmButtonText: 'Entendido',
-                              confirmButtonColor: '#f44336'
-                            });
-                          } else {
+                          // if (selectedRow.data.egreso === 1) {
+                          //   Swal.fire({
+                          //     icon: 'warning',
+                          //     title: 'Nómina ya generada',
+                          //     text: 'Esta nómina ya tiene un egreso vinculado y no puede ser editada.',
+                          //     confirmButtonText: 'Entendido',
+                          //     confirmButtonColor: '#f44336'
+                          //   });
+                          // } else {
                             toggleModal('editarNomina', selectedRow);
                             handleCloseMenu();
-                          }
+                          // }
                         }}
                         sx={{
                           '&:hover': {
@@ -365,7 +365,7 @@ const NominaAdmin = () => {
             inicio: dato.fecha_inicio ? format(new Date(dato.fecha_inicio), 'yyyy/MM/dd') : 's/i',            // // monto: parseFloat(dato.monto) || 0, // Convertir el monto a número
             fin: dato.fecha_fin ? format(new Date(dato.fecha_fin), 'yyyy/MM/dd') : 's/i',            // // monto: parseFloat(dato.monto) || 0, // Convertir el monto a número
             nomina_imss: formatMonto(dato.totalNominaImss) || 0,
-            extraImss: formatMonto(dato.totalExtrasImss) || 0,
+            extraImss: formatMonto(dato.totalExtraImss) || 0,
             efectivo: formatMonto(dato.totalEfectivo) || 0,
             extraefectivo: formatMonto(dato.totalExtraEfectivo) || 0,
             comision: formatMonto(dato.totalComision) || 0,
@@ -458,7 +458,7 @@ const NominaAdmin = () => {
                 </Box>
 
 
-        <Modal size = "xl" title = "Crear Nomina Admin" show={modals.crearNomina?.show} handleClose={() => toggleModal('crearNomina')} >
+        <Modal size = "xl" title = "Crear Nomina Admin" show={modals.crearNomina?.show} handleClose={() => toggleModal('crearNomina')}  >
                 <CrearNomina handleClose={() => toggleModal('crearNomina')} reload={reloadData}   />
         </Modal>
 

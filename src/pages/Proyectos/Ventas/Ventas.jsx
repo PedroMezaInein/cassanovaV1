@@ -112,6 +112,7 @@ class Ventas extends Component {
     }
 
     componentDidMount() {
+         console.log("Este archivo se cargó");
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
@@ -257,26 +258,22 @@ class Ventas extends Component {
         this.setState({...this.state,form})
     }
 
-    getNombrePartida = (venta) => {
-        const {ventasProyectos} = this.props
-        // console.log(venta)
-        // console.log(ventasProyectos)
-        let aux = ''
-        ventasProyectos.map((item)=>{
-            if(parseInt(item.id_area) === venta.area.id){
-                if(venta.partida_id !== ''  && venta.partida_id){
-                    
-                    item.partidas.find(partida=>{
-                        if(parseInt(partida.id) === venta.partida_id){                            
-                            aux = partida.nombre
-                        }
-                    })
-                }
-
+getNombrePartida = (venta) => {
+    const { ventasProyectos } = this.props
+    let aux = ''
+    ventasProyectos.map((item) => {
+        if (parseInt(item.id_area) === venta.area?.id) {
+            if (venta.partida_id && item.partidas?.length > 0) {
+                const partida = item.partidas.find(partida =>
+                    parseInt(partida.id) === venta.partida_id
+                )
+                if (partida) aux = partida.nombre
             }
-        })
-        return aux
-    }
+        }
+    })
+    return aux
+}
+
 
     setVentas = ventas => {
         const { data } = this.state

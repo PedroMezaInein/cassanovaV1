@@ -144,20 +144,28 @@ export default class HistorialPresupuestos extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {
-                                                pdf.pivot.url !== null ?
-                                                    <div className="d-flex align-items-center border border-dashed border-gray-300 rounded p-3 w-fit-content bg-hover-light border-hover-light ml-5">
-                                                        <div className="d-flex flex-aligns-center align-items-center">
-                                                            <span className="svg-icon svg-icon-2x">
-                                                                <SVG src={toAbsoluteUrl('/images/svg/Files/PDF.svg')} />
-                                                            </span>
-                                                            <div className="ml-2">
-                                                                <u><a rel="noopener noreferrer" target="_blank" href={pdf.pivot.url} className="font-size-sm text-hover-primary font-weight-bolder text-dark-75">ORDEN DE COMPRA</a></u>
-                                                            </div>
+                                            {pdf?.pivot?.url && (
+                                                <div className="d-flex align-items-center border border-dashed border-gray-300 rounded p-3 w-fit-content bg-hover-light border-hover-light ml-5">
+                                                    <div className="d-flex flex-aligns-center align-items-center">
+                                                        <span className="svg-icon svg-icon-2x">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/Files/PDF.svg')} />
+                                                        </span>
+                                                        <div className="ml-2">
+                                                            <u>
+                                                                <a
+                                                                    rel="noopener noreferrer"
+                                                                    target="_blank"
+                                                                    href={pdf.pivot.url}
+                                                                    className="font-size-sm text-hover-primary font-weight-bolder text-dark-75"
+                                                                >
+                                                                    ORDEN DE COMPRA
+                                                                </a>
+                                                            </u>
                                                         </div>
                                                     </div>
-                                                    : <></>
-                                            }
+                                                </div>
+                                            )}
+
                                         </div>
                                     </div>
                                 </div>

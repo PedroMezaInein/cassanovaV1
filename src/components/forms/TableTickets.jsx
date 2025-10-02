@@ -42,7 +42,7 @@ class TableTickets extends Component {
                     {
                         tipoTickets === 'proyecto'?
                             <span className='btn btn-sm btn-transparent btn-hover-light-success text-success font-weight-bolder font-size-13px box-shadow-button' onClick={openModalLevantamiento}>
-                                <i className="la la-file-archive icon-xl text-success"></i> NUEVO TICKET
+                                <i className="la la-file-archive icon-xl text-success"></i> TICKET
                             </span>
                         :<></>
                     }

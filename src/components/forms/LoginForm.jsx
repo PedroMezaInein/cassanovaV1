@@ -1,325 +1,300 @@
-import React from 'react';
-import axios from 'axios';
-import { URL_DEV, EMAIL, LEADS_FRONT } from '../../constants';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useLocation, useHistory } from 'react-router-dom';
 import { login } from '../../redux/reducers/auth_user';
-import { Form, Tab } from 'react-bootstrap';
+import axios from 'axios';
+import { URL_DEV, EMAIL } from '../../constants';
 import { validateAlert, errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert';
-import { InputLEmail, InputLPassword } from '../../components/form-components';
+import { InputLEmail } from '../../components/form-components';
+import { Tab, Form } from 'react-bootstrap';
 import WOW from 'wowjs';
+import {
+  TextField,
+  InputAdornment,
+  IconButton
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+const PasswordField = ({
+  label = 'Contraseña',
+  name,
+  value,
+  onChange,
+  error = '',
+  helperText = '',
+}) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const toggleShowPassword = () => setShowPassword(prev => !prev);
 
-class LoginForm extends React.Component {
-    state = {
-        showForgotP: false,
-        showSingIn: true,
-        form: {
-            email: '',
-            password: '',
-            emailfp: ''
-        },
-        error: {
-            email: '',
-            password: '',
-            emailfp: ''
-        },
-        tab: 'login',
-        token: ''
+  return (
+    <TextField
+      fullWidth
+      type={showPassword ? 'text' : 'password'}
+      label={label}
+      name={name}
+      value={value}
+      onChange={onChange}
+      variant="outlined"
+      size="small"
+      margin="normal"
+      error={Boolean(error)}
+      helperText={error || helperText}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton onClick={toggleShowPassword} edge="end">
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          </InputAdornment>
+        )
+      }}
+    />
+  );
+};
+
+
+
+const LoginForm = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
+
+  const [tab, setTab] = useState('login');
+  const [form, setForm] = useState({ email: '', password: '', emailfp: '', password2: '', token: '' });
+  const [error, setError] = useState({});
+
+  useEffect(() => {
+    new WOW.WOW({ live: false }).init();
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token') || '';
+    if (token) {
+      setForm(prev => ({ ...prev, token }));
+      setTab('nueva');
     }
-    
-    constructor(props) {
-        super(props);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+    initLocalStorage();
+  }, []);
+
+  const initLocalStorage = () => {
+    if (!localStorage.getItem('activeKeyTabModulo')) localStorage.setItem('activeKeyTabModulo', 'Repse');
+    if (!localStorage.getItem('activeKeyTabColaboradores')) localStorage.setItem('activeKeyTabColaboradores', 'administrativo');
+    checkLocalStorageSize();
+  };
+
+  const checkLocalStorageSize = () => {
+    const maxSize = 5 * 1024 * 1024;
+    let total = 0;
+    for (let key in localStorage) {
+      if (localStorage.hasOwnProperty(key)) total += localStorage[key].length;
+    }
+    if (total > maxSize) {
+      console.warn('Exceso en localStorage, limpiando...');
+      ['access_token', 'user', 'modulos', 'departamento'].forEach(k => localStorage.removeItem(k));
+    }
+  };
+
+  const validateEmail = email =>
+    !email ? 'No dejes este campo vacío.' :
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email) ? 'Correo electrónico no válido.' : '';
+
+  const validatePassword = pwd => {
+    if (!pwd) return 'No dejes este campo vacío.';
+    if (pwd.length < 8) return 'Debe tener al menos 8 caracteres.';
+    if (!/[a-z]/.test(pwd)) return 'Debe incluir minúsculas.';
+    if (!/[A-Z]/.test(pwd)) return 'Debe incluir mayúsculas.';
+    if (!/[0-9]/.test(pwd)) return 'Debe incluir números.';
+    if (!/[!@#$%^&*()_\-+=]/.test(pwd)) return 'Debe incluir símbolos.';
+    return '';
+  };
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    let formatted = value;
+    let newError = { ...error };
+
+    switch (name) {
+      case 'email':
+      case 'emailfp':
+        formatted = value.toLowerCase(); // Correos en minúscula
+        newError[name] = validateEmail(formatted);
+        break;
+
+      case 'nombre':
+      case 'apellido':
+        formatted = value.toUpperCase(); // Mayúsculas para nombres/apellidos
+        break;
+
+      case 'password':
+      case 'password2':
+        // Se respeta la combinación de mayúsculas/minúsculas
+        newError[name] = validatePassword(value);
+        break;
+
+      default:
+        break;
     }
 
-    componentDidMount = () => {
-        new WOW.WOW({ live: false }).init();
-        const { history } = this.props;
-        let queryString = history.location.search;
-        let token = '';
-        if (queryString) {
-            let params = new URLSearchParams(queryString);
-            token = params.get("token");
-        }
-        this.setState({
-            ...this.state,
-            tab: token === '' ? 'login' : 'nueva',
-            token: token
-        });
+    setForm(prev => ({ ...prev, [name]: formatted }));
+    setError(newError);
+  };
 
-        // Initialize localStorage values
-        this.initializeLocalStorage();
-        // Check localStorage size
-        this.checkLocalStorage();
-    }
+  const handleLogin = async e => {
+    e.preventDefault();
+    waitAlert();
+    try {
+      const res = await axios.post(`${URL_DEV}user/login`, form);
+      const { access_token, user, modulos, departamento } = res.data;
 
-    initializeLocalStorage = () => {
-        if (localStorage.getItem('activeKeyTabModulo') === null) {
-            localStorage.setItem('activeKeyTabModulo', 'Repse');
-        }
-        if (localStorage.getItem('activeKeyTabColaboradores') === null) {
-            localStorage.setItem('activeKeyTabColaboradores', 'administrativo');
-        }
-    }
+      localStorage.setItem('access_token', access_token);
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('modulos', JSON.stringify(modulos));
+      localStorage.setItem('departamento', JSON.stringify(departamento));
 
-    checkLocalStorage = () => {
-        const maxSize = 5 * 1024 * 1024; // 5 MB
-        let totalSize = 0;
+      dispatch(login({ access_token, user, modulos, departamento }));
 
-        for (let key in localStorage) {
-            if (localStorage.hasOwnProperty(key)) {
-                totalSize += localStorage[key].length;
-            }
-        }
+      if (!user.permisos || user.permisos.length === 0) {
+        history.push('/login');
+      } else {
+        const prioridad = ['calendario-tareas','mi-proyecto', 'tareas', 'crm'];
+        // let arreglo = ['calendario-tareas', 'mi-proyecto', 'crm', 'tareas', 'te-escuchamos', 'cuestionario-satisfaccion', 'incidencias', 'directorio'];
 
-        if (totalSize > maxSize) {
-            console.warn("LocalStorage size exceeded. Clearing localStorage.");
-            this.clearLocalStorage();
-        }
-    }
+        console.log(modulos)
+        const permisoPrioritario = prioridad.reduce((acc, slug) => {
+        if (acc) return acc;
+        return user.permisos.find(p => p.modulo.slug === slug);
+        }, null);
 
-    clearLocalStorage = () => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('user');
-        localStorage.removeItem('modulos');
-        localStorage.removeItem('departamento');
-    }
-
-    validateEmail = (value) => {
-        var re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm;
-        let error = '';
-        if (value.length < 1) {
-            error = 'No dejes este campo vacío.';
+        if (permisoPrioritario) {
+        history.push(permisoPrioritario.modulo.url);
+        } else if (user.permisos.length > 0) {
+        history.push(user.permisos[0].modulo.url); // fallback
         } else {
-            if (!re.test(value)) {
-                error = 'Ingresa un correo electrónico válido.';
-            }
+        history.push('/login'); // sin permisos válidos
         }
-        return error;
+      }
+    } catch (err) {
+      errorAlert('Correo o contraseña incorrectos.');
     }
+  };
 
-    validatePwd = (value) => {
-        let error = '';
-        if (value.length < 1) { 
-            error = 'No dejes este campo vacío.'; 
-        } else {
-            if (value.length < 5) {
-                error = 'La contraseña es muy corta.'; 
-            }
-        }
-        return error;
+  const sendForgotPassword = async () => {
+    const emailError = validateEmail(form.emailfp);
+
+    console.log(emailError)
+    if (emailError) return setError({ ...error, emailfp: emailError });
+
+    waitAlert();
+    try {
+      await axios.post(`${URL_DEV}password`, { emailfp: form.emailfp });
+      doneAlert('Revisa tu correo para restablecer tu contraseña.');
+    } catch (err) {
+      printResponseErrorAlert(err);
     }
+  };
 
-    sendRequestNewPassword = async() => {
-        const { form, error } = this.state;
-        error['emailfp'] = this.validateEmail(form.emailfp);
-        if (error['emailfp'] !== '') {
-            this.setState({
-                ...this.state,
-                error
-            });
-        } else {
-            waitAlert();
-            await axios.post(`${URL_DEV}password`, form).then(
-                (response) => {
-                    doneAlert('Se envió un correo con las indicaciones para restaurar tu contraseña.');
-                },
-                (error) => { printResponseErrorAlert(error); }
-            ).catch((error) => { errorAlert('Ocurrió un error desconocido, intenta de nuevo.'); });
-        }
+  const sendNewPassword = async () => {
+
+    const errors = {
+      password: validatePassword(form.password),
+      password2: validatePassword(form.password2)
+    };
+    console.log(errors)
+        console.log(form)
+
+
+    if (form.password !== form.password2) errors.password2 = 'Las contraseñas no coinciden';
+
+    if (errors.password || errors.password2) return setError(errors);
+
+    try {
+      await axios.post(`${URL_DEV}password/restaurar`, { password: form.password,password2: form.password2, token: form.token });
+      doneAlert('Contraseña actualizada.');
+        console.log('Redirigiendo al login...');
+        handleTabChange('login'); // 👈 esto regresa al tab de inicio de sesión
+    } catch (err) {
+      printResponseErrorAlert(err);
     }
+  };
 
-    sendNewPassword = async() => {
-        const { form, error } = this.state;
-        error['password'] = this.validatePwd(form.password);
-        error['password2'] = this.validatePwd(form.password2);
-        if (form.password !== form.password2) {
-            error['password2'] = 'Las contraseñas no coinciden';
-        }
-        if (error['password'] !== '' || error['password2'] !== '') {
-            this.setState({ ...this.state, error });
-        } else {
-            const { token } = this.state;
-            form.token = token;
-            await axios.post(`${URL_DEV}password/restaurar`, form).then(
-                (response) => {
-                    form.password = '';
-                    form.password2 = '';
-                    doneAlert('Contraseña actualizada con éxito.');
-                    const { history } = this.props;
-                    history.push({
-                        pathname: 'login',
-                        search: ''
-                    });
-                    this.setState({ ...this.state, tab: 'login', form });
-                },
-                (error) => { printResponseErrorAlert(error); }
-            ).catch((error) => { errorAlert('Ocurrió un error desconocido, intenta de nuevo.'); });
-        }
-    }
+  const handleTabChange = nextTab => {
+    setTab(nextTab);
+    setForm({ email: '', password: '', password2: '', emailfp: '', token: form.token });
+    setError({});
+  };
 
-    async handleSubmit(event) {
-        event.preventDefault();
-        const { form, error } = this.state;
-         
-        await axios.post(`${URL_DEV}user/login`, form, error).then(
-            (response) => {
-                const { history, login } = this.props;
-                const { access_token, user, modulos, departamento } = response.data;
+  return (
+    <Tab.Container activeKey={tab}>
+      <Tab.Content>
+        {/* LOGIN */}
+        <Tab.Pane eventKey="login">
+          <Form id="form-login" onSubmit={e => { e.preventDefault(); validateAlert(handleLogin, e, 'form-login'); }}>
+            <h3 className="text-center mb-4">INICIAR SESIÓN</h3>
+            <InputLEmail name="email" value={form.email} onChange={handleChange} placeholder="Correo electrónico" error={error} requirevalidation={1} patterns={EMAIL} />
+              <PasswordField
+                name="password"
+                label="Contraseña"
+                value={form.password}
+                onChange={handleChange}
+                error={error.password}
+              />           
+               <div className="text-right text-muted cursor-pointer" onClick={() => handleTabChange('recuperar')}>
+              ¿Olvidaste tu contraseña?
+            </div>
+            <div className="text-center mt-4">
+              <button className="btn btn-primary" type="submit">Iniciar Sesión</button>
+            </div>
+          </Form>
+        </Tab.Pane>
 
-                // Save token and user info to localStorage to persist session
-                localStorage.setItem('access_token', access_token);
-                localStorage.setItem('user', JSON.stringify(user));
-                localStorage.setItem('modulos', JSON.stringify(modulos));
-                localStorage.setItem('departamento', JSON.stringify(departamento));
+        {/* RECUPERAR */}
+        <Tab.Pane eventKey="recuperar">
+          <Form id="form-forgotP" onSubmit={(e) => {
+            e.preventDefault();
+            sendForgotPassword();
+          }}>
+            <h3 className="text-center mb-4">Recuperar contraseña</h3>
+            <InputLEmail 
+              name="emailfp" 
+              value={form.emailfp} 
+              onChange={handleChange} 
+              placeholder="Correo electrónico" 
+              error={error} 
+              requirevalidation={1} 
+              patterns={EMAIL} 
+            />
+            <div className="d-flex justify-content-center gap-2 mt-3">
+              <button className="btn btn-light-im" type="submit">Enviar</button>
+              <button className="btn btn-light-danger" type="button" onClick={() => handleTabChange('login')}>Cancelar</button>
+            </div>
+          </Form>
+        </Tab.Pane>
 
-                login({ access_token: access_token, user: user, modulos: modulos, departamento: departamento });
-                
-                if (!user.permisos) {
-                    history.push('/login');
-                }
 
-                let perm = null;
-                let arreglo = ['calendario-tareas', 'mi-proyecto', 'crm', 'tareas', 'te-escuchamos', 'cuestionario-satisfaccion', 'incidencias', 'directorio'];
-                arreglo.forEach((elemento) => {
-                    if (!perm) {
-                        perm = user.permisos.find((permiso) => {
-                            return permiso.modulo.slug === elemento;
-                        });
-                    }
-                });
+        {/* NUEVA CONTRASEÑA */}
+        <Tab.Pane eventKey="nueva">
+          <Form id="form-nueva">
+            <h3 className="text-center mb-4">Nueva Contraseña</h3>
+            <PasswordField
+              name="password"
+              label="Nueva contraseña"
+              value={form.password}
+              onChange={handleChange}
+              error={error.password}
+             />
 
-                if (perm) {
-                    history.push(perm.modulo.url);
-                } else {
-                    console.log('no entro a ninguno');
-                    history.push(user.permisos[0].modulo.url);
-                }
-            },
-            (e, error) => {
-                error['password'] = '';
-            }
-        ).catch((error) => {
-            errorAlert('Ingresaste un correo o contraseña equivocado. Intenta de nuevo');
-        }); 
-    }
+            <PasswordField
+              name="password2"
+              label="Repite la contraseña"
+              value={form.password2}
+              onChange={handleChange}
+              error={error.password2}
+            />
+            <div className="text-center mt-3">
+              <button className="btn btn-light-im" type="button" onClick={sendNewPassword}>Enviar</button>
+            </div>
+          </Form>
+        </Tab.Pane>
+      </Tab.Content>
+    </Tab.Container>
+  );
+};
 
-    handleChange(event) {
-        let { error, form } = this.state;
-        const { name, value } = event.target;
-        form[name] = value;
-        switch (name) {
-            case 'email':
-            case 'emailfp':
-                error[name] = this.validateEmail(value);
-                break;
-            case 'password':
-            case 'password2':
-                error[name] = this.validatePwd(value);
-                break;
-            default:
-                break;
-        }
-        this.setState({ ...this.state, form: form, error: error });
-    }
-
-    changeTab = tab => {
-        const { form, error } = this.state;
-        form.email = '';
-        form.password = '';
-        form.password2 = '';
-        form.emailfp = '';
-        error.email = '';
-        error.password = '';
-        error.password2 = '';
-        error.emailfp = '';
-        this.setState({ ...this.state, form, error, tab: tab });
-    }
-
-    render() {
-        const { form, error, tab } = this.state;
-        return (
-            <Tab.Container activeKey={tab}>
-                <Tab.Content>
-                    <Tab.Pane eventKey="login">
-                        <Form className='form fv-plugins-bootstrap fv-plugins-framework' noValidate="novalidate" id="form-login"
-                            onSubmit={(e) => { e.preventDefault(); validateAlert(this.handleSubmit, e, 'form-login'); }}>
-                            <div className="pb-5 pb-lg-15 text-center">
-                                <h3 className="font-weight-bolder font-size-h2 font-size-h1-lg text-im">INICIAR SESIÓN</h3>
-                            </div>
-                            <InputLEmail name='email' value={form.email} placeholder='INGRESA TU CORREO ELECRÓNICO'
-                                onChange={this.handleChange} error={error} requirevalidation={1}
-                                letterCase={false} patterns={EMAIL} />
-                            <InputLPassword name='password' value={form.password} placeholder='INGRESA TU CONTRASEÑA'
-                                onChange={this.handleChange} error={error} requirevalidation={1} letterCase={false} />
-                            <div className="form-group d-flex flex-wrap justify-content-end align-items-end pt-2">
-                                <span className="text-muted text-hover-im font-weight-bold a-hover" onClick={() => { this.changeTab('recuperar'); }}>
-                                    ¿Olvidaste tu contraseña?
-                                </span>
-                            </div>
-                            <div className="container-login px-0">
-                                <span className="btn-login btn-1" style={{ color: "#7fa1c9", fontWeight: 500 }} 
-                                    onClick={(e) => { e.preventDefault(); validateAlert(this.handleSubmit, e, 'form-login'); }}>
-                                    <svg> <rect x="0" y="0" fill="none" width="100%" height="100%" /> </svg>
-                                    INICIAR SESIÓN
-                                </span>
-                            </div>
-                        </Form>
-                    </Tab.Pane>
-                    <Tab.Pane eventKey='recuperar'>
-                        <Form className='form fv-plugins-bootstrap fv-plugins-framework' noValidate="novalidate" id="form-forgotP"
-                            onSubmit={(e) => { e.preventDefault(); }}>
-                            <div className="login-forgot wow fadeIn" data-wow-duration="1.5s">
-                                <div className="pb-5 pb-lg-15 text-center">
-                                    <div className="font-weight-bolder font-size-h2 font-size-h1-lg text-im mb-5">¿Olvidaste tu contraseña?</div>
-                                    <div className="text-muted font-weight-bold">Ingresa tu correo electrónico para restablecer tu contraseña</div>
-                                </div>
-                                <InputLEmail name='emailfp' value={form.emailfp} placeholder='INGRESA TU CORREO ELECRÓNICO'
-                                    onChange={this.handleChange} error={error} requirevalidation={1}
-                                    letterCase={false} patterns={EMAIL} />
-                                <div className="form-group d-flex flex-wrap flex-center mt-10">
-                                    <span className="btn btn-light-im btn-shadow-hover font-weight-bolder px-6 py-3" 
-                                        onClick={() => { this.sendRequestNewPassword(); }}>
-                                        Enviar
-                                    </span>
-                                    <span className="btn btn-light-danger font-weight-bolder px-6 py-3 ml-2" onClick={() => { this.changeTab('login'); }}>
-                                        Cancelar
-                                    </span>
-                                </div>
-                            </div>
-                        </Form>
-                    </Tab.Pane>
-                    <Tab.Pane eventKey='nueva'>
-                        <Form className='form fv-plugins-bootstrap fv-plugins-framework' noValidate="novalidate" id="form-nueva"
-                            onSubmit={(e) => { e.preventDefault(); }}>
-                            <div className="login-forgot wow fadeIn" data-wow-duration="1.5s">
-                                <div className="pb-5 pb-lg-15 text-center">
-                                    <div className="font-weight-bolder font-size-h2 font-size-h1-lg text-im mb-5">
-                                        ¿Olvidaste tu contraseña?
-                                    </div>
-                                    <div className="text-muted font-weight-bold">
-                                        Ingresa tu correo electrónico para restablecer tu contraseña
-                                    </div>
-                                </div>
-                                <InputLPassword name='password' value={form.password} placeholder='INGRESA UNA NUEVA CONTRASEÑA'
-                                    onChange={this.handleChange} error={error} requirevalidation={1} letterCase={false} />
-                                <InputLPassword name='password2' value={form.password2} placeholder='REPITE TU CONTRASEÑA'
-                                    onChange={this.handleChange} error={error} requirevalidation={1} letterCase={false} />
-                                <div className="form-group d-flex flex-wrap flex-center mt-10">
-                                    <span className="btn btn-light-im btn-shadow-hover font-weight-bolder px-6 py-3" 
-                                        onClick={() => { this.sendNewPassword(); }}>
-                                        Enviar
-                                    </span>
-                                </div>
-                            </div>
-                        </Form>
-                    </Tab.Pane>
-                </Tab.Content>
-            </Tab.Container>
-        );
-    }
-}
-
-const mapStateToProps = state => ({ authUser: state.authUser });
-const mapDispatchToProps = dispatch => ({ login: payload => dispatch(login(payload)) });
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
+export default LoginForm;
